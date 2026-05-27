@@ -1,34 +1,10 @@
 <script lang="ts">
   import { CheckIcon } from 'phosphor-svelte';
-  import ButtonLink from '$lib/components/ButtonLink.svelte';
+  import ButtonLink from '$lib/ui/ButtonLink.svelte';
   import { createPortalAuthHrefForPath } from '$lib/portalAuthLinks';
+  import { pricingBenefits, pricingFaqItems } from './pricingContent';
 
   const joinHref = createPortalAuthHrefForPath('join', '/pricing');
-
-  const benefits = [
-    'Unlimited users and unlimited use',
-    'Add any and all data sources',
-    'Invite as many partners as you want'
-  ] as const;
-
-  const faqItems = [
-    {
-      question: "Wait, what's your price again?",
-      answer: 'We charge 5% of the net new revenue we help generate. You only pay after you get paid and everything else is free'
-    },
-    {
-      question: 'Do my partners pay anything?',
-      answer: 'No. Your ecosystem partners can share any data with you for free through Overbase. They would only pay if they selected to receive revenue opportunities'
-    },
-    {
-      question: 'How does success-based pricing work?',
-      answer: 'You pay 5% of the net new revenue we generate together, and you only pay after you get paid. Revenue is attributed by your team in a self-reported way. Typically, companies need to be referred by one of their partners and share their CRM data with us to qualify'
-    },
-    {
-      question: 'Are there any upfront costs at all?',
-      answer: 'Some companies pay $25,000 for a proof of concept. You need to share your CRM data to qualify for success-based pricing. Some companies prefer to get familiar with our tech before sharing their CRM data. In these cases, you can pay $25,000 for a proof of concept before transitioning to success-based pricing'
-    }
-  ] as const;
 </script>
 
 <svelte:head>
@@ -73,7 +49,7 @@
       </div>
 
       <ul class="mt-[24px] space-y-[23px] border-t border-stone-200/70 pt-[27px]">
-        {#each benefits as benefit}
+        {#each pricingBenefits as benefit}
           <li class="flex items-center gap-[13px] text-[14px] font-normal leading-snug tracking-normal text-stone-700">
             <CheckIcon size={14} weight="regular" class="shrink-0 text-stone-700" />
             <span>{benefit}</span>
@@ -89,7 +65,7 @@
     </h2>
 
     <div class="mt-[38px] flex flex-col gap-[32px]">
-      {#each faqItems as item}
+      {#each pricingFaqItems as item}
         <article>
           <h3 class="font-heading text-[17px] font-normal leading-[1.25] tracking-normal text-stone-800 md:text-[18px]">
             {item.question}

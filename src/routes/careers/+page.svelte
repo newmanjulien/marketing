@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CareersPage from '$lib/components/careers/CareersPage.svelte';
+  import CareersPage from '$lib/careers/CareersPage.svelte';
 </script>
 
 <CareersPage />

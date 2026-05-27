@@ -1,5 +1,6 @@
 <script lang="ts">
-  import ButtonLink from './ButtonLink.svelte';
+  import { ArrowRightIcon } from 'phosphor-svelte';
+  import ButtonLink from '$lib/ui/ButtonLink.svelte';
   import { createPortalAuthHrefForPath } from '$lib/portalAuthLinks';
 
   const joinHref = createPortalAuthHrefForPath('join', '/');
@@ -16,7 +17,7 @@
     aria-label="Use your partner invite"
   >
     <span>Redeem partner invite</span>
-    <span class="inline-flex h-[12px] w-[12px] items-center justify-center text-[12px] leading-none text-stone-300" aria-hidden="true">&rarr;</span>
+    <ArrowRightIcon size={12} weight="regular" class="text-stone-300" aria-hidden="true" />
   </a>
 
   <h1

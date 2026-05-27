@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { headerActionItems, siteNavItems } from '$lib/data/siteNav';
+  import { headerActionItems, siteNavItems } from './navigation';
   import { createPortalAuthHrefForCurrentPage } from '$lib/portalAuthLinks';
 
   export let activePath = '/';

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import ContentPage from '$lib/components/content/ContentPage.svelte';
+  import ContentPage from '$lib/content/ContentPage.svelte';
+  import type { ContentParagraph } from '$lib/content/contentTypes';
 
   const aboutIntro = [
     [
@@ -26,12 +27,12 @@
         href: '/careers'
       }
     ]
-  ];
+  ] satisfies ContentParagraph[];
 </script>
 
 <ContentPage
   title="About"
   description="Learn about Overbase and the team behind it."
   heading="About"
-  intro={aboutIntro}
+  introParagraphs={aboutIntro}
 />

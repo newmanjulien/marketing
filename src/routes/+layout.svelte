@@ -1,7 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
-  import SiteShell from '$lib/components/SiteShell.svelte';
+  import SiteShell from '$lib/site/SiteShell.svelte';
   import '../app.css';
 
   let currentHash = '';

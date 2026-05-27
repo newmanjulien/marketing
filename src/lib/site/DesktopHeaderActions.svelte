@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ButtonLink from './ButtonLink.svelte';
-  import { headerActionItems } from '$lib/data/siteNav';
+  import ButtonLink from '$lib/ui/ButtonLink.svelte';
+  import { headerActionItems } from './navigation';
   import { createPortalAuthHrefForCurrentPage } from '$lib/portalAuthLinks';
 
   export let currentUrl: URL;

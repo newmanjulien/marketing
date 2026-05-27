@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { siteNavItems } from '$lib/data/siteNav';
+  import { siteNavItems } from './navigation';
 
   export let activePath = '/';
 </script>

@@ -1,27 +1,11 @@
 <script lang="ts">
   import { ArrowUpRightIcon } from 'phosphor-svelte';
-
-  type ContentTextSegment = {
-    text: string;
-    href?: string;
-  };
-
-  type ContentParagraph = ContentTextSegment[];
-
-  type ContentLink = {
-    label: string;
-    href: string;
-    external?: boolean;
-  };
-
-  type ContentSection = {
-    body: string;
-  };
+  import type { ContentLink, ContentParagraph, ContentSection } from './contentTypes';
 
   export let title: string;
   export let description: string;
   export let heading: string;
-  export let intro: ContentParagraph[];
+  export let introParagraphs: ContentParagraph[];
   export let links: ContentLink[] = [];
   export let sections: ContentSection[] = [];
 
@@ -41,7 +25,7 @@
     </h1>
 
     <div class="mt-[24px] flex max-w-[620px] flex-col gap-[22px]">
-      {#each intro as paragraph}
+      {#each introParagraphs as paragraph}
         <p class="text-[16px] font-normal leading-[1.55] tracking-normal text-stone-700">
           {#each paragraph as segment}
             {#if segment.href}
@@ -62,7 +46,7 @@
           <a
             href={link.href}
             target={link.external ? '_blank' : undefined}
-            rel={link.external ? 'noreferrer' : undefined}
+            rel={link.external ? 'noopener noreferrer' : undefined}
             class="flex items-center justify-between gap-8 border-b border-stone-200/70 py-[24px] text-[15px] font-normal leading-none tracking-normal text-stone-700 transition-colors hover:text-stone-900 md:text-[16px]"
           >
             <span>{link.label}</span>

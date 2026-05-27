@@ -3,7 +3,7 @@ export type LegalSection = {
   paragraphs: string[];
 };
 
-export type LegalPage = {
+export type LegalPageContent = {
   slug: string;
   label: string;
   title: string;
@@ -115,7 +115,7 @@ export const legalPages = [
       sharedClosingSection
     ]
   }
-] as const satisfies LegalPage[];
+] as const satisfies LegalPageContent[];
 
 export type LegalSlug = (typeof legalPages)[number]['slug'];
 

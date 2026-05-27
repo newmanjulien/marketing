@@ -1,7 +1,8 @@
 import { error } from '@sveltejs/kit';
-import { getLegalPage } from '$lib/data/legalPages';
+import { getLegalPage } from '$lib/legal/legalPages';
+import type { PageLoad } from './$types';
 
-export function load({ params }) {
+export const load: PageLoad = ({ params }) => {
   const legalPage = getLegalPage(params.slug);
 
   if (!legalPage) {
@@ -11,4 +12,4 @@ export function load({ params }) {
   return {
     legalPage
   };
-}
+};

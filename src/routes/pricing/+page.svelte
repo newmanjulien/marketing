@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PricingPage from '$lib/components/pricing/PricingPage.svelte';
+  import PricingPage from '$lib/pricing/PricingPage.svelte';
 </script>
 
 <PricingPage />

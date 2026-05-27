@@ -1,5 +1,6 @@
 <script lang="ts">
-  import ContentPage from '$lib/components/content/ContentPage.svelte';
+  import ContentPage from '$lib/content/ContentPage.svelte';
+  import type { ContentLink, ContentParagraph, ContentSection } from '$lib/content/contentTypes';
 
   const careersIntro = [
     [
@@ -17,7 +18,7 @@
         text: "We also don't care about your visa status"
       }
     ]
-  ];
+  ] satisfies ContentParagraph[];
 
   const careersLinks = [
     {
@@ -30,20 +31,20 @@
       href: 'https://drive.google.com/file/d/11chLFScixDu3RtAG5jKFw6UphwMp4FMF/view',
       external: true
     }
-  ];
+  ] satisfies ContentLink[];
 
   const careersSections = [
     {
       body: "Overbase is a small team and we don't have a location. We relocate as a group to wherever customers need us most and work from there. Our base pay is as low as possible and we're almost entirely paid based on customer outcomes"
     }
-  ];
+  ] satisfies ContentSection[];
 </script>
 
 <ContentPage
   title="Careers"
   description="Learn about careers at Overbase and how the team works."
   heading="Careers at Overbase"
-  intro={careersIntro}
+  introParagraphs={careersIntro}
   links={careersLinks}
   sections={careersSections}
 />

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { legalNavigationItems } from '$lib/data/legalPages';
+  import { legalNavigationItems } from '$lib/legal/legalPages';
 </script>
 
 <footer class="border-t border-stone-200/70 bg-white">

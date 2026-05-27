@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { LegalPage } from '$lib/data/legalPages';
+  import type { LegalPageContent } from './legalPages';
 
-  export let page: LegalPage;
+  export let page: LegalPageContent;
 </script>
 
 <svelte:head>
