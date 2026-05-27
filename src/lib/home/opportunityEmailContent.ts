@@ -21,20 +21,28 @@ Hi Laura,
 
 An activist hedge fund bought a 5% stake in ADP.
 
-You might want to see if this could be relevant to one of your partners, Shayne. And to one of your bankers, Laura.
+You might want to see if this could be relevant to one of your attorneys, Shayne. And to one of your bankers, Laura.
+
+Discussion in a Bloomberg forum:
+https://blinks.bloomberg.com/rooms/IB_ROOM_ID_98725`;
+
+const financeOpportunityEmail = `Hi Laura,
+Hi Shayne,
+
+An activist hedge fund bought a 5% stake in ADP.
+
+You might want to see if this could be relevant to one of your bankers, Laura. And to one of your attorneys, Shayne.
 
 Discussion in a Bloomberg forum:
 https://blinks.bloomberg.com/rooms/IB_ROOM_ID_98725`;
 
 const consultingOpportunityEmail = `Hi Amira,
 
-You have an upcoming meeting with Juan Mendoza at PepsiCo.
+You have an upcoming meeting with Juan Mendoza at PepsiCo. As you know, Nicolas has been encouraging folks to "bring the firm" to this type of meeting.
 
-As you know, Nicolas has been encouraging folks to "bring the firm" to this type of meeting.
+Assuming that it's appropriate to bring someone, you might consider Ajay Agrawal from the tech team who could help identify cyber challenges.
 
-Assuming that it's appropriate to bring someone, here's a colleagues you might invite: Ajay Agrawal from the tech team might be able to help identify cyber challenges
-
-The Food and Beverage industry has seen a sharp rise in cyber issues in the past quarter. They've been purchasing more cyber services from Datadog and other partners.`;
+The Food and Beverage industry has seen a sharp rise in cyber issues in the past quarter. And they've been purchasing more cyber services from Datadog and other partners.`;
 
 const itOpportunityEmail = `Hi Ethan,
 
@@ -75,7 +83,7 @@ export const opportunityIndustries = [
     id: "finance",
     label: "Finance",
     icon: BankIcon,
-    email: lawFirmOpportunityEmail,
+    email: financeOpportunityEmail,
   },
   {
     id: "consulting",
