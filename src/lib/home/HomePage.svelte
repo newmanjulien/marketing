@@ -13,7 +13,7 @@
 
 <main>
   <Hero />
-  <div class="flex flex-col gap-[112px] pb-[112px] pt-[128px] md:gap-[150px] md:pb-[150px] md:pt-[170px]">
+  <div class="flex flex-col gap-[112px] pb-[112px] pt-[160px] md:gap-[150px] md:pb-[150px] md:pt-[220px]">
     <FeatureSection
       title={homePageContent.features.dataSources.title}
       body={homePageContent.features.dataSources.body}
