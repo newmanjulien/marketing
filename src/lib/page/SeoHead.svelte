@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PageMeta } from './contentTypes';
+  import type { PageMeta } from './pageMeta';
 
   let { meta }: { meta: PageMeta } = $props();
 </script>

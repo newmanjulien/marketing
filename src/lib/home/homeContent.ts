@@ -13,7 +13,7 @@ import {
   UserListIcon
 } from 'phosphor-svelte';
 import type { Component } from 'svelte';
-import type { PageMeta } from '$lib/content/contentTypes';
+import type { PageMeta } from '$lib/page/pageMeta';
 
 type HomeFeatureKey = 'dataSources' | 'partnerSharing' | 'opportunityEmail';
 

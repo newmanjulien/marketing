@@ -3,8 +3,8 @@
   import { afterNavigate } from '$app/navigation';
   import { page } from '$app/state';
   import ButtonLink from '$lib/ui/ButtonLink.svelte';
-  import { headerActionItems } from './navigation';
-  import { createPortalAuthHrefForCurrentPage } from '$lib/portalAuthLinks';
+  import { authNavItems } from './navigation';
+  import { createPortalAuthUrlForCurrentPage } from '$lib/portalAuthLinks';
 
   let currentHash = $state('');
 
@@ -20,9 +20,9 @@
 <svelte:window onhashchange={syncHash} />
 
 <div class="fixed right-[42px] top-[31px] hidden items-center gap-[10px] md:flex">
-  {#each headerActionItems as item (item.authRoute)}
+  {#each authNavItems as item (item.authRoute)}
     <ButtonLink
-      href={createPortalAuthHrefForCurrentPage(item.authRoute, page.url, currentHash)}
+      href={createPortalAuthUrlForCurrentPage(item.authRoute, page.url, currentHash)}
       target="_blank"
       rel="noopener noreferrer"
       variant={item.variant}

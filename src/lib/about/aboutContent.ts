@@ -1,4 +1,4 @@
-import type { ContentPageContent, ContentParagraph } from '$lib/content/contentTypes';
+import type { RichTextParagraph, TextPageContent } from '$lib/text-page/textPageTypes';
 
 const aboutIntro = [
   'We are machine learning engineers who have been building sales tech together for over 10 years',
@@ -13,7 +13,7 @@ const aboutIntro = [
       href: '/careers'
     }
   ]
-] satisfies ContentParagraph[];
+] satisfies RichTextParagraph[];
 
 export const aboutPageContent = {
   title: 'About',
@@ -22,4 +22,4 @@ export const aboutPageContent = {
   introParagraphs: aboutIntro,
   links: [],
   sections: []
-} satisfies ContentPageContent;
+} satisfies TextPageContent;

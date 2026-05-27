@@ -1,14 +1,14 @@
 <script lang="ts">
-  import PageFrame from '$lib/content/PageFrame.svelte';
-  import PageHead from '$lib/content/PageHead.svelte';
+  import MainContentFrame from '$lib/page/MainContentFrame.svelte';
+  import SeoHead from '$lib/page/SeoHead.svelte';
   import type { LegalPageContent } from './legalPages';
 
   let { page }: { page: LegalPageContent } = $props();
 </script>
 
-<PageHead meta={page} />
+<SeoHead meta={page} />
 
-<PageFrame topPadding="standard">
+<MainContentFrame topPadding="standard">
   <article class="mx-auto w-full max-w-[680px]">
     <header>
       <h1 class="font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-900">
@@ -37,4 +37,4 @@
       {/each}
     </div>
   </article>
-</PageFrame>
+</MainContentFrame>

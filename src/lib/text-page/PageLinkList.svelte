@@ -1,8 +1,8 @@
 <script lang="ts">
   import { ArrowUpRightIcon } from 'phosphor-svelte';
-  import type { ContentLink } from './contentTypes';
+  import type { PageLink } from './textPageTypes';
 
-  let { links }: { links: readonly ContentLink[] } = $props();
+  let { links }: { links: readonly PageLink[] } = $props();
 </script>
 
 <nav class="mt-[42px]" aria-label="Page links">

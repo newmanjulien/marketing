@@ -1,4 +1,4 @@
-import type { PageMeta } from '$lib/content/contentTypes';
+import type { PageMeta } from '$lib/page/pageMeta';
 
 export const pricingPageContent = {
   title: 'Pricing',

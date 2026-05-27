@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { siteNavItems } from './navigation';
+  import { primaryNavItems } from './navigation';
 
   const activePath = $derived(page.url.pathname);
 </script>
@@ -15,7 +15,7 @@
   </a>
 
   <nav class="flex flex-col gap-[15px] text-[13.5px] font-normal leading-none text-stone-500">
-    {#each siteNavItems as item (item.href)}
+    {#each primaryNavItems as item (item.href)}
       <a
         href={item.href}
         class={[

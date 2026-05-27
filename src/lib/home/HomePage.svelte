@@ -5,11 +5,11 @@
   import OpportunityEmailGraphic from './OpportunityEmailGraphic.svelte';
   import PartnerDataSharingGraphic from './PartnerDataSharingGraphic.svelte';
   import TestimonialsSection from './TestimonialsSection.svelte';
-  import PageHead from '$lib/content/PageHead.svelte';
+  import SeoHead from '$lib/page/SeoHead.svelte';
   import { homePageContent } from './homeContent';
 </script>
 
-<PageHead meta={homePageContent} />
+<SeoHead meta={homePageContent} />
 
 <main>
   <Hero />

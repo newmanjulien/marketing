@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { ContentParagraph } from './contentTypes';
+  import type { RichTextParagraph } from './textPageTypes';
 
-  let { paragraph }: { paragraph: ContentParagraph } = $props();
+  let { paragraph }: { paragraph: RichTextParagraph } = $props();
 
   const inlineLinkClasses =
     'font-normal text-stone-500 underline decoration-stone-300 decoration-1 underline-offset-[3px] hover:text-stone-900';

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { careersPageContent } from '$lib/careers/careersContent';
-  import ContentPage from '$lib/content/ContentPage.svelte';
+  import TextPage from '$lib/text-page/TextPage.svelte';
 </script>
 
-<ContentPage content={careersPageContent} />
+<TextPage content={careersPageContent} />

@@ -2,8 +2,8 @@
   import { browser } from '$app/environment';
   import { afterNavigate } from '$app/navigation';
   import { page } from '$app/state';
-  import { headerActionItems, siteNavItems } from './navigation';
-  import { createPortalAuthHrefForCurrentPage } from '$lib/portalAuthLinks';
+  import { authNavItems, primaryNavItems } from './navigation';
+  import { createPortalAuthUrlForCurrentPage } from '$lib/portalAuthLinks';
 
   let currentHash = $state('');
   const activePath = $derived(page.url.pathname);
@@ -24,7 +24,7 @@
   aria-label="Mobile primary"
 >
   <div class="flex flex-col">
-    {#each siteNavItems as link (link.href)}
+    {#each primaryNavItems as link (link.href)}
       <a
         href={link.href}
         class={[
@@ -36,9 +36,9 @@
         {link.label}
       </a>
     {/each}
-    {#each headerActionItems as link (link.authRoute)}
+    {#each authNavItems as link (link.authRoute)}
       <a
-        href={createPortalAuthHrefForCurrentPage(link.authRoute, page.url, currentHash)}
+        href={createPortalAuthUrlForCurrentPage(link.authRoute, page.url, currentHash)}
         target="_blank"
         rel="noopener noreferrer"
         class="py-[11px] text-[16px] leading-none text-stone-500"

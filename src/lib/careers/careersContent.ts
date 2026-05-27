@@ -1,15 +1,15 @@
 import type {
-  ContentLink,
-  ContentPageContent,
-  ContentParagraph,
-  ContentSection
-} from '$lib/content/contentTypes';
+  PageLink,
+  RichTextParagraph,
+  TextPageContent,
+  TextPageSection
+} from '$lib/text-page/textPageTypes';
 
 const careersIntro = [
   "We only hire engineers. We hire 99.9th percentile most smart people. And we never hire anyone who has experience",
   "Reach out if you're an engineering undergrad at MIT or Stanford. Or a CS undergrad at IIT Bombay/Delhi with an AIR of 1 - 50 in the JEE",
   "We also don't care about your visa status"
-] satisfies ContentParagraph[];
+] satisfies RichTextParagraph[];
 
 const careersLinks = [
   {
@@ -22,13 +22,13 @@ const careersLinks = [
     href: 'https://drive.google.com/file/d/11chLFScixDu3RtAG5jKFw6UphwMp4FMF/view',
     external: true
   }
-] satisfies ContentLink[];
+] satisfies PageLink[];
 
 const careersSections = [
   {
     body: "Overbase is a small team and we don't have a location. We relocate as a group to wherever customers need us most and work from there. Our base pay is as low as possible and we're almost entirely paid based on customer outcomes"
   }
-] satisfies ContentSection[];
+] satisfies TextPageSection[];
 
 export const careersPageContent = {
   title: 'Careers',
@@ -37,4 +37,4 @@ export const careersPageContent = {
   introParagraphs: careersIntro,
   links: careersLinks,
   sections: careersSections
-} satisfies ContentPageContent;
+} satisfies TextPageContent;

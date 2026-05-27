@@ -1,9 +1,9 @@
 <script lang="ts">
   import { ArrowRightIcon } from 'phosphor-svelte';
   import ButtonLink from '$lib/ui/ButtonLink.svelte';
-  import { createPortalAuthHrefForPath } from '$lib/portalAuthLinks';
+  import { createPortalAuthUrlForMarketingPath } from '$lib/portalAuthLinks';
 
-  const joinHref = createPortalAuthHrefForPath('join', '/');
+  const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
 </script>
 
 <section
