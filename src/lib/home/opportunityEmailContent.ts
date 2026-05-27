@@ -4,9 +4,9 @@ import {
   HandshakeIcon,
   MegaphoneIcon,
   ScalesIcon,
-  UmbrellaIcon
-} from 'phosphor-svelte';
-import type { Component } from 'svelte';
+  UmbrellaIcon,
+} from "phosphor-svelte";
+import type { Component } from "svelte";
 
 const renewalOpportunityEmail = `Hi Stephen,
 
@@ -40,7 +40,7 @@ const itOpportunityEmail = `Hi Ethan,
 
 A few different people from the Chevron account have mentioned 'legacy identity systems' in recent calls.
 
-They also mentioned authentication delays and access reviews on calls with Microsoft and other partners.
+They also mentioned authentication delays on calls with Microsoft and other partners.
 
 This may or may not be a cue to discuss identity modernization or managed access governance. But you might want to check out the recordings.
 
@@ -60,41 +60,41 @@ https://gong.io/c/305819475021384759`;
 
 export const opportunityIndustries = [
   {
-    id: 'insurance',
-    label: 'Insurance',
+    id: "insurance",
+    label: "Insurance",
     icon: UmbrellaIcon,
-    email: renewalOpportunityEmail
+    email: renewalOpportunityEmail,
   },
   {
-    id: 'law',
-    label: 'Law',
+    id: "law",
+    label: "Law",
     icon: ScalesIcon,
-    email: lawFirmOpportunityEmail
+    email: lawFirmOpportunityEmail,
   },
   {
-    id: 'finance',
-    label: 'Finance',
+    id: "finance",
+    label: "Finance",
     icon: BankIcon,
-    email: lawFirmOpportunityEmail
+    email: lawFirmOpportunityEmail,
   },
   {
-    id: 'consulting',
-    label: 'Consulting',
+    id: "consulting",
+    label: "Consulting",
     icon: HandshakeIcon,
-    email: consultingOpportunityEmail
+    email: consultingOpportunityEmail,
   },
   {
-    id: 'it',
-    label: 'IT',
+    id: "it",
+    label: "IT",
     icon: DesktopTowerIcon,
-    email: itOpportunityEmail
+    email: itOpportunityEmail,
   },
   {
-    id: 'marketing',
-    label: 'Marketing',
+    id: "marketing",
+    label: "Marketing",
     icon: MegaphoneIcon,
-    email: marketingOpportunityEmail
-  }
+    email: marketingOpportunityEmail,
+  },
 ] as const satisfies ReadonlyArray<{
   id: string;
   label: string;
@@ -103,4 +103,4 @@ export const opportunityIndustries = [
 }>;
 
 export type OpportunityIndustry = (typeof opportunityIndustries)[number];
-export type OpportunityIndustryId = OpportunityIndustry['id'];
+export type OpportunityIndustryId = OpportunityIndustry["id"];
