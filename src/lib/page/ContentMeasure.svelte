@@ -2,7 +2,7 @@
   import type { Snippet } from 'svelte';
 
   type ContentMeasureElement = 'article' | 'div' | 'section';
-  type ContentMeasureWidth = 'hero' | 'standard' | 'narrow' | 'proof';
+  type ContentMeasureWidth = 'standard' | 'narrow';
   type ContentMeasureAlign = 'left' | 'center';
 
   let {
@@ -20,10 +20,8 @@
   } = $props();
 
   const widthClasses = {
-    hero: 'max-w-[780px]',
     standard: 'max-w-[740px]',
-    narrow: 'max-w-[680px]',
-    proof: 'max-w-[660px]'
+    narrow: 'max-w-[680px]'
   };
 
   const alignClasses = {

@@ -2,7 +2,7 @@ import {
   homeIndustries,
   type HomeIndustry,
   type HomeIndustryId,
-} from "./industryContent";
+} from "../../industryContent";
 
 const renewalOpportunityEmail = `Hi Stephen,
 

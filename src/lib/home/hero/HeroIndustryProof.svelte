@@ -8,7 +8,7 @@
   );
 </script>
 
-<ContentMeasure width="proof" class="md:text-center">
+<ContentMeasure class="!max-w-[660px] md:text-center">
   <div
     class="-mx-[18px] flex gap-[22px] overflow-x-auto px-[18px] pb-[4px] md:mx-0 md:flex-wrap md:justify-center md:gap-x-[26px] md:gap-y-[10px] md:overflow-visible md:px-0"
     aria-label="Industries"
@@ -23,6 +23,9 @@
         ]}
         aria-describedby={selectedIndex === index ? 'hero-industry-proof-detail' : undefined}
         onfocus={() => {
+          selectedIndex = index;
+        }}
+        onclick={() => {
           selectedIndex = index;
         }}
         onmouseenter={() => {

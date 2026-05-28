@@ -6,47 +6,52 @@ import {
   ScalesIcon,
   UmbrellaIcon,
 } from "phosphor-svelte";
-import { industryNavigationItems, type IndustryId } from "$lib/industries/industryNavigation";
+import {
+  industryNavigationItems,
+  type IndustryId,
+  type IndustryNavigationItem,
+} from "$lib/industries/industryNavigation";
 import type { Component } from "svelte";
 
-export const homeIndustries = [
-  {
-    ...industryNavigationItems[0],
+const homeIndustryMetadata = {
+  insurance: {
     icon: UmbrellaIcon,
     heroProofLabel: "See how commercial brokers use Overbase",
   },
-  {
-    ...industryNavigationItems[1],
+  law: {
     icon: ScalesIcon,
     heroProofLabel: "See how law firms use Overbase",
   },
-  {
-    ...industryNavigationItems[2],
+  finance: {
     icon: BankIcon,
     heroProofLabel: "See how bankers use Overbase",
   },
-  {
-    ...industryNavigationItems[3],
+  consulting: {
     icon: HandshakeIcon,
     heroProofLabel: "See how consulting firms use Overbase",
   },
-  {
-    ...industryNavigationItems[4],
+  tech: {
     icon: DesktopTowerIcon,
     heroProofLabel: "See how tech consulting firms use Overbase",
   },
-  {
-    ...industryNavigationItems[5],
+  marketing: {
     icon: MegaphoneIcon,
     heroProofLabel: "See how agencies use Overbase",
   },
-] as const satisfies ReadonlyArray<{
-  id: IndustryId;
-  label: string;
-  href: string;
+} as const satisfies Record<IndustryId, {
   icon: Component;
   heroProofLabel: string;
 }>;
+
+export const homeIndustries = industryNavigationItems.map((industry) => ({
+  ...industry,
+  ...homeIndustryMetadata[industry.id],
+})) satisfies ReadonlyArray<
+  IndustryNavigationItem & {
+    icon: Component;
+    heroProofLabel: string;
+  }
+>;
 
 export type HomeIndustry = (typeof homeIndustries)[number];
 export type HomeIndustryId = HomeIndustry["id"];

@@ -9,7 +9,7 @@
 </script>
 
 <section class="px-[18px] pt-[126px] md:px-8 md:pt-[157px]">
-  <ContentMeasure width="hero" class="flex flex-col items-start md:items-center">
+  <ContentMeasure class="flex !max-w-[780px] flex-col items-start md:items-center">
   <a
     href={joinHref}
     target="_blank"
@@ -29,7 +29,7 @@
   </h1>
 
   <p
-    class="hero-support mt-[28px] max-w-[430px] translate-y-[4px] text-left text-[22px] leading-[1.55] tracking-normal text-stone-500 opacity-0 will-change-[transform,opacity] md:mt-[26px] md:max-w-[520px] md:text-center md:text-[20px]"
+    class="hero-support mt-[28px] max-w-[430px] translate-y-[4px] font-[350] text-left text-[21px] leading-[1.65] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity] md:mt-[26px] md:max-w-[520px] md:text-center md:text-[20px]"
   >
     Overbase lets professional services firms share sales data with your ecosystem partners
   </p>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { OpportunityIndustry, OpportunityIndustryId } from '../../opportunityEmailContent';
+  import type { OpportunityIndustry, OpportunityIndustryId } from './opportunityEmailContent';
 
   let {
     industries,

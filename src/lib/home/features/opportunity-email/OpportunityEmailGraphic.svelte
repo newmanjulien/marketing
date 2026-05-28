@@ -1,7 +1,7 @@
 <script lang="ts">
   import OpportunityEmailPreview from './OpportunityEmailPreview.svelte';
   import OpportunityIndustryTabs from './OpportunityIndustryTabs.svelte';
-  import { opportunityIndustries, type OpportunityIndustryId } from '../../opportunityEmailContent';
+  import { opportunityIndustries, type OpportunityIndustryId } from './opportunityEmailContent';
 
   let selectedIndustryId = $state<OpportunityIndustryId>('insurance');
 
