@@ -1,7 +1,7 @@
 import type { IndustryContentDefinition } from "../types";
 
 export const marketingContent = {
-  heading: "Overbase for agencies",
+  heading: "Overbase for marketing agencies",
   screenshots: {
     setup: {
       src: "/screenshots/marketing1.png",

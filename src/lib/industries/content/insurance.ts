@@ -1,7 +1,7 @@
 import type { IndustryContentDefinition } from "../types";
 
 export const insuranceContent = {
-  heading: "Overbase for insurance teams",
+  heading: "Overbase for insurance brokers",
   screenshots: {
     setup: {
       src: "/screenshots/insurance1.png",

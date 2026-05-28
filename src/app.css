@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  --site-bg: #fefefe;
+  --site-bg: #ffffff;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   background-color: var(--site-bg);
   @apply text-stone-700;

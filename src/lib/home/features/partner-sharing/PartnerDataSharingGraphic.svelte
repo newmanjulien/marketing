@@ -9,7 +9,7 @@
     </h3>
 
     <span class="rounded-[8px] bg-stone-50 px-[8px] py-[5px] text-[12px] leading-none text-stone-400 md:text-[13px]">
-      3 partners
+      {partnerDataShares.length} partners
     </span>
   </div>
 
