@@ -17,47 +17,76 @@
 <SurveyProfileSeries>
   <SurveyProfile
     label="Best Use Of AI"
-    title="Chris Leeks, CIO at Paul, Weiss"
+    title="Katherine D'Urso, chief business development and marketing officer at Freshfields"
     imageSrc="/cmos/katherinedurso.png"
-    imageAlt="Black-and-white portrait of Chris over a blue patterned frame"
-    caption="Chris Leeks was picked for Best use of AI"
+    imageAlt="Black-and-white portrait of Katherine over a blue patterned frame"
+    caption="Katherine D'Urso was picked for Best use of AI"
   >
     <p>
-      Temporary profile copy will summarize why peers identified Chris as one of the industry's
-      most innovative technology leaders once the final survey writeup is ready.
+      D’Urso has helped modernize business development at Freshfields as the nearly 300-year-old
+      law firm expands further in the US.
     </p>
 
     <p>
-      The final profile can expand on the specific work, decisions, and operating principles that
-      made the nomination stand out to AmLaw 100 technology leaders.
+      In September 2024, she oversaw the global rollout of Freshfields’ refreshed brand. The
+      rebrand dropped the legacy “Bruckhaus Deringer” from the firm’s name and replaced its
+      longtime Archangel Michael crest with a simpler black-and-white wordmark. The shift gave
+      the firm a cleaner identity that matched how clients already referred to it and supported
+      its push to compete more aggressively in the US market.
     </p>
 
     <p>
-      It can also describe how the work translated into practical outcomes for lawyers, clients,
-      and the broader firm, without forcing the writeup into a single compressed summary sentence.
+      D’Urso has also looked outside the legal industry for ways to improve business development.
+      At the 2025 Legal Marketing Association Annual Conference, she discussed what law firms
+      could learn from investment banking, consulting, and the luxury auction market. She has
+      also pushed Freshfields to rethink RFP responses, breaking old pitch materials into reusable
+      pieces that better fit how clients now buy legal services.
+    </p>
+
+    <p>
+      Her team also launched Freshfields’ “2025 Data Law Trends” campaign, which helped
+      multinational clients understand AI governance, privacy, and data regulation across markets.
+    </p>
+
+    <p>
+      These efforts supported Freshfields during a major period of US growth. For the 2024-2025
+      financial year, the firm reported global revenue of £2.25 billion, up 6%, while US revenue
+      rose 20% to £473 million.
     </p>
   </SurveyProfile>
 
   <SurveyProfile
     label="Adoption & Change Management"
-    title="Chris Leeks, CIO at Paul, Weiss"
+    title="Trish Lilley, chief marketing and business development officer at Barnes & Thornburg"
     imageSrc="/cmos/trishlilley.png"
-    imageAlt="Black-and-white portrait of Chris over a blue patterned frame"
-    caption="Chris Leeks was picked for Innovation in Cybersecurity"
+    imageAlt="Black-and-white portrait of Trish over a blue patterned frame"
+    caption="Trish Lilley was picked for Innovation in Cybersecurity"
   >
     <p>
-      Temporary profile copy will summarize why peers identified Chris as one of the industry's
-      most innovative technology leaders once the final survey writeup is ready.
+      Lilley joined Barnes & Thornburg in late 2024 and has been working to make client
+      development more digital and data-driven across the firm.
     </p>
 
     <p>
-      The final profile can expand on the specific work, decisions, and operating principles that
-      made the nomination stand out to AmLaw 100 technology leaders.
+      One early focus has been cross-selling. Lilley helped the firm adopt Passle’s CrossPitch AI,
+      a tool that matches a firm’s thought leadership with lawyers who may be able to use it in
+      client conversations. She has called the tool a “force multiplier” because it helps lawyers
+      find relevant colleagues faster and reduces guesswork around which clients may benefit from
+      the firm’s broader expertise.
     </p>
 
     <p>
-      It can also describe how the work translated into practical outcomes for lawyers, clients,
-      and the broader firm, without forcing the writeup into a single compressed summary sentence.
+      Lilley has also taken that work beyond Barnes & Thornburg. In April 2025, she became
+      president of the first Best Lawyers CMO Advisory Board, where she is helping legal marketers
+      focus on data, client engagement, and new ways to show marketing’s value. She was also
+      selected for Law360’s 2025 Legal Industry Editorial Advisory Board, giving her a role in
+      shaping coverage of the business issues facing law firms.
+    </p>
+
+    <p>
+      Barnes & Thornburg has continued to grow as Lilley has pushed to make client development
+      more connected across the firm. In 2024, the firm reported gross revenue of $747.2 million,
+      up 3.2%, and rose to No. 73 on the Am Law 200.
     </p>
   </SurveyProfile>
 </SurveyProfileSeries>
