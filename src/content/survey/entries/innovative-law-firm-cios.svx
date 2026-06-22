@@ -37,4 +37,27 @@
       and the broader firm, without forcing the writeup into a single compressed summary sentence.
     </p>
   </SurveyProfile>
+
+  <SurveyProfile
+    label="Innovation in Cybersecurity"
+    title="Chris Leeks, CIO at Paul, Weiss"
+    imageSrc="/chris.png"
+    imageAlt="Black-and-white portrait of Chris over a blue patterned frame"
+    caption="Chris Leeks was picked for Innovation in Cybersecurity"
+  >
+    <p>
+      Temporary profile copy will summarize why peers identified Chris as one of the industry's
+      most innovative technology leaders once the final survey writeup is ready.
+    </p>
+
+    <p>
+      The final profile can expand on the specific work, decisions, and operating principles that
+      made the nomination stand out to AmLaw 100 technology leaders.
+    </p>
+
+    <p>
+      It can also describe how the work translated into practical outcomes for lawyers, clients,
+      and the broader firm, without forcing the writeup into a single compressed summary sentence.
+    </p>
+  </SurveyProfile>
 </SurveyProfileSeries>

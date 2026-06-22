@@ -2,7 +2,7 @@
   import type { Snippet } from 'svelte';
 
   type ContentMeasureElement = 'article' | 'div' | 'section';
-  type ContentMeasureWidth = 'standard' | 'narrow';
+  type ContentMeasureWidth = 'standard' | 'narrow' | 'copy';
   type ContentMeasureAlign = 'left' | 'center';
 
   let {
@@ -21,7 +21,8 @@
 
   const widthClasses = {
     standard: 'max-w-[740px]',
-    narrow: 'max-w-[680px]'
+    narrow: 'max-w-[680px]',
+    copy: 'max-w-[620px]'
   };
 
   const alignClasses = {

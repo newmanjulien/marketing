@@ -1,10 +1,19 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
 
+  const profileSpacing = {
+    desktop: '74px',
+    mobile: '56px'
+  };
+
   let { children }: { children: Snippet } = $props();
 </script>
 
-<div class="survey-profile-series">
+<div
+  class="survey-profile-series"
+  style:--survey-profile-spacing={profileSpacing.desktop}
+  style:--survey-profile-spacing-mobile={profileSpacing.mobile}
+>
   {@render children()}
 </div>
 
@@ -12,12 +21,12 @@
   .survey-profile-series {
     display: flex;
     flex-direction: column;
-    gap: 42px;
+    gap: var(--survey-profile-spacing);
   }
 
   @media (max-width: 640px) {
     .survey-profile-series {
-      gap: 34px;
+      gap: var(--survey-profile-spacing-mobile);
     }
   }
 </style>

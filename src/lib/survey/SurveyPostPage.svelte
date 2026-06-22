@@ -14,7 +14,7 @@
 <PageFrame topPadding="standard">
   <ContentMeasure as="article" width="narrow">
     <a
-      href="/survey"
+      href="/annual-survey"
       class="text-[14px] font-medium leading-none tracking-normal text-stone-500 transition-colors duration-200 hover:text-stone-900"
     >
       Survey

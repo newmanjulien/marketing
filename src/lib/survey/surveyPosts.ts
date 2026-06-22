@@ -1,4 +1,4 @@
-import type { SurveyPost, SurveyPostDefinition, SurveyPostSummary } from './surveyTypes';
+import type { SurveyPost, SurveyPostDefinition } from './surveyTypes';
 
 const surveyDateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'long',
@@ -32,23 +32,4 @@ export const getSurveyPost = async (slug: string): Promise<SurveyPost | undefine
     publishedAtLabel: formatSurveyDate(post.publishedAt),
     bodyComponent: postModule.default
   };
-};
-
-export const getSurveyPostSummaries = async (): Promise<SurveyPostSummary[]> => {
-  const posts = await Promise.all(
-    surveyPostDefinitions.map(async (definition) => {
-      const postModule = await definition.load();
-      const { post } = postModule;
-
-      return {
-        slug: definition.slug,
-        title: post.title,
-        description: post.description,
-        publishedAt: post.publishedAt,
-        publishedAtLabel: formatSurveyDate(post.publishedAt)
-      };
-    })
-  );
-
-  return posts;
 };

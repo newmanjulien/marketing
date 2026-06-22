@@ -17,12 +17,8 @@ export type SurveyPostDefinition = {
   load: () => Promise<SurveyPostModule>;
 };
 
-export type SurveyPostSummary = Omit<SurveyPostContent, 'introduction'> & {
+export type SurveyPost = SurveyPostContent & {
   slug: string;
   publishedAtLabel: string;
-};
-
-export type SurveyPost = SurveyPostSummary & {
-  introduction: string;
   bodyComponent: Component;
 };
