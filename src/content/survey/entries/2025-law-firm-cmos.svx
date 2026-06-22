@@ -17,7 +17,7 @@
 <SurveyProfileSeries>
   <SurveyProfile
     label="Best Use Of AI"
-    title="Katherine D'Urso, chief business development and marketing officer at Freshfields"
+    title="Katherine D'Urso, Chief Business Development and Marketing Officer at Freshfields"
     imageSrc="/cmos/katherinedurso.png"
     imageAlt="Black-and-white portrait of Katherine over a blue patterned frame"
     caption="Katherine D'Urso was picked for Best use of AI"
@@ -57,7 +57,7 @@
 
   <SurveyProfile
     label="Adoption & Change Management"
-    title="Trish Lilley, chief marketing and business development officer at Barnes & Thornburg"
+    title="Trish Lilley, Chief Marketing and Business Development Officer at Barnes & Thornburg"
     imageSrc="/cmos/trishlilley.png"
     imageAlt="Black-and-white portrait of Trish over a blue patterned frame"
     caption="Trish Lilley was picked for Innovation in Cybersecurity"
