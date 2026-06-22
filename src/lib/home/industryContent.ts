@@ -21,9 +21,9 @@ const homeIndustryMetadata = {
     icon: ScalesIcon,
     heroProofLabel: "See how law firms use Overbase",
   },
-  finance: {
+  "government-relations": {
     icon: BankIcon,
-    heroProofLabel: "See how investment bankers use Overbase",
+    heroProofLabel: "See how GR firms use Overbase",
   },
   consulting: {
     icon: HandshakeIcon,

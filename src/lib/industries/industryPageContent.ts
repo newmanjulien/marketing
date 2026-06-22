@@ -1,5 +1,5 @@
 import { consultingContent } from './content/consulting';
-import { financeContent } from './content/finance';
+import { governmentRelationsContent } from './content/governmentRelations';
 import { insuranceContent } from './content/insurance';
 import { lawContent } from './content/law';
 import { techContent } from './content/tech';
@@ -35,7 +35,7 @@ const sharedSectionCopy: IndustryPageSections = {
 const industryPages = {
   insurance: insuranceContent,
   law: lawContent,
-  finance: financeContent,
+  "government-relations": governmentRelationsContent,
   consulting: consultingContent,
   tech: techContent,
 } as const satisfies Record<string, IndustryContentDefinition>;

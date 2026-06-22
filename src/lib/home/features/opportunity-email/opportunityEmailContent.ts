@@ -22,15 +22,14 @@ You might want to see if this could be relevant to one of your attorneys, Shayne
 Discussion in a Bloomberg forum:
 https://blinks.bloomberg.com/rooms/IB_ROOM_ID_98725`;
 
-const financeOpportunityEmail = `Hi Laura,
-Hi Shayne,
+const governmentRelationsOpportunityEmail = `Hi Ray,
 
-An activist hedge fund bought a 5% stake in ADP.
+Check out this new proposed tax credit program in Arizona:
+https://azleg.gov/active-bills/5858hggj
 
-You might want to see if this could be relevant to one of your bankers, Laura. And to one of your attorneys, Shayne.
+The bill will be voted on in two weeks and there might be an opportunity to help Plug Power submit comments during rulemaking. Plug Power has 2 factories in Arizona.
 
-Discussion in a Bloomberg forum:
-https://blinks.bloomberg.com/rooms/IB_ROOM_ID_98725`;
+Jackson Reinstein knows Plug Power's VP Strategy. And Sagar Agrawal knows their COO.`;
 
 const consultingOpportunityEmail = `Hey Alex,
 
@@ -52,7 +51,7 @@ https://gong.io/c/305819475021384759`;
 const opportunityEmailByIndustryId = {
   insurance: renewalOpportunityEmail,
   law: lawFirmOpportunityEmail,
-  finance: financeOpportunityEmail,
+  "government-relations": governmentRelationsOpportunityEmail,
   consulting: consultingOpportunityEmail,
   tech: techOpportunityEmail,
 } as const satisfies Record<HomeIndustryId, string>;
