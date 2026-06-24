@@ -29,7 +29,7 @@
     },
     {
       label: "Last year's consulting firm CMOs ->",
-      href: '#'
+      href: '/annual-survey/2026-consulting-cmos'
     },
     {
       label: "Last year's accounting firm CMOs ->",

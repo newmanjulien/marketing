@@ -1,0 +1,85 @@
+<script context="module" lang="ts">
+  export const post = {
+    title: 'Most innovative consulting firm CMOs',
+    description:
+      'Tier 1 and Tier 2 marketing teams consistently pick these CMOs as the most innovative in the consulting industry.',
+    publishedAt: '2026-01-17',
+    introduction:
+      'We surveyed marketing teams at Tier 1 and Tier 2 strategy consulting firms to find the CMOs their peers considered most innovative.'
+  };
+</script>
+
+<script lang="ts">
+  import SurveyProfile from '$lib/survey/SurveyProfile.svelte';
+  import SurveyProfileSeries from '$lib/survey/SurveyProfileSeries.svelte';
+</script>
+
+<SurveyProfileSeries>
+  <SurveyProfile
+    label="Best Use Of AI"
+    title="Melanie Pickett, Head of Asset Servicing for the Americas at Northern Trust"
+    imageSrc="/cmos/melaniepickett.png"
+    imageAlt="Black-and-white portrait of Melanie over a blue patterned frame"
+    caption="Melanie Pickett was picked for Best use of AI"
+  >
+    <p>
+      Pickett has helped modernize Northern Trust’s asset-servicing business by turning data and
+      technology into a bigger part of the client experience.
+    </p>
+
+    <p>
+      In early 2025, she was elevated to head of asset servicing for the Americas, where she
+      focused on giving institutional investors better tools to manage complex portfolios. One
+      major focus was Front Office Solutions, Northern Trust’s cloud-based platform for
+      alternative-asset lifecycle management, which Pickett helped build and scale to more than $1
+      trillion in institutional assets globally by July 2025.
+    </p>
+
+    <p>
+      She also worked on an agreement with Hamilton Lane to integrate its Cobalt LP software into
+      Northern Trust’s platform. The move gave asset allocators better private-market analytics
+      and a more connected view of their portfolios.
+    </p>
+
+    <p>
+      Northern Trust’s asset-servicing business secured more than 100 new mandates in 2025 and
+      brought in over $385 billion in new assets under custody by the end of November. In
+      December, Pickett was named chief transformation officer, a newly created role focused on
+      innovation, operations, and digital strategy.
+    </p>
+  </SurveyProfile>
+
+  <SurveyProfile
+    label="Adoption & Change Management"
+    title="Chris Wearing, Chief Commercial Officer at Teneo"
+    imageSrc="/cmos/chriswearing.png"
+    imageAlt="Black-and-white portrait of Chris over a blue patterned frame"
+    caption="Chris Wearing was picked for Innovation in Cybersecurity"
+  >
+    <p>
+      Wearing has helped Teneo deepen its advisory work in high-growth markets and open new
+      revenue streams.
+    </p>
+
+    <p>
+      In October 2024, he led the launch of Teneo Connect, a business unit built around executive
+      convening. The unit helps companies build their own stakeholder forums and make better use
+      of major gatherings like Davos and the UN General Assembly. It also draws on Teneo’s
+      network of CEOs, advisers, and thought leaders to help clients sort through the flood of
+      AI-generated content and identify what matters.
+    </p>
+
+    <p>
+      Wearing has also been behind Teneo’s expansion into sports, media, and entertainment. In
+      January 2025, Teneo brought in former Manchester United CEO Richard Arnold as non-executive
+      chairman of its Financial Advisory Sports Practice. Arnold had generated $7 billion in
+      commercial revenue and was brought in to work across clients including World Rugby,
+      Castore, and Reliance Industries.
+    </p>
+
+    <p>
+      The expansion under Wearing strengthened Teneo’s position as a CEO advisory firm and gave
+      it more ways to compete for high-value work beyond traditional communications.
+    </p>
+  </SurveyProfile>
+</SurveyProfileSeries>

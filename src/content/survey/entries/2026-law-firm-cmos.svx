@@ -5,7 +5,7 @@
       'AmLaw 100 marketing teams consistently pick these CMOs as the most innovative in the legal industry.',
     publishedAt: '2026-01-17',
     introduction:
-      'We surveyed marketing teams at AmLaw 100 firms and these CMOs were consistently picked as the most innovative by their peers.'
+      'We surveyed marketing teams at AmLaw 100 firms to find the CMOs their peers considered most innovative.'
   };
 </script>
 
