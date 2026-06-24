@@ -8,6 +8,7 @@
     textSize?: 'default' | 'compact';
     shape?: 'default' | 'pill';
     fullWidth?: boolean;
+    highlightSweep?: boolean;
     children?: Snippet;
   };
 
@@ -18,6 +19,7 @@
     textSize = 'default',
     shape = 'default',
     fullWidth = false,
+    highlightSweep = false,
     children,
     class: className,
     ...anchorProps
@@ -72,8 +74,44 @@
     textSizeClasses[textSize][size],
     variantClasses[variant],
     { 'w-full': fullWidth },
+    { 'button-link-highlight-sweep relative overflow-hidden': highlightSweep },
     className
   ]}
 >
   {@render children?.()}
 </a>
+
+<style>
+  .button-link-highlight-sweep::after {
+    content: '';
+    position: absolute;
+    inset: -40% auto -40% -55%;
+    width: 42%;
+    transform: skewX(-24deg) translateX(0);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.04) 24%,
+      rgba(255, 255, 255, 0.18) 50%,
+      rgba(255, 255, 255, 0.04) 76%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  .button-link-highlight-sweep:hover::after {
+    animation: button-link-highlight-sweep 1160ms cubic-bezier(0.22, 1, 0.36, 1) 160ms;
+  }
+
+  @keyframes button-link-highlight-sweep {
+    to {
+      transform: skewX(-24deg) translateX(430%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .button-link-highlight-sweep:hover::after {
+      animation: none;
+    }
+  }
+</style>
