@@ -24,6 +24,10 @@ export const surveyPostDefinitions = [
     slug: '2026-accounting-cmos',
     load: () => import('$content/survey/entries/2026-accounting-cmos.svx')
   },
+  {
+    slug: '2026-gov-cmos',
+    load: () => import('$content/survey/entries/2026-gov-cmos.svx')
+  },
 ] as const satisfies readonly SurveyPostDefinition[];
 
 const formatSurveyDate = (publishedAt: string) => surveyDateFormatter.format(new Date(publishedAt));
