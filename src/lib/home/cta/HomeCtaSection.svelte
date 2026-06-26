@@ -6,7 +6,7 @@
   const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
 </script>
 
-<section class="border-t border-stone-200/70 bg-stone-50/80 px-[18px] py-[72px] sm:px-8 sm:py-[90px]">
+<section class="border-t border-stone-200/70 bg-stone-50/70 px-[18px] py-[72px] sm:px-8 sm:py-[90px]">
   <ContentMeasure class="flex !max-w-[620px] flex-col items-center text-center">
     <h2
       class="font-heading text-[30px] font-semibold leading-[1.08] tracking-normal text-stone-800 sm:text-[36px] sm:leading-[1.06]"
