@@ -19,7 +19,7 @@
   <Hero />
   <div class="flex flex-col gap-[112px] pt-[160px] sm:gap-[150px] sm:pt-[220px]">
     <FeatureSection
-      title="Share your data"
+      title="Share your sales data"
       body="Share any structured data like CRM and share any unstructured data like email. Easily share even your most disconnected data"
     >
       <DataSourceGridGraphic />
@@ -34,7 +34,7 @@
 
     <FeatureSection
       title="Get opportunities by email"
-      body="We compare both sides, then we send revenue opportunities to your team by email"
+      body="Get opportunities that accelerate revenue growth quickly, easily and without changing how your team operates"
     >
       <OpportunityEmailGraphic />
     </FeatureSection>
