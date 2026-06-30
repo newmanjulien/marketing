@@ -6,13 +6,13 @@
 
 <PageFrame topPadding="standard">
   <ContentMeasure as="section" width="narrow">
-    <h1 class="font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-900">
+    <h1 class="font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-750">
       Careers at Overbase
     </h1>
 
     <div class="mt-[24px] flex max-w-[620px] flex-col gap-[22px]">
       <p class="text-[16px] font-normal leading-[1.55] tracking-normal text-stone-700">
-        We only hire engineers. We only hire 99.9th percentile most smart people. We mostly hire
+        We only hire engineers. We only hire 99.9th percentile most smart people. And we mostly hire
         former startup founders or people who have no experience
       </p>
     </div>
