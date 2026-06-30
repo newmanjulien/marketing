@@ -11,9 +11,13 @@
     </h1>
 
     <div class="mt-[24px] flex max-w-[620px] flex-col gap-[22px]">
-      <p class="text-[16px] font-normal leading-[1.55] tracking-normal text-stone-700">
-        We only hire engineers. We only hire 99.9th percentile most smart people. And we mostly hire
-        former startup founders or people who have no experience
+      <p class="text-[15px] font-normal leading-[1.55] tracking-normal text-stone-700">
+        Technological progress is currently constrained by compute and algorithms. But soon, the constraint will be data
+      </p>
+
+      <p class="text-[15px] font-normal leading-[1.55] tracking-normal text-stone-700">
+        The datasets capable of powering the next breakthroughs already exist, but they're scattered
+        across isolated repositories, organizations, and platforms. Overbase is unlocking the future by breaking down those data silos
       </p>
     </div>
 
@@ -38,7 +42,7 @@
         <ArrowUpRightIcon size={21} weight="regular" class="shrink-0 text-stone-900" aria-hidden="true" />
       </a>
 
-            <a
+      <a
         href="https://drive.google.com/file/d/1FLyWiHp0H9g8kjfgYLwpQ4_JS5CkkzoZ/view"
         target="_blank"
         rel="noopener noreferrer"
@@ -52,13 +56,13 @@
 
   <ContentMeasure as="section" width="narrow" class="mt-[64px] pb-[96px]">
     <div class="flex max-w-[620px] flex-col gap-[22px]">
-      <p class="text-[15px] font-normal leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]">
-        Overbase is a forward deployed company. We relocate as a group to wherever customers need
+      <p class="text-[15px] font-normal leading-[1.55] tracking-normal text-stone-700">
+        Overbase is a forward deployed company which means that we relocate as a group to where customers need
         us most and work together from there
       </p>
 
       <p class="text-[15px] font-normal leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]">
-        Our comp is almost entirely linked to customer outcomes and we keep a 997 work schedule
+        And our comp is almost entirely linked to customer outcomes and we keep a 997 work schedule
       </p>
     </div>
   </ContentMeasure>
