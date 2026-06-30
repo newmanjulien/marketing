@@ -58,7 +58,7 @@
       </p>
 
       <p class="text-[15px] font-normal leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]">
-        Our comp is well below market and we keep a 997 work schedule
+        Our comp is almost entirely linked to customer outcomes and we keep a 997 work schedule
       </p>
     </div>
   </ContentMeasure>
