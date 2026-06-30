@@ -23,7 +23,7 @@
 
     <nav class="mt-[42px]" aria-label="Page links">
       <a
-        href="https://drive.google.com/file/d/1rCa5Q-wEGkV5wYfdNe4tH1Yn8pFnr3WE/view"
+        href="https://drive.google.com/drive/folders/1MwlUOHli05iSWP_i9qzu1oZs-xigW5Ds?usp=sharing"
         target="_blank"
         rel="noopener noreferrer"
         class="flex items-center justify-between gap-8 border-b border-stone-200/70 py-[24px] text-[15px] font-normal leading-none tracking-normal text-stone-700 transition-colors hover:text-stone-900 sm:text-[16px]"
@@ -33,7 +33,7 @@
       </a>
 
       <a
-        href="https://drive.google.com/file/d/11chLFScixDu3RtAG5jKFw6UphwMp4FMF/view"
+        href="https://drive.google.com/drive/folders/15vTdDB0GrCfq67ZsA6IRZrvtqwFhK0az?usp=sharing"
         target="_blank"
         rel="noopener noreferrer"
         class="flex items-center justify-between gap-8 border-b border-stone-200/70 py-[24px] text-[15px] font-normal leading-none tracking-normal text-stone-700 transition-colors hover:text-stone-900 sm:text-[16px]"
@@ -43,7 +43,7 @@
       </a>
 
       <a
-        href="https://drive.google.com/file/d/1FLyWiHp0H9g8kjfgYLwpQ4_JS5CkkzoZ/view"
+        href="https://drive.google.com/drive/folders/1N8zX_AadlViFpOClDzFQbSHoVJqzFusV?usp=sharing"
         target="_blank"
         rel="noopener noreferrer"
         class="flex items-center justify-between gap-8 border-b border-stone-200/70 py-[24px] text-[15px] font-normal leading-none tracking-normal text-stone-700 transition-colors hover:text-stone-900 sm:text-[16px]"
