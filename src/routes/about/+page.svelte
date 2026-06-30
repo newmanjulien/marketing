@@ -20,8 +20,7 @@
 
       <p class="text-[16px] font-normal leading-[1.6] tracking-normal text-stone-700">
         We measure our success by yours. Our pricing is pegged to revenue you get from using our
-        tech. The compensation of our entire team is also pegged to revenue you get from using our
-        tech
+        tech. And our entire team's compensation is also pegged to your success
       </p>
 
       <p class="text-[16px] font-normal leading-[1.6] tracking-normal text-stone-700">

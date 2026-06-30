@@ -24,7 +24,7 @@
         rel="noopener noreferrer"
         class="flex items-center justify-between gap-8 border-b border-stone-200/70 py-[24px] text-[15px] font-normal leading-none tracking-normal text-stone-700 transition-colors hover:text-stone-900 sm:text-[16px]"
       >
-        <span>Product Engineer 1 - USA</span>
+        <span>Product Engineer 1 - SF</span>
         <ArrowUpRightIcon size={21} weight="regular" class="shrink-0 text-stone-900" aria-hidden="true" />
       </a>
 
@@ -34,7 +34,7 @@
         rel="noopener noreferrer"
         class="flex items-center justify-between gap-8 border-b border-stone-200/70 py-[24px] text-[15px] font-normal leading-none tracking-normal text-stone-700 transition-colors hover:text-stone-900 sm:text-[16px]"
       >
-        <span>Product Engineer 1 - India</span>
+        <span>Product Engineer 1 - Delhi</span>
         <ArrowUpRightIcon size={21} weight="regular" class="shrink-0 text-stone-900" aria-hidden="true" />
       </a>
 
