@@ -1,127 +1,40 @@
-type LegalSection = {
-  title: string;
-  paragraphs: readonly string[];
-};
+import type { LegalPage, LegalPageModule } from './legalTypes';
 
-export type LegalPageContent = {
-  slug: string;
-  label: string;
-  title: string;
-  updatedAt: string;
-  hideFromNavigation?: boolean;
-  robots?: 'noindex, nofollow';
-  sections: readonly LegalSection[];
-};
+const legalDateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: '2-digit',
+  day: '2-digit',
+  year: 'numeric',
+  timeZone: 'UTC'
+});
 
-const sharedClosingSection: LegalSection = {
-  title: 'Contact',
-  paragraphs: [
-    'Questions about this page may be sent to the Overbase team. This placeholder copy will be replaced with final legal language before publication.',
-    'Notices should include enough detail for us to identify the relevant account, workspace, agreement, or security matter.'
-  ]
-};
+const legalPageModules = import.meta.glob<LegalPageModule>('../../content/legal/pages/*.svx');
 
-const legalPages: readonly LegalPageContent[] = [
-  {
-    slug: 'terms-of-service',
-    label: 'Terms',
-    title: 'Terms of Use',
-    updatedAt: '05/26/2026',
-    sections: [
-      {
-        title: 'Introduction',
-        paragraphs: [
-          'Welcome to Overbase, Inc. These terms are placeholder text and describe the general rules that may apply when customers, partners, and visitors use our website, application, and related services.',
-          'By accessing the service, you agree that final terms may govern your use of Overbase. The language on this page is dummy content and should not be treated as legal advice or a binding agreement.',
-          'The services may include tools for sharing data, discovering partner opportunities, and receiving email-based recommendations. Final terms will explain eligibility, account responsibilities, and acceptable use.'
-        ]
-      },
-      {
-        title: 'Accounts and Access',
-        paragraphs: [
-          'You may need an account to use portions of the service. You are responsible for keeping login credentials confidential and for activity that occurs under your account.',
-          'We may change, suspend, or discontinue parts of the service as the product evolves. Dummy copy in this section reserves room for production language about access, availability, and support.'
-        ]
-      },
-      {
-        title: 'Customer Data',
-        paragraphs: [
-          'Customers and partners may submit business information to Overbase. Placeholder terms will be replaced with final language describing ownership, permissions, processing instructions, and permitted use.',
-          'The final agreement may also describe how data is shared between approved parties and how customers can request deletion, export, or correction of their information.'
-        ]
-      },
-      sharedClosingSection
-    ]
-  },
-  {
-    slug: 'dpa',
-    label: 'DPA',
-    title: 'Data Processing Addendum',
-    updatedAt: '05/26/2026',
-    hideFromNavigation: true,
-    robots: 'noindex, nofollow',
-    sections: [
-      {
-        title: 'Scope',
-        paragraphs: [
-          'This data processing addendum is placeholder text for customers that may provide personal data to Overbase in connection with the services.',
-          'The final addendum will describe the relationship between the parties, the categories of data processed, the business purposes for processing, and the instructions that apply.'
-        ]
-      },
-      {
-        title: 'Processing Commitments',
-        paragraphs: [
-          'Overbase will process customer data only as described in the final agreement and documented customer instructions. This dummy copy marks space for obligations around confidentiality, security, and assistance.',
-          'The production version may include provisions for subprocessors, international transfers, audit requests, incident notification, deletion, and return of data.'
-        ]
-      },
-      {
-        title: 'Customer Responsibilities',
-        paragraphs: [
-          'Customers are responsible for providing notices, obtaining required permissions, and ensuring that submitted data may be processed by Overbase for the intended business purpose.',
-          'This placeholder section may be replaced with operational details for data source configuration, partner permissions, and account-level controls.'
-        ]
-      },
-      sharedClosingSection
-    ]
-  },
-  {
-    slug: 'security',
-    label: 'Security',
-    title: 'Security',
-    updatedAt: '05/26/2026',
-    sections: [
-      {
-        title: 'Overview',
-        paragraphs: [
-          'Security is central to how Overbase handles customer and partner data. This page contains dummy text that outlines the structure of a future security overview.',
-          'The final page may describe how Overbase protects systems, reviews access, monitors infrastructure, and responds to vulnerabilities or security events.'
-        ]
-      },
-      {
-        title: 'Access Controls',
-        paragraphs: [
-          'Access to production systems is limited to authorized team members with a business need. Placeholder copy in this section will be replaced with final details about authentication, authorization, and review processes.',
-          'Customer-facing access controls may include workspace permissions, invitation flows, and partner sharing controls. Final language will describe the controls available in the product.'
-        ]
-      },
-      {
-        title: 'Data Protection',
-        paragraphs: [
-          'Overbase may use encryption, logging, network controls, and operational safeguards to protect data. This dummy copy reserves room for specific security practices after they are approved for publication.',
-          'The production version may also include vulnerability disclosure instructions, incident response commitments, and information about third-party infrastructure providers.'
-        ]
-      },
-      sharedClosingSection
-    ]
+const getSlugFromPath = (path: string) => path.match(/\/([^/]+)\.svx$/)?.[1];
+
+const legalPageLoaders = new Map(
+  Object.entries(legalPageModules).flatMap(([path, load]) => {
+    const slug = getSlugFromPath(path);
+
+    return slug ? [[slug, load]] : [];
+  })
+);
+
+const formatLegalDate = (updatedAt: string) => legalDateFormatter.format(new Date(updatedAt));
+
+export const getLegalPage = async (slug: string): Promise<LegalPage | undefined> => {
+  const loadLegalPage = legalPageLoaders.get(slug);
+
+  if (!loadLegalPage) {
+    return undefined;
   }
-];
 
-export const legalNavigationItems = legalPages
-  .filter((page) => !page.hideFromNavigation)
-  .map(({ label, slug }) => ({
-    label,
-    href: `/legal/${slug}`
-  }));
+  const pageModule = await loadLegalPage();
+  const { page } = pageModule;
 
-export const getLegalPage = (slug: string) => legalPages.find((page) => page.slug === slug);
+  return {
+    slug,
+    ...page,
+    updatedAtLabel: formatLegalDate(page.updatedAt),
+    bodyComponent: pageModule.default
+  };
+};
