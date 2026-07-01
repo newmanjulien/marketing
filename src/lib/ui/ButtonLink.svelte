@@ -26,7 +26,7 @@
   }: ButtonLinkProps = $props();
 
   const baseClasses =
-    'inline-flex items-center justify-center font-normal leading-none transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950';
+    'inline-flex items-center justify-center font-book leading-none transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950';
 
   const shapeClasses = {
     default: 'rounded-[7px]',

@@ -44,7 +44,7 @@
       <div id="hero-industry-proof-detail" class="flex items-center justify-center gap-[10px]">
         <a
           href={selectedIndustry.href}
-          class="inline-flex h-[33px] shrink-0 items-center gap-[7px] rounded-[7px] border border-stone-300 bg-white px-[10px] text-[13px] font-normal leading-none tracking-normal text-stone-750 shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-colors hover:bg-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-950 sm:text-[14px]"
+          class="inline-flex h-[33px] shrink-0 items-center gap-[7px] rounded-[7px] border border-stone-300 bg-white px-[10px] text-[13px] font-book leading-none tracking-normal text-stone-750 shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-colors hover:bg-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-950 sm:text-[14px]"
         >
           <IndustryIcon size={15} weight="bold" aria-hidden="true" />
           <span>{selectedIndustry.label}</span>

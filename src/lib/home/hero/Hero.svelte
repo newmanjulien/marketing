@@ -14,7 +14,7 @@
     href={joinHref}
     target="_blank"
     rel="noopener noreferrer"
-    class="hero-pill mb-[33px] inline-flex min-h-[26px] translate-y-[8px] items-center gap-[7px] rounded-full border border-stone-200/70 bg-white py-0 pl-[12px] pr-[11px] text-[13px] font-normal leading-none text-stone-750 opacity-0 transition-colors hover:bg-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 will-change-[transform,opacity]"
+    class="hero-pill mb-[33px] inline-flex min-h-[26px] translate-y-[8px] items-center gap-[7px] rounded-full border border-stone-200/70 bg-white py-0 pl-[12px] pr-[11px] text-[13px] font-book leading-none text-stone-750 opacity-0 transition-colors hover:bg-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 will-change-[transform,opacity]"
     aria-label="Use your partner invite"
   >
     <span>Redeem partner invite</span>
@@ -29,7 +29,7 @@
   </h1>
 
   <p
-    class="hero-support mt-[18px] max-w-[430px] translate-y-[4px] font-[320] text-[24px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity] sm:max-w-[500px]"
+    class="hero-support mt-[18px] max-w-[430px] translate-y-[4px] font-light text-[26px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity] sm:max-w-[550px]"
   >
     Overbase helps <a href="/industries" class="text-stone-500 underline decoration-current underline-offset-[3px] transition-colors hover:text-stone-750">professional services firms</a> share sales data with ecosystem partners
   </p>

@@ -45,7 +45,7 @@
       <span class="flex h-[25px] w-[25px] shrink-0 items-center justify-center text-stone-300">
         <Icon size={24} weight="regular" />
       </span>
-      <span class="ml-[16px] text-[14px] font-normal leading-none tracking-normal">
+      <span class="ml-[16px] text-[14px] font-book leading-none tracking-normal">
         {dataSource.label}
       </span>
     </div>

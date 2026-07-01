@@ -54,7 +54,7 @@
 
       <div class="mt-[24px] flex max-w-[620px] flex-col gap-[22px]">
         {#each content.introParagraphs as paragraph}
-          <p class="text-[15px] font-normal leading-[1.6] tracking-normal text-stone-700 sm:text-[16px]">
+          <p class="text-[15px] font-book leading-[1.6] tracking-normal text-stone-700 sm:text-[16px]">
             {paragraph}
           </p>
         {/each}
@@ -68,7 +68,7 @@
             {section.heading}
           </h2>
 
-          <p class="mt-[18px] max-w-[620px] text-[15px] font-normal leading-[1.6] tracking-normal text-stone-700 sm:text-[16px]">
+          <p class="mt-[18px] max-w-[620px] text-[15px] font-book leading-[1.6] tracking-normal text-stone-700 sm:text-[16px]">
             {section.body}
           </p>
 

@@ -39,7 +39,7 @@
         <section aria-labelledby={section.id}>
           <h2
             id={section.id}
-            class="mb-[14px] text-[12px] font-normal uppercase leading-none tracking-[0.12em] text-stone-400"
+            class="mb-[14px] text-[12px] font-book uppercase leading-none tracking-[0.12em] text-stone-400"
           >
             {section.label}
           </h2>

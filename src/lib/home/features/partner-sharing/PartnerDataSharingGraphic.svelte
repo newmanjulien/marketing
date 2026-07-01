@@ -26,7 +26,7 @@
 
 <div class="rounded-[8px] border border-stone-200/70 bg-white px-[18px] py-[22px] shadow-[0_1px_0_rgba(48,47,45,0.03)] sm:px-[21px] sm:py-[24px]">
   <div class="flex items-center justify-between gap-4">
-    <h3 class="text-[14px] font-normal leading-none tracking-normal text-stone-700 sm:text-[15px]">
+    <h3 class="text-[14px] font-book leading-none tracking-normal text-stone-700 sm:text-[15px]">
       Control what data you share
     </h3>
 
@@ -40,7 +40,7 @@
       <article class="border-b border-stone-200/70 px-[12px] py-[18px] last:border-b-0 sm:py-[19px]">
         <div class="flex items-start justify-between gap-4">
           <div class="min-w-0">
-            <h4 class="truncate text-[14px] font-normal leading-[1.2] tracking-normal text-stone-700 sm:text-[15px]">
+            <h4 class="truncate text-[14px] font-book leading-[1.2] tracking-normal text-stone-700 sm:text-[15px]">
               {partnerDataShare.partnerName}
             </h4>
 

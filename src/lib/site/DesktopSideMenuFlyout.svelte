@@ -38,7 +38,7 @@
         <a
           href={link.href}
           class={[
-            'block text-[14px] font-normal leading-none text-stone-700 hover:text-stone-900 focus-visible:text-stone-900 focus-visible:outline-none',
+            'block text-[14px] font-book leading-none text-stone-700 hover:text-stone-900 focus-visible:text-stone-900 focus-visible:outline-none',
             { 'text-stone-900': activePath === link.href }
           ]}
           aria-current={activePath === link.href ? 'page' : undefined}

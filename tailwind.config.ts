@@ -8,6 +8,9 @@ export default {
         body: ['var(--font-body)'],
         heading: ['var(--font-heading)']
       },
+      fontWeight: {
+        book: '350'
+      },
       colors: {
         stone: {
           750: '#373330'

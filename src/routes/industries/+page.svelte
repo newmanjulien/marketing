@@ -21,7 +21,7 @@
     </h1>
 
     <p
-      class="mt-[24px] max-w-[620px] text-[15px] font-normal leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]"
+      class="mt-[24px] max-w-[620px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]"
     >
       Overbase works exclusively with professional services firms and their ecosystem partners
     </p>
@@ -39,7 +39,7 @@
               {industry.label}
             </span>
             <span
-              class="mt-[14px] block max-w-[500px] text-[15px] font-normal leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]"
+              class="mt-[14px] block max-w-[500px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]"
             >
               {industrySummaries[industry.id]}
             </span>

@@ -48,7 +48,7 @@
       >
         Receive the survey results
       </label>
-      <p class="mt-[8px] text-[14px] font-normal leading-[1.45] tracking-normal text-stone-600">
+      <p class="mt-[8px] text-[14px] font-book leading-[1.45] tracking-normal text-stone-600">
         We'll send you the results when they're published in January
       </p>
     </div>
@@ -62,12 +62,12 @@
         bind:value={email}
         aria-describedby={form?.message ? 'survey-results-message' : undefined}
         aria-invalid={form?.message && !('success' in form) ? 'true' : undefined}
-        class="h-[40px] w-full rounded-[7px] border border-stone-300 bg-white px-[14px] text-[13px] font-normal tracking-normal text-stone-900 placeholder:text-stone-400 focus:border-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-200"
+        class="h-[40px] w-full rounded-[7px] border border-stone-300 bg-white px-[14px] text-[13px] font-book tracking-normal text-stone-900 placeholder:text-stone-400 focus:border-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-200"
       />
       {#if form?.message}
         <p
           id="survey-results-message"
-          class={`mt-[10px] text-[13px] font-normal leading-[1.45] tracking-normal ${
+          class={`mt-[10px] text-[13px] font-book leading-[1.45] tracking-normal ${
             'success' in form ? 'text-emerald-600' : 'text-red-600'
           }`}
         >
@@ -79,7 +79,7 @@
       type="submit"
       disabled={isSubmitting}
       aria-busy={isSubmitting}
-      class="inline-flex h-[40px] shrink-0 items-center justify-center gap-[8px] justify-self-start rounded-[7px] bg-stone-750 px-[18px] text-[13px] font-normal leading-none tracking-normal text-white transition-colors hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 disabled:cursor-not-allowed disabled:bg-stone-500"
+      class="inline-flex h-[40px] shrink-0 items-center justify-center gap-[8px] justify-self-start rounded-[7px] bg-stone-750 px-[18px] text-[13px] font-book leading-none tracking-normal text-white transition-colors hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 disabled:cursor-not-allowed disabled:bg-stone-500"
     >
       {#if isSubmitting}
         <span

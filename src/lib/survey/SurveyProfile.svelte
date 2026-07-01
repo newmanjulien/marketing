@@ -42,7 +42,7 @@
   .survey-profile__label {
     margin: 0;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 350;
     line-height: 1;
     letter-spacing: 0;
     color: rgb(120 113 108);
@@ -74,7 +74,7 @@
 
   .survey-profile figcaption {
     font-size: 13px;
-    font-weight: 400;
+    font-weight: 350;
     line-height: 1.35;
     color: rgb(120 113 108);
   }
@@ -86,7 +86,7 @@
     gap: 14px;
     margin: 4px 0 0;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 350;
     line-height: 1.55;
     color: rgb(68 64 60);
   }

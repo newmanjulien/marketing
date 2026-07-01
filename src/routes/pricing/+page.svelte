@@ -50,7 +50,7 @@
       Pricing
     </h1>
 
-    <p class="mt-[24px] max-w-[620px] text-[16px] font-normal leading-[1.55] tracking-normal text-stone-700">
+    <p class="mt-[24px] max-w-[620px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700">
       Our pricing is success based. Pay 5% of the net new revenue we help you generate. And only
       pay after you get paid
     </p>

@@ -21,7 +21,7 @@
     </a>
 
     <header class="mt-[28px] border-b border-stone-200 pb-[34px]">
-      <p class="text-[14px] font-normal leading-none tracking-normal text-stone-500">
+      <p class="text-[14px] font-book leading-none tracking-normal text-stone-500">
         {post.publishedAtLabel}
       </p>
       <h1
@@ -29,7 +29,7 @@
       >
         {post.title}
       </h1>
-      <p class="mt-[20px] text-[16px] font-normal leading-[1.55] tracking-normal text-stone-700">
+      <p class="mt-[20px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700">
         {post.introduction}
       </p>
     </header>
