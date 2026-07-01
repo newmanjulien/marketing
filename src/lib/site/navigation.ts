@@ -6,9 +6,14 @@ export type NavLinkItem = {
   href: string;
 };
 
-export const mobilePrimaryNavItems = [
+export const productNavItems = [
   { label: "Pricing", href: "/pricing" },
   { label: "Survey", href: "/annual-survey" },
+] satisfies NavLinkItem[];
+
+export const companyNavItems = [
+  { label: "About", href: "/about" },
+  { label: "Careers", href: "/careers" },
 ] satisfies NavLinkItem[];
 
 export const industryNavItems = industryNavigationItems.map(
@@ -18,7 +23,9 @@ export const industryNavItems = industryNavigationItems.map(
   }),
 ) satisfies NavLinkItem[];
 
-export const desktopPrimaryNavItems = mobilePrimaryNavItems;
+export const mobilePrimaryNavItems = [...productNavItems, ...companyNavItems] satisfies NavLinkItem[];
+
+export const desktopPrimaryNavItems = productNavItems;
 
 export const authNavItems = [
   { label: "Log in", authRoute: "login", variant: "secondary" },

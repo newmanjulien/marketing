@@ -8,13 +8,13 @@
   const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
 </script>
 
-<section class="px-[18px] pt-[135px] sm:px-8 sm:pt-[153px]">
+<section class="px-[18px] pt-[115px] sm:px-8 sm:pt-[153px]">
   <ContentMeasure class="flex !max-w-[780px] flex-col items-center text-center">
   <a
     href={joinHref}
     target="_blank"
     rel="noopener noreferrer"
-    class="hero-pill mb-[26px] inline-flex min-h-[26px] translate-y-[8px] items-center gap-[7px] rounded-full border border-stone-200/70 bg-white py-0 pl-[12px] pr-[11px] text-[13px] font-normal leading-none text-stone-750 opacity-0 transition-colors hover:bg-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 will-change-[transform,opacity]"
+    class="hero-pill mb-[33px] inline-flex min-h-[26px] translate-y-[8px] items-center gap-[7px] rounded-full border border-stone-200/70 bg-white py-0 pl-[12px] pr-[11px] text-[13px] font-normal leading-none text-stone-750 opacity-0 transition-colors hover:bg-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 will-change-[transform,opacity]"
     aria-label="Use your partner invite"
   >
     <span>Redeem partner invite</span>
@@ -22,7 +22,7 @@
   </a>
 
   <h1
-    class="hero-title max-w-[540px] font-heading text-[80px] font-semibold leading-[1.04] tracking-normal text-stone-750 sm:max-w-none sm:text-[94px] sm:leading-[1.02]"
+    class="hero-title max-w-[540px] font-heading text-[90px] font-semibold leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
   >
     <span class="hero-title-lead inline-block will-change-[transform,opacity]">Share</span>
     <span class="hero-title-growth inline-block will-change-[transform,opacity]">sales data</span>
@@ -44,7 +44,7 @@
     </HeroCtaButton>
   </div>
 
-  <div class="hero-proof mt-[48px] w-full translate-y-[4px] opacity-0 will-change-[transform,opacity] sm:mt-[52px]">
+  <div class="hero-proof mt-[56px] w-full translate-y-[4px] opacity-0 will-change-[transform,opacity] sm:mt-[60px]">
     <HeroIndustryProof />
   </div>
   </ContentMeasure>

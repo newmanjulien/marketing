@@ -10,7 +10,7 @@
 
   const navSections = [
     { id: 'mobile-industries-heading', label: 'Industries', links: industryNavItems },
-    { id: 'mobile-site-heading', label: 'Site', links: mobilePrimaryNavItems }
+    { id: 'mobile-site-heading', label: 'Overbase', links: mobilePrimaryNavItems }
   ] as const;
 
   let currentHash = $state('');
