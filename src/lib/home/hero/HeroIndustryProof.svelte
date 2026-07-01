@@ -6,21 +6,19 @@
   const INDUSTRY_ENTER_START_MS = 1800;
   const INDUSTRY_ENTER_STAGGER_MS = 95;
   const INDUSTRY_ENTER_DURATION_MS = 360;
-  const FIRST_INDUSTRY_OPEN_PAUSE_MS = 400;
+  const AUTO_ADVANCE_START_PAUSE_MS = 400;
   const INDUSTRY_ADVANCE_DELAY_MS = 4_000;
-  const firstIndustryOpenDelay =
+  const autoAdvanceStartDelay =
     INDUSTRY_ENTER_START_MS +
     (homeIndustries.length - 1) * INDUSTRY_ENTER_STAGGER_MS +
     INDUSTRY_ENTER_DURATION_MS +
-    FIRST_INDUSTRY_OPEN_PAUSE_MS;
+    AUTO_ADVANCE_START_PAUSE_MS;
 
-  let selectedIndex = $state<number | null>(null);
+  let selectedIndex = $state(0);
   let autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
   let autoAdvanceStopped = false;
 
-  const selectedIndustry = $derived(
-    selectedIndex === null ? null : (homeIndustries[selectedIndex] ?? null)
-  );
+  const selectedIndustry = $derived(homeIndustries[selectedIndex]);
 
   const clearAutoAdvanceTimer = () => {
     if (autoAdvanceTimer === null) {
@@ -49,15 +47,6 @@
     }, INDUSTRY_ADVANCE_DELAY_MS);
   };
 
-  const openFirstIndustry = () => {
-    if (autoAdvanceStopped) {
-      return;
-    }
-
-    selectedIndex = 0;
-    scheduleNextIndustry(0);
-  };
-
   const selectIndustryManually = (index: number) => {
     autoAdvanceStopped = true;
     clearAutoAdvanceTimer();
@@ -67,7 +56,12 @@
   onMount(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    autoAdvanceTimer = setTimeout(openFirstIndustry, prefersReducedMotion ? 0 : firstIndustryOpenDelay);
+    autoAdvanceTimer = setTimeout(
+      () => {
+        scheduleNextIndustry(0);
+      },
+      prefersReducedMotion ? 0 : autoAdvanceStartDelay
+    );
 
     return clearAutoAdvanceTimer;
   });
@@ -80,9 +74,11 @@
     role="group"
   >
     {#each homeIndustries as industry, index (industry.id)}
-      <button
-        type="button"
-        style={`--industry-enter-delay: ${1800 + index * 95}ms`}
+      <a
+        href={industry.href}
+        style={`--industry-enter-delay: ${
+          INDUSTRY_ENTER_START_MS + index * INDUSTRY_ENTER_STAGGER_MS
+        }ms`}
         class={[
           'hero-industry-option shrink-0 translate-y-[5px] text-[15px] font-normal leading-none tracking-normal opacity-0 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-950',
           selectedIndex === index ? 'text-stone-750' : 'text-stone-300 hover:text-stone-500'
@@ -91,7 +87,8 @@
         onfocus={() => {
           selectIndustryManually(index);
         }}
-        onclick={() => {
+        onclick={(event) => {
+          event.preventDefault();
           selectIndustryManually(index);
         }}
         onmouseenter={() => {
@@ -99,7 +96,7 @@
         }}
       >
         {industry.label}
-      </button>
+      </a>
     {/each}
   </div>
 
@@ -109,7 +106,7 @@
       <div id="hero-industry-proof-detail" class="flex items-center justify-center gap-[10px]">
         <a
           href={selectedIndustry.href}
-          class="inline-flex h-[33px] shrink-0 items-center gap-[7px] rounded-[7px] border border-stone-300 bg-white px-[10px] text-[13px] font-book leading-none tracking-normal text-stone-750 shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-colors hover:bg-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-950 sm:text-[14px]"
+          class="inline-flex h-[33px] shrink-0 items-center gap-[7px] rounded-[7px] border border-stone-200/70 bg-white px-[10px] text-[13px] font-book leading-none tracking-normal text-stone-750 shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-colors hover:bg-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-950 sm:text-[14px]"
         >
           <IndustryIcon size={15} weight="bold" aria-hidden="true" />
           <span>{selectedIndustry.label}</span>

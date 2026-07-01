@@ -29,7 +29,7 @@
   </h1>
 
   <p
-    class="hero-support mt-[18px] max-w-[430px] translate-y-[4px] font-light text-[24px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity] sm:max-w-[500px]"
+    class="hero-support mt-[18px] max-w-[430px] translate-y-[4px] font-light text-[23px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity] sm:max-w-[500px]"
   >
     Overbase helps <a href="/industries" class="text-stone-500 underline decoration-current underline-offset-[3px] transition-colors hover:text-stone-750">professional services firms</a> share sales data with ecosystem partners
   </p>

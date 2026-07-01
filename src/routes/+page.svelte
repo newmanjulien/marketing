@@ -17,7 +17,7 @@
 
 <main>
   <Hero />
-  <div class="flex flex-col gap-[112px] pt-[160px] sm:gap-[150px] sm:pt-[220px]">
+  <div class="flex flex-col gap-[150px] pt-[190px] sm:gap-[190px] sm:pt-[260px]">
     <FeatureSection
       title="Share your sales data"
       body="Share any structured data like CRM and share any unstructured data like email. Easily share even your most disconnected data"
