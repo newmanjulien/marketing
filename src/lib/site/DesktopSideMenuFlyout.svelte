@@ -4,10 +4,12 @@
 
   let {
     label,
+    href,
     links,
     activePath,
   }: {
     label: string;
+    href: string;
     links: readonly NavLinkItem[];
     activePath: string;
   } = $props();
@@ -15,7 +17,7 @@
 
 <div class="group relative w-fit">
   <a
-    href={links[0]?.href ?? '#'}
+    {href}
     class="flex items-center gap-[6px] text-stone-700 outline-none hover:text-stone-900 focus-visible:text-stone-900"
     aria-haspopup="true"
   >

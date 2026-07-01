@@ -54,7 +54,7 @@
             href="https://juliennewman.com"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-stone-900 underline underline-offset-[3px] transition-colors hover:text-stone-600"
+            class="text-stone-500 underline decoration-current underline-offset-[3px] transition-colors hover:text-stone-750"
           >
             juliennewman.com
           </a>

@@ -146,7 +146,7 @@
       Check out last year's lists for each industry.
     </p>
     <div
-      class="survey-previous-links mt-[20px] flex flex-col gap-[20px] text-[16px] font-normal leading-[1.55] tracking-normal text-stone-700 [&_a]:underline [&_a]:underline-offset-[4px] [&_a]:transition-colors [&_a:hover]:text-stone-500"
+      class="mt-[20px] flex flex-col gap-[20px] text-[16px] font-normal leading-[1.55] tracking-normal text-stone-700 [&_a]:text-stone-500 [&_a]:underline [&_a]:decoration-current [&_a]:underline-offset-[3px] [&_a]:transition-colors [&_a:hover]:text-stone-750"
     >
       {#each previousListLinks as link}
         <p>
@@ -196,9 +196,3 @@
     </section>
   </ContentMeasure>
 </PageFrame>
-
-<style>
-  .survey-previous-links :global(a) {
-    text-decoration-color: currentColor;
-  }
-</style>
