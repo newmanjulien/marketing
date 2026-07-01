@@ -1,11 +1,76 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import { homeIndustries } from '../industryContent';
 
+  const INDUSTRY_ENTER_START_MS = 1800;
+  const INDUSTRY_ENTER_STAGGER_MS = 95;
+  const INDUSTRY_ENTER_DURATION_MS = 360;
+  const FIRST_INDUSTRY_OPEN_PAUSE_MS = 400;
+  const INDUSTRY_ADVANCE_DELAY_MS = 4_000;
+  const firstIndustryOpenDelay =
+    INDUSTRY_ENTER_START_MS +
+    (homeIndustries.length - 1) * INDUSTRY_ENTER_STAGGER_MS +
+    INDUSTRY_ENTER_DURATION_MS +
+    FIRST_INDUSTRY_OPEN_PAUSE_MS;
+
   let selectedIndex = $state<number | null>(null);
+  let autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
+  let autoAdvanceStopped = false;
+
   const selectedIndustry = $derived(
     selectedIndex === null ? null : (homeIndustries[selectedIndex] ?? null)
   );
+
+  const clearAutoAdvanceTimer = () => {
+    if (autoAdvanceTimer === null) {
+      return;
+    }
+
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = null;
+  };
+
+  const scheduleNextIndustry = (currentIndex: number) => {
+    clearAutoAdvanceTimer();
+
+    if (autoAdvanceStopped || currentIndex >= homeIndustries.length - 1) {
+      return;
+    }
+
+    autoAdvanceTimer = setTimeout(() => {
+      if (autoAdvanceStopped) {
+        return;
+      }
+
+      const nextIndex = currentIndex + 1;
+      selectedIndex = nextIndex;
+      scheduleNextIndustry(nextIndex);
+    }, INDUSTRY_ADVANCE_DELAY_MS);
+  };
+
+  const openFirstIndustry = () => {
+    if (autoAdvanceStopped) {
+      return;
+    }
+
+    selectedIndex = 0;
+    scheduleNextIndustry(0);
+  };
+
+  const selectIndustryManually = (index: number) => {
+    autoAdvanceStopped = true;
+    clearAutoAdvanceTimer();
+    selectedIndex = index;
+  };
+
+  onMount(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    autoAdvanceTimer = setTimeout(openFirstIndustry, prefersReducedMotion ? 0 : firstIndustryOpenDelay);
+
+    return clearAutoAdvanceTimer;
+  });
 </script>
 
 <ContentMeasure class="!max-w-[660px] sm:text-center">
@@ -24,13 +89,13 @@
         ]}
         aria-describedby={selectedIndex === index ? 'hero-industry-proof-detail' : undefined}
         onfocus={() => {
-          selectedIndex = index;
+          selectIndustryManually(index);
         }}
         onclick={() => {
-          selectedIndex = index;
+          selectIndustryManually(index);
         }}
         onmouseenter={() => {
-          selectedIndex = index;
+          selectIndustryManually(index);
         }}
       >
         {industry.label}
