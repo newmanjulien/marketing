@@ -15,7 +15,7 @@ import type { Component } from "svelte";
 const homeIndustryMetadata = {
   insurance: {
     icon: UmbrellaIcon,
-    heroProofLabel: "See how commercial brokers use Overbase",
+    heroProofLabel: "See how insurance brokers use Overbase",
   },
   law: {
     icon: ScalesIcon,
