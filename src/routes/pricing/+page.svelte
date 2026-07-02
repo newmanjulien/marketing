@@ -39,7 +39,7 @@
     {
       question: 'Are there any upfront costs at all?',
       answer:
-        'Some companies pay $25,000 for a proof of concept. You need to share your CRM data to qualify for success-based pricing. Some companies prefer to get familiar with our tech before sharing their CRM data. In these cases, you can pay $25,000 for a proof of concept before transitioning to success-based pricing'
+        'Most companies pay $15,000 for a proof of concept then transition to success-based pricing. Our preference is to do success-based pricing right after the proof of concept, but some companies chose to pay a flat fee in their first year. That flat fee is $100,000 for unlimited useage for one year. By year two, you would need to have transitioned to success-based pricing'
     }
   ] as const;
 </script>
