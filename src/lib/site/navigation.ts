@@ -16,6 +16,11 @@ export const companyNavItems = [
   { label: "Careers", href: "/careers" },
 ] satisfies NavLinkItem[];
 
+export const footerNavItems = [
+  ...companyNavItems,
+  { label: "Legal", href: "/legal" },
+] satisfies NavLinkItem[];
+
 export const industryNavItems = industryNavigationItems.map(
   ({ label, href }) => ({
     label,

@@ -1,0 +1,49 @@
+<script context="module" lang="ts">
+  export const page = {
+    title: 'Billing and Payment Terms',
+    updatedAt: '2026-07-02',
+    contentWidth: 'standard'
+  };
+</script>
+
+These Billing and Payment Terms apply to Orders, Order Forms, and other agreements that reference or incorporate these terms. Capitalized terms not defined here have the meanings given in the applicable agreement between Customer and Overbase.
+
+## 1. Payment Options
+
+An Order may specify one or more payment options for Customer's subscription, including a flat annual fee, a success fee, or another payment structure stated in the Order.
+
+If an Order gives Customer a choice between a flat annual fee and a success fee for the first year of an annual subscription, Customer must select one option in the Order.
+
+Unless the Order states otherwise, the flat annual fee option applies only to the first year of the annual subscription. Beginning with the second year and for each renewal term after that, Customer will pay Overbase the success fee stated in the Order.
+
+## 2. Success Fee
+
+If the Order includes a success fee, the success fee is calculated as the percentage of Revenue stated in the Order. Unless the Order states otherwise, the success fee is five percent (5%) of Revenue.
+
+For purposes of these Billing and Payment Terms, “**Revenue**” means revenue received by Customer that Customer attributes to opportunities, accounts, introductions, partner activity, data, insights, workflows, or other outputs identified, supported, influenced, or generated through the Services.
+
+Customer is responsible for determining whether Revenue is attributable to the Services. Overbase will rely on Customer's attribution reports to calculate success fees.
+
+## 3. Quarterly Reporting
+
+Within fifteen (15) days after the end of each calendar quarter, Customer will provide Overbase with a written report showing:
+
+- Revenue received by Customer during that quarter that Customer attributes to the Services;
+- the basis for Customer's attribution; and
+- the resulting success fee owed to Overbase.
+
+Customer must provide a quarterly report even if no Revenue was received or no success fee is owed for that quarter.
+
+## 4. Invoicing and Payment
+
+Overbase will invoice success fees based on Customer's quarterly reports. Customer will pay a success fee only after Customer has received the applicable Revenue.
+
+Unless the Order states otherwise, invoices are due within thirty (30) days after the invoice date.
+
+Flat annual fees, POC fees, implementation fees, and other fixed fees are invoiced according to the schedule stated in the Order. If no schedule is stated, Overbase may invoice fixed fees on or after the applicable subscription, POC, or service start date.
+
+## 5. Automatic Renewal
+
+Unless the Order states otherwise, annual subscriptions automatically renew for successive twelve-month renewal terms unless either Party gives written notice of non-renewal at least thirty (30) days before the end of the then-current subscription term.
+
+If the first year of an annual subscription is billed as a flat annual fee, the second year and all renewal terms will be billed using the success fee model unless the Parties agree otherwise in writing.

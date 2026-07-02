@@ -1,0 +1,235 @@
+<script context="module" lang="ts">
+  export const page = {
+    title: 'Data Processing Addendum',
+    updatedAt: '2026-07-02',
+    contentWidth: 'standard'
+  };
+</script>
+
+<script lang="ts">
+  import LegalTable from '$lib/legal/LegalTable.svelte';
+  import type { LegalTableColumn, LegalTableRow } from '$lib/legal/legalTypes';
+
+  const processingColumns = [
+    { key: 'topic', label: 'Topic' },
+    { key: 'details', label: 'Details' }
+  ] satisfies readonly LegalTableColumn[];
+
+  const processingRows = [
+    {
+      topic: 'Subject matter',
+      details: 'Overbase provides a data sharing platform that helps customers identify partner-sourced business opportunities and related account insights.'
+    },
+    {
+      topic: 'Duration',
+      details: 'The duration of Processing is the term of the Agreement, plus any period needed to return or delete Covered Data as described in this Addendum.'
+    },
+    {
+      topic: 'Nature and purpose',
+      details:
+        'Overbase Processes Covered Data to provide, secure, support, maintain, improve, and administer the Services, and as otherwise instructed by Customer through the Services or the Agreement.'
+    },
+    {
+      topic: 'Categories of Data Subjects',
+      details: [
+        'Customer personnel and authorized users',
+        'Customer prospects, customers, partners, and related business contacts',
+        'Other individuals whose Personal Data is submitted to the Services by or on behalf of Customer'
+      ]
+    },
+    {
+      topic: 'Categories of Covered Data',
+      details: [
+        'Business contact information',
+        'Company, account, opportunity, pipeline, partner, and relationship information',
+        'User account, authentication, usage, support, and log data',
+        'Other Personal Data submitted to the Services by or on behalf of Customer'
+      ]
+    },
+    {
+      topic: 'Sensitive data',
+      details:
+        'Customer must not submit special categories of Personal Data, protected health information, payment card data, government identification numbers, or other sensitive data unless expressly authorized in writing by Overbase.'
+    }
+  ] satisfies readonly LegalTableRow[];
+
+  const securityColumns = [
+    { key: 'measure', label: 'Measure' },
+    { key: 'description', label: 'Description' }
+  ] satisfies readonly LegalTableColumn[];
+
+  const securityRows = [
+    {
+      measure: 'Access controls',
+      description:
+        'Overbase limits access to Covered Data to authorized personnel and service providers with a business need to know and uses authentication and authorization controls designed to prevent unauthorized access.'
+    },
+    {
+      measure: 'Confidentiality',
+      description:
+        'Personnel who may Process Covered Data are subject to confidentiality obligations or equivalent professional duties.'
+    },
+    {
+      measure: 'Encryption',
+      description:
+        'Overbase uses encryption or other appropriate technical safeguards designed to protect Covered Data in transit and at rest.'
+    },
+    {
+      measure: 'Logging and monitoring',
+      description:
+        'Overbase maintains technical logs and monitoring processes designed to support debugging, troubleshooting, auditing, and detection of suspicious activity.'
+    },
+    {
+      measure: 'Incident response',
+      description:
+        'Overbase maintains processes designed to identify, investigate, mitigate, and notify Customers of Security Incidents as required by this Addendum and applicable law.'
+    },
+    {
+      measure: 'Subprocessor diligence',
+      description:
+        'Overbase evaluates Subprocessors and requires written data protection obligations appropriate to the nature of the services they provide.'
+    }
+  ] satisfies readonly LegalTableRow[];
+</script>
+
+We have updated this Data Processing Addendum. Please review it carefully. These updated terms will not apply to existing Customers until their next subscription renewal unless otherwise agreed in writing.
+
+This Data Processing Addendum (“**Addendum**”) supplements the Master Cloud Agreement, Terms of Service, order form, or other written or electronic agreement governing Customer’s use of the Services (the “**Agreement**”) between Customer and Overbase, Inc. or the Overbase affiliate identified in the Agreement (collectively, “**Overbase**”). Customer and Overbase are each a “**Party**” and together the “**Parties**.” This Addendum forms part of the Agreement.
+
+If there is a conflict between this Addendum and the Agreement regarding the Processing of Personal Data, this Addendum controls. Capitalized terms not defined in this Addendum have the meanings given to them in the Agreement.
+
+## 1. Definitions
+
+For purposes of this Addendum:
+
+- “**Covered Data**” means Personal Data that Overbase receives from Customer, or otherwise Processes on Customer’s behalf, in connection with the Services.
+- “**Customer Data**” means data, content, files, records, or other information submitted to the Services by or on behalf of Customer.
+- “**Data Protection Laws**” means all privacy, data protection, data security, breach notification, and Personal Data Processing laws and regulations applicable to a Party’s performance under the Agreement, as amended or replaced from time to time.
+- “**Data Subject**” means an identified or identifiable natural person to whom Personal Data relates.
+- “**GDPR**” means Regulation (EU) 2016/679, the United Kingdom GDPR as incorporated into UK law, and, where applicable, Swiss data protection laws.
+- “**Personal Data**” means any data or information included in Customer Data that is “personal data,” “personal information,” “personally identifiable information,” or a similar term under Data Protection Laws.
+- “**Process**,” “**Processed**,” and “**Processing**” mean any operation performed on Personal Data, including collection, recording, organization, storage, adaptation, retrieval, consultation, use, disclosure, transmission, restriction, erasure, or destruction.
+- “**Security Incident**” means a confirmed unauthorized or unlawful acquisition, destruction, loss, alteration, disclosure of, or access to Covered Data Processed by Overbase. Security Incidents do not include unsuccessful attempts or activities that do not compromise Covered Data.
+- “**Services**” means the products, services, and related support provided by Overbase under the Agreement.
+- “**Subprocessor**” means a third party engaged by Overbase or its affiliates to Process Covered Data on behalf of Overbase.
+- “**US Data Protection Laws**” means applicable United States federal and state privacy, data protection, and Personal Data Processing laws, including the California Consumer Privacy Act and other comprehensive state privacy laws, to the extent applicable.
+
+The terms “controller,” “processor,” “business,” “service provider,” “sell,” “share,” “targeted advertising,” and “cross-context behavioral advertising” have the meanings given to them in applicable Data Protection Laws.
+
+## 2. Scope
+
+This Addendum applies to Overbase’s Processing of Covered Data under the Agreement. The European Data Protection Clauses apply only to Covered Data subject to the GDPR. The US Data Protection Clauses apply only to Covered Data subject to US Data Protection Laws.
+
+## 3. Roles of the Parties
+
+For Covered Data Processed under the Agreement, Customer is the controller or business, and Overbase is the processor or service provider, as applicable. Each Party will comply with Data Protection Laws applicable to its role.
+
+## 4. Purposes of Processing
+
+The Parties acknowledge that the subject matter of the Processing is Overbase’s provision of the Services. Overbase will Process Covered Data to provide, secure, support, maintain, improve, and administer the Services; to perform its obligations under the Agreement and this Addendum; on Customer’s documented instructions; to comply with applicable law; and as necessary to protect against Security Incidents, fraud, abuse, or other harmful activity.
+
+Customer’s use of the Services, including Customer’s configuration, sharing settings, integrations, and other instructions submitted through the Services, constitutes Customer’s documented instruction to Overbase.
+
+If Overbase believes an instruction violates Data Protection Laws, Overbase will inform Customer unless prohibited by law. If Overbase is required by law or legal process to Process Covered Data in a manner that conflicts with the Agreement or this Addendum, Overbase will inform Customer before Processing unless prohibited by law.
+
+## 5. Customer Responsibilities
+
+Customer will comply with its obligations under Data Protection Laws and is responsible for:
+
+- providing all required notices to Data Subjects;
+- obtaining all required consents, permissions, authorizations, and lawful bases for Processing Covered Data through the Services;
+- ensuring Customer Data does not include prohibited or unauthorized sensitive data;
+- ensuring that Customer’s instructions to Overbase comply with Data Protection Laws;
+- responding to Data Subject requests where Customer is responsible for doing so; and
+- entering into any contracts or data sharing agreements required for Customer’s use of the Services, including with partners or other third parties with whom Customer elects to share Customer Data.
+
+## 6. Overbase Processing Requirements
+
+Overbase will:
+
+- Process Covered Data only as described in this Addendum, the Agreement, and Customer’s documented instructions;
+- ensure that personnel authorized to Process Covered Data are subject to confidentiality obligations or equivalent professional duties;
+- taking into account the nature of the Processing, provide reasonable assistance to Customer in responding to Data Subject requests;
+- notify Customer without undue delay if Overbase receives a request, complaint, inquiry, subpoena, or other legal demand relating to Covered Data, unless prohibited by law;
+- provide reasonable assistance with data protection impact assessments and regulatory consultations where required by Data Protection Laws and where the requested assistance relates to Overbase’s Processing of Covered Data; and
+- make available information reasonably necessary to demonstrate compliance with this Addendum as described in Section 9.
+
+## 7. Security
+
+Overbase will implement and maintain technical and organizational measures designed to protect Covered Data against Security Incidents, taking into account the nature, scope, context, and purposes of Processing and the risks presented by the Processing.
+
+Overbase may update its security measures from time to time, provided the updates do not materially decrease the overall security of the Services.
+
+Upon becoming aware of a Security Incident, Overbase will notify Customer without undue delay unless prohibited by law. The notice will describe, to the extent reasonably available, the nature of the Security Incident, the categories of Covered Data affected, mitigation steps taken or planned, and any steps Overbase recommends Customer take. Overbase’s notice or response to a Security Incident is not an admission of fault or liability.
+
+## 8. Subprocessors
+
+Customer authorizes Overbase and its affiliates to engage Subprocessors to Process Covered Data. Overbase will enter into a written agreement with each Subprocessor that imposes data protection obligations no less protective, in substance, than those in this Addendum.
+
+Overbase remains responsible for its Subprocessors’ acts and omissions to the extent those acts or omissions cause Overbase to breach this Addendum.
+
+Overbase’s Subprocessors are listed at [/legal/subprocessors](/legal/subprocessors). Overbase may update the list from time to time. Overbase will provide notice of a new Subprocessor by updating the Subprocessor page at least fourteen (14) days before the new Subprocessor Processes Covered Data, unless earlier engagement is reasonably necessary to protect the confidentiality, integrity, or availability of the Services or Covered Data, or to avoid material disruption to the Services.
+
+If Customer objects to a new Subprocessor on reasonable data protection grounds within five (5) days after notice, the Parties will work in good faith to resolve the objection. If the Parties cannot resolve the objection, Customer’s sole remedy is to terminate the affected portion of the Services for convenience.
+
+## 9. Audits and Reviews
+
+To the extent Data Protection Laws give Customer an audit right regarding Overbase’s Processing of Covered Data, Customer will exercise that right as described in this Section.
+
+Overbase will make available relevant information regarding its Processing of Covered Data, which may include security documentation, third-party reports, certifications, questionnaires, or written responses. Customer may request this information no more than once annually unless a Security Incident or Data Protection Law requires otherwise.
+
+If the information provided is insufficient to demonstrate compliance, Customer may request an audit by an independent third-party auditor no more than once annually and at Customer’s expense. Any audit must be conducted on at least thirty (30) days’ prior written notice, during normal business hours, in a manner that does not materially disrupt Overbase’s business, and limited to matters relevant to Overbase’s compliance with this Addendum. Overbase may object to an auditor that is not independent, is a competitor, or is otherwise unsuitable.
+
+Customer will promptly provide Overbase with any audit findings and may use audit materials only to verify compliance with this Addendum or satisfy regulatory obligations. Audit materials and information disclosed by Overbase are Overbase Confidential Information under the Agreement. Overbase is not required to disclose information that would compromise security, violate law, breach third-party obligations, or disclose another customer’s confidential information.
+
+## 10. Return or Deletion
+
+Following termination or expiration of the Agreement, Overbase will return or delete Covered Data in accordance with the Agreement and Customer’s written instructions, unless retention is required by law. If Customer requests deletion after termination or expiration, Overbase will delete Covered Data within sixty (60) days except for data retained in backups, archives, logs, or systems where deletion is not technically feasible in the ordinary course. Any retained Covered Data remains subject to the confidentiality, security, and data protection obligations in this Addendum until deleted.
+
+## 11. General
+
+This Addendum is governed by the governing law and jurisdiction provisions in the Agreement, except to the extent Data Protection Laws require otherwise.
+
+Nothing in this Addendum prevents Overbase from disclosing Covered Data where required by law or where Overbase reasonably and in good faith believes disclosure is necessary to protect the Services, Customer, Data Subjects, Overbase, or others from unlawful, fraudulent, abusive, or harmful activity.
+
+Any liability arising under this Addendum is subject to the limitations of liability in the Agreement. This Addendum terminates automatically when the Agreement terminates or expires.
+
+## 12. European Data Protection Clauses
+
+This Section applies only to Processing of Covered Data subject to the GDPR.
+
+Each Party will comply with its obligations under the GDPR. If Customer transfers Covered Data subject to the GDPR to Overbase in a jurisdiction that does not provide an adequate level of protection under applicable Data Protection Laws, the Standard Contractual Clauses apply and are incorporated into this Addendum by reference.
+
+For purposes of the Standard Contractual Clauses, Customer is the data exporter, Overbase is the data importer, Module Two applies where Customer is a controller and Overbase is a processor, and Module Three applies where Customer is a processor and Overbase is a subprocessor. The optional docking clause applies. The audits clause is subject to Section 9 of this Addendum. The governing law and forum are as set out in the Standard Contractual Clauses unless otherwise required by applicable law.
+
+For transfers from the United Kingdom, the International Data Transfer Addendum issued by the UK Information Commissioner’s Office applies as incorporated into this Addendum. For transfers from Switzerland, references in the Standard Contractual Clauses to the GDPR will be interpreted to include Swiss data protection laws as applicable.
+
+Overbase will provide reasonable information regarding its technical and organizational measures to assist Customer in evaluating international transfer requirements.
+
+## 13. US Data Protection Clauses
+
+This Section applies only to Processing of Covered Data subject to US Data Protection Laws.
+
+Overbase will not:
+
+- sell or share Covered Data;
+- Process Covered Data for cross-context behavioral advertising or targeted advertising;
+- retain, use, disclose, or otherwise Process Covered Data for any purpose other than the business purposes described in this Addendum, the Agreement, or Customer’s documented instructions;
+- retain, use, or disclose Covered Data outside the direct business relationship between Customer and Overbase except as permitted by US Data Protection Laws; or
+- combine Covered Data with Personal Data received from other sources except as permitted by US Data Protection Laws.
+
+Overbase certifies that it understands and will comply with the restrictions in this Section. Customer has the right to take reasonable and appropriate steps to ensure that Overbase uses Covered Data consistently with Customer’s obligations under US Data Protection Laws, as described in Section 9.
+
+## Annex I: Details of Processing
+
+<LegalTable columns={processingColumns} rows={processingRows} />
+
+## Annex II: Technical and Organizational Measures
+
+<LegalTable columns={securityColumns} rows={securityRows} />
+
+## Annex III: Standard Contractual Clauses
+
+Where the Standard Contractual Clauses apply, the information in Annex I and Annex II of this Addendum supplies the relevant details for the appendices to the Standard Contractual Clauses. The competent supervisory authority will be determined in accordance with the Standard Contractual Clauses and applicable Data Protection Laws.
+
+For Module Two or Module Three transfers, the Parties agree that Customer’s execution of the Agreement constitutes execution of the Standard Contractual Clauses, including the applicable modules, appendices, and annexes incorporated into this Addendum.

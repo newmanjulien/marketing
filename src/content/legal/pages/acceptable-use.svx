@@ -1,0 +1,57 @@
+<script context="module" lang="ts">
+  export const page = {
+    title: 'Acceptable Use Policy',
+    updatedAt: '2026-07-02',
+    contentWidth: 'standard'
+  };
+</script>
+
+This Acceptable Use Policy describes rules that apply to your access to and use of Overbase’s products, services, websites, forums, and other offerings (collectively, the “**Offerings**”).
+
+## Content Restrictions
+
+You may not upload, store, post, transmit, or otherwise make available any content through the Offerings that:
+
+- is obscene, defamatory, deceptive, fraudulent, harassing, threatening, hateful, or discriminatory;
+- infringes, misappropriates, or otherwise violates another person’s intellectual property, privacy, publicity, or other rights;
+- violates any applicable law, rule, or regulation; or
+- contains viruses, malware, malicious code, or other harmful materials.
+
+## Prohibited Conduct
+
+You may not:
+
+- engage in deceptive, fraudulent, abusive, or illegal activity, including spoofing, phishing, or pyramid-style schemes;
+- send spam, chain letters, or other unsolicited communications to other users;
+- access or use the Offerings to build, train, support, or improve a similar or competing product or service;
+- collect, scrape, harvest, or otherwise obtain personally identifiable information, account names, or other user information except as expressly permitted by the Offerings;
+- use the Offerings for unauthorized commercial solicitation;
+- conceal your identity, impersonate any person, or misrepresent your affiliation with any person or entity;
+- publish benchmark, availability, or performance information about the Offerings without Overbase’s prior written consent; or
+- use the Offerings in violation of data protection, privacy, antitrust, unfair competition, export control, or other applicable laws or regulations.
+
+## No Disruption
+
+You may not:
+
+- access the Offerings through unauthorized means, including scraping, crawling, robots, spiders, offline readers, or other automated systems;
+- disable, interfere with, disrupt, degrade, or circumvent the Offerings or any security, access, rate limit, or usage controls;
+- take any action that imposes, or may impose, an unreasonable or disproportionately large load on the Offerings or Overbase’s infrastructure;
+- attempt to access another user’s data, account, systems, or networks without express permission; or
+- probe, scan, test, or attempt to identify vulnerabilities in the Offerings except through a program expressly authorized by Overbase.
+
+## Competition
+
+You may use the Offerings only for lawful and appropriate business purposes, including facilitating partner collaboration, account mapping, integrations, joint sales activity, and related operational workflows.
+
+You may not use the Offerings to exchange information with any third party where the intent or effect is to limit competition, coordinate pricing, allocate customers or markets, coordinate bids, restrict output, or otherwise facilitate anticompetitive conduct.
+
+## Others
+
+You may not permit, assist, authorize, encourage, or enable any person to engage in conduct prohibited by this Policy.
+
+## Enforcement
+
+Overbase may monitor compliance with this Policy and investigate suspected violations. If Overbase determines that you, your account, or your content violates this Policy, Overbase may suspend or terminate access to the Offerings or remove, disable, or modify content.
+
+Overbase may report activity that it believes violates law or regulation to law enforcement, regulators, or other appropriate third parties, and may cooperate with those parties in investigating and addressing unlawful conduct. Such reporting may include disclosure of information related to the suspected violation.

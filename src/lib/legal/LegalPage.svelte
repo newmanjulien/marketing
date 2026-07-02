@@ -9,7 +9,14 @@
 
 <PageFrame topPadding="standard">
   <ContentMeasure as="article" width={page.contentWidth ?? 'narrow'}>
-    <header>
+    <a
+      href="/legal"
+      class="text-[14px] font-medium leading-none tracking-normal text-stone-500 transition-colors duration-200 hover:text-stone-900"
+    >
+      Legal
+    </a>
+
+    <header class="mt-[28px]">
       <h1 class="font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-900">
         {page.title}
       </h1>

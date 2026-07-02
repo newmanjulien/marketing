@@ -1,0 +1,134 @@
+<script context="module" lang="ts">
+  export const page = {
+    title: 'Security Policy',
+    updatedAt: '2026-07-02',
+    contentWidth: 'standard'
+  };
+</script>
+
+This Security Policy is incorporated into and made part of the written agreement between Overbase and Customer that references this document (the “**Agreement**”). Capitalized terms used but not defined in this Security Policy have the meanings given to them in the Agreement. If there is a conflict between the Agreement and this Security Policy regarding security controls for the Services, this Security Policy controls.
+
+## 1. Risk Management
+
+Overbase maintains a security program designed to protect Customer Data and the Services using administrative, technical, and organizational controls appropriate to the nature of the Services and the risks presented by the processing.
+
+Overbase may maintain third-party security attestations, certifications, or audit reports and may make relevant security documentation available to Customers upon written request, subject to confidentiality obligations and reasonable frequency limits. If Overbase discontinues a security framework, it will adopt or maintain a substantially equivalent, industry-recognized framework where appropriate.
+
+Overbase is not required to complete security reviews through any customer or third-party platform. This does not limit Customer audit rights expressly set out in Overbase’s Data Processing Addendum.
+
+## 2. Access Controls
+
+### Authentication
+
+Overbase requires authentication for access to non-public application pages in the Services.
+
+Overbase uses encrypted communications for authentication requests. Overbase maintains password and authentication controls designed to reduce unauthorized access, including minimum password requirements, account lockout or rate limiting for repeated failed login attempts, and secure password reset workflows.
+
+Customer may have access to single sign-on or similar identity provider integrations depending on its package, plan, or configuration. Customer is responsible for managing its users, identity provider settings, and account access permissions.
+
+### Internal Access
+
+Access to Customer Data is restricted to Overbase personnel and contractors who need access to perform their job responsibilities, such as customer support, infrastructure maintenance, security operations, and product operations.
+
+Overbase requires appropriate authentication controls for employee access to production systems, which may include single sign-on, multi-factor authentication, device-level controls, and other access management safeguards.
+
+## 3. Session Management
+
+Overbase uses session management controls designed to protect authenticated sessions. Sessions are assigned unique session identifiers and are subject to expiration, invalidation, or termination controls.
+
+When a user signs out of the Services, Overbase is designed to invalidate the active session and remove or expire associated client-side session credentials.
+
+## 4. Network and Transmission Controls
+
+Overbase periodically reviews and updates communication technologies and network architecture with the goal of maintaining appropriate network security.
+
+### Encryption
+
+Overbase uses encryption or equivalent safeguards designed to protect Customer Data in transit and at rest. Connections to production systems are protected using encrypted protocols where appropriate.
+
+### Network Security
+
+Overbase maintains network access restrictions, firewall rules, and infrastructure controls designed to limit unauthorized access to production systems. Overbase reviews network architecture and data flows periodically.
+
+### Infrastructure Security
+
+Overbase uses cloud infrastructure providers and security monitoring tools designed to support detection, investigation, and response to security events affecting production systems.
+
+## 5. Data Confidentiality and Job Controls
+
+### Data Security
+
+Overbase maintains safeguards designed to protect Customer Data from unauthorized access, disclosure, alteration, or destruction. Customer Data is not intentionally used in test environments unless authorized by Customer or appropriately protected.
+
+### Job Controls
+
+Overbase maintains personnel controls designed to protect the Services and Customer Data, including:
+
+- confidentiality obligations for employees and contractors with access to production systems or Customer Data;
+- security and privacy training for workforce members;
+- logging and auditing of employee access to production systems where appropriate;
+- disciplinary consequences for misuse of access to Customer Data; and
+- background checks where appropriate and permitted by law.
+
+## 6. Security in Engineering
+
+### Product Security
+
+Overbase follows software development practices designed to incorporate security into product and infrastructure changes. Changes to production systems and infrastructure are reviewed and deployed through controlled processes.
+
+### Code Review and Assessments
+
+Overbase uses processes designed to identify and remediate vulnerabilities in the Services, which may include:
+
+- peer review of code changes before production deployment;
+- automated source code, dependency, and configuration analysis;
+- targeted review of security-sensitive areas; and
+- third-party application security assessments or penetration testing where appropriate.
+
+### Penetration Testing
+
+Overbase may conduct penetration tests or similar security assessments of the Services using qualified internal personnel or independent third parties. Results or summaries may be made available to Customers under confidentiality obligations.
+
+### Formal Policies
+
+Overbase maintains formal security and privacy policies that are communicated to relevant employees and contractors and reviewed periodically.
+
+## 7. Asset Management
+
+Overbase maintains inventories of relevant systems, assets, software, and services used to provide the Services. Inventories are reviewed and updated as appropriate.
+
+## 8. Availability Controls
+
+### Disaster Recovery
+
+The Services are designed to reduce the risk of interruption from hardware failure, infrastructure failure, natural disasters, or other disruptive events. Overbase uses cloud infrastructure designed for availability and resilience, including data replication and encrypted backups where appropriate.
+
+### Backups
+
+Overbase maintains backup processes designed to support recovery of production systems and Customer Data. Backups are protected using appropriate security controls and retained according to Overbase’s operational requirements.
+
+### Incident Response
+
+Overbase maintains an incident response process designed to identify, investigate, contain, remediate, and communicate security and availability incidents. Overbase periodically reviews and updates its incident response process.
+
+## 9. Segregation Controls
+
+The Services are designed to logically separate each customer’s data from other customers’ data. Overbase uses application logic, authorization controls, and account-level permissions designed to permit users to access only the data they are authorized to access.
+
+Customer may configure user roles, permissions, and account access settings available in the Services. Customer is responsible for assigning appropriate access rights to its users.
+
+## 10. Workforce Security
+
+Overbase provides security and privacy awareness training to workforce members. New employees receive security and privacy training during onboarding, and existing personnel receive periodic refresher training.
+
+## 11. Physical Security
+
+Overbase uses third-party cloud infrastructure providers to host production systems. Overbase relies on those providers’ physical security controls for data centers, which may include restricted physical access, monitoring, security personnel, and other safeguards described in the providers’ third-party attestations.
+
+Overbase is a remote-first company and does not rely on a physical office as a primary control environment for production systems.
+
+## 12. Patch and Vulnerability Management
+
+Overbase uses vulnerability management processes designed to identify, prioritize, and remediate vulnerabilities based on severity, exploitability, and potential impact to the Services.
+
+Overbase uses commercially reasonable efforts to remediate or mitigate critical vulnerabilities within a reasonable timeframe and to address other vulnerabilities according to risk-based prioritization.

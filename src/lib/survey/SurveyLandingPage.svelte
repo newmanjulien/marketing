@@ -67,7 +67,7 @@
         Survey
       </p>
       <h1
-        class="mt-[14px] font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-900"
+        class="mt-[28px] font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-900"
       >
         Survey has started for the most innovative CMOs of 2027
       </h1>

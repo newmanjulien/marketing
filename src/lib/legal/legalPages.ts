@@ -1,4 +1,4 @@
-import type { LegalPage, LegalPageModule } from './legalTypes';
+import type { LegalPage, LegalPageIndexItem, LegalPageModule } from './legalTypes';
 
 const legalDateFormatter = new Intl.DateTimeFormat('en-US', {
   month: '2-digit',
@@ -21,6 +21,22 @@ const legalPageLoaders = new Map(
 
 const formatLegalDate = (updatedAt: string) => legalDateFormatter.format(new Date(updatedAt));
 
+const legalPageOrder = [
+  'terms',
+  'billing-and-payment-terms',
+  'dpa',
+  'acceptable-use',
+  'privacy-policy',
+  'security-policy',
+  'subprocessors'
+];
+
+const getLegalPageOrder = (slug: string) => {
+  const order = legalPageOrder.indexOf(slug);
+
+  return order === -1 ? legalPageOrder.length : order;
+};
+
 export const getLegalPage = async (slug: string): Promise<LegalPage | undefined> => {
   const loadLegalPage = legalPageLoaders.get(slug);
 
@@ -37,4 +53,25 @@ export const getLegalPage = async (slug: string): Promise<LegalPage | undefined>
     updatedAtLabel: formatLegalDate(page.updatedAt),
     bodyComponent: pageModule.default
   };
+};
+
+export const getLegalPageIndexItems = async (): Promise<LegalPageIndexItem[]> => {
+  const pages = await Promise.all(
+    Array.from(legalPageLoaders.entries()).map(async ([slug, loadLegalPage]) => {
+      const { page } = await loadLegalPage();
+
+      return {
+        slug,
+        href: `/legal/${slug}`,
+        ...page,
+        updatedAtLabel: formatLegalDate(page.updatedAt)
+      };
+    })
+  );
+
+  return pages.sort((firstPage, secondPage) => {
+    const orderDifference = getLegalPageOrder(firstPage.slug) - getLegalPageOrder(secondPage.slug);
+
+    return orderDifference || firstPage.title.localeCompare(secondPage.title);
+  });
 };

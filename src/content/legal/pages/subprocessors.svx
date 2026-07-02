@@ -1,0 +1,66 @@
+<script context="module" lang="ts">
+  export const page = {
+    title: 'Subprocessors',
+    updatedAt: '2026-07-02',
+    contentWidth: 'standard'
+  };
+</script>
+
+<script lang="ts">
+  import LegalTable from '$lib/legal/LegalTable.svelte';
+  import type { LegalTableColumn, LegalTableRow } from '$lib/legal/legalTypes';
+
+  const subprocessorColumns = [
+    { key: 'companyName', label: 'Company Name' },
+    { key: 'description', label: 'Description' },
+    { key: 'location', label: 'Location' }
+  ] satisfies readonly LegalTableColumn[];
+
+  const subprocessorRows = [
+    {
+      companyName: 'Amazon Web Services',
+      description: 'Cloud hosting and infrastructure provider',
+      location: 'United States'
+    },
+    {
+      companyName: 'Confluent, Inc.',
+      description: 'Managed event streaming platform (Kafka)',
+      location: 'United States'
+    },
+    {
+      companyName: 'Datadog, Inc.',
+      description:
+        'Log processing for debugging, troubleshooting, auditing, reporting, and detecting and alerting on application behavior',
+      location: 'United States'
+    },
+    {
+      companyName: 'Dash0',
+      description: 'Platform/Monitoring services',
+      location: 'United States'
+    },
+    {
+      companyName: 'MongoDB Atlas (MongoDB, Inc.)',
+      description: 'Cloud database provider',
+      location: 'United States'
+    },
+    {
+      companyName: 'OpenAI, L.L.C.',
+      description: 'AI services',
+      location: 'United States'
+    },
+    {
+      companyName: 'Loops',
+      description: 'Cloud-based service for transactional email delivery',
+      location: 'United States'
+    },
+    {
+      companyName: 'Snowflake',
+      description: 'Data warehousing and analytics',
+      location: 'United States'
+    }
+  ] satisfies readonly LegalTableRow[];
+</script>
+
+A subprocessor is a legal entity that Crossbeam engages to perform specific functions, as described below. Subprocessors have, or may have, access to Customer Data as-needed to perform these functions.
+
+<LegalTable columns={subprocessorColumns} rows={subprocessorRows} />

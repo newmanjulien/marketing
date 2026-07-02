@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { companyNavItems } from './navigation';
+  import { footerNavItems } from './navigation';
 </script>
 
 <footer class="border-t border-stone-200/70 bg-white">
@@ -10,7 +10,7 @@
       </div>
 
       <nav class="hidden items-center gap-6 lg:flex" aria-label="Footer">
-        {#each companyNavItems as link}
+        {#each footerNavItems as link}
           <a
             href={link.href}
             class="text-sm font-book text-stone-400/60 transition-colors duration-200 hover:text-stone-500"

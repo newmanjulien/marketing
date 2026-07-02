@@ -19,6 +19,12 @@ export type LegalPage = LegalPageMetadata & {
   bodyComponent: Component;
 };
 
+export type LegalPageIndexItem = LegalPageMetadata & {
+  slug: string;
+  href: string;
+  updatedAtLabel: string;
+};
+
 export type LegalTableColumn = {
   key: string;
   label: string;

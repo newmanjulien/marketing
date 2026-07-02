@@ -1,0 +1,382 @@
+<script context="module" lang="ts">
+  export const page = {
+    title: 'Terms of Service',
+    updatedAt: '2026-07-02',
+    contentWidth: 'standard'
+  };
+</script>
+
+These Overbase Terms of Service (“**Agreement**”) are entered into by and between Overbase, Inc., its affiliates, or the affiliated Overbase entity specified in an applicable Order (“**Overbase**”) and the entity or person placing an Order for, accessing, or using the Services (“**Customer**” or “**you**”). This Agreement consists of the terms below and any applicable Orders.
+
+Certain capitalized terms are defined in Section 23 and others are defined where they are used. If you access or use the Services on behalf of an organization, you represent that you have authority to bind that organization, and “you” and “Customer” refer to that organization.
+
+The “**Effective Date**” is the earlier of Customer’s first access to the Services through an online provisioning, registration, or ordering process, or the effective date of the first applicable Order. By executing an Order, accepting this Agreement, or accessing or using the Services, each Party agrees that this Agreement is legally binding.
+
+## 1. Overview
+
+The Services consist of Overbase’s data sharing platform and related products, features, software, and services. The Services are designed to help Customer share selected business information with authorized partners, map account overlaps, identify partner-sourced opportunities, manage integrations, and operate related partner collaboration workflows.
+
+Where Overbase provides AI-powered features, those features may generate, summarize, analyze, or recommend content or insights based on Customer’s use of the Services, Customer Data, prompts, queries, and other inputs.
+
+## 2. The Services
+
+### 2.1 Permitted Use
+
+During the Subscription Term, Customer may access and use the Services solely for its internal business purposes, in accordance with the Documentation, this Agreement, and any usage limits or restrictions in an Order. Customer may use Software solely as necessary to use the Services as authorized by this Agreement.
+
+### 2.2 Users
+
+Only Users may access or use the Services. Each User must keep login credentials confidential and may not share them with any third party. Customer is responsible for its Users’ compliance with this Agreement and for actions taken through User accounts, except to the extent caused by Overbase’s breach of this Agreement. Customer will promptly notify Overbase of any unauthorized access to or compromise of User credentials.
+
+Overbase’s use of User account information is governed by its Privacy Policy, but the Privacy Policy does not govern Customer Data that Overbase Processes on Customer’s behalf.
+
+### 2.3 Administrators
+
+Customer may designate Users as administrators with control over Customer’s Service account, including management of Users, permissions, settings, and Customer Data. Customer is responsible for administrator selections and actions taken by administrators. Overbase is not responsible for Customer’s internal administration or management of the Services.
+
+### 2.4 Sharing Data
+
+Subject to this Agreement, including the AUP, Customer may use the Services to share Customer Data with partners or other third parties authorized by Customer. Once shared, Customer Data may be viewed, used to generate reports, exported, or otherwise used by those third parties. Customer and its Users are responsible for complying with Customer’s internal policies and applicable Laws when sharing Customer Data.
+
+Overbase is not responsible for access to or use of Customer Data by partners or other third parties resulting from Customer’s or its Users’ sharing decisions, settings, integrations, or permissions.
+
+### 2.5 Restrictions
+
+Customer will not, and will not permit any third party to:
+
+- provide access to, distribute, sell, rent, lease, sublicense, or otherwise make the Services available to a third party except as expressly permitted by this Agreement;
+- use the Services on behalf of, or to provide products or services to, third parties;
+- use the Services to develop, train, support, or improve a similar or competing product or service;
+- reverse engineer, decompile, disassemble, or seek to access the source code or non-public APIs of the Services, except to the extent expressly permitted by Law and only after prior notice to Overbase;
+- modify, copy, or create derivative works of the Services, except for authorized copies of Software expressly permitted by this Agreement;
+- remove or obscure proprietary notices in the Services;
+- publish benchmark, availability, or performance information about the Services without Overbase’s prior written consent;
+- interfere with operation of the Services, circumvent access restrictions, or conduct unauthorized security or vulnerability testing; or
+- transmit viruses, malware, or other harmful materials to the Services.
+
+## 3. Service Levels and Support
+
+During the Subscription Term, Overbase will provide support and service commitments for the Services as described in the applicable Order, Documentation, or written support policy made available by Overbase.
+
+## 4. Customer Data
+
+### 4.1 Data Use
+
+Customer grants Overbase a non-exclusive, worldwide right to use, copy, store, transmit, display, modify, Process, and create derivative works of Customer Data solely as necessary to provide the Services, support, and Technical Services under this Agreement. This includes sharing Customer Data with Customer’s authorized partners or other third parties according to Customer’s settings, permissions, integrations, and instructions in the Services.
+
+### 4.2 Aggregated Data
+
+Overbase may create and use Aggregated Data to improve and operate the Services, including through analytics and machine learning techniques, provided Aggregated Data does not identify Customer, Users, Data Subjects, or any specific entity and is aggregated with similar data from other customers or sources.
+
+### 4.3 Security
+
+Overbase uses technical and organizational measures designed to protect the Services and Customer Data as further described in the [Security Policy](/legal/security-policy).
+
+### 4.4 Personal Data
+
+Each Party will comply with its obligations under the [Data Processing Addendum](/legal/dpa).
+
+### 4.5 Location
+
+Overbase stores and Processes Customer Data in the United States, subject to the DPA.
+
+### 4.6 Data Export
+
+During the Subscription Term and for thirty (30) days after expiration or termination, Customer may export Customer Data using available export features or other reasonable methods described in the Documentation. After that period, Overbase may delete Customer Data according to its standard retention schedules and procedures, unless retention is required by Law.
+
+## 5. AI-Powered Features
+
+Customer authorizes Overbase to Process Customer Data, prompts, queries, and other inputs as necessary to provide AI Features, consistent with Section 4.1.
+
+Overbase will not use Customer Data or AI Output to train, fine-tune, or otherwise improve any artificial intelligence model, whether operated by Overbase or a third-party AI model provider. This restriction does not prevent Overbase from using Aggregated Data under Section 4.2, Usage Data under Section 14, or deterministic, rules-based, or algorithmic logic that does not involve model training or weight adjustment.
+
+Customer is responsible for reviewing, validating, and deciding whether to rely on AI Output. AI Output may be incomplete, inaccurate, or inappropriate for a particular use case.
+
+## 6. Customer Obligations
+
+### 6.1 Generally
+
+Customer is responsible for Customer Data, including its content, accuracy, legality, and use. Customer will use the Services in compliance with Laws and the [Acceptable Use Policy](/legal/acceptable-use).
+
+Customer represents and warrants that:
+
+- it will honor access, deletion, opt-out, and other Data Subject requests relating to Customer Data as required by Law;
+- it has made all required disclosures and obtained all rights, consents, permissions, and lawful bases necessary to use Customer Data with the Services;
+- it may grant Overbase the rights in Section 4.1; and
+- it may share Customer Data with partners or other third parties through the Services without violating Laws, third-party rights, or terms or privacy policies applicable to Customer Data.
+
+### 6.2 Partner Relationships
+
+Customer is solely responsible for managing its relationships with partners and other third parties, including agreements governing access to, use of, and protection of Customer Data shared with them.
+
+### 6.3 Prohibited Uses
+
+Customer will not use the Services with Prohibited Data or for High Risk Activities. The Services are not designed to satisfy legal requirements applicable to such uses, including HIPAA requirements, and Overbase is not a business associate under HIPAA. Overbase has no liability for Prohibited Data or use of the Services for High Risk Activities.
+
+## 7. Suspension
+
+Overbase may suspend Customer’s access to the Services if Customer breaches Section 2.5 or Section 6, Customer’s account is thirty (30) days or more overdue, or Customer’s actions risk harm to other customers or the security, availability, or integrity of the Services. Where practicable, Overbase will use reasonable efforts to provide prior notice. Once Customer resolves the issue requiring suspension, Overbase will promptly restore access in accordance with this Agreement.
+
+## 8. Third-Party Platforms
+
+Customer may choose to integrate or use the Services with Third-Party Platforms. Use of Third-Party Platforms is governed by Customer’s agreement with the relevant provider, not this Agreement. Overbase does not control and is not responsible for Third-Party Platforms, including their security, functionality, operation, availability, interoperability, or use of Customer Data.
+
+If Customer enables a Third-Party Platform, Overbase may access, Process, and exchange Customer Data with that Third-Party Platform on Customer’s behalf.
+
+## 9. Technical Services
+
+Any Technical Services purchased by Customer will be described in the applicable Order. Customer will provide Overbase timely access to Customer Materials reasonably needed to perform Technical Services. Overbase’s obligation to provide Technical Services is excused to the extent Customer fails to provide required access or materials.
+
+Customer may use Technical Services deliverables solely in connection with authorized use of the Services, subject to the same terms that apply to the Services.
+
+## 10. Commercial Terms
+
+### 10.1 Subscription Term
+
+Each Subscription Term will renew for successive renewal terms equal in duration to the expiring Subscription Term unless the Parties agree to a replacement renewal Order or either Party gives notice of non-renewal at least thirty (30) days before the end of the then-current Subscription Term. Email notice is sufficient and may be sent to legal@overbase.com.
+
+### 10.2 Fees and Taxes
+
+Fees and payment terms are set out in the applicable Order and the [Billing and Payment Terms](/legal/billing-and-payment-terms). Customer will reimburse Overbase for reasonable travel and lodging expenses incurred in connection with Technical Services if approved in the applicable Order or otherwise agreed in writing.
+
+Late payments may be subject to a service charge of 1.5% per month or the maximum rate allowed by Law, whichever is lower. Fees and expenses are non-refundable except as expressly stated in this Agreement, the Billing and Payment Terms, or the applicable Order. Customer is responsible for sales, use, GST, VAT, withholding, and similar taxes or levies applicable to Orders, except taxes on Overbase’s net income.
+
+### 10.3 Affiliate Orders
+
+Customer Affiliates may enter their own Orders as mutually agreed with Overbase. Each Affiliate Order creates a separate agreement between the Customer Affiliate and Overbase that incorporates this Agreement, with the Affiliate treated as “Customer.” No Customer or Customer Affiliate has rights under another Customer’s agreement with Overbase.
+
+## 11. Warranties and Disclaimers
+
+### 11.1 Limited Warranty
+
+Overbase warrants that, during the applicable Subscription Term, the Services will perform in all material respects as described in the Documentation and Overbase will not materially decrease the overall functionality of the Services. Overbase also warrants that Technical Services will be performed in a professional and workmanlike manner consistent with generally accepted industry standards.
+
+### 11.2 Warranty Remedy
+
+If Overbase breaches Section 11.1 and Customer submits a reasonably detailed warranty claim within thirty (30) days after discovering the non-conformity, Overbase will use commercially reasonable efforts to correct it. If Overbase cannot correct the non-conformity within thirty (30) days after receiving the claim, either Party may terminate the affected Order for the non-conforming Services or Technical Services. Upon termination, Overbase will refund prepaid, unused fees for the terminated portion of the Subscription Term or non-conforming Technical Services.
+
+This Section states Customer’s exclusive remedy and Overbase’s entire liability for breach of the warranties in Section 11.1. These warranties do not apply to issues caused by misuse, unauthorized modifications, Third-Party Platforms, third-party systems, Trials and Betas, or free or evaluation use.
+
+### 11.3 Disclaimers
+
+Except as expressly provided in Section 11.1, the Services, support, Technical Services, AI Features, and related Overbase offerings are provided “AS IS.” Overbase and its suppliers disclaim all warranties, whether express, implied, statutory, or otherwise, including warranties of merchantability, fitness for a particular purpose, title, and non-infringement.
+
+Overbase does not warrant that Customer’s use of the Services will be uninterrupted or error-free, that Overbase will review Customer Data for accuracy, or that Customer Data will be maintained without loss. Overbase is not responsible for delays, interruptions, failures, or other problems inherent in Internet or electronic communications or caused by systems outside Overbase’s control.
+
+Customer assumes all risk associated with use of the Services and reliance on AI Output. Customer is responsible for independently evaluating and verifying AI Output before relying on it.
+
+## 12. Term and Termination
+
+### 12.1 Term
+
+This Agreement begins on the Effective Date and remains in effect until all Subscription Terms have expired or been terminated.
+
+### 12.2 Termination
+
+Either Party may terminate this Agreement, including affected Orders, upon notice if the other Party fails to cure a material breach within thirty (30) days after receiving notice. Either Party may also terminate upon notice if the other Party ceases operations without a successor or becomes subject to bankruptcy, receivership, creditors’ arrangement, or similar proceedings that are not dismissed within sixty (60) days.
+
+### 12.3 Effect of Termination
+
+Upon expiration or termination, Customer’s right to access and use the Services and Technical Services will cease, except for limited access to export Customer Data as described in Section 4.6. At the disclosing Party’s request, the receiving Party will delete or destroy Confidential Information, except that Customer Data will be handled under Section 4.6 and either Party may retain Confidential Information as required by Law or internal record-retention policies. Retained Confidential Information remains subject to this Agreement.
+
+### 12.4 Survival
+
+Sections 2.5, 4.6, 6, 10.2, 11.3, 12.3, 12.4, 13, 14, 15, 16, 17, 18, 22, and 23, and any provisions that by their nature should survive, will survive expiration or termination.
+
+## 13. Ownership
+
+Except for rights and licenses expressly granted in this Agreement, neither Party grants the other any rights, title, or interest. As between the Parties, Customer retains all rights, title, and interest in Customer Data and Customer Materials, except for Overbase’s use rights in this Agreement.
+
+Overbase and its licensors retain all rights, title, and interest in the Services, Documentation, Software, Technical Services deliverables, Overbase technology, templates, methodologies, formats, dashboards, and related modifications or improvements. If Customer provides feedback or suggestions, Overbase may use them without restriction or obligation.
+
+## 14. Usage Data
+
+Overbase may collect and use Usage Data to provide, maintain, operate, support, monitor, and improve the Services, develop products and services, perform analytics, benchmarking, and reporting, and for other legitimate internal business purposes. If Overbase discloses Usage Data to third parties for these purposes, it will do so in a manner that does not identify Customer or Users and cannot reasonably be re-identified to them.
+
+## 15. Limitations of Liability
+
+### 15.1 Consequential Damages Waiver
+
+Except for Excluded Claims, neither Party nor its suppliers will have liability arising out of or related to this Agreement for loss of use, lost data, lost profits, failure of security mechanisms, interruption of business, or indirect, special, incidental, exemplary, punitive, reliance, or consequential damages of any kind, even if advised of their possibility.
+
+### 15.2 Liability Cap
+
+Except for Excluded Claims, each Party’s and its suppliers’ entire aggregate liability arising out of or related to this Agreement will not exceed the amounts paid or payable by Customer to Overbase during the twelve (12) months before the event giving rise to the claim.
+
+### 15.3 Excluded Claims
+
+“**Excluded Claims**” means claims for gross negligence, willful misconduct, or fraud, and amounts payable to third parties under a Party’s indemnification obligations in Section 16.
+
+### 15.4 Nature of Claims
+
+The waivers and limitations in this Section apply regardless of the form of action, whether in contract, tort, strict liability, or otherwise, and even if a limited remedy fails of its essential purpose.
+
+## 16. Indemnification
+
+### 16.1 By Overbase
+
+Overbase will defend Customer against a third-party claim alleging that the Services, when used by Customer as authorized in this Agreement, infringe a U.S. patent, copyright, trademark, or trade secret, and will indemnify Customer from damages and costs finally awarded or agreed in a settlement approved by Overbase.
+
+### 16.2 By Customer
+
+Customer will defend Overbase against any third-party claim arising from Customer Data or Customer’s use of the Services in violation of Law or this Agreement, and will indemnify Overbase from damages and costs finally awarded or agreed in a settlement approved by Customer.
+
+### 16.3 Procedures
+
+The indemnifying Party’s obligations are conditioned on receiving prompt notice of the claim, the exclusive right to control and direct the investigation, defense, and settlement, and all reasonably necessary cooperation from the indemnified Party at the indemnifying Party’s expense for reasonable out-of-pocket costs. The indemnifying Party may not settle a claim without the indemnified Party’s consent if settlement requires the indemnified Party to admit fault or take or refrain from action, except that Overbase may agree to restrictions relating to use of the Services.
+
+### 16.4 Mitigation and Exceptions
+
+In response to an actual or potential infringement claim, Overbase may procure rights for continued use, replace or modify the affected Services without materially reducing overall functionality, or terminate the affected Order and refund prepaid, unused fees for the terminated portion of the Subscription Term.
+
+Overbase has no obligation for claims arising from Customer or third-party modifications, combinations with products or data not provided by Overbase, continued use after Overbase provides a non-infringing alternative, use in violation of this Agreement or Documentation, settlements or admissions without Overbase’s consent, or Trials and Betas. This Section states Customer’s exclusive remedy and Overbase’s sole liability for third-party intellectual property infringement claims.
+
+## 17. Confidentiality
+
+### 17.1 Definition
+
+“**Confidential Information**” means non-public information disclosed under this Agreement that is designated as proprietary or confidential or should reasonably be understood to be proprietary or confidential based on its nature and circumstances. Overbase Confidential Information includes the Services, Documentation, this Agreement’s terms, and technical or performance information about the Services. Customer Confidential Information includes Customer Data.
+
+### 17.2 Obligations
+
+The receiving Party will protect the disclosing Party’s Confidential Information using at least the same degree of care it uses for its own similar information and no less than reasonable care. The receiving Party will not disclose Confidential Information except as permitted by this Agreement and will use Confidential Information only to fulfill obligations and exercise rights under this Agreement.
+
+The receiving Party may disclose Confidential Information to employees, agents, contractors, and representatives with a legitimate need to know who are bound by confidentiality obligations at least as protective as those in this Agreement. The receiving Party remains responsible for its representatives’ compliance.
+
+### 17.3 Exclusions
+
+Confidentiality obligations do not apply to information the receiving Party can document: is or becomes public through no fault of the receiving Party; was rightfully known or possessed before receipt; was lawfully received from a third party without breach of confidentiality obligations; or was independently developed without using Confidential Information.
+
+### 17.4 Remedies
+
+Unauthorized use or disclosure of Confidential Information may cause irreparable harm. Each Party may seek equitable relief in addition to other available remedies.
+
+## 18. Required Disclosures
+
+Nothing in this Agreement prohibits either Party from disclosing Customer Data or Confidential Information if required by Law, subpoena, or court order, provided the disclosing Party gives advance notice where legally permitted and reasonably cooperates with efforts to obtain confidential treatment.
+
+## 19. Trials and Betas
+
+If Customer receives access to Services or features on a free, trial, alpha, beta, preview, or early access basis (“**Trials and Betas**”), Customer may use them solely for internal evaluation during the period designated by Overbase, or thirty (30) days if no period is designated. Trials and Betas are voluntary and either Party may discontinue or terminate access at any time.
+
+Trials and Betas may be incomplete, unavailable, inoperable, or never generally released. They are provided “AS IS” and “AS AVAILABLE” without warranties, indemnification, service level commitments, or support commitments. Overbase’s aggregate liability for Trials and Betas will not exceed US$50.
+
+## 20. Publicity
+
+Neither Party may issue a public announcement or press release regarding this Agreement without the other Party’s prior written consent, except as required by Law. Overbase may identify Customer by name and logo as an Overbase customer on its website and in marketing materials with Customer’s prior written approval, not to be unreasonably withheld, conditioned, or delayed.
+
+## 21. Modifications
+
+### 21.1 Modifications to Agreement
+
+Overbase may modify this Agreement from time to time with notice to Customer. Modifications take effect at Customer’s next renewal Subscription Term unless Overbase states an earlier effective date. If Overbase requires an earlier effective date and Customer objects, Customer’s exclusive remedy is to terminate this Agreement by notifying Overbase within thirty (30) days after notice of the modified Agreement. In that case, Overbase will refund prepaid, unused fees for the terminated portion of the current Subscription Term.
+
+Once modifications take effect, Customer’s continued use of the Services constitutes acceptance. Overbase may require Customer to click to accept the modified Agreement.
+
+### 21.2 Modifications to Policies
+
+Policies are not subject to Section 21.1. With notice to Customer, Overbase may modify Policies to reflect new features or changed practices, provided modifications do not materially decrease Overbase’s overall obligations during a Subscription Term.
+
+## 22. General Terms
+
+### 22.1 Assignment
+
+Neither Party may assign this Agreement without the other Party’s prior consent, except either Party may assign this Agreement in connection with a merger, reorganization, acquisition, or transfer of all or substantially all assets or voting securities. Any non-permitted assignment is void. This Agreement binds and benefits permitted successors and assigns.
+
+### 22.2 Governing Law, Jurisdiction, and Venue
+
+This Agreement is governed by the laws of the State of New York and the United States, without regard to conflicts of laws provisions or the United Nations Convention on the International Sale of Goods. Actions related to this Agreement must be brought in the state or federal courts located in New York County, New York, and each Party submits to those courts’ personal jurisdiction.
+
+### 22.3 Attorneys’ Fees
+
+The prevailing Party in an action to enforce this Agreement is entitled to recover reasonable attorneys’ fees and costs.
+
+### 22.4 Notices
+
+Except as stated in this Agreement, notices must be in writing and are deemed given upon receipt if personally delivered, upon receipt if sent by certified or registered U.S. mail, or one business day after dispatch by commercial overnight delivery service.
+
+Notices to Overbase must be sent to Overbase, Inc., 600 California St, San Francisco, Attn: Legal Notice, with a copy to legal@overbase.com. Notices to Customer may be sent to the address Customer provided at registration or in an Order. Overbase may also send operational or administrative notices by email or through the Services.
+
+### 22.5 Entire Agreement
+
+This Agreement, including Orders, Policies, and the DPA, is the Parties’ entire agreement regarding its subject matter and supersedes prior or contemporaneous agreements on that subject. Headings are for convenience only, and “including” means “including without limitation.”
+
+### 22.6 Amendments
+
+Except as otherwise provided, amendments or supplements must be in writing and signed by authorized representatives or accepted through electronic means provided by Overbase. Terms in Customer purchase orders or business forms do not amend this Agreement and are rejected; those documents are for administrative purposes only.
+
+### 22.7 Waiver and Severability
+
+Waivers must be signed by the waiving Party and cannot be implied from conduct. If any provision is invalid, illegal, or unenforceable, it will be limited to the minimum extent necessary so the rest of this Agreement remains in effect.
+
+### 22.8 Force Majeure
+
+Neither Party is liable for delay or failure to perform, except payment obligations, due to events beyond its reasonable control, including natural disasters, pandemics, labor disputes, war, terrorism, civil unrest, governmental actions, or failures of telecommunications networks, Internet service providers, utilities, or other third-party systems.
+
+### 22.9 Subcontractors
+
+Overbase may use subcontractors and permit them to exercise Overbase’s rights under this Agreement, but Overbase remains responsible for their compliance with this Agreement and for Overbase’s overall performance.
+
+### 22.10 Independent Contractors
+
+The Parties are independent contractors and not agents, partners, fiduciaries, or joint venturers.
+
+### 22.11 Export
+
+Customer will comply with all relevant U.S. and foreign export and import Laws in using the Services. Customer represents that it is not listed on a U.S. government list of prohibited or restricted parties and is not located in, or a national of, a country subject to a U.S. government embargo or designated by the U.S. government as a terrorist-supporting country. Customer will not access or use the Services in violation of U.S. export controls or submit data controlled under the U.S. International Traffic in Arms Regulations.
+
+### 22.12 Open Source
+
+Software may incorporate third-party open source software. Information regarding applicable open source licenses may be provided in the Documentation or upon request. To the extent required by an open source license, that license applies to the open source software on a stand-alone basis instead of this Agreement.
+
+### 22.13 Government End Users
+
+Elements of the Services are commercial computer software. If Customer is a U.S. government agency, department, or other entity, use, duplication, reproduction, release, modification, disclosure, or transfer of the Services or related documentation is restricted by this Agreement and applicable federal acquisition regulations. The Services were developed at private expense.
+
+## 23. Definitions
+
+“**Affiliate**” means an entity directly or indirectly controlling, controlled by, or under common control with a Party, where control means ownership of more than fifty percent (50%) of voting interests or the power to direct management or affairs.
+
+“**Aggregated Data**” means data derived or compiled from Customer Data or Usage Data that has been aggregated with data from multiple customers or sources, has had identifiers removed or irreversibly obscured so it does not identify Customer, Users, Data Subjects, or any specific entity, and cannot reasonably be reverse-engineered to re-identify them. Aggregated Data is not Customer Data or Personal Data.
+
+“**AI Features**” means features within the Services that use large language models, machine learning, generative artificial intelligence, or similar technologies to generate, summarize, analyze, or recommend content or insights.
+
+“**AI Output**” means output generated by AI Features after Processing Customer Data, prompts, queries, or other inputs provided by Customer or Users.
+
+“**AUP**” means the Overbase Acceptable Use Policy at [/legal/acceptable-use](/legal/acceptable-use).
+
+“**Customer Data**” means data, content, or materials submitted to the Services by or on behalf of Customer, including Users and Third-Party Platforms.
+
+“**Customer Materials**” means materials, systems, and other resources Customer provides to Overbase in connection with Technical Services.
+
+“**Documentation**” means Overbase’s usage guidelines and standard technical documentation for the Services, as made available by Overbase.
+
+“**DPA**” means the Data Processing Addendum at [/legal/dpa](/legal/dpa).
+
+“**High Risk Activities**” means activities where use or failure of the Services could lead to death, personal injury, or environmental damage, including life support systems, emergency services, nuclear facilities, autonomous vehicles, or air traffic control systems.
+
+“**Laws**” means applicable local, state, federal, and international laws, regulations, rules, and conventions, including those related to privacy, data transfers, antitrust, unfair competition, and export controls.
+
+“**Order**” means an ordering document for access to the Services, support, Technical Services, or related Overbase offerings that references this Agreement and is executed by the Parties or completed through an Overbase-provided online order flow.
+
+“**Personal Data**” has the meaning given in the DPA.
+
+“**Policies**” means the AUP, Billing and Payment Terms, Security Policy, DPA, and any other policy incorporated into this Agreement or an Order.
+
+“**Prohibited Data**” means special categories of data under GDPR Article 9(1), protected health information regulated by HIPAA, payment card data subject to PCI DSS, information regulated under laws such as COPPA or GLBA, social security numbers, driver’s license numbers, government-issued identification numbers, or similar data protected under applicable Laws, unless expressly authorized in writing by Overbase.
+
+“**Security Policy**” means the Overbase Security Policy at [/legal/security-policy](/legal/security-policy).
+
+“**Services**” means the products, services, Software, and related support made available by Overbase under this Agreement or an Order.
+
+“**Software**” means client software, scripts, or other code provided by Overbase for use with the Services.
+
+“**Subscription Term**” means the term for Customer’s use of the Services as identified in an Order.
+
+“**Technical Services**” means training, enablement, implementation, configuration, or other technical services provided by Overbase related to the Services, as identified in an Order.
+
+“**Third-Party Platform**” means any platform, add-on, service, product, or integration not provided by Overbase that Customer enables for use with the Services.
+
+“**Usage Data**” means technical logs, usage data, telemetry, and learnings relating to Customer’s use of the Services, excluding Customer Data.
+
+“**User**” means an employee, agent, contractor, or other representative of Customer or its Affiliates that Customer allows or authorizes to use the Services.
