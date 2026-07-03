@@ -19,7 +19,7 @@
 
 <svelte:window onhashchange={syncHash} />
 
-<div class="fixed right-[42px] top-[31px] hidden items-center gap-[10px] lg:flex">
+<div class="z-layer-chrome fixed right-[42px] top-[31px] hidden items-center gap-[10px] lg:flex">
   {#each authNavItems as item (item.authRoute)}
     <ButtonLink
       href={createPortalAuthUrlForCurrentPage(item.authRoute, page.url, currentHash)}

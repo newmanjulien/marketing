@@ -29,7 +29,7 @@
 
 <nav
   id="mobile-menu"
-  class="fixed bottom-0 left-0 right-0 top-[50px] z-20 flex flex-col overflow-y-auto bg-white pb-[28px]"
+  class="z-layer-chrome-popover fixed bottom-0 left-0 right-0 top-[50px] flex flex-col overflow-y-auto bg-white pb-[28px]"
   aria-label="Mobile primary"
   transition:slide={{ duration: 380, axis: 'y', easing: cubicOut }}
 >

@@ -6,9 +6,31 @@
   --site-bg: #ffffff;
   --font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-heading: 'Newsreader', Georgia, serif;
+  --layer-page: 0;
+  --layer-chrome: 30;
+  --layer-chrome-popover: 40;
+  --layer-overlay: 50;
   font-family: var(--font-body);
   background-color: var(--site-bg);
   @apply text-stone-700;
+}
+
+@layer utilities {
+  .z-layer-page {
+    z-index: var(--layer-page);
+  }
+
+  .z-layer-chrome {
+    z-index: var(--layer-chrome);
+  }
+
+  .z-layer-chrome-popover {
+    z-index: var(--layer-chrome-popover);
+  }
+
+  .z-layer-overlay {
+    z-index: var(--layer-overlay);
+  }
 }
 
 html {

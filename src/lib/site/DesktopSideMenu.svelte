@@ -6,7 +6,7 @@
   const activePath = $derived(page.url.pathname);
 </script>
 
-<aside class="fixed left-[54px] top-[36px] hidden lg:block" aria-label="Primary">
+<aside class="z-layer-chrome fixed left-[54px] top-[36px] hidden lg:block" aria-label="Primary">
   <a
     href="/"
     class="mb-[28px] block h-[25px] w-[41px]"
