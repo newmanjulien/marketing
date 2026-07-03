@@ -47,8 +47,7 @@ You recently completed the tax return for TCC. And you can upload it for analysi
 https://nrt.overbase.app/encrypted-upload
 
 We will generate an opportunity report showing where TCC may need additional tax planning or advisory work. We will also point out where it may make sense to involve trusted professionals from your network.
-
-Read about our zero-retention and zero-access processing (link).`
+`
   } as const satisfies Record<HomeIndustryId, string>;
 
   let selectedIndustryId = $state<HomeIndustryId>('insurance');
