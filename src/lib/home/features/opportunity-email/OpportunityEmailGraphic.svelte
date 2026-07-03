@@ -41,13 +41,14 @@ I attached the PDF of the final proposal Jack submitted to them. As well as othe
 
 There's also a proposal our partner Thoughtworks submitted to them last month.`,
 
-    accounting: `Hi Ethan,
+    accounting: `Hi Shlok,
 
-You have a meeting with Juan Mendoza at PepsiCo. Nicolas wants us to "bring the firm" to client meetings where we can.
+You recently completed the tax return for TCC. And you can upload it for analysis here: 
+https://nrt.overbase.app/encrypted-upload
 
-Consider inviting Ajay Agrawal from the Sustainability & ESG Assurance team. He can help PepsiCo look at their data pipelines for upcoming climate disclosure rules.
+We will generate an opportunity report showing where TCC may need additional tax planning or advisory work. We will also point out where it may make sense to involve trusted professionals from your network.
 
-The Food and Beverage sector has seen more ESG reporting requirements lately, and PepsiCo has been buying new carbon-accounting and tracking software.`
+Read about our zero-retention and zero-access processing (link).`
   } as const satisfies Record<HomeIndustryId, string>;
 
   let selectedIndustryId = $state<HomeIndustryId>('insurance');

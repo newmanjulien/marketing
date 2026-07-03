@@ -12,13 +12,27 @@ export const accountingContent = {
     opportunityGroups: [
       {
         emailFormat: {
-          src: "/screenshots/accounting2.png",
+          src: "/screenshots/accounting2_1.png",
           alt: "Overbase generated opportunity email preview.",
           width: 2348,
           height: 1560,
         },
         opportunityEmail: {
-          src: "/screenshots/accounting3.png",
+          src: "/screenshots/accounting3_1.png",
+          alt: "Gmail opportunity email showing an attached insurance renewal report from Overbase.",
+          width: 1408,
+          height: 769,
+        },
+      },
+      {
+        emailFormat: {
+          src: "/screenshots/accounting2_2.png",
+          alt: "Overbase generated opportunity email preview.",
+          width: 2348,
+          height: 1560,
+        },
+        opportunityEmail: {
+          src: "/screenshots/accounting3_2.png",
           alt: "Gmail opportunity email showing an attached insurance renewal report from Overbase.",
           width: 1408,
           height: 699,

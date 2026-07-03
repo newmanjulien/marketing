@@ -18,7 +18,7 @@
 
   const subprocessorRows = [
     {
-      companyName: 'Amazon Web Services',
+      companyName: 'DigitalOcean',
       description: 'Cloud hosting and infrastructure provider',
       location: 'United States'
     },
