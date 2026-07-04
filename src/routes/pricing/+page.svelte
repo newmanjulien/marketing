@@ -37,11 +37,6 @@
         'You pay 5% of the net new revenue we generate together, and you only pay after you get paid. Revenue is attributed by your team in a self-reported way. Typically, companies need to be referred by one of their partners and share their CRM data with us to qualify'
     },
     {
-      question: 'Can I pay with equity instead of cash?',
-      answer:
-        'We prefer to align with our partners through upside. In some cases, our fees can be converted into equity in your company instead of cash, depending on fit and agreement on terms'
-    },
-    {
       question: 'Are there any upfront costs at all?',
       answer:
         'Most companies pay $15,000 for a proof of concept then transition to success-based pricing. Our preference is to do success-based pricing right after the proof of concept, but some companies chose to pay a flat fee in their first year. That flat fee is $100,000 for unlimited useage for one year. By year two, you would need to have transitioned to success-based pricing'
