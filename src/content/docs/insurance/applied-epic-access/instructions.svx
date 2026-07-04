@@ -1,0 +1,159 @@
+These steps are intended for the brokerage IT or Applied Epic administration team.
+
+
+## 1. Confirm Applied Epic API Availability
+
+Confirm whether your Applied Epic environment already has API access licensed and enabled.
+
+If API access is already available, proceed with account setup and credential creation.
+
+If API access is not currently enabled, contact your Applied account representative or Applied support to enable API access for your Epic environment before continuing.
+
+
+## 2. Create a Dedicated Read-only API Integration Account
+
+Create a dedicated integration identity for Overbase API access.
+
+This should be a service or integration account created specifically for this integration, not an existing employee account.
+
+Suggested account names include:
+
+```text
+overbase.integration
+overbase.api
+```
+
+The account should be configured for read-only API access.
+
+
+## 3. Assign Read-only API Permissions
+
+Assign only the permissions required to read approved brokerage data.
+
+Typical read-only access includes:
+
+- Clients
+- Contacts
+- Policies
+- Coverages
+- Premiums
+- Carriers
+- Claims
+- Activities
+- Producers
+- Offices
+- Accounting data, if available and approved
+- Custom fields exposed through the API
+
+Do not grant write, delete, administrative, configuration, or user-management permissions.
+
+
+## 4. Generate or Provide API Connection Details
+
+Provide the connection details required for Overbase to authenticate and retrieve data from the Applied Epic API.
+
+Depending on your Applied Epic setup, this may include:
+
+- API base URL or endpoint
+- Tenant, agency, or environment identifier
+- Client ID
+- Client secret
+- OAuth or token URL, if applicable
+- Integration username and password, if required by your supported authentication model
+- Applied Epic API documentation or environment-specific notes
+
+Credentials should belong to the dedicated read-only integration account.
+
+
+## 5. Approve Network or Security Access If Required
+
+If your environment restricts API access by network, application approval, or security policy, approve the Overbase integration path.
+
+This may involve:
+
+- IP allowlisting
+- Firewall or proxy approval
+- API gateway approval
+- OAuth application approval
+- Vendor access approval
+- Conditional access policy review
+
+The exact steps depend on how your Applied Epic environment is hosted and governed.
+
+
+## 6. Create a Separate Read-only Epic Validation User
+
+Create a separate read-only Applied Epic user account for implementation validation.
+
+Suggested account names include:
+
+```text
+overbase.validation
+overbase.readonly
+```
+
+This account is used by the Overbase implementation team to review configuration, workflows, custom fields, screens, and user-visible context.
+
+This account is not used for data extraction.
+
+The validation user should have:
+
+- Read-only access
+- No ability to create, edit, or delete records
+- Access to the modules used by your brokerage
+- Visibility into configured screens and custom fields where possible
+
+No administrative privileges are required.
+
+
+## 7. Share Credentials Securely
+
+Share API credentials and validation-user credentials through an approved secure process.
+
+Use a secure credential portal, password manager sharing flow, encrypted vendor onboarding workflow, or another approved secure channel.
+
+Do not send credentials or secrets in plain email.
+
+
+## 8. Support the Connectivity Test
+
+After credentials are provided, Overbase will perform a connectivity test.
+
+The test confirms that:
+
+- Authentication succeeds.
+- The API endpoint is reachable.
+- Approved client, policy, coverage, claims, activity, and account data can be read.
+- Expected custom fields are visible where available.
+- Permissions are read-only.
+- No unnecessary administrative or write permissions are present.
+
+If approved data is missing, your IT or Epic administration team may need to adjust the read-only permission set.
+
+
+## 9. Validate API Data Against the Epic Interface
+
+Using the separate read-only Epic validation user, Overbase will compare selected user-visible records in Epic against the data available through the API.
+
+This helps confirm:
+
+- Custom fields are represented correctly.
+- Important workflows and screens are understood.
+- Policy, coverage, claims, activity, and account records align with user expectations.
+- Important business information is not hidden in fields or screens that are unavailable through the API.
+
+This validation step helps ensure analytics reflect how your brokerage actually uses Epic.
+
+
+## 10. Document the Revocation Path
+
+Document how access can be disabled later.
+
+Revocation typically involves:
+
+- Revoking API credentials
+- Disabling the read-only API integration account
+- Disabling the read-only Epic validation user
+- Removing related IP allowlists, OAuth approvals, firewall approvals, or vendor access approvals if applicable
+
+No production workflow changes are required to revoke access.

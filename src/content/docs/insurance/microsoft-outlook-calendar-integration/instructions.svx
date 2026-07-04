@@ -1,0 +1,152 @@
+These steps are intended for the brokerage IT or Microsoft 365 administration team.
+
+
+## 1. Choose the Microsoft Graph Access Model
+
+Confirm how your organization wants to approve read-only Outlook calendar access.
+
+The preferred model is application-level Microsoft Graph access approved by an administrator and scoped to the appropriate users or groups.
+
+This avoids requiring each producer to complete an individual authorization flow.
+
+If your organization requires user-by-user authorization instead, delegated Microsoft Graph permissions can be reviewed during implementation.
+
+
+## 2. Create or Approve a Microsoft Entra Application
+
+Create a Microsoft Entra application registration for the Overbase calendar integration, or approve the Overbase-provided enterprise application if your deployment uses a vendor-managed application.
+
+The application represents the integration identity that will call Microsoft Graph.
+
+Suggested application names include:
+
+```text
+Overbase Calendar Integration
+Overbase Renewal Intelligence
+```
+
+
+## 3. Grant Read-only Calendar Permissions
+
+Grant read-only Microsoft Graph calendar access.
+
+Typical permission scope:
+
+```text
+Calendars.Read
+```
+
+If application permissions are used, Microsoft 365 administrator consent is required.
+
+Do not grant permissions for email, files, Teams chat, meeting recordings, meeting transcripts, calendar writes, or mailbox administration.
+
+
+## 4. Scope Access to Approved Users
+
+If your organization does not want tenant-wide calendar access, restrict the application to the producers, account executives, or service team members whose renewal meetings should be used for Renewal Intelligence.
+
+One common approach is to create a Microsoft 365 or Entra security group, such as:
+
+```text
+Overbase Calendar Access
+```
+
+Then add only the approved users to that group.
+
+Depending on your Microsoft 365 configuration, your team may also use an application access policy or equivalent mailbox-scoping control to limit which calendars the application can read.
+
+
+## 5. Generate or Provide Application Credentials
+
+Provide the connection details required for Overbase to authenticate with Microsoft Graph.
+
+Depending on your setup, this may include:
+
+- Tenant ID
+- Client ID
+- Client secret or certificate credential
+- Approved Microsoft Graph permissions
+- Authorized user, group, or mailbox scope
+- Any conditional access, proxy, or security policy notes relevant to the integration
+
+Certificate-based credentials are preferred for production when available. Client secrets can be used when they align with your organization's security policy.
+
+
+## 6. Confirm Meeting Description Handling
+
+Confirm whether meeting descriptions or body content should be excluded.
+
+Overbase generally requires calendar metadata only, such as subject, time, organizer, attendees, location, recurrence, and meeting status.
+
+Meeting descriptions or notes are not required unless your organization specifically approves their use.
+
+
+## 7. Approve Network or Security Access If Required
+
+If your environment restricts application access through conditional access, network rules, proxy controls, or vendor approval workflows, approve the Overbase Microsoft Graph integration path.
+
+This may involve:
+
+- Conditional access policy review
+- Enterprise application approval
+- Security group approval
+- Vendor access approval
+- Firewall or proxy approval
+- Certificate or secret rotation requirements
+
+The exact steps depend on your Microsoft 365 security configuration.
+
+
+## 8. Share Credentials Securely
+
+Share application credentials and connection details through an approved secure process.
+
+Use a secure credential portal, password manager sharing flow, encrypted vendor onboarding workflow, or another approved secure channel.
+
+Do not send client secrets, certificate private keys, or other credentials in plain email.
+
+
+## 9. Support the Connectivity Test
+
+After access is approved, Overbase will perform a Microsoft Graph connectivity test.
+
+The test confirms that:
+
+- Authentication succeeds.
+- Calendar metadata can be read for approved users.
+- Non-approved users are not accessible if mailbox scoping is configured.
+- Expected meeting metadata fields are available.
+- Access is read-only.
+- No email, Teams chat, file, transcript, recording, or write permissions are present.
+
+If approved calendars are not reachable, your Microsoft 365 administration team may need to adjust application consent, mailbox scoping, group membership, or conditional access rules.
+
+
+## 10. Validate Renewal Meeting Detection
+
+Overbase will use the approved calendar metadata to identify upcoming renewal meetings and match them to the appropriate clients in Applied Epic.
+
+During validation, Overbase may confirm that:
+
+- Approved producer calendars are included.
+- Meeting subjects, times, organizers, attendees, locations, recurrence, and status are available.
+- Meeting descriptions are excluded if requested.
+- Renewal meetings can be matched to the appropriate client records.
+- Briefing timing aligns with your organization's renewal workflow.
+
+This validation does not require changes to producer calendars or Microsoft 365 workflows.
+
+
+## 11. Document the Revocation Path
+
+Document how access can be disabled later.
+
+Revocation typically involves:
+
+- Removing Microsoft Graph administrator consent
+- Disabling or deleting the Entra application
+- Removing or rotating the application credential
+- Removing users from the approved calendar access group
+- Removing any application access policy, conditional access exception, firewall approval, or vendor approval if applicable
+
+No producer workflow changes are required to revoke access.

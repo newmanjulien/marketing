@@ -1,0 +1,154 @@
+We integrate with your Microsoft 365 environment to securely read Outlook calendar metadata so we can deliver **AI-powered Renewal Intelligence** to producers at the right time.
+
+This integration is **read-only** and does not modify calendars, meetings, or Microsoft 365 settings.
+
+Outlook calendar data is used to identify upcoming renewal conversations and trigger a personalized client briefing approximately **one month before the scheduled meeting**. This gives producers time to review recommendations, prepare proposals, and engage carrier partners before the client discussion.
+
+
+## What IT Needs To Provide
+
+We require read-only access to Outlook calendar metadata through Microsoft Graph.
+
+Preferred access is via:
+
+- Microsoft Graph API
+- Azure application registration
+- Administrator-approved delegated or application permissions
+- Connectivity test support
+
+No changes to Outlook, Microsoft 365, or existing producer workflows are required.
+
+
+## Access Level
+
+The integration requires calendar read access only.
+
+- We do not create, update, or delete calendar events.
+- We do not change Microsoft 365 configuration.
+- We do not send messages, invitations, or notifications.
+- Access can be disabled by revoking the approved Microsoft Graph application permissions.
+
+
+## Data Requested
+
+To identify upcoming client meetings, we request access to calendar metadata, including:
+
+- Meeting subject
+- Meeting date and time
+- Duration
+- Organizer
+- Required attendees
+- Optional attendees
+- Meeting location
+- Teams meeting indicator
+- Recurrence information
+- Meeting status
+
+This metadata enables our platform to identify renewal meetings, match them to the appropriate client, and determine when to deliver Renewal Intelligence briefings.
+
+
+## Data We Do NOT Require
+
+To minimize privacy concerns, we do **not** require access to:
+
+- Email messages
+- Email attachments
+- Teams chat messages
+- Meeting transcripts
+- Recorded meetings
+- Shared documents
+- Calendar attachments
+
+Meeting descriptions or notes are generally not required and can be excluded unless your organization specifically chooses to include them.
+
+
+## Important IT Consideration: Why Calendar Access Is Needed
+
+Applied Epic provides comprehensive information about your clients, policies, coverages, claims, and account history.
+
+Outlook tells us **when producers are preparing to meet with those clients**.
+
+The calendar integration is what lets Renewal Intelligence arrive before the renewal conversation, rather than requiring producers to search for reports after a meeting has already been scheduled. By combining client and policy data with meeting timing, the platform can deliver insights while there is still time to act.
+
+
+## How It Works
+
+1. A producer schedules a renewal meeting in Outlook.
+2. The meeting is detected through the read-only Microsoft 365 integration.
+3. The meeting is matched to the appropriate client in Applied Epic.
+4. Approximately **30 days before the scheduled meeting**, the platform generates a Renewal Intelligence briefing.
+5. The producer receives the briefing in time to review recommendations, obtain carrier quotes if appropriate, and prepare for the client conversation.
+
+This process is automatic and requires no additional work from producers.
+
+
+## Renewal Intelligence Package
+
+For each upcoming renewal meeting, our platform automatically generates a client briefing that may include:
+
+- Executive client summary
+- Current policy portfolio
+- Upcoming renewals
+- Open claims summary
+- Coverage benchmarking against similar clients
+- Coverage gaps and underinsured indicators
+- Cross-selling opportunities
+- Policy changes since the previous renewal
+- Client engagement history
+- AI-generated recommendations and suggested discussion topics
+
+The objective is to ensure every producer enters renewal discussions with relevant, data-driven insights.
+
+
+## Security & Revocation
+
+Our integration:
+
+- Uses encrypted HTTPS connections.
+- Uses Microsoft-approved authentication.
+- Is read-only.
+- Does not create, modify, or delete calendar events.
+- Can be disabled immediately by revoking application permissions.
+
+Revocation does not require changes to producer calendars or existing Microsoft 365 workflows.
+
+
+## Data Handling Model
+
+Outlook calendar metadata is processed ephemerally for privacy.
+
+We query Microsoft Graph when calendar context is needed, use the returned metadata to identify and time renewal workflows, and then discard meeting metadata after use. We do not maintain a replica of producer calendars or store unrelated meeting history.
+
+When updated calendar state is needed, we query Microsoft Graph again rather than relying on a long-lived local copy.
+
+We may retain minimal derived workflow state, such as whether a briefing was generated for a client and approximate renewal timing, but not full calendar event details.
+
+Outlook calendar metadata is not used to train, fine-tune, or improve generalized AI models. It is processed only to support the customer-specific renewal intelligence workflows described in this document.
+
+
+## Business Benefits
+
+Renewal Intelligence helps your brokerage:
+
+- Improve producer preparation for renewal meetings.
+- Deliver consistent, data-driven renewal conversations.
+- Identify coverage gaps before renewal discussions.
+- Surface cross-selling opportunities earlier in the renewal cycle.
+- Provide objective benchmarking against similar clients.
+- Increase producer efficiency by eliminating manual research.
+- Support stronger client retention through more informed advice.
+
+By delivering insights **before** the renewal meeting, not after, it enables producers to take action while there is still time to influence the renewal outcome.
+
+
+## Expected IT Effort
+
+Implementation typically consists of:
+
+- Registering or approving a Microsoft Graph application.
+- Granting read-only calendar permissions.
+- Providing administrator consent.
+- Confirming whether meeting descriptions should be excluded.
+- Performing a connectivity test.
+
+No changes to Outlook, Microsoft 365, or existing producer workflows are required.

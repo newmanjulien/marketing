@@ -1,0 +1,173 @@
+These steps are intended for the brokerage IT, revenue operations, or ZoomInfo administration team.
+
+
+## 1. Confirm ZoomInfo API Availability
+
+Confirm whether your organization's ZoomInfo subscription includes API access.
+
+If API access is already enabled, proceed with credential and permission setup.
+
+If API access is not currently enabled, contact your ZoomInfo account representative or ZoomInfo support to enable API access for the company enrichment or company lookup use case.
+
+
+## 2. Confirm the Approved Use Case
+
+Confirm that the approved use case is company enrichment of known client or account records.
+
+This means Overbase provides a known company identifier, such as a domain, company name, or ZoomInfo company ID, and ZoomInfo returns company-level enrichment data.
+
+The integration should not be approved for open-ended prospecting, bulk contact extraction, full-database export, or replication of ZoomInfo's dataset.
+
+
+## 3. Create a Dedicated API Integration Identity
+
+Create a dedicated ZoomInfo API or integration identity for Overbase if your ZoomInfo setup supports separate integration users.
+
+Suggested account names include:
+
+```text
+overbase.integration
+overbase.enrichment
+```
+
+The integration identity should be limited to the company enrichment or company lookup permissions required for this integration.
+
+
+## 4. Generate or Provide API Credentials
+
+Provide the connection details required for Overbase to authenticate with ZoomInfo.
+
+Depending on your ZoomInfo setup, this may include:
+
+- API key
+- OAuth client ID and client secret
+- Account, tenant, or subscription identifier if applicable
+- Enabled API product or package details
+- Authentication documentation
+- Environment-specific access notes
+
+Credentials should belong to the dedicated integration identity where possible.
+
+
+## 5. Confirm Allowed Endpoints and Inputs
+
+Confirm which ZoomInfo API capabilities are enabled for this integration.
+
+The required capability is company-level lookup or enrichment.
+
+Typical approved input identifiers include:
+
+- Company domain
+- Company name
+- ZoomInfo company ID
+
+Do not enable contact-search, prospecting, bulk-export, or unrelated dataset access unless separately reviewed and approved.
+
+
+## 6. Confirm Approved Output Fields
+
+Confirm which company-level enrichment fields may be returned and stored in the analytics layer.
+
+Typical approved fields include:
+
+- Employee count or employee range
+- Revenue or revenue range
+- Industry classification
+- Company type
+- Headquarters location
+- Parent company
+- Ultimate parent company
+- Subsidiaries
+- Website domain
+- Company description
+- Industry keywords or categories
+
+The integration does not require personal contact records, direct-dial phone numbers, personal email addresses, or prospecting lists.
+
+
+## 7. Confirm Credit, Quota, and Rate-limit Rules
+
+Confirm the usage rules that apply to your ZoomInfo subscription.
+
+This may include:
+
+- Available enrichment credits
+- Whether each enrichment call consumes credits
+- Monthly or annual usage limits
+- Rate limits by minute, hour, or day
+- Field-level or endpoint-level usage constraints
+- Any contractual limits on caching or reuse
+
+Overbase uses this information to configure predictable enrichment behavior and avoid unnecessary duplicate calls.
+
+
+## 8. Approve Refresh and Caching Policy
+
+Approve the enrichment refresh pattern for known client and account records.
+
+The standard approach is:
+
+- Enrich only known client or account records.
+- Trigger enrichment from business events such as renewal windows, scheduled client meetings, or explicit refresh requests.
+- Cache enriched company profiles to avoid repeated API calls.
+- Refresh high-value accounts more often than standard accounts.
+- Avoid daily full-database refreshes.
+- Avoid continuous re-enrichment of all accounts.
+
+This keeps ZoomInfo usage controlled and aligned with credit limits.
+
+
+## 9. Share Credentials Securely
+
+Share API credentials and connection details through an approved secure process.
+
+Use a secure credential portal, password manager sharing flow, encrypted vendor onboarding workflow, or another approved secure channel.
+
+Do not send API keys, client secrets, or other credentials in plain email.
+
+
+## 10. Support the Connectivity Test
+
+After credentials are provided, Overbase will perform a connectivity test using a small set of known sample accounts.
+
+The test confirms that:
+
+- Authentication succeeds.
+- The approved company enrichment or lookup capability is reachable.
+- Known company records can be matched by approved identifiers.
+- Expected company-level fields are returned.
+- Rate limits and credit behavior are understood.
+- No contact-search, prospecting, or bulk-export permissions are required.
+
+If approved records cannot be enriched, your ZoomInfo administration team may need to adjust API permissions, enabled endpoints, subscription settings, or usage controls.
+
+
+## 11. Validate Enrichment Output
+
+Review a small sample of enriched accounts with the appropriate business or operations team.
+
+Validation should confirm that:
+
+- Company matches are accurate.
+- Firmographic fields are useful for segmentation and benchmarking.
+- Parent, subsidiary, industry, employee, revenue, and headquarters data are represented as expected.
+- Returned data aligns with the approved fields and use case.
+- Credit usage is acceptable for the expected enrichment volume.
+
+This validation helps ensure enrichment improves analytics without creating unnecessary ZoomInfo usage.
+
+
+## 12. Document the Revocation Path
+
+Document how access can be disabled later.
+
+Revocation typically involves:
+
+- Revoking the API key or OAuth credentials
+- Disabling the dedicated integration identity
+- Removing company enrichment endpoint access
+- Removing Overbase from any approved vendor or integration list
+- Rotating credentials if needed
+- Removing any firewall, proxy, or security approval if applicable
+
+No source CRM, Applied Epic, or account workflow changes are required to revoke ZoomInfo access.

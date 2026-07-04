@@ -1,0 +1,157 @@
+We integrate with your Applied Epic environment to securely retrieve client, policy, coverage, claims, and account data for analytics, benchmarking, and AI-powered insights.
+
+Our integration is designed to be **read-only** and does not modify any data within Epic.
+
+
+## What IT Needs To Provide
+
+We request two separate read-only access paths for Applied Epic.
+
+### 1. API access for data synchronization
+
+API access is used to retrieve Epic data for analytics, benchmarking, renewal intelligence, and change detection.
+
+We will require:
+
+- API endpoint(s)
+- Authentication credentials (OAuth or other supported method)
+- API documentation
+- A dedicated integration account with **read-only** permissions
+
+### 2. Read-only Epic user account for implementation validation
+
+The read-only Epic user account is used by our implementation team to review configuration, workflows, custom fields, and user-visible context.
+
+This account is **not** used for data extraction.
+
+The Epic user account should have:
+
+- Read-only access
+- No ability to create, edit, or delete records
+- Access to the modules used by your brokerage
+- Visibility into custom fields and configured screens where possible
+
+No administrative privileges are required.
+
+For organizations with API access already enabled, implementation typically involves creating the appropriate accounts, assigning read-only permissions, providing credentials and documentation, and performing a connectivity test.
+
+If API access is not currently licensed or enabled, please contact your Applied account representative to discuss enabling API access.
+
+
+## Why Both Are Needed
+
+The API is used for scheduled synchronization of Epic data.
+
+The read-only Epic user account is used for implementation validation only. It helps us understand how your organization has configured Epic, compare API-accessible data against what users see in the application, and identify custom fields or workflows that may affect analytics.
+
+The user account is not used for data extraction.
+
+
+## Access Level
+
+The integration requires read-only access only.
+
+- API credentials are used for scheduled data synchronization.
+- The read-only Epic user account is used for implementation review and validation.
+- No administrative privileges are required.
+- We do not create, edit, or delete records in Epic.
+- Access can be disabled by revoking API credentials or disabling the read-only user account.
+
+
+## Data Requested
+
+Our platform performs scheduled incremental synchronizations.
+
+Typical data includes:
+
+- Clients
+- Contacts
+- Policies
+- Coverages
+- Premiums
+- Carriers
+- Claims
+- Activities
+- Producers
+- Offices
+- Accounting data (if available)
+- Custom fields exposed through the API
+
+
+## Data We Do NOT Require
+
+We do **not** require:
+
+- Administrative access
+- Write permissions
+- Permission to create, update, or delete Epic records
+- Access beyond the modules used by your brokerage
+- Direct database access unless separately discussed and approved
+
+The read-only user account is not used for data extraction. It is used to understand configuration, workflows, and user-visible context during implementation.
+
+
+## Important IT Consideration: Epic Access & Validation
+
+Applied Epic environments are often highly customized. API data alone may not fully explain how your organization uses Epic in practice.
+
+The read-only Epic user account enables our implementation team to:
+
+- Understand how your organization uses Epic.
+- Review your configuration and workflows.
+- Identify custom fields, screens, and business processes.
+- Validate that API data aligns with what users see in Epic.
+- Determine which important business information may not be exposed through the API.
+- Better interpret exported data for analytics and benchmarking.
+
+This validation step helps ensure the analytics reflect your brokerage's actual operating model rather than relying only on standard API field assumptions.
+
+
+## Security & Revocation
+
+Our integration:
+
+- Uses encrypted HTTPS connections.
+- Uses dedicated API credentials.
+- Uses a separate read-only user account for application review.
+- Does not modify data in Epic.
+- Can be disabled immediately by revoking API credentials or disabling the user account.
+
+
+## Data Handling Model
+
+Epic data is handled as a limited analytical dataset, not as a replicated operational database.
+
+We store only the fields needed to support benchmarking, renewal intelligence, change detection, and implementation validation. Because benchmarking requires historical comparison, some normalized client, policy, coverage, claims, and account attributes must be retained temporarily.
+
+Our standard retention target is **less than 6 months** for identifiable Epic-derived analytical records, unless your organization requires a shorter contractual retention period.
+
+Derived benchmarks, peer-group statistics, or aggregated calculations may persist longer when they are no longer tied to identifiable client records.
+
+Epic-derived data is not used to train, fine-tune, or improve generalized AI models. It is processed only to support the customer-specific analytics, benchmarking, renewal intelligence, and validation workflows described in this document.
+
+
+## Discovery & Validation
+
+During implementation, we will:
+
+- Review your Epic configuration.
+- Identify important customizations.
+- Compare user-visible information with API-accessible data.
+- Recommend additional data sources if certain business-critical information is not available through the API.
+- Validate that benchmarking calculations use the appropriate fields for your organization.
+
+This discovery process helps ensure that the analytics and benchmarks accurately reflect your brokerage's business practices.
+
+
+## Expected IT Effort
+
+For organizations with API access already enabled, implementation typically involves:
+
+- Creating a read-only API integration account.
+- Creating a read-only Epic user account.
+- Assigning appropriate permissions.
+- Providing API documentation and credentials.
+- Performing a connectivity test.
+
+Implementation typically requires only a small amount of IT effort and no changes to your production workflows.

@@ -1,0 +1,225 @@
+We integrate with your existing ZoomInfo subscription to securely enrich client and account data within your CRM and analytics systems.
+
+This integration uses ZoomInfo in its **intended and supported way**:
+
+> **Company enrichment of known records (e.g., via domain, company name, or company ID)**
+
+It does **not** perform open-ended searching, bulk extraction, or dataset replication.
+
+The goal is to improve the accuracy of segmentation, benchmarking, and AI-driven insights by ensuring client business profiles reflect current firmographic reality.
+
+
+## What IT Needs To Provide
+
+For organizations with ZoomInfo API access enabled, we request:
+
+- API access for the company enrichment or company lookup use case
+- Secure API credentials, such as OAuth or API key
+- Confirmation of allowed endpoints
+- Rate limit and usage constraint details
+- Connectivity testing with sample accounts
+
+We use the customer's authorized ZoomInfo subscription and credentials. We do not request a separate prospecting dataset or bulk export.
+
+
+## Access Level
+
+The integration requires enrichment access only.
+
+- We enrich known client or account records.
+- We do not modify ZoomInfo data.
+- We do not modify source CRM or account records directly.
+- We do not use ZoomInfo as a general prospecting search engine.
+- Access can be disabled by revoking the API credentials.
+
+
+## Data Requested
+
+We only enrich **existing client or account records** with company-level attributes.
+
+### Firmographics
+
+- Employee count (range)
+- Revenue (range)
+- Industry classification
+- Company type (private/public)
+- Headquarters location
+
+### Business Structure
+
+- Parent company
+- Ultimate parent company
+- Subsidiaries
+
+### Company Identifiers
+
+- Website domain
+- Company description
+- Industry keywords / categories
+
+
+## Data We Do NOT Use
+
+To remain aligned with ZoomInfo's enrichment-focused model, we do not:
+
+- Perform open-ended searches across the full dataset
+- Build or export bulk contact databases
+- Replicate ZoomInfo's dataset externally
+- Use the API as a general prospecting search engine
+- Store ZoomInfo data as a standalone independent dataset outside enrichment context
+
+
+## Important IT Consideration: Credits & Allowed Use
+
+ZoomInfo API usage is typically credit-based, where each enrichment call consumes a unit of usage.
+
+To ensure efficient and sustainable usage, our integration is designed with a **low-waste enrichment strategy**:
+
+### Key principles
+
+- **Event-driven enrichment only**
+  - Upcoming renewal windows
+  - Scheduled client meetings
+  - Explicit data refresh triggers
+
+- **Aggressive caching**
+  - Enriched company profiles are stored
+  - Data is reused rather than re-requested
+
+- **Time-based refresh controls**
+  - High-value accounts: refreshed periodically (e.g., monthly)
+  - Standard accounts: refreshed less frequently (e.g., quarterly)
+  - Low-priority accounts: minimal or no refresh cadence
+
+### What this avoids
+
+- No daily or continuous re-enrichment of all accounts
+- No full-database refresh cycles
+- No unnecessary duplicate API calls
+
+### Practical outcome
+
+In typical enterprise deployments, this approach results in:
+
+- Predictable and controlled API usage
+- Low risk of exceeding credit allocations
+- Minimal need for additional ZoomInfo spend beyond existing plans
+
+
+## How the Integration Works
+
+We use ZoomInfo's **company enrichment / company lookup model**, which is designed for:
+
+- Input: known company identifier (domain, company name, or company ID)
+- Output: enriched firmographic and organizational data
+
+This follows ZoomInfo's documented API patterns for structured company lookup and enrichment using filters such as company website, company name, and company ID.
+
+[ZoomInfo API Documentation (Overview)](https://developers.zoominfo.com/)
+
+
+## Integration Flow
+
+```text
+Internal Account Record
+        ->
+Extract Company Identifier (domain / name)
+        ->
+ZoomInfo Company Enrichment API
+        ->
+Return updated firmographic profile
+        ->
+Store enriched attributes in analytics layer
+        ->
+Improve segmentation, benchmarking, and AI insights
+```
+
+
+## Example Use Cases
+
+### 1. Improved segmentation accuracy
+
+- Account shows 25 employees internally
+- ZoomInfo indicates 80-100 employees
+
+Account is reclassified into a more appropriate peer group.
+
+
+### 2. Growth detection
+
+- Increase in employee count or revenue band
+
+Trigger review of coverage scope, service level, or account strategy.
+
+
+### 3. Better peer grouping
+
+- Updated industry classification or corporate structure
+
+More accurate "similar account" comparisons for benchmarking models.
+
+
+## Why ZoomInfo?
+
+Internal CRM systems contain your organization's view of clients and accounts:
+
+- Relationships and ownership
+- Products and services
+- Engagement history
+- Internal classifications and notes
+
+ZoomInfo provides external business context:
+
+- Company size and growth
+- Industry classification
+- Corporate structure
+- Business expansion signals
+
+Together, they enable more accurate segmentation, benchmarking, and account intelligence.
+
+
+## Security & Revocation
+
+Our integration:
+
+- Uses customer-authorized ZoomInfo credentials.
+- Makes read-only enrichment requests only.
+- Does not modify source systems.
+- Does not perform bulk extraction or dataset replication.
+- Can be disabled at any time by revoking API access.
+
+
+## Data Handling Model
+
+ZoomInfo enrichment results are cached aggressively to reduce unnecessary API calls and preserve credit allocations.
+
+When we enrich a known client or account record, we store the returned company profile in the analytics layer and reuse it instead of repeatedly requesting the same data from ZoomInfo. Refreshes are controlled by business triggers, configured refresh intervals, account priority, renewal timing, and customer policy.
+
+We do not continuously re-enrich the full account base, run full-database refresh cycles, or store ZoomInfo data as a standalone prospecting dataset outside the enrichment context.
+
+This model keeps enriched account intelligence current enough for analytics while maintaining predictable and efficient ZoomInfo credit usage.
+
+ZoomInfo enrichment data is not used to train, fine-tune, or improve generalized AI models. It is processed only to enrich known customer account records and support the customer-specific analytics workflows described in this document.
+
+
+## Expected IT Effort
+
+For organizations with ZoomInfo API access enabled:
+
+- Enable API access for the enrichment use case.
+- Provide secure API credentials, such as OAuth or API key.
+- Confirm allowed endpoints for company enrichment or lookup.
+- Validate rate limits and usage constraints.
+- Perform connectivity testing with sample accounts.
+
+
+## Business Value
+
+This integration improves account intelligence by ensuring:
+
+- Client profiles reflect **current business size and structure**
+- Segmentation uses **accurate and up-to-date firmographic data**
+- Recommendations reflect **real-world business growth or contraction**
+- AI-driven insights are grounded in **external market reality**
+
+By combining internal CRM data with ZoomInfo enrichment, organizations move from static records to **continuously updated account intelligence**.
