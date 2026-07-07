@@ -55,6 +55,7 @@
       tabs={mutualSuccessPlanSections}
       ariaLabel={`${resource.title} sections`}
       defaultActiveTabKey="benefits"
+      listClass="mt-[34px]"
       panelClass="mt-[28px]"
     >
       {#snippet children(section)}

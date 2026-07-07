@@ -13,6 +13,7 @@
     tabs,
     ariaLabel,
     defaultActiveTabKey,
+    listClass,
     panelClass,
     children
   }: {
@@ -20,6 +21,7 @@
     tabs: readonly Tab[];
     ariaLabel: string;
     defaultActiveTabKey?: string;
+    listClass?: string;
     panelClass?: string;
     children: Snippet<[Tab]>;
   } = $props();
@@ -28,19 +30,11 @@
   let activeTab = $derived.by(() => {
     const requestedTabKey = selectedTabKey ?? defaultActiveTabKey;
 
-    if (requestedTabKey) {
-      const selectedTab = tabs.find(({ key }) => key === requestedTabKey);
-
-      if (selectedTab) {
-        return selectedTab;
-      }
-    }
-
-    return tabs[0];
+    return tabs.find(({ key }) => key === requestedTabKey) ?? tabs[0];
   });
   let activeTabKey = $derived(activeTab?.key);
 
-  const listClasses = 'mt-[34px] flex flex-wrap items-center gap-[7px]';
+  const baseListClasses = 'flex flex-wrap items-center gap-[7px]';
   const tabClasses =
     'min-h-[34px] rounded-full border border-stone-200/70 bg-stone-100 px-[18px] text-[14px] font-medium leading-none text-stone-600 transition-colors duration-150 hover:border-stone-200/70 hover:bg-stone-50 hover:text-stone-800';
   const activeTabClasses = 'border-stone-200/70 bg-white text-stone-800';
@@ -82,15 +76,15 @@
   };
 </script>
 
-{#if tabs.length > 0}
-  <div class={listClasses} role="tablist" aria-label={ariaLabel}>
+{#if activeTab}
+  <div class={[baseListClasses, listClass]} role="tablist" aria-label={ariaLabel}>
     {#each tabs as tab (tab.key)}
       <button
         id={getTabId(tab.key)}
         type="button"
         role="tab"
         aria-selected={activeTabKey === tab.key}
-        aria-controls={getPanelId(tab.key)}
+        aria-controls={activeTabKey === tab.key ? getPanelId(tab.key) : undefined}
         tabindex={activeTabKey === tab.key ? 0 : -1}
         class={[tabClasses, activeTabKey === tab.key && activeTabClasses]}
         onclick={() => {
@@ -103,15 +97,14 @@
     {/each}
   </div>
 
-  {#each tabs as tab (tab.key)}
+  {#key activeTab.key}
     <div
-      id={getPanelId(tab.key)}
+      id={getPanelId(activeTab.key)}
       class={panelClass}
       role="tabpanel"
-      aria-labelledby={getTabId(tab.key)}
-      hidden={activeTabKey !== tab.key}
+      aria-labelledby={getTabId(activeTab.key)}
     >
-      {@render children(tab)}
+      {@render children(activeTab)}
     </div>
-  {/each}
+  {/key}
 {/if}

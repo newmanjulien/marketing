@@ -40,6 +40,7 @@
       tabs={successRoomSections}
       ariaLabel={`${room.prospectName} success room sections`}
       defaultActiveTabKey="documents"
+      listClass="mt-[34px]"
       panelClass="mt-[38px]"
     >
       {#snippet children(section)}

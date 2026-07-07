@@ -31,6 +31,7 @@
       idBase={`docs-${page.category}-${page.slug}`}
       tabs={page.sections}
       ariaLabel="Documentation sections"
+      listClass="mt-[34px]"
       panelClass="docs-rich-text mt-[28px] min-h-[160px] font-book text-[16px] leading-[1.55] tracking-normal text-stone-700"
     >
       {#snippet children(section)}

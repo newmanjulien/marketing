@@ -39,7 +39,17 @@
     </p>
 
     <div class="mt-[22px]">
-      <ButtonLink href={joinHref} target="_blank" rel="noopener noreferrer" variant="primary" size="large" fullWidth>{plan.ctaLabel}</ButtonLink>
+      <ButtonLink
+        href={joinHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        variant="primary"
+        size="small"
+        textSize="compact"
+        fullWidth
+      >
+        {plan.ctaLabel}
+      </ButtonLink>
     </div>
   </div>
 
