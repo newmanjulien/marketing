@@ -39,7 +39,7 @@
     {
       question: 'Are there any upfront costs at all?',
       answer:
-        'Most companies pay $15,000 for a proof of concept then transition to success-based pricing. Our preference is to do success-based pricing right after the proof of concept, but some companies chose to pay a flat fee in their first year. That flat fee is $100,000 for unlimited useage for one year. By year two, you would need to have transitioned to success-based pricing'
+        'Not necessarily. But most companies pay $15,000 for a proof of concept before signing a contract. And in the first year, most companies pay $20,000 to have an Overbase engineer (or often our CEO) come to their office in person to help with onboarding. For $20,000 we come for 1 week to kick off the deployment, then again for another 1 week mid-way through the first year to gather feedback from the team and make adjustments'
     }
   ] as const;
 </script>

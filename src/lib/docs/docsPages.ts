@@ -15,31 +15,21 @@ const docsPageEntries: DocsPageRegistryEntry[] = [
     category: 'insurance',
     slug: 'applied-epic-access',
     title: 'Applied Epic Requirements',
-    description: 'Read-only Applied Epic API and user access requirements for implementation teams.',
-    updatedAt: '2026-07-04'
+    description: 'Read-only Applied Epic API and user access requirements for implementation teams.'
   },
   {
     category: 'insurance',
     slug: 'microsoft-outlook-calendar-integration',
     title: 'Microsoft Outlook Calendar Integration for Renewal Intelligence',
-    description: 'Read-only Microsoft 365 calendar access requirements for Renewal Intelligence.',
-    updatedAt: '2026-07-04'
+    description: 'Read-only Microsoft 365 calendar access requirements for Renewal Intelligence.'
   },
   {
     category: 'insurance',
     slug: 'zoominfo-client-data-enrichment',
     title: 'ZoomInfo Integration for Client Data Enrichment',
-    description: 'ZoomInfo company enrichment requirements for client and account data quality.',
-    updatedAt: '2026-07-04'
+    description: 'ZoomInfo company enrichment requirements for client and account data quality.'
   }
 ];
-
-const docsDateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: '2-digit',
-  day: '2-digit',
-  year: 'numeric',
-  timeZone: 'UTC'
-});
 
 const docsSectionModules = import.meta.glob<DocsSectionModule>('../../content/docs/*/*/*.svx');
 
@@ -82,8 +72,6 @@ for (const [path, load] of Object.entries(docsSectionModules)) {
     docsPageSectionLoaders.set(pageKey, pageLoaders);
   }
 }
-
-const formatDocsDate = (updatedAt: string) => docsDateFormatter.format(new Date(updatedAt));
 
 const resolveRequiredSections = (
   sectionLoaders: DocsSectionLoaders | undefined
@@ -133,7 +121,6 @@ export const getDocsPage = async (category: string, slug: string): Promise<DocsP
   return {
     ...pageEntry,
     categoryLabel: docsCategoryLabels[pageEntry.category] ?? pageEntry.category,
-    updatedAtLabel: pageEntry.updatedAt ? formatDocsDate(pageEntry.updatedAt) : undefined,
     sections
   };
 };

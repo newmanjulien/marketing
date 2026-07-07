@@ -18,90 +18,20 @@
   } = $props();
 </script>
 
-<section class="survey-profile">
-  <p class="survey-profile__label">{label}</p>
-  <h2>{title}</h2>
+<section class="flex flex-col gap-[12px] sm:gap-[14px]">
+  <p class="m-0 text-[14px] font-book uppercase leading-none tracking-normal text-stone-500">
+    {label}
+  </p>
+  <h2 class="m-0 font-heading text-[25px] font-medium leading-[1.14] text-stone-900 sm:text-[28px]">
+    {title}
+  </h2>
 
-  <figure>
-    <img src={imageSrc} alt={imageAlt} loading="lazy" decoding="async" />
-    <figcaption>{caption}</figcaption>
+  <figure class="mt-[6px] flex flex-col gap-[8px]">
+    <img class="block h-auto w-full rounded-[4px]" src={imageSrc} alt={imageAlt} loading="lazy" decoding="async" />
+    <figcaption class="text-[13px] font-book leading-[1.35] text-stone-500">{caption}</figcaption>
   </figure>
 
-  <div class="survey-profile__body">
+  <div class="mt-[4px] flex max-w-[620px] flex-col gap-[14px] text-[16px] font-book leading-[1.55] text-stone-700 [&_p]:m-0">
     {@render children()}
   </div>
 </section>
-
-<style>
-  .survey-profile {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .survey-profile__label {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 350;
-    line-height: 1;
-    letter-spacing: 0;
-    color: rgb(120 113 108);
-    text-transform: uppercase;
-  }
-
-  .survey-profile h2 {
-    margin: 0;
-    font-family: var(--font-heading);
-    font-size: 28px;
-    font-weight: 500;
-    line-height: 1.14;
-    color: rgb(28 25 23);
-  }
-
-  .survey-profile figure {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 6px 0 0;
-  }
-
-  .survey-profile img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-  }
-
-  .survey-profile figcaption {
-    font-size: 13px;
-    font-weight: 350;
-    line-height: 1.35;
-    color: rgb(120 113 108);
-  }
-
-  .survey-profile__body {
-    display: flex;
-    max-width: 620px;
-    flex-direction: column;
-    gap: 14px;
-    margin: 4px 0 0;
-    font-size: 16px;
-    font-weight: 350;
-    line-height: 1.55;
-    color: rgb(68 64 60);
-  }
-
-  .survey-profile__body :global(p) {
-    margin: 0;
-  }
-
-  @media (max-width: 640px) {
-    .survey-profile {
-      gap: 12px;
-    }
-
-    .survey-profile h2 {
-      font-size: 25px;
-    }
-  }
-</style>

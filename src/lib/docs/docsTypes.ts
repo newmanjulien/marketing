@@ -14,7 +14,6 @@ export type DocsPageSection = DocsSectionDefinition & {
 export type DocsPageMetadata = {
   title: string;
   description?: string;
-  updatedAt?: string;
 };
 
 export type DocsPageRegistryEntry = DocsPageMetadata & {
@@ -30,6 +29,5 @@ export type DocsPage = DocsPageMetadata & {
   category: string;
   categoryLabel: string;
   slug: string;
-  updatedAtLabel?: string;
   sections: DocsPageSection[];
 };
