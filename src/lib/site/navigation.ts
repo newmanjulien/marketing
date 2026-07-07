@@ -13,7 +13,6 @@ export const productNavItems = [
 
 export const companyNavItems = [
   { label: "About", href: "/about" },
-  { label: "Careers", href: "/careers" },
 ] satisfies NavLinkItem[];
 
 export const footerNavItems = [
