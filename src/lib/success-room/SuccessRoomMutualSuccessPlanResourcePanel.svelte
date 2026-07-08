@@ -3,7 +3,12 @@
   import type { PillTab } from '$lib/ui/PillTabs.svelte';
   import SuccessRoomBenefitsPanel from './SuccessRoomBenefitsPanel.svelte';
   import SuccessRoomPlanPanel from './SuccessRoomPlanPanel.svelte';
-  import type { SuccessRoom, SuccessRoomMutualSuccessPlanResource } from './successRoomTypes';
+  import type {
+    SuccessRoom,
+    SuccessRoomMutualSuccessPlanResource,
+    SuccessRoomPlanPatch,
+    SuccessRoomPlanState
+  } from './successRoomTypes';
 
   type MutualSuccessPlanSection = PillTab & {
     description: string;
@@ -30,10 +35,14 @@
 
   let {
     room,
-    resource
+    resource,
+    plan,
+    onPlanChange
   }: {
     room: SuccessRoom;
     resource: SuccessRoomMutualSuccessPlanResource;
+    plan: SuccessRoomPlanState;
+    onPlanChange: (patch: SuccessRoomPlanPatch) => void;
   } = $props();
 </script>
 
@@ -52,7 +61,7 @@
       {#if section.key === 'benefits'}
         <SuccessRoomBenefitsPanel />
       {:else if section.key === 'plan'}
-        <SuccessRoomPlanPanel {resource} team={room.team} />
+        <SuccessRoomPlanPanel {resource} team={room.team} {plan} {onPlanChange} />
       {/if}
     </div>
   {/snippet}

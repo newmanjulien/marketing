@@ -3,7 +3,11 @@
   import type { PillTab } from '$lib/ui/PillTabs.svelte';
   import SuccessRoomDataSourcesPanel from './SuccessRoomDataSourcesPanel.svelte';
   import SuccessRoomEditableTextPanel from './SuccessRoomEditableTextPanel.svelte';
-  import type { SuccessRoom, SuccessRoomEditableTextResource } from './successRoomTypes';
+  import type {
+    SuccessRoom,
+    SuccessRoomEditableTextResource,
+    SuccessRoomEditableTextState
+  } from './successRoomTypes';
 
   type EditableTextSection = PillTab & {
     description: string;
@@ -30,10 +34,14 @@
 
   let {
     room,
-    resource
+    resource,
+    state,
+    onStateChange
   }: {
     room: SuccessRoom;
     resource: SuccessRoomEditableTextResource;
+    state: SuccessRoomEditableTextState;
+    onStateChange: (state: SuccessRoomEditableTextState) => void;
   } = $props();
 </script>
 
@@ -50,9 +58,17 @@
       <p class={panelDescriptionClasses}>{section.description}</p>
 
       {#if section.key === 'format'}
-        <SuccessRoomEditableTextPanel {resource} />
+        <SuccessRoomEditableTextPanel
+          roomSlug={room.slug}
+          {resource}
+          editableState={state}
+          {onStateChange}
+        />
       {:else if section.key === 'data-sources'}
-        <SuccessRoomDataSourcesPanel />
+        <SuccessRoomDataSourcesPanel
+          editableState={state}
+          {onStateChange}
+        />
       {/if}
     </div>
   {/snippet}

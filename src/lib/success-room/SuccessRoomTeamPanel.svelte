@@ -3,9 +3,68 @@
   import SuccessRoomTeamGallery from './SuccessRoomTeamGallery.svelte';
   import type { SuccessRoomTeamMember } from './successRoomTypes';
 
-  let { team }: { team: SuccessRoomTeamMember[] } = $props();
+  type AddedTeamMember = {
+    id: string;
+    name: string;
+    role: string;
+    email?: string;
+  };
 
+  let {
+    roomSlug,
+    team
+  }: {
+    roomSlug: string;
+    team: SuccessRoomTeamMember[];
+  } = $props();
+
+  let optimisticRoomSlug = $state('');
+  let optimisticTeamMembers = $state<SuccessRoomTeamMember[]>([]);
   let addTeamMemberModalOpen = $state(false);
+
+  let localTeam = $derived.by(() => {
+    const serverTeamMemberIds = new Set(team.map((member) => member.id));
+
+    return [
+      ...team,
+      ...optimisticTeamMembers.filter((member) => !serverTeamMemberIds.has(member.id))
+    ];
+  });
+
+  $effect(() => {
+    if (optimisticRoomSlug !== roomSlug) {
+      optimisticRoomSlug = roomSlug;
+      optimisticTeamMembers = [];
+    }
+  });
+
+  const addTeamMember = async (member: {
+    name: string;
+    role: string;
+    email?: string;
+  }) => {
+    const response = await fetch(`/success-room/${roomSlug}/api/team-members`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(member)
+    });
+
+    if (!response.ok) {
+      throw new Error('Team member could not be added.');
+    }
+
+    const { member: createdMember }: { member: AddedTeamMember } = await response.json();
+
+    optimisticTeamMembers = [
+      ...optimisticTeamMembers,
+      {
+        ...createdMember,
+        imageHref: ''
+      }
+    ];
+  };
 </script>
 
 <div class="grid gap-[24px]">
@@ -16,10 +75,18 @@
     of concept, answer technical questions, and keep next steps moving as the work progresses.
   </p>
 
-  <SuccessRoomTeamGallery {team} onAddTeamMember={() => (addTeamMemberModalOpen = true)} />
+  <SuccessRoomTeamGallery
+    team={localTeam}
+    onAddTeamMember={() => {
+      addTeamMemberModalOpen = true;
+    }}
+  />
 </div>
 
 <SuccessRoomAddTeamMemberModal
   open={addTeamMemberModalOpen}
-  onClose={() => (addTeamMemberModalOpen = false)}
+  onClose={() => {
+    addTeamMemberModalOpen = false;
+  }}
+  onAddTeamMember={addTeamMember}
 />

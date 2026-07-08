@@ -12,16 +12,19 @@ export type SuccessRoomResourceBase<Kind extends string> = {
   slug: string;
   title: string;
   actionLabel: string;
-  previewImageHref: string;
+  description?: string;
 };
 
 export type SuccessRoomPdfResource = SuccessRoomResourceBase<'pdf'> & {
-  description?: string;
   delivery: SuccessRoomAssetDelivery;
 };
 
 export type SuccessRoomAudioResource = SuccessRoomResourceBase<'audio'> & {
-  description?: string;
+  delivery: SuccessRoomAssetDelivery;
+};
+
+export type SuccessRoomDownloadableFileResource =
+  SuccessRoomResourceBase<'downloadable-file'> & {
   delivery: SuccessRoomAssetDelivery;
 };
 
@@ -33,7 +36,6 @@ export type SuccessRoomMutualSuccessPlanResource =
 
 export type SuccessRoomEditableTextResource =
   SuccessRoomResourceBase<'editable-text'> & {
-    description: string;
     delivery: SuccessRoomRouteDelivery;
     initialText: string;
     editorRows?: number;
@@ -46,13 +48,49 @@ export type SuccessRoomRoutedResource =
 export type SuccessRoomResource =
   | SuccessRoomPdfResource
   | SuccessRoomAudioResource
+  | SuccessRoomDownloadableFileResource
   | SuccessRoomRoutedResource;
+
+export type SuccessRoomFileMetadata = {
+  fileId: string;
+  filename: string;
+  contentType: string;
+  byteSize: number;
+};
+
+export type SuccessRoomGlobalFileMetadata = {
+  globalFileId: string;
+  filename: string;
+  contentType: string;
+  byteSize: number;
+};
 
 export type SuccessRoomTeamMember = {
   id: string;
   name: string;
   role: string;
+  email?: string;
   imageHref: string;
+  photo?: SuccessRoomGlobalFileMetadata;
+};
+
+export type SuccessRoomPlanState = {
+  checkedTaskIds: string[];
+  dateOverrides: Record<string, string>;
+};
+
+export type SuccessRoomPlanPatch = Partial<SuccessRoomPlanState>;
+
+export type SuccessRoomEditableTextState = {
+  content: string;
+  dataSources: string[];
+  attachment?: SuccessRoomFileMetadata;
+};
+
+export type SuccessRoomState = {
+  questions: Record<string, string>;
+  plan?: SuccessRoomPlanState;
+  editableTexts: Record<string, SuccessRoomEditableTextState>;
 };
 
 export type SuccessRoom = {

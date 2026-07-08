@@ -7,7 +7,12 @@
   import SuccessRoomTeamListModal from './SuccessRoomTeamListModal.svelte';
   import { mutualSuccessPlanItems, type MutualSuccessPlanItem } from './successRoomMutualSuccessPlan';
   import { formatTaskDateLabel, parseTaskDateLabel } from './successRoomTaskDates';
-  import type { SuccessRoomMutualSuccessPlanResource, SuccessRoomTeamMember } from './successRoomTypes';
+  import type {
+    SuccessRoomMutualSuccessPlanResource,
+    SuccessRoomPlanPatch,
+    SuccessRoomPlanState,
+    SuccessRoomTeamMember
+  } from './successRoomTypes';
 
   type DatePickerContext = {
     taskId: string;
@@ -16,17 +21,21 @@
 
   let {
     resource,
-    team
+    team,
+    plan,
+    onPlanChange
   }: {
     resource: SuccessRoomMutualSuccessPlanResource;
     team: SuccessRoomTeamMember[];
+    plan: SuccessRoomPlanState;
+    onPlanChange: (patch: SuccessRoomPlanPatch) => void;
   } = $props();
 
   let openItemId = $state<string | null>(null);
-  let checkedTaskIds = $state(new Set<string>());
   let teamListModalOpen = $state(false);
   let datePickerContext = $state<DatePickerContext | null>(null);
-  let taskDateOverrides = $state<Record<string, Date>>({});
+  let checkedTaskIds = $derived(new Set(plan.checkedTaskIds));
+  let taskDateOverrides = $derived(plan.dateOverrides);
 
   const fallbackDatePickerDate = new Date();
   const accordionListClasses = 'grid w-full gap-[14px]';
@@ -126,8 +135,22 @@
 
   const getTaskId = (itemId: string, taskIndex: number) => `${itemId}-task-${taskIndex}`;
 
+  const parseIsoDate = (value: string) => {
+    const [year, month, day] = value.split('-').map(Number);
+
+    return new Date(year, month - 1, day);
+  };
+
+  const formatIsoDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  };
+
   const getTaskDisplayDate = (taskId: string, dateLabel: string) =>
-    taskDateOverrides[taskId] ?? parseTaskDateLabel(dateLabel);
+    taskDateOverrides[taskId] ? parseIsoDate(taskDateOverrides[taskId]) : parseTaskDateLabel(dateLabel);
 
   const getAccordionCardVariant = (item: MutualSuccessPlanItem) => {
     const variantKey: AccordionCardVariantKey = item.variant ?? 'default';
@@ -135,8 +158,16 @@
     return accordionCardVariants[variantKey];
   };
 
+  const getTaskWithRoomAssignee = (task: MutualSuccessPlanItem['tasks'][number]) => ({
+    ...task,
+    assigneeImageHref:
+      task.assigneeImageHref === '/julien.png'
+        ? (team.find((member) => member.id === 'julien-newman')?.imageHref ?? task.assigneeImageHref)
+        : task.assigneeImageHref
+  });
+
   const setTaskChecked = (taskId: string, checked: boolean) => {
-    const nextCheckedTaskIds = new Set(checkedTaskIds);
+    const nextCheckedTaskIds = new Set(plan.checkedTaskIds);
 
     if (checked) {
       nextCheckedTaskIds.add(taskId);
@@ -144,7 +175,9 @@
       nextCheckedTaskIds.delete(taskId);
     }
 
-    checkedTaskIds = nextCheckedTaskIds;
+    onPlanChange({
+      checkedTaskIds: Array.from(nextCheckedTaskIds)
+    });
   };
 
   const openTeamListModal = () => {
@@ -167,10 +200,12 @@
       return;
     }
 
-    taskDateOverrides = {
-      ...taskDateOverrides,
-      [datePickerContext.taskId]: date
-    };
+    onPlanChange({
+      dateOverrides: {
+        ...plan.dateOverrides,
+        [datePickerContext.taskId]: formatIsoDate(date)
+      }
+    });
   };
 
   const selectedDatePickerDate = $derived(datePickerContext?.selectedDate ?? fallbackDatePickerDate);
@@ -213,8 +248,9 @@
           {#each item.tasks as task, taskIndex (task.title)}
             {@const taskId = getTaskId(item.id, taskIndex)}
             {@const displayDate = getTaskDisplayDate(taskId, task.date)}
+            {@const displayTask = getTaskWithRoomAssignee(task)}
             <SuccessRoomPlanTaskRow
-              {task}
+              task={displayTask}
               {taskId}
               checked={checkedTaskIds.has(taskId)}
               displayDateLabel={formatTaskDateLabel(displayDate)}

@@ -4,16 +4,29 @@
   import SuccessRoomEditableTextResourcePanel from './SuccessRoomEditableTextResourcePanel.svelte';
   import SuccessRoomHeader from './SuccessRoomHeader.svelte';
   import SuccessRoomMutualSuccessPlanResourcePanel from './SuccessRoomMutualSuccessPlanResourcePanel.svelte';
+  import { createSuccessRoomResourceDraft } from './successRoomDrafts.svelte';
   import { getSuccessRoomHref } from './successRooms';
-  import type { SuccessRoom, SuccessRoomRoutedResource } from './successRoomTypes';
+  import type {
+    SuccessRoom,
+    SuccessRoomRoutedResource,
+    SuccessRoomState
+  } from './successRoomTypes';
 
   let {
     room,
-    resource
+    resource,
+    state: roomState
   }: {
     room: SuccessRoom;
     resource: SuccessRoomRoutedResource;
+    state: SuccessRoomState;
   } = $props();
+
+  const draft = createSuccessRoomResourceDraft(
+    () => room,
+    () => resource,
+    () => roomState
+  );
 </script>
 
 <PageFrame>
@@ -26,9 +39,19 @@
     />
 
     {#if resource.kind === 'mutual-success-plan'}
-      <SuccessRoomMutualSuccessPlanResourcePanel {room} {resource} />
+      <SuccessRoomMutualSuccessPlanResourcePanel
+        {room}
+        {resource}
+        plan={draft.plan}
+        onPlanChange={draft.patchPlan}
+      />
     {:else if resource.kind === 'editable-text'}
-      <SuccessRoomEditableTextResourcePanel {room} {resource} />
+      <SuccessRoomEditableTextResourcePanel
+        {room}
+        {resource}
+        state={draft.getEditableTextState(resource)}
+        onStateChange={(nextState) => draft.setEditableTextState(resource.slug, nextState)}
+      />
     {/if}
   </ContentMeasure>
 </PageFrame>

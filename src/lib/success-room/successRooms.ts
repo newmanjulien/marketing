@@ -3,7 +3,6 @@ import type {
   SuccessRoomResource,
   SuccessRoomRoutedResource,
 } from './successRoomTypes';
-import { successRoomTeam } from './successRoomTeam';
 
 export type SuccessRoomRoutedResourceLink = {
   href: string;
@@ -21,87 +20,11 @@ export type SuccessRoomResourceLink =
   | SuccessRoomRoutedResourceLink
   | SuccessRoomDirectResourceLink;
 
-export const successRooms = [
-  {
-    slug: 'navacord',
-    prospectName: 'Navacord',
-    description:
-      'Review the shared materials for evaluating Overbase and aligning on a practical proof of concept.',
-    team: successRoomTeam,
-    resources: [
-      {
-        kind: 'pdf',
-        slug: 'sales-deck',
-        title: 'Sales deck',
-        actionLabel: 'Download the custom sales deck',
-        description: 'Review the Overbase sales deck prepared for Navacord.',
-        previewImageHref:
-          '/success-room/navacord/resource-preview.png',
-        delivery: {
-          type: 'asset',
-          href: '/success-room/navacord/sales-deck.pdf',
-        },
-      },
-      {
-        kind: 'audio',
-        slug: 'audio-summary',
-        title: 'Audio summary',
-        actionLabel: 'Download the audio summary',
-        description: 'Listen to a short summary of Overbase for Navacord.',
-        previewImageHref:
-          '/success-room/navacord/resource-preview.png',
-        delivery: {
-          type: 'asset',
-          href: '/success-room/navacord/audio-summary.mp3',
-        },
-      },
-      {
-        kind: 'mutual-success-plan',
-        slug: 'mutual-success-plan',
-        title: 'Mutual success plan',
-        actionLabel: 'Create the mutual success plan',
-        description:
-          'Align on success criteria, next steps, and owners for a practical proof of concept.',
-        previewImageHref:
-          '/success-room/navacord/resource-preview.png',
-        delivery: {
-          type: 'route',
-        },
-      },
-      {
-        kind: 'editable-text',
-        slug: 'initial-format',
-        title: 'Initial email format',
-        actionLabel: 'Create the initial email format',
-        description:
-          'Edit a simple starting email format for the first Overbase follow-up.',
-        previewImageHref:
-          '/success-room/navacord/resource-preview.png',
-        editorRows: 14,
-        initialText: `Hi [Name],
-
-Sharing an initial format for how Overbase could support [Company].
-
-The goal would be to identify [opportunity type], route the right context to [team or person], and agree on a simple workflow for reviewing results.
-
-Proposed next step:
-[Next step]
-
-Best,
-[Sender]`,
-        delivery: {
-          type: 'route',
-        },
-      },
-    ],
-  },
-] satisfies SuccessRoom[];
-
-export const getSuccessRoomHref = (room: SuccessRoom) =>
+export const getSuccessRoomHref = (room: Pick<SuccessRoom, 'slug'>) =>
   `/success-room/${room.slug}`;
 
 export const getSuccessRoomResourceLink = (
-  room: SuccessRoom,
+  room: Pick<SuccessRoom, 'slug'>,
   resource: SuccessRoomResource,
 ): SuccessRoomResourceLink => {
   if (resource.delivery.type === 'asset') {
@@ -119,18 +42,11 @@ export const getSuccessRoomResourceLink = (
   };
 };
 
-export function getSuccessRoom(roomSlug: string): SuccessRoom | undefined {
-  return successRooms.find((room) => room.slug === roomSlug);
-}
-
 export function getSuccessRoomResource(
-  roomSlug: string,
+  room: SuccessRoom,
   resourceSlug: string,
-): { room: SuccessRoom; resource: SuccessRoomResource } | undefined {
-  const room = getSuccessRoom(roomSlug);
-  const resource = room?.resources.find((item) => item.slug === resourceSlug);
-
-  return room && resource ? { room, resource } : undefined;
+): SuccessRoomResource | undefined {
+  return room.resources.find((item) => item.slug === resourceSlug);
 }
 
 export function isSuccessRoomRoutedResource(

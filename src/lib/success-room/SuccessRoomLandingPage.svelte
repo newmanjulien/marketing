@@ -6,8 +6,9 @@
   import SuccessRoomDocumentsPanel from './SuccessRoomDocumentsPanel.svelte';
   import SuccessRoomHeader from './SuccessRoomHeader.svelte';
   import SuccessRoomQuestionsPanel from './SuccessRoomQuestionsPanel.svelte';
+  import { createSuccessRoomLandingDraft } from './successRoomDrafts.svelte';
   import SuccessRoomTeamPanel from './SuccessRoomTeamPanel.svelte';
-  import type { SuccessRoom } from './successRoomTypes';
+  import type { SuccessRoom, SuccessRoomState } from './successRoomTypes';
 
   const successRoomSections = [
     {
@@ -24,7 +25,12 @@
     }
   ] as const satisfies readonly PillTab[];
 
-  let { room }: { room: SuccessRoom } = $props();
+  let { room, state: roomState }: { room: SuccessRoom; state: SuccessRoomState } = $props();
+
+  const draft = createSuccessRoomLandingDraft(
+    () => room,
+    () => roomState
+  );
 </script>
 
 <PageFrame>
@@ -47,9 +53,12 @@
         {#if section.key === 'documents'}
           <SuccessRoomDocumentsPanel {room} />
         {:else if section.key === 'team'}
-          <SuccessRoomTeamPanel team={room.team} />
+          <SuccessRoomTeamPanel roomSlug={room.slug} team={room.team} />
         {:else if section.key === 'questions'}
-          <SuccessRoomQuestionsPanel />
+          <SuccessRoomQuestionsPanel
+            questions={draft.questions}
+            onQuestionsChange={draft.setQuestions}
+          />
         {/if}
       {/snippet}
     </PillTabs>

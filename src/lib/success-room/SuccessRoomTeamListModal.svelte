@@ -17,13 +17,22 @@
   <ul class="grid gap-[14px]" aria-label="Team members">
     {#each team as member (member.id)}
       <li class="grid min-w-0 grid-cols-[44px_minmax(0,1fr)] items-center gap-[12px]">
-        <img
-          src={member.imageHref}
-          alt=""
-          class="h-[44px] w-[44px] rounded-full object-cover grayscale"
-          loading="lazy"
-          decoding="async"
-        />
+        {#if member.imageHref}
+          <img
+            src={member.imageHref}
+            alt=""
+            class="h-[44px] w-[44px] rounded-full object-cover grayscale"
+            loading="lazy"
+            decoding="async"
+          />
+        {:else}
+          <span
+            class="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-stone-200/70 text-[15px] font-normal text-stone-600"
+            aria-hidden="true"
+          >
+            {member.name.slice(0, 1)}
+          </span>
+        {/if}
 
         <div class="min-w-0">
           <h3 class="m-0 truncate text-[14px] font-normal leading-[1.15] tracking-normal text-stone-900">

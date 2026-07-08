@@ -1,59 +1,121 @@
 <script lang="ts">
   import ModalShell from '$lib/ui/ModalShell.svelte';
 
+  type TeamMemberInput = {
+    name: string;
+    role: string;
+    email?: string;
+  };
+
   let {
     open,
-    onClose
+    onClose,
+    onAddTeamMember
   }: {
     open: boolean;
     onClose: () => void;
+    onAddTeamMember: (member: TeamMemberInput) => Promise<void>;
   } = $props();
 
+  let name = $state('');
+  let role = $state('');
+  let email = $state('');
+  let errorMessage = $state('');
+  let submitting = $state(false);
+
   const inputClasses =
-    'mt-[8px] h-[40px] w-full rounded-[8px] border border-stone-200/70 bg-white px-[12px] font-body text-[14px] font-book tracking-normal text-stone-700 outline-none shadow-[0_1px_0_rgba(48,47,45,0.03)] placeholder:text-stone-400 focus:border-stone-300 focus:text-stone-900';
-  const labelClasses =
-    'block text-[13px] font-book leading-none tracking-normal text-stone-700';
-  const secondaryButtonClasses =
-    'inline-flex h-[36px] items-center justify-center rounded-[7px] border border-stone-300 bg-white px-[14px] font-body text-[13px] font-book leading-none tracking-normal text-stone-950 transition-colors duration-200 hover:bg-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950';
-  const primaryButtonClasses =
-    'inline-flex h-[36px] items-center justify-center rounded-[7px] border-0 bg-stone-750 px-[14px] font-body text-[13px] font-book leading-none tracking-normal text-white transition-colors duration-200 hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950';
+    'h-[42px] w-full rounded-[8px] border border-stone-200 bg-white px-[12px] font-body text-[14px] font-book leading-none tracking-normal text-stone-800 outline-none transition-colors duration-150 placeholder:text-stone-400 focus:border-stone-300 focus:ring-2 focus:ring-stone-900/20';
+  const labelClasses = 'grid gap-[7px] text-[13px] font-book leading-none tracking-normal text-stone-500';
+
+  const resetForm = () => {
+    name = '';
+    role = '';
+    email = '';
+    errorMessage = '';
+  };
+
+  const closeModal = () => {
+    if (submitting) {
+      return;
+    }
+
+    resetForm();
+    onClose();
+  };
+
+  const submit = async () => {
+    const trimmedName = name.trim();
+    const trimmedRole = role.trim();
+    const trimmedEmail = email.trim();
+
+    if (!trimmedName || !trimmedRole || submitting) {
+      return;
+    }
+
+    submitting = true;
+    errorMessage = '';
+
+    try {
+      await onAddTeamMember({
+        name: trimmedName,
+        role: trimmedRole,
+        ...(trimmedEmail ? { email: trimmedEmail } : {})
+      });
+      resetForm();
+      onClose();
+    } catch {
+      errorMessage = 'Team member could not be added.';
+    } finally {
+      submitting = false;
+    }
+  };
 </script>
 
-<ModalShell {open} title="Add team member" onClose={onClose}>
-  <div class="grid gap-[18px]">
-    <label class={labelClasses} for="success-room-team-member-name">
-      Name
-      <input
-        id="success-room-team-member-name"
-        class={inputClasses}
-        type="text"
-        placeholder="Alex Morgan"
-      />
+<ModalShell open={open} title="Add team member" onClose={closeModal}>
+  <form
+    class="grid gap-[14px]"
+    onsubmit={(event) => {
+      event.preventDefault();
+      void submit();
+    }}
+  >
+    <label class={labelClasses}>
+      <span>Name</span>
+      <input class={inputClasses} autocomplete="name" bind:value={name} />
     </label>
 
-    <label class={labelClasses} for="success-room-team-member-role">
-      Role
-      <input
-        id="success-room-team-member-role"
-        class={inputClasses}
-        type="text"
-        placeholder="Customer success"
-      />
+    <label class={labelClasses}>
+      <span>Role</span>
+      <input class={inputClasses} autocomplete="organization-title" bind:value={role} />
     </label>
 
-    <label class={labelClasses} for="success-room-team-member-email">
-      Email
-      <input
-        id="success-room-team-member-email"
-        class={inputClasses}
-        type="email"
-        placeholder="alex@example.com"
-      />
+    <label class={labelClasses}>
+      <span>Email</span>
+      <input class={inputClasses} type="email" autocomplete="email" bind:value={email} />
     </label>
-  </div>
 
-  {#snippet footer()}
-    <button type="button" class={secondaryButtonClasses} onclick={onClose}>Cancel</button>
-    <button type="button" class={primaryButtonClasses}>Add team member</button>
-  {/snippet}
+    {#if errorMessage}
+      <p class="m-0 text-[13px] font-book leading-[1.35] tracking-normal text-red-700">
+        {errorMessage}
+      </p>
+    {/if}
+
+    <div class="mt-[4px] flex items-center justify-end gap-[9px]">
+      <button
+        type="button"
+        class="h-[36px] rounded-[8px] border border-stone-200 bg-white px-[13px] font-body text-[13px] font-book leading-none tracking-normal text-stone-600 transition-colors duration-150 hover:border-stone-300 hover:text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20"
+        onclick={closeModal}
+      >
+        Cancel
+      </button>
+
+      <button
+        type="submit"
+        class="h-[36px] rounded-[8px] border border-stone-900 bg-stone-900 px-[13px] font-body text-[13px] font-book leading-none tracking-normal text-white transition-colors duration-150 hover:border-stone-700 hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:border-stone-200 disabled:bg-stone-100 disabled:text-stone-400"
+        disabled={!name.trim() || !role.trim() || submitting}
+      >
+        {submitting ? 'Adding' : 'Add'}
+      </button>
+    </div>
+  </form>
 </ModalShell>

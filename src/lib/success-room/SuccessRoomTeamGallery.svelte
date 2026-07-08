@@ -14,13 +14,22 @@
 <ul class="grid grid-cols-2 gap-x-[24px] gap-y-[34px] sm:grid-cols-4" aria-label="Team">
   {#each team as member (member.id)}
     <li class="group min-w-0">
-      <img
-        src={member.imageHref}
-        alt=""
-        class="aspect-square w-full rounded-[8px] object-cover grayscale transition duration-200 group-hover:grayscale-0"
-        loading="lazy"
-        decoding="async"
-      />
+      {#if member.imageHref}
+        <img
+          src={member.imageHref}
+          alt=""
+          class="aspect-square w-full rounded-[8px] object-cover grayscale transition duration-200 group-hover:grayscale-0"
+          loading="lazy"
+          decoding="async"
+        />
+      {:else}
+        <span
+          class="flex aspect-square w-full items-center justify-center rounded-[8px] bg-stone-200/70 text-[24px] font-normal text-stone-600"
+          aria-hidden="true"
+        >
+          {member.name.slice(0, 1)}
+        </span>
+      {/if}
 
       <div class="mt-[13px] min-w-0">
         <h2
