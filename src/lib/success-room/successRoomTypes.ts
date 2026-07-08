@@ -30,10 +30,22 @@ export type SuccessRoomMutualSuccessPlanResource =
     delivery: SuccessRoomRouteDelivery;
   };
 
+export type SuccessRoomEditableTextResource =
+  SuccessRoomResourceBase<'editable-text'> & {
+    description: string;
+    delivery: SuccessRoomRouteDelivery;
+    initialText: string;
+    editorRows?: number;
+  };
+
+export type SuccessRoomRoutedResource =
+  | SuccessRoomMutualSuccessPlanResource
+  | SuccessRoomEditableTextResource;
+
 export type SuccessRoomResource =
   | SuccessRoomPdfResource
   | SuccessRoomAudioResource
-  | SuccessRoomMutualSuccessPlanResource;
+  | SuccessRoomRoutedResource;
 
 export type SuccessRoomTeamMember = {
   id: string;

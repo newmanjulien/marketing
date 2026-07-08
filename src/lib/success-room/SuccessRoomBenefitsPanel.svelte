@@ -5,7 +5,7 @@
   let checkedBenefitIds = $state(new Set<string>());
 
   const cardClasses =
-    'group block box-border min-h-[132px] cursor-pointer rounded-[10px] border border-stone-200 bg-white px-[18px] py-[14px] text-stone-900 shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-colors duration-200 hover:border-stone-300 focus-within:border-stone-300 focus-within:ring-2 focus-within:ring-stone-900/20 sm:px-[20px] sm:py-[16px]';
+    'group block box-border min-h-[132px] cursor-pointer rounded-[10px] border border-stone-200/70 bg-white px-[18px] py-[14px] text-stone-900 shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-colors duration-200 hover:border-stone-300 focus-within:border-stone-300 focus-within:ring-2 focus-within:ring-stone-900/20 sm:px-[20px] sm:py-[16px]';
   const checkedCardClasses = 'border-stone-300 bg-stone-50/60';
   const titleClasses =
     'min-w-0 text-[15px] font-normal leading-[1.2] tracking-normal text-stone-750 transition-colors duration-200 group-hover:text-stone-900 sm:text-[16px]';

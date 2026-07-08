@@ -37,13 +37,13 @@
   const accordionTaskAssigneeImageClasses =
     'h-[20px] w-[20px] shrink-0 rounded-full object-cover';
   const accordionTaskEmptyAssigneeClasses =
-    'flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full border border-stone-200 bg-white text-[11px] font-medium leading-none text-stone-400';
+    'flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full border border-stone-200/70 bg-white text-[11px] font-medium leading-none text-stone-400';
   const accordionCheckboxClasses =
     'mt-[3px] h-[13px] w-[13px] flex-none opacity-100';
 
   const accordionCardVariants = {
     default: {
-      item: 'border-stone-200 bg-white text-stone-900',
+      item: 'border-stone-200/70 bg-white text-stone-900',
       title: 'text-stone-900',
       description: 'text-stone-500',
       toggleIcon: 'text-stone-400',
@@ -51,7 +51,7 @@
       taskDate: 'text-stone-400'
     },
     muted: {
-      item: 'border-stone-100 bg-stone-50 text-stone-500',
+      item: 'border-stone-200/70 bg-stone-50 text-stone-500',
       title: 'text-stone-600',
       description: 'text-stone-400',
       toggleIcon: 'text-stone-300',

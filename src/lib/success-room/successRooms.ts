@@ -1,7 +1,7 @@
 import type {
   SuccessRoom,
-  SuccessRoomMutualSuccessPlanResource,
-  SuccessRoomResource
+  SuccessRoomResource,
+  SuccessRoomRoutedResource
 } from './successRoomTypes';
 
 export type SuccessRoomRoutedResourceLink = {
@@ -109,6 +109,28 @@ export const successRooms = [
         delivery: {
           type: 'route'
         }
+      },
+      {
+        kind: 'editable-text',
+        slug: 'initial-format',
+        title: 'Initial email format',
+        description: 'Edit a simple starting email format for the first Overbase follow-up.',
+        previewImageHref: '/success-room/navacord-k7x4m9p2/resource-preview.png',
+        editorRows: 14,
+        initialText: `Hi [Name],
+
+Sharing an initial format for how Overbase could support [Company].
+
+The goal would be to identify [opportunity type], route the right context to [team or person], and agree on a simple workflow for reviewing results.
+
+Proposed next step:
+[Next step]
+
+Best,
+[Sender]`,
+        delivery: {
+          type: 'route'
+        }
       }
     ]
   }
@@ -151,6 +173,6 @@ export function getSuccessRoomResource(
 
 export function isSuccessRoomRoutedResource(
   resource: SuccessRoomResource
-): resource is SuccessRoomMutualSuccessPlanResource {
+): resource is SuccessRoomRoutedResource {
   return resource.delivery.type === 'route';
 }
