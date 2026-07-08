@@ -57,24 +57,6 @@ export const successRooms = [
         role: "Growth",
         imageHref: "/cmos/trishlilley.png",
       },
-      {
-        id: "wendy-taylor",
-        name: "Wendy Taylor",
-        role: "Success",
-        imageHref: "/cmos/wendytaylor.png",
-      },
-      {
-        id: "kate-pennell",
-        name: "Kate Pennell",
-        role: "Advisory",
-        imageHref: "/cmos/katepennell.png",
-      },
-      {
-        id: "john-newell",
-        name: "John Newell",
-        role: "Operations",
-        imageHref: "/cmos/johnnewell.png",
-      },
     ],
     resources: [
       {

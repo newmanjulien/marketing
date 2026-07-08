@@ -1,8 +1,11 @@
 <script lang="ts">
+  import SuccessRoomAddTeamMemberModal from './SuccessRoomAddTeamMemberModal.svelte';
   import SuccessRoomTeamGallery from './SuccessRoomTeamGallery.svelte';
   import type { SuccessRoomTeamMember } from './successRoomTypes';
 
   let { team }: { team: SuccessRoomTeamMember[] } = $props();
+
+  let addTeamMemberModalOpen = $state(false);
 </script>
 
 <div class="grid gap-[24px]">
@@ -13,5 +16,10 @@
     of concept, answer technical questions, and keep next steps moving as the work progresses.
   </p>
 
-  <SuccessRoomTeamGallery {team} />
+  <SuccessRoomTeamGallery {team} onAddTeamMember={() => (addTeamMemberModalOpen = true)} />
 </div>
+
+<SuccessRoomAddTeamMemberModal
+  open={addTeamMemberModalOpen}
+  onClose={() => (addTeamMemberModalOpen = false)}
+/>
