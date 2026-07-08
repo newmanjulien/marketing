@@ -1,13 +1,17 @@
 <script lang="ts">
   import SuccessRoomAddTeamMemberModal from './SuccessRoomAddTeamMemberModal.svelte';
   import SuccessRoomTeamGallery from './SuccessRoomTeamGallery.svelte';
-  import type { SuccessRoomTeamMember } from './successRoomTypes';
+  import type {
+    SuccessRoomLinkedTeamMemberPhotoMetadata,
+    SuccessRoomTeamMember,
+    SuccessRoomTeamMemberPhotoMetadata
+  } from './successRoomTypes';
 
   type AddedTeamMember = {
     id: string;
     name: string;
     role: string;
-    email?: string;
+    photo?: SuccessRoomTeamMemberPhotoMetadata;
   };
 
   let {
@@ -41,14 +45,49 @@
   const addTeamMember = async (member: {
     name: string;
     role: string;
-    email?: string;
+    photoFile: File;
   }) => {
+    if (!member.photoFile.type.startsWith('image/')) {
+      throw new Error('Team member photo must be an image.');
+    }
+
+    const uploadUrlResponse = await fetch(`/success-room/${roomSlug}/api/upload-url`, {
+      method: 'POST'
+    });
+
+    if (!uploadUrlResponse.ok) {
+      throw new Error('Team member photo could not be uploaded.');
+    }
+
+    const { uploadUrl }: { uploadUrl: string } = await uploadUrlResponse.json();
+    const uploadResponse = await fetch(uploadUrl, {
+      method: 'POST',
+      headers: {
+        'content-type': member.photoFile.type
+      },
+      body: member.photoFile
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error('Team member photo could not be uploaded.');
+    }
+
+    const { storageId }: { storageId: string } = await uploadResponse.json();
     const response = await fetch(`/success-room/${roomSlug}/api/team-members`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json'
       },
-      body: JSON.stringify(member)
+      body: JSON.stringify({
+        name: member.name,
+        role: member.role,
+        photo: {
+          storageId,
+          filename: member.photoFile.name,
+          contentType: member.photoFile.type,
+          byteSize: member.photoFile.size
+        }
+      })
     });
 
     if (!response.ok) {
@@ -60,8 +99,18 @@
     optimisticTeamMembers = [
       ...optimisticTeamMembers,
       {
-        ...createdMember,
-        imageHref: ''
+        id: createdMember.id,
+        name: createdMember.name,
+        role: createdMember.role,
+        imageHref: `/success-room/${roomSlug}/team-member-photo/${createdMember.id}`,
+        ...(createdMember.photo
+          ? {
+              photo: {
+                ...createdMember.photo,
+                href: `/success-room/${roomSlug}/team-member-photo/${createdMember.id}`
+              } satisfies SuccessRoomLinkedTeamMemberPhotoMetadata
+            }
+          : {})
       }
     ];
   };

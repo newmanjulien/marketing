@@ -3,7 +3,7 @@
   import type {
     SuccessRoomEditableTextResource,
     SuccessRoomEditableTextState,
-    SuccessRoomFileMetadata
+    SuccessRoomLinkedFileMetadata
   } from './successRoomTypes';
 
   let {
@@ -30,6 +30,8 @@
     'grid w-full min-w-0 grid-cols-[18px_minmax(0,1fr)_24px] items-center gap-[9px] rounded-[8px] border border-stone-200/70 bg-stone-50 px-[10px] py-[8px] text-stone-500 sm:max-w-[280px]';
   const attachmentNameClasses =
     'block truncate text-[13px] font-normal leading-[1.2] tracking-normal text-stone-700';
+  const attachmentLinkClasses =
+    `${attachmentNameClasses} transition-colors duration-150 hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20`;
   const attachmentRemoveButtonClasses =
     'flex h-[24px] w-[24px] items-center justify-center rounded-[6px] border-0 bg-transparent p-0 text-stone-400 transition-colors duration-150 hover:bg-stone-100 hover:text-stone-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20';
 
@@ -86,7 +88,8 @@
       return;
     }
 
-    const { attachment }: { attachment: SuccessRoomFileMetadata } = await attachmentResponse.json();
+    const { attachment }: { attachment: SuccessRoomLinkedFileMetadata } =
+      await attachmentResponse.json();
 
     onStateChange({
       ...editableState,
@@ -156,7 +159,18 @@
     >
       <FileIcon size={18} weight="regular" aria-hidden="true" />
       <span class="min-w-0">
-        <span class={attachmentNameClasses}>{editableState.attachment?.filename ?? 'Attachment'}</span>
+        {#if editableState.attachment}
+          <a
+            class={attachmentLinkClasses}
+            href={editableState.attachment.href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {editableState.attachment.filename}
+          </a>
+        {:else}
+          <span class={attachmentNameClasses}>Attachment</span>
+        {/if}
       </span>
       {#if editableState.attachment}
         <button

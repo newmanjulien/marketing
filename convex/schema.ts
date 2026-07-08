@@ -79,6 +79,21 @@ export default defineSchema({
     .index("by_room", ["roomId"])
     .index("by_room_active_created_at", ["roomId", "active", "createdAt"]),
 
+  successRoomTeamMemberPhotos: defineTable({
+    roomId: v.id("successRooms"),
+    teamMemberId: v.id("successRoomTeamMembers"),
+    storageId: v.id("_storage"),
+    filename: v.string(),
+    contentType: v.string(),
+    byteSize: v.number(),
+    active: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_room", ["roomId"])
+    .index("by_room_team_member", ["roomId", "teamMemberId"])
+    .index("by_storage_id", ["storageId"]),
+
   successRoomEditableTextStates: defineTable({
     roomId: v.id("successRooms"),
     resourceId: v.id("successRoomResources"),

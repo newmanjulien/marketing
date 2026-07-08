@@ -4,7 +4,7 @@
   type TeamMemberInput = {
     name: string;
     role: string;
-    email?: string;
+    photoFile: File;
   };
 
   let {
@@ -19,7 +19,8 @@
 
   let name = $state('');
   let role = $state('');
-  let email = $state('');
+  let photoFile = $state<File | null>(null);
+  let photoInput: HTMLInputElement | undefined = $state();
   let errorMessage = $state('');
   let submitting = $state(false);
 
@@ -30,7 +31,10 @@
   const resetForm = () => {
     name = '';
     role = '';
-    email = '';
+    photoFile = null;
+    if (photoInput) {
+      photoInput.value = '';
+    }
     errorMessage = '';
   };
 
@@ -46,9 +50,8 @@
   const submit = async () => {
     const trimmedName = name.trim();
     const trimmedRole = role.trim();
-    const trimmedEmail = email.trim();
 
-    if (!trimmedName || !trimmedRole || submitting) {
+    if (!trimmedName || !trimmedRole || !photoFile || submitting) {
       return;
     }
 
@@ -59,7 +62,7 @@
       await onAddTeamMember({
         name: trimmedName,
         role: trimmedRole,
-        ...(trimmedEmail ? { email: trimmedEmail } : {})
+        photoFile
       });
       resetForm();
       onClose();
@@ -90,8 +93,19 @@
     </label>
 
     <label class={labelClasses}>
-      <span>Email</span>
-      <input class={inputClasses} type="email" autocomplete="email" bind:value={email} />
+      <span>Image</span>
+      <input
+        class={inputClasses}
+        type="file"
+        accept="image/*"
+        bind:this={photoInput}
+        onchange={(event) => {
+          photoFile = event.currentTarget.files?.[0] ?? null;
+        }}
+      />
+      {#if photoFile}
+        <span class="truncate text-[12px] leading-[1.25] text-stone-400">{photoFile.name}</span>
+      {/if}
     </label>
 
     {#if errorMessage}
@@ -112,7 +126,7 @@
       <button
         type="submit"
         class="h-[36px] rounded-[8px] border border-stone-900 bg-stone-900 px-[13px] font-body text-[13px] font-book leading-none tracking-normal text-white transition-colors duration-150 hover:border-stone-700 hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:border-stone-200 disabled:bg-stone-100 disabled:text-stone-400"
-        disabled={!name.trim() || !role.trim() || submitting}
+        disabled={!name.trim() || !role.trim() || !photoFile || submitting}
       >
         {submitting ? 'Adding' : 'Add'}
       </button>

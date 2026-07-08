@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import { api } from '../../../../../../convex/_generated/api';
 import { convex } from '$lib/server/successRoomConvex';
 import { requireSuccessRoomAccessToken } from '$lib/server/successRoomAccess';
@@ -7,13 +7,24 @@ import type { RequestHandler } from './$types';
 export const POST: RequestHandler = async ({ cookies, params, request }) => {
   const accessToken = requireSuccessRoomAccessToken(cookies, params.roomSlug);
   const body = await request.json();
+  const photo = body.photo;
+
+  if (
+    !photo ||
+    typeof photo.storageId !== 'string' ||
+    typeof photo.filename !== 'string' ||
+    typeof photo.contentType !== 'string' ||
+    typeof photo.byteSize !== 'number'
+  ) {
+    error(400, 'Team member photo is required');
+  }
 
   const member = await convex.mutation(api.successRooms.addTeamMember, {
     slug: params.roomSlug,
     accessToken,
     name: typeof body.name === 'string' ? body.name : '',
     role: typeof body.role === 'string' ? body.role : '',
-    email: typeof body.email === 'string' ? body.email : undefined,
+    photo,
   });
 
   return json({ member });

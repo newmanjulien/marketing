@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { api } from '../../../../../../convex/_generated/api';
-import { convex } from '$lib/server/successRoomConvex';
+import { convex, getSuccessRoomEditableAttachmentHref } from '$lib/server/successRoomConvex';
 import { requireSuccessRoomAccessToken } from '$lib/server/successRoomAccess';
 import type { RequestHandler } from './$types';
 
@@ -16,7 +16,13 @@ export const POST: RequestHandler = async ({ cookies, params, request }) => {
     dataSources: body.state?.dataSources ?? [],
   });
 
-  return json({ ok: true, attachment });
+  return json({
+    ok: true,
+    attachment: {
+      ...attachment,
+      href: getSuccessRoomEditableAttachmentHref(params.roomSlug, body.resourceSlug),
+    },
+  });
 };
 
 export const DELETE: RequestHandler = async ({ cookies, params, request }) => {

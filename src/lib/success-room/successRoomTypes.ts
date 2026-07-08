@@ -58,6 +58,10 @@ export type SuccessRoomFileMetadata = {
   byteSize: number;
 };
 
+export type SuccessRoomLinkedFileMetadata = SuccessRoomFileMetadata & {
+  href: string;
+};
+
 export type SuccessRoomGlobalFileMetadata = {
   globalFileId: string;
   filename: string;
@@ -65,13 +69,27 @@ export type SuccessRoomGlobalFileMetadata = {
   byteSize: number;
 };
 
+export type SuccessRoomLinkedGlobalFileMetadata = SuccessRoomGlobalFileMetadata & {
+  href: string;
+};
+
+export type SuccessRoomTeamMemberPhotoMetadata = {
+  photoId: string;
+  filename: string;
+  contentType: string;
+  byteSize: number;
+};
+
+export type SuccessRoomLinkedTeamMemberPhotoMetadata = SuccessRoomTeamMemberPhotoMetadata & {
+  href: string;
+};
+
 export type SuccessRoomTeamMember = {
   id: string;
   name: string;
   role: string;
-  email?: string;
   imageHref: string;
-  photo?: SuccessRoomGlobalFileMetadata;
+  photo?: SuccessRoomLinkedGlobalFileMetadata | SuccessRoomLinkedTeamMemberPhotoMetadata;
 };
 
 export type SuccessRoomPlanState = {
@@ -84,7 +102,7 @@ export type SuccessRoomPlanPatch = Partial<SuccessRoomPlanState>;
 export type SuccessRoomEditableTextState = {
   content: string;
   dataSources: string[];
-  attachment?: SuccessRoomFileMetadata;
+  attachment?: SuccessRoomLinkedFileMetadata;
 };
 
 export type SuccessRoomState = {

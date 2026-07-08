@@ -118,11 +118,33 @@ const getActiveResourceFile = async (
   return files.find((file) => file.active) ?? null;
 };
 
+const getActiveTeamMemberPhoto = async (
+  ctx: QueryCtx | MutationCtx,
+  roomId: Id<"successRooms">,
+  teamMemberId: Id<"successRoomTeamMembers">,
+) => {
+  const files = await ctx.db
+    .query("successRoomTeamMemberPhotos")
+    .withIndex("by_room_team_member", (q) =>
+      q.eq("roomId", roomId).eq("teamMemberId", teamMemberId),
+    )
+    .collect();
+
+  return files.find((file) => file.active) ?? null;
+};
+
 const fileSummary = (file: Doc<"successRoomFiles">) => ({
   fileId: file._id,
   filename: file.filename,
   contentType: file.contentType,
   byteSize: file.byteSize,
+});
+
+const teamMemberPhotoSummary = (photo: Doc<"successRoomTeamMemberPhotos">) => ({
+  photoId: photo._id,
+  filename: photo.filename,
+  contentType: photo.contentType,
+  byteSize: photo.byteSize,
 });
 
 const globalFileSummary = (file: Doc<"successRoomGlobalFiles">) => ({
@@ -145,11 +167,14 @@ const resourceSummary = (resource: Doc<"successRoomResources">) => ({
   initialText: resource.initialText,
 });
 
-const visitorTeamMemberSummary = (member: Doc<"successRoomTeamMembers">) => ({
+const visitorTeamMemberSummary = (
+  member: Doc<"successRoomTeamMembers">,
+  photo?: Doc<"successRoomTeamMemberPhotos">,
+) => ({
   id: member._id,
   name: member.name,
   role: member.role,
-  ...(member.email ? { email: member.email } : {}),
+  ...(photo ? { photo: teamMemberPhotoSummary(photo) } : {}),
 });
 
 const lockedRoom = (room: Doc<"successRooms">) => ({
@@ -319,6 +344,31 @@ export const seedGlobalFile = mutation({
   },
 });
 
+export const cleanupLegacyTeamMemberEmails = mutation({
+  args: {
+    seedSecret: v.string(),
+  },
+  handler: async (ctx, args) => {
+    assertSeedAccess(args.seedSecret);
+
+    const teamMembers = await ctx.db.query("successRoomTeamMembers").collect();
+    const membersWithEmail = teamMembers.filter((member) => "email" in member);
+
+    await Promise.all(
+      membersWithEmail.map((member) =>
+        ctx.db.patch(member._id, {
+          email: undefined,
+          updatedAt: Date.now(),
+        }),
+      ),
+    );
+
+    return {
+      updatedCount: membersWithEmail.length,
+    };
+  },
+});
+
 export const verifyPassword = mutation({
   args: {
     slug: v.string(),
@@ -378,6 +428,10 @@ export const getRoomBundle = query({
         q.eq("roomId", room._id).eq("active", true),
       )
       .collect();
+    const visitorTeamMemberPhotos = await ctx.db
+      .query("successRoomTeamMemberPhotos")
+      .withIndex("by_room", (q) => q.eq("roomId", room._id))
+      .collect();
     const julienPhoto = await getActiveGlobalFile(ctx, julienPhotoGlobalFileKey);
 
     if (!state) {
@@ -390,6 +444,11 @@ export const getRoomBundle = query({
 
     const editableStateByResourceId = new Map(
       editableStates.map((editableState) => [editableState.resourceId, editableState]),
+    );
+    const visitorTeamMemberPhotoByMemberId = new Map(
+      visitorTeamMemberPhotos
+        .filter((photo) => photo.active)
+        .map((photo) => [photo.teamMemberId, photo]),
     );
     const editableTexts: Record<
       string,
@@ -429,7 +488,9 @@ export const getRoomBundle = query({
             role: "Founder",
             photo: globalFileSummary(julienPhoto),
           },
-          ...visitorTeamMembers.map(visitorTeamMemberSummary),
+          ...visitorTeamMembers.map((member) =>
+            visitorTeamMemberSummary(member, visitorTeamMemberPhotoByMemberId.get(member._id)),
+          ),
         ],
       },
       state: {
@@ -483,6 +544,45 @@ export const getResourceFileForDownload = query({
   },
 });
 
+export const getEditableAttachmentForDownload = query({
+  args: {
+    slug: v.string(),
+    accessToken: v.string(),
+    resourceSlug: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const room = await ensureRoom(ctx, args.slug);
+
+    await assertAccess(room, args.accessToken);
+
+    const resource = await getActiveResourceBySlug(ctx, room._id, args.resourceSlug);
+
+    if (!resource || resource.kind !== "editable-text") {
+      return null;
+    }
+
+    const file = await getActiveResourceFile(
+      ctx,
+      room._id,
+      resource._id,
+      "editable-attachment",
+    );
+
+    if (!file) {
+      return null;
+    }
+
+    const url = await ctx.storage.getUrl(file.storageId);
+
+    return url
+      ? {
+          ...fileSummary(file),
+          url,
+        }
+      : null;
+  },
+});
+
 export const getGlobalFileForDownload = query({
   args: {
     slug: v.string(),
@@ -507,6 +607,40 @@ export const getGlobalFileForDownload = query({
           ...globalFileSummary(file),
           url,
         }
+        : null;
+  },
+});
+
+export const getTeamMemberPhotoForDownload = query({
+  args: {
+    slug: v.string(),
+    accessToken: v.string(),
+    teamMemberId: v.id("successRoomTeamMembers"),
+  },
+  handler: async (ctx, args) => {
+    const room = await ensureRoom(ctx, args.slug);
+
+    await assertAccess(room, args.accessToken);
+
+    const teamMember = await ctx.db.get(args.teamMemberId);
+
+    if (!teamMember || teamMember.roomId !== room._id || !teamMember.active) {
+      return null;
+    }
+
+    const photo = await getActiveTeamMemberPhoto(ctx, room._id, teamMember._id);
+
+    if (!photo) {
+      return null;
+    }
+
+    const url = await ctx.storage.getUrl(photo.storageId);
+
+    return url
+      ? {
+          ...teamMemberPhotoSummary(photo),
+          url,
+        }
       : null;
   },
 });
@@ -517,7 +651,7 @@ export const addTeamMember = mutation({
     accessToken: v.string(),
     name: v.string(),
     role: v.string(),
-    email: v.optional(v.string()),
+    photo: fileInput,
   },
   handler: async (ctx, args) => {
     const room = await ensureRoom(ctx, args.slug);
@@ -526,10 +660,13 @@ export const addTeamMember = mutation({
 
     const name = args.name.trim();
     const role = args.role.trim();
-    const email = args.email?.trim();
 
     if (!name || !role) {
       throw new ConvexError("Team member name and role are required");
+    }
+
+    if (!args.photo.contentType.startsWith("image/")) {
+      throw new ConvexError("Team member photo must be an image");
     }
 
     const now = Date.now();
@@ -537,17 +674,29 @@ export const addTeamMember = mutation({
       roomId: room._id,
       name,
       role,
-      ...(email ? { email } : {}),
+      active: true,
+      createdAt: now,
+      updatedAt: now,
+    });
+    const photoId = await ctx.db.insert("successRoomTeamMemberPhotos", {
+      roomId: room._id,
+      teamMemberId: memberId,
+      storageId: args.photo.storageId,
+      filename: args.photo.filename,
+      contentType: args.photo.contentType,
+      byteSize: args.photo.byteSize,
       active: true,
       createdAt: now,
       updatedAt: now,
     });
 
+    const photo = await ctx.db.get(photoId);
+
     return {
       id: memberId,
       name,
       role,
-      ...(email ? { email } : {}),
+      ...(photo ? { photo: teamMemberPhotoSummary(photo) } : {}),
     };
   },
 });

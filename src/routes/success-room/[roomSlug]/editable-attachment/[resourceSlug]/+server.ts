@@ -1,5 +1,5 @@
 import { streamProtectedSuccessRoomFile } from '$lib/server/successRoomFileResponse';
-import { getProtectedSuccessRoomResourceFile } from '$lib/server/successRoomConvex';
+import { getProtectedSuccessRoomEditableAttachmentFile } from '$lib/server/successRoomConvex';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ cookies, fetch, params }) => {
@@ -8,7 +8,7 @@ export const GET: RequestHandler = async ({ cookies, fetch, params }) => {
     fetch,
     roomSlug: params.roomSlug,
     resolveFile: (accessToken) =>
-      getProtectedSuccessRoomResourceFile(params.roomSlug, accessToken, {
+      getProtectedSuccessRoomEditableAttachmentFile(params.roomSlug, accessToken, {
         resourceSlug: params.resourceSlug,
       }),
   });
