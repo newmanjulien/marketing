@@ -64,7 +64,7 @@
         </h2>
       </header>
 
-      <div class="min-h-[224px] flex-1 px-6 pb-8">
+      <div class="min-h-0 flex-1 overflow-y-auto px-6 pb-8">
         {@render children?.()}
       </div>
 

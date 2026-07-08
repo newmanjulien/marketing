@@ -2,19 +2,33 @@
   import { MinusIcon, PlusIcon } from 'phosphor-svelte';
   import { cubicOut } from 'svelte/easing';
   import type { TransitionConfig } from 'svelte/transition';
-  import SuccessRoomCheckbox from './SuccessRoomCheckbox.svelte';
+  import SuccessRoomDatePickerModal from './SuccessRoomDatePickerModal.svelte';
+  import SuccessRoomPlanTaskRow from './SuccessRoomPlanTaskRow.svelte';
+  import SuccessRoomTeamListModal from './SuccessRoomTeamListModal.svelte';
   import { mutualSuccessPlanItems, type MutualSuccessPlanItem } from './successRoomMutualSuccessPlan';
-  import type { SuccessRoomMutualSuccessPlanResource } from './successRoomTypes';
+  import { formatTaskDateLabel, parseTaskDateLabel } from './successRoomTaskDates';
+  import type { SuccessRoomMutualSuccessPlanResource, SuccessRoomTeamMember } from './successRoomTypes';
+
+  type DatePickerContext = {
+    taskId: string;
+    selectedDate: Date;
+  };
 
   let {
-    resource
+    resource,
+    team
   }: {
     resource: SuccessRoomMutualSuccessPlanResource;
+    team: SuccessRoomTeamMember[];
   } = $props();
 
   let openItemId = $state<string | null>(null);
   let checkedTaskIds = $state(new Set<string>());
+  let teamListModalOpen = $state(false);
+  let datePickerContext = $state<DatePickerContext | null>(null);
+  let taskDateOverrides = $state<Record<string, Date>>({});
 
+  const fallbackDatePickerDate = new Date();
   const accordionListClasses = 'grid w-full gap-[14px]';
   const accordionItemClasses =
     'box-border rounded-[10px] border px-[18px] py-[12px] shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] sm:px-[20px] sm:py-[14px]';
@@ -27,19 +41,6 @@
   const accordionToggleIconClasses =
     'col-start-2 row-start-1 shrink-0 self-center transition-colors duration-150';
   const accordionTaskListClasses = 'mt-[16px] grid gap-[14px]';
-  const accordionTaskItemClasses = 'min-w-0';
-  const accordionTaskLabelClasses =
-    'flex cursor-pointer items-start gap-[11px] text-[13px] leading-[1.4] tracking-normal sm:text-[14px]';
-  const accordionTaskContentClasses =
-    'grid w-full min-w-0 grid-cols-[minmax(0,1fr)_20px_max-content] items-start gap-[10px] sm:gap-[14px]';
-  const accordionTaskTitleClasses = 'min-w-0';
-  const accordionTaskDateClasses = 'whitespace-nowrap';
-  const accordionTaskAssigneeImageClasses =
-    'h-[20px] w-[20px] shrink-0 rounded-full object-cover';
-  const accordionTaskEmptyAssigneeClasses =
-    'flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full border border-stone-200/70 bg-white text-[11px] font-medium leading-none text-stone-400';
-  const accordionCheckboxClasses =
-    'mt-[3px] h-[13px] w-[13px] flex-none opacity-100';
 
   const accordionCardVariants = {
     default: {
@@ -47,7 +48,7 @@
       title: 'text-stone-900',
       description: 'text-stone-500',
       toggleIcon: 'text-stone-400',
-      taskLabel: 'text-stone-500',
+      taskText: 'text-stone-500',
       taskDate: 'text-stone-400'
     },
     muted: {
@@ -55,7 +56,7 @@
       title: 'text-stone-600',
       description: 'text-stone-400',
       toggleIcon: 'text-stone-300',
-      taskLabel: 'text-stone-400',
+      taskText: 'text-stone-400',
       taskDate: 'text-stone-300'
     }
   } as const;
@@ -125,6 +126,9 @@
 
   const getTaskId = (itemId: string, taskIndex: number) => `${itemId}-task-${taskIndex}`;
 
+  const getTaskDisplayDate = (taskId: string, dateLabel: string) =>
+    taskDateOverrides[taskId] ?? parseTaskDateLabel(dateLabel);
+
   const getAccordionCardVariant = (item: MutualSuccessPlanItem) => {
     const variantKey: AccordionCardVariantKey = item.variant ?? 'default';
 
@@ -142,6 +146,34 @@
 
     checkedTaskIds = nextCheckedTaskIds;
   };
+
+  const openTeamListModal = () => {
+    teamListModalOpen = true;
+  };
+
+  const openDatePickerModal = (taskId: string, dateLabel: string) => {
+    datePickerContext = {
+      taskId,
+      selectedDate: getTaskDisplayDate(taskId, dateLabel)
+    };
+  };
+
+  const closeDatePickerModal = () => {
+    datePickerContext = null;
+  };
+
+  const selectTaskDate = (date: Date) => {
+    if (!datePickerContext) {
+      return;
+    }
+
+    taskDateOverrides = {
+      ...taskDateOverrides,
+      [datePickerContext.taskId]: date
+    };
+  };
+
+  const selectedDatePickerDate = $derived(datePickerContext?.selectedDate ?? fallbackDatePickerDate);
 </script>
 
 <ul class={accordionListClasses} aria-label={`${resource.title} content`}>
@@ -180,34 +212,34 @@
         >
           {#each item.tasks as task, taskIndex (task.title)}
             {@const taskId = getTaskId(item.id, taskIndex)}
-            <li class={accordionTaskItemClasses}>
-              <label class={[accordionTaskLabelClasses, cardVariant.taskLabel, 'font-book']}>
-                <SuccessRoomCheckbox
-                  id={taskId}
-                  class={accordionCheckboxClasses}
-                  checked={checkedTaskIds.has(taskId)}
-                  onCheckedChange={(checked) => setTaskChecked(taskId, checked)}
-                />
-                <span class={accordionTaskContentClasses}>
-                  <span class={accordionTaskTitleClasses}>{task.title}</span>
-                  {#if task.assigneeImageHref}
-                    <img
-                      src={task.assigneeImageHref}
-                      alt=""
-                      class={accordionTaskAssigneeImageClasses}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  {:else}
-                    <span class={accordionTaskEmptyAssigneeClasses} aria-label="Unassigned">?</span>
-                  {/if}
-                  <span class={[accordionTaskDateClasses, cardVariant.taskDate]}>{task.date}</span>
-                </span>
-              </label>
-            </li>
+            {@const displayDate = getTaskDisplayDate(taskId, task.date)}
+            <SuccessRoomPlanTaskRow
+              {task}
+              {taskId}
+              checked={checkedTaskIds.has(taskId)}
+              displayDateLabel={formatTaskDateLabel(displayDate)}
+              textClass={cardVariant.taskText}
+              dateClass={cardVariant.taskDate}
+              onCheckedChange={(checked) => setTaskChecked(taskId, checked)}
+              onOpenTeam={openTeamListModal}
+              onOpenDatePicker={() => openDatePickerModal(taskId, task.date)}
+            />
           {/each}
         </ul>
       {/if}
     </li>
   {/each}
 </ul>
+
+<SuccessRoomTeamListModal
+  open={teamListModalOpen}
+  {team}
+  onClose={() => (teamListModalOpen = false)}
+/>
+
+<SuccessRoomDatePickerModal
+  open={datePickerContext !== null}
+  selectedDate={selectedDatePickerDate}
+  onSelectDate={selectTaskDate}
+  onClose={closeDatePickerModal}
+/>

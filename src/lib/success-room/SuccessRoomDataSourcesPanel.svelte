@@ -1,0 +1,23 @@
+<script lang="ts">
+  const editableTextDataSourceFields = [
+    'First data source for this format',
+    'Second data source for this format (optional)',
+    'Third data source for this format (optional)',
+    'Fourth data source for this format (optional)',
+    'Fifth data source for this format (optional)'
+  ] as const;
+
+  const dataSourceInputClasses =
+    'h-[42px] w-full rounded-[8px] border border-stone-200/70 bg-white px-[14px] font-body text-[14px] font-book tracking-normal text-stone-700 outline-none shadow-[0_1px_0_rgba(48,47,45,0.03)] placeholder:text-stone-400 focus:border-stone-300 focus:text-stone-900';
+</script>
+
+<div class="grid gap-[12px]">
+  {#each editableTextDataSourceFields as placeholder}
+    <input
+      class={dataSourceInputClasses}
+      type="text"
+      aria-label={placeholder}
+      {placeholder}
+    />
+  {/each}
+</div>
