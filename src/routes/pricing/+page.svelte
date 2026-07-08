@@ -39,7 +39,7 @@
     {
       question: 'Are there any upfront costs at all?',
       answer:
-        'Not necessarily. But most companies pay $15,000 for a proof of concept before signing a contract. And in the first year, most companies pay $20,000 to have an Overbase engineer (or often our CEO) come to their office in person to help with onboarding. For $20,000 we come for 1 week to kick off the deployment, then again for another 1 week mid-way through the first year to gather feedback from the team and make adjustments'
+        'Not necessarily. But most companies pay $15,000 for a proof of concept before signing a contract. And in the first year, most companies pay $10,000 to have an Overbase engineer come to their office in person for 1 week to kick off the deployment'
     }
   ] as const;
 </script>
