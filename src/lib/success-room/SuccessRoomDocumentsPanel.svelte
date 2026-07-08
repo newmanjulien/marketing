@@ -6,7 +6,7 @@
 </script>
 
 <nav
-  class="grid grid-cols-1 gap-x-[32px] gap-y-[38px] sm:grid-cols-2"
+  class="grid grid-cols-1 gap-[14px] sm:grid-cols-2 sm:gap-[18px]"
   aria-label={`${room.prospectName} success room resources`}
 >
   {#each room.resources as resource (resource.slug)}

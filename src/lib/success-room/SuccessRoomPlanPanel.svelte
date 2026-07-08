@@ -17,7 +17,7 @@
 
   const accordionListClasses = 'grid w-full gap-[14px]';
   const accordionItemClasses =
-    'box-border rounded-[10px] border px-[18px] py-[12px] sm:px-[20px] sm:py-[14px]';
+    'box-border rounded-[10px] border px-[18px] py-[12px] shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] sm:px-[20px] sm:py-[14px]';
   const accordionTriggerClasses =
     'grid w-full min-w-0 cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-x-[18px] border-0 bg-transparent p-0 text-left text-inherit focus-visible:rounded-[5px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-stone-900/20 sm:gap-x-[22px]';
   const accordionTitleClasses =

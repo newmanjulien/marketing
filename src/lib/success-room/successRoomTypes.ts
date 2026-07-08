@@ -11,6 +11,7 @@ export type SuccessRoomResourceBase<Kind extends string> = {
   kind: Kind;
   slug: string;
   title: string;
+  actionLabel: string;
   previewImageHref: string;
 };
 
