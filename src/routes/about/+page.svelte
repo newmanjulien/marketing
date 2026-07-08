@@ -3,7 +3,7 @@
   import PageFrame from '$lib/page/PageFrame.svelte';
 </script>
 
-<PageFrame topPadding="standard">
+<PageFrame>
   <ContentMeasure as="article" width="copy">
     <h1 class="font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-750">
       About Overbase

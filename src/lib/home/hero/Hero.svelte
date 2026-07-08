@@ -8,7 +8,9 @@
   const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
 </script>
 
-<section class="px-[18px] pt-[115px] sm:px-8 sm:pt-[153px]">
+<section
+  class="px-[18px] pt-[calc(115px-var(--site-mobile-header-height))] sm:px-8 sm:pt-[calc(153px-var(--site-mobile-header-height))] lg:pt-[153px]"
+>
   <ContentMeasure class="flex !max-w-[780px] flex-col items-center text-center">
     <a
       href={joinHref}

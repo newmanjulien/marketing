@@ -29,7 +29,7 @@
 
 <nav
   id="mobile-menu"
-  class="z-layer-chrome-popover fixed bottom-0 left-0 right-0 top-[50px] flex flex-col overflow-y-auto bg-white pb-[28px]"
+  class="z-layer-chrome-popover fixed bottom-0 left-0 right-0 top-[var(--site-mobile-header-height)] flex flex-col overflow-y-auto bg-white pb-[28px]"
   aria-label="Mobile primary"
   transition:slide={{ duration: 380, axis: 'y', easing: cubicOut }}
 >
@@ -66,27 +66,16 @@
       <div class="flex flex-col gap-[12px] px-[20px] pt-[24px]">
         {#each authNavItems as link (link.authRoute)}
           {@const href = createPortalAuthUrlForCurrentPage(link.authRoute, page.url, currentHash)}
-          {#if link.variant === 'primary'}
-            <ButtonLink
-              {href}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="primary"
-              size="large"
-              fullWidth
-            >
-              {link.label}
-            </ButtonLink>
-          {:else}
-            <a
-              {href}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex h-[50px] items-center justify-center rounded-[7px] bg-stone-100 text-[17px] leading-none text-stone-700"
-            >
-              {link.label}
-            </a>
-          {/if}
+          <ButtonLink
+            {href}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant={link.variant === 'primary' ? 'primary' : 'soft'}
+            size="large"
+            fullWidth
+          >
+            {link.label}
+          </ButtonLink>
         {/each}
       </div>
     </div>

@@ -7,7 +7,7 @@
   let { data }: { data: PageData } = $props();
 </script>
 
-<PageFrame topPadding="standard">
+<PageFrame>
   <ContentMeasure as="section" width="narrow">
     <header>
       <p class="text-[14px] font-medium leading-none tracking-normal text-stone-500">

@@ -3,7 +3,7 @@
   import type { HTMLAnchorAttributes } from 'svelte/elements';
 
   type ButtonLinkProps = HTMLAnchorAttributes & {
-    variant?: 'primary' | 'secondary';
+    variant?: 'primary' | 'secondary' | 'soft';
     size?: 'small' | 'default' | 'large' | 'hero' | 'xlarge';
     textSize?: 'default' | 'compact';
     shape?: 'default' | 'pill';
@@ -60,7 +60,8 @@
 
   const variantClasses = {
     primary: 'bg-stone-750 text-white hover:bg-stone-700',
-    secondary: 'border border-stone-300 bg-white text-stone-950 hover:bg-stone-50'
+    secondary: 'border border-stone-300 bg-white text-stone-950 hover:bg-stone-50',
+    soft: 'bg-stone-100 text-stone-700 hover:bg-stone-200 hover:text-stone-900'
   };
 </script>
 

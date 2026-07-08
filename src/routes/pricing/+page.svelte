@@ -44,7 +44,7 @@
   ] as const;
 </script>
 
-<PageFrame topPadding="compact">
+<PageFrame>
   <ContentMeasure as="section" width="narrow">
     <h1 class="font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-900">
       Pricing

@@ -10,7 +10,9 @@
   });
 </script>
 
-<header class="z-layer-chrome fixed left-0 top-0 flex h-[50px] w-full items-center justify-between bg-white px-[20px] lg:hidden">
+<header
+  class="z-layer-chrome sticky top-0 flex h-[var(--site-mobile-header-height)] w-full items-center justify-between bg-white px-[20px] lg:hidden"
+>
   <a href="/" class="h-[27px] w-[45px]" aria-label="Home">
     <img src="/logo.png" alt="" class="h-full w-full object-contain" />
   </a>

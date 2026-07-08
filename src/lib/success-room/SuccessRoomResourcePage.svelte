@@ -71,7 +71,7 @@
   } = $props();
 </script>
 
-<PageFrame topPadding="standard">
+<PageFrame>
   <ContentMeasure as="article" width="narrow">
     <SuccessRoomHeader
       backHref={getSuccessRoomHref(room)}

@@ -11,7 +11,7 @@
   <meta name="description" content={post.description} />
 </svelte:head>
 
-<PageFrame topPadding="standard">
+<PageFrame>
   <ContentMeasure as="article" width="copy">
     <a
       href="/annual-survey"

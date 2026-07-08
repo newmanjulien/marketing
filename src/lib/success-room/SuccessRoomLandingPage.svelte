@@ -27,7 +27,7 @@
   let { room }: { room: SuccessRoom } = $props();
 </script>
 
-<PageFrame topPadding="standard">
+<PageFrame>
   <ContentMeasure as="section" width="narrow">
     <SuccessRoomHeader
       eyebrow="Success room"

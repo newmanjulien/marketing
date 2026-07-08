@@ -1,24 +1,15 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
 
-  type PageFrameTopPadding = 'standard' | 'compact';
-
   let {
-    topPadding = 'standard',
     children,
     class: className
   }: {
-    topPadding?: PageFrameTopPadding;
     children: Snippet;
     class?: string;
   } = $props();
-
-  const topPaddingClasses = {
-    standard: 'pt-[98px] lg:pt-[43px]',
-    compact: 'pt-[74px] lg:pt-[43px]'
-  };
 </script>
 
-<main class={['px-[22px] pb-[120px] sm:px-0', topPaddingClasses[topPadding], className]}>
+<main class={['px-[22px] pb-[120px] pt-[var(--page-frame-top-space)] sm:px-0', className]}>
   {@render children()}
 </main>

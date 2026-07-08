@@ -7,7 +7,7 @@
   let BodyComponent = $derived(page.bodyComponent);
 </script>
 
-<PageFrame topPadding="standard">
+<PageFrame>
   <ContentMeasure as="article" width={page.contentWidth ?? 'narrow'}>
     <a
       href="/legal"

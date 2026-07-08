@@ -60,7 +60,7 @@
   />
 </svelte:head>
 
-<PageFrame topPadding="standard">
+<PageFrame>
   <ContentMeasure as="section" width="copy">
     <header>
       <p class="text-[14px] font-medium leading-none tracking-normal text-stone-500">
