@@ -108,19 +108,16 @@ export type SuccessRoomPlanAccordion = {
   tasks: SuccessRoomPlanTask[];
 };
 
-export type SuccessRoomQuestion = {
-  id: string;
-  question: string;
-  answer: string;
-};
-
 export type SuccessRoomMutualSuccessPlanCatalog = {
-  benefitCards: SuccessRoomBenefitCard[];
   planAccordions: SuccessRoomPlanAccordion[];
 };
 
+export type SuccessRoomBenefitsState = {
+  selectedCardIds: string[];
+  painPoints: string[];
+};
+
 export type SuccessRoomPlanState = {
-  selectedBenefitIds: string[];
   checkedTaskIds: string[];
   dateOverrides: Record<string, string>;
   taskAssigneeMemberIds: Record<string, string>;
@@ -154,6 +151,7 @@ export type SuccessRoomKickoffScheduleState = {
 };
 
 export type SuccessRoomState = {
+  benefits: SuccessRoomBenefitsState;
   mutualSuccessPlan?: SuccessRoomMutualSuccessPlanState;
   editableTexts: Record<string, SuccessRoomEditableTextState>;
   kickoffSchedules: Record<string, SuccessRoomKickoffScheduleState>;
@@ -163,7 +161,7 @@ export type SuccessRoom = {
   slug: string;
   prospectName: string;
   description: string;
+  benefitCards: SuccessRoomBenefitCard[];
   team: SuccessRoomTeamMember[];
-  questions: SuccessRoomQuestion[];
   resources: SuccessRoomResource[];
 };

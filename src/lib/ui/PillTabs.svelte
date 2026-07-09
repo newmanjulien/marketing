@@ -7,12 +7,14 @@
 
 <script lang="ts" generics="Tab extends PillTab">
   import type { Snippet } from 'svelte';
+  import { cubicOut } from 'svelte/easing';
 
   let {
     idBase,
     tabs,
     ariaLabel,
     defaultActiveTabKey,
+    animatedTabKeys = [],
     listClass,
     panelClass,
     children
@@ -21,18 +23,28 @@
     tabs: readonly Tab[];
     ariaLabel: string;
     defaultActiveTabKey?: string;
+    animatedTabKeys?: readonly string[];
     listClass?: string;
     panelClass?: string;
     children: Snippet<[Tab]>;
   } = $props();
 
   let selectedTabKey = $state<string | undefined>();
-  let activeTab = $derived.by(() => {
-    const requestedTabKey = selectedTabKey ?? defaultActiveTabKey;
+  const getFallbackTab = () =>
+    tabs.find(({ key }) => key === defaultActiveTabKey) ?? tabs[0];
+  const resolveTab = (tabKey: string | undefined) =>
+    tabs.find(({ key }) => key === tabKey) ?? getFallbackTab();
 
-    return tabs.find(({ key }) => key === requestedTabKey) ?? tabs[0];
-  });
+  let activeTab = $derived(resolveTab(selectedTabKey));
   let activeTabKey = $derived(activeTab?.key);
+
+  $effect(() => {
+    const resolvedTabKey = resolveTab(selectedTabKey)?.key;
+
+    if (selectedTabKey !== resolvedTabKey) {
+      selectedTabKey = resolvedTabKey;
+    }
+  });
 
   const baseListClasses = 'flex flex-wrap items-center gap-[7px]';
   const tabClasses =
@@ -41,6 +53,20 @@
 
   const getTabId = (tabKey: string) => `${idBase}-${tabKey}-tab`;
   const getPanelId = (tabKey: string) => `${idBase}-${tabKey}-panel`;
+  const pillTabEntry = (_node: Element, tabKey: string) => {
+    if (!animatedTabKeys.includes(tabKey)) {
+      return { duration: 0 };
+    }
+
+    return {
+      duration: 140,
+      easing: cubicOut,
+      css: (t: number) => `
+        opacity: ${t};
+        transform: scale(${0.96 + t * 0.04});
+      `
+    };
+  };
   const focusTab = (tabKey: string) => {
     document.getElementById(getTabId(tabKey))?.focus();
   };
@@ -87,6 +113,7 @@
         aria-controls={activeTabKey === tab.key ? getPanelId(tab.key) : undefined}
         tabindex={activeTabKey === tab.key ? 0 : -1}
         class={[tabClasses, activeTabKey === tab.key && activeTabClasses]}
+        in:pillTabEntry={tab.key}
         onclick={() => {
           selectedTabKey = tab.key;
         }}

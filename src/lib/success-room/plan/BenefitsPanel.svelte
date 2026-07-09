@@ -1,22 +1,18 @@
 <script lang="ts">
   import Checkbox from './Checkbox.svelte';
-  import type {
-    SuccessRoomBenefitCard,
-    SuccessRoomPlanState,
-    SuccessRoomPlanUpdate
-  } from '../domain/types';
+  import type { SuccessRoomBenefitCard } from '../domain/types';
 
   let {
     benefitCards,
-    plan,
-    onPlanChange
+    selectedBenefitIds,
+    onSelectedBenefitIdsChange
   }: {
     benefitCards: SuccessRoomBenefitCard[];
-    plan: SuccessRoomPlanState;
-    onPlanChange: (update: SuccessRoomPlanUpdate) => void;
+    selectedBenefitIds: string[];
+    onSelectedBenefitIdsChange: (selectedBenefitIds: string[]) => void;
   } = $props();
 
-  let checkedBenefitIds = $derived(new Set(plan.selectedBenefitIds));
+  let checkedBenefitIds = $derived(new Set(selectedBenefitIds));
 
   const cardClasses =
     'group flex h-[132px] cursor-pointer flex-col rounded-[10px] border border-stone-200/70 bg-white px-[18px] py-[14px] text-stone-900 shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] focus-within:border-stone-300 focus-within:ring-2 focus-within:ring-stone-900/20 sm:px-[20px] sm:py-[16px]';
@@ -37,9 +33,7 @@
       nextCheckedBenefitIds.delete(benefitId);
     }
 
-    onPlanChange({
-      selectedBenefitIds: Array.from(nextCheckedBenefitIds)
-    });
+    onSelectedBenefitIdsChange(Array.from(nextCheckedBenefitIds));
   };
 </script>
 

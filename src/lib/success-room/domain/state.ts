@@ -9,14 +9,12 @@ import {
 } from '../../../../shared/successRoomResources';
 
 export const getDefaultPlanState = (): SuccessRoomPlanState => ({
-  selectedBenefitIds: [],
   checkedTaskIds: [],
   dateOverrides: {},
   taskAssigneeMemberIds: {}
 });
 
 export const clonePlan = (plan: SuccessRoomPlanState): SuccessRoomPlanState => ({
-  selectedBenefitIds: [...plan.selectedBenefitIds],
   checkedTaskIds: [...plan.checkedTaskIds],
   dateOverrides: {
     ...plan.dateOverrides

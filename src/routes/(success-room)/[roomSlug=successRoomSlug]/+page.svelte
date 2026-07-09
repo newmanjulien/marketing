@@ -13,5 +13,5 @@
     message={form?.message}
   />
 {:else if data.state}
-  <LandingPage room={data.room} />
+  <LandingPage room={data.room} state={data.state} />
 {/if}

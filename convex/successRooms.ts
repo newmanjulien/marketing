@@ -10,6 +10,7 @@ import {
 } from "../shared/successRoomResources";
 
 const maxBenefitCards = 10;
+const maxPainPoints = 3;
 const maxPlanAccordions = 10;
 const maxPlanTasksPerAccordion = 10;
 const deckResourceKey = "deck";
@@ -41,6 +42,18 @@ type OptionalSuccessRoomResourceKey =
   | typeof initialFormatResourceKey
   | typeof kickoffScheduleResourceKey;
 
+const successRoomTableNames = [
+  "successRoomBenefitCards",
+  "successRoomPlanAccordions",
+  "successRoomStates",
+  "successRoomTeamMembers",
+  "successRoomTeamMemberPhotos",
+  "successRoomResourceStates",
+  "successRoomResourceFiles",
+  "successRoomEditableAttachmentFiles",
+  "successRooms",
+] as const;
+
 const seedBenefitCard = v.object({
   key: v.string(),
   title: v.string(),
@@ -63,12 +76,6 @@ const seedPlanAccordion = v.object({
   tasks: v.array(seedPlanTask),
 });
 
-const seedQuestion = v.object({
-  key: v.string(),
-  question: v.string(),
-  sortOrder: v.number(),
-});
-
 const fileInput = v.object({
   storageId: v.id("_storage"),
   filename: v.string(),
@@ -77,7 +84,6 @@ const fileInput = v.object({
 });
 
 const planSnapshot = v.object({
-  selectedBenefitIds: v.array(v.string()),
   checkedTaskIds: v.array(v.string()),
   dateOverrides: v.record(v.string(), v.string()),
   taskAssigneeMemberIds: v.record(v.string(), v.id("successRoomTeamMembers")),
@@ -93,11 +99,30 @@ const kickoffScheduleSnapshot = v.object({
   ),
 });
 
+const benefitsPatch = v.object({
+  selectedCardIds: v.optional(v.array(v.string())),
+  painPoints: v.optional(v.array(v.string())),
+});
+
 type PlanState = {
-  selectedBenefitIds: string[];
   checkedTaskIds: string[];
   dateOverrides: Record<string, string>;
   taskAssigneeMemberIds: Record<string, Id<"successRoomTeamMembers">>;
+};
+
+type BenefitsState = {
+  selectedCardIds: string[];
+  painPoints: string[];
+};
+
+type RoomState = {
+  benefits: BenefitsState;
+  plan: PlanState;
+};
+
+type RoomStatePatch = {
+  benefits?: Partial<BenefitsState>;
+  plan?: PlanState;
 };
 
 type KickoffScheduleRow = {
@@ -131,10 +156,19 @@ type SeedPlanAccordion = {
 };
 
 const emptyPlanState = (): PlanState => ({
-  selectedBenefitIds: [],
   checkedTaskIds: [],
   dateOverrides: {},
   taskAssigneeMemberIds: {},
+});
+
+const emptyBenefitsState = (): BenefitsState => ({
+  selectedCardIds: [],
+  painPoints: [],
+});
+
+const emptyRoomState = (): RoomState => ({
+  benefits: emptyBenefitsState(),
+  plan: emptyPlanState(),
 });
 
 const emptyKickoffScheduleState = (): KickoffScheduleState => ({
@@ -176,6 +210,8 @@ const assertMaxLength = (items: unknown[], maxLength: number, label: string) => 
     throw new ConvexError(`${label} must include ${maxLength} items or fewer`);
   }
 };
+
+const uniqueStrings = (items: string[]) => [...new Set(items)];
 
 const normalizeAdminSuccessRoomSlug = (slug: string) => {
   const parsedSlug = parseSuccessRoomSlug(slug);
@@ -236,12 +272,12 @@ const ensureRoom = async (ctx: QueryCtx | MutationCtx, slug: string) => {
   return room;
 };
 
-const getPlanStateByRoomId = async (
+const getRoomStateByRoomId = async (
   ctx: QueryCtx | MutationCtx,
   roomId: Id<"successRooms">,
 ) =>
   await ctx.db
-    .query("successRoomPlanStates")
+    .query("successRoomStates")
     .withIndex("by_room", (q) => q.eq("roomId", roomId))
     .unique();
 
@@ -347,12 +383,6 @@ const planAccordionSummary = (accordion: Doc<"successRoomPlanAccordions">) => ({
   })),
 });
 
-const questionSummary = (question: Doc<"successRoomQuestions">) => ({
-  id: question.key,
-  question: question.question,
-  answer: question.answer,
-});
-
 const teamMemberSummary = (
   member: Doc<"successRoomTeamMembers">,
   photo?: Doc<"successRoomTeamMemberPhotos">,
@@ -423,49 +453,22 @@ const replacePlanAccordions = async (
   }
 };
 
-const upsertQuestions = async (
+const upsertRoomState = async (
   ctx: MutationCtx,
   roomId: Id<"successRooms">,
-  questions: Array<{
-    key: string;
-    question: string;
-    sortOrder: number;
-  }>,
-  now: number,
+  updates: RoomStatePatch,
 ) => {
-  for (const question of questions) {
-    const existingQuestion = await ctx.db
-      .query("successRoomQuestions")
-      .withIndex("by_room_key", (q) => q.eq("roomId", roomId).eq("key", question.key))
-      .unique();
-    const nextQuestion = {
-      roomId,
-      key: question.key,
-      question: question.question,
-      answer: existingQuestion?.answer ?? "",
-      sortOrder: question.sortOrder,
-      active: true,
-      createdAt: existingQuestion?.createdAt ?? now,
-      updatedAt: now,
-    };
-
-    if (existingQuestion) {
-      await ctx.db.replace(existingQuestion._id, nextQuestion);
-    } else {
-      await ctx.db.insert("successRoomQuestions", nextQuestion);
-    }
-  }
-};
-
-const resetPlanState = async (
-  ctx: MutationCtx,
-  roomId: Id<"successRooms">,
-  now: number,
-) => {
-  const state = await getPlanStateByRoomId(ctx, roomId);
+  const state = await getRoomStateByRoomId(ctx, roomId);
+  const now = Date.now();
+  const existingBenefits = state?.benefits ?? emptyBenefitsState();
   const nextState = {
     roomId,
-    ...emptyPlanState(),
+    benefits: {
+      selectedCardIds:
+        updates.benefits?.selectedCardIds ?? existingBenefits.selectedCardIds,
+      painPoints: updates.benefits?.painPoints ?? existingBenefits.painPoints,
+    },
+    plan: updates.plan ?? state?.plan ?? emptyPlanState(),
     createdAt: state?.createdAt ?? now,
     updatedAt: now,
   };
@@ -473,22 +476,23 @@ const resetPlanState = async (
   if (state) {
     await ctx.db.replace(state._id, nextState);
   } else {
-    await ctx.db.insert("successRoomPlanStates", nextState);
+    await ctx.db.insert("successRoomStates", nextState);
   }
 };
 
-const replaceMutualSuccessPlanContent = async (
+const resetPlanState = async (
   ctx: MutationCtx,
   roomId: Id<"successRooms">,
-  args: {
-    benefitCards: SeedBenefitCard[];
-    planAccordions: SeedPlanAccordion[];
-  },
+) => await upsertRoomState(ctx, roomId, { plan: emptyPlanState() });
+
+const replaceMutualSuccessPlanPlan = async (
+  ctx: MutationCtx,
+  roomId: Id<"successRooms">,
+  planAccordions: SeedPlanAccordion[],
   now: number,
 ) => {
-  await replaceBenefitCards(ctx, roomId, args.benefitCards, now);
-  await replacePlanAccordions(ctx, roomId, args.planAccordions, now);
-  await resetPlanState(ctx, roomId, now);
+  await replacePlanAccordions(ctx, roomId, planAccordions, now);
+  await resetPlanState(ctx, roomId);
 };
 
 const sanitizeKickoffScheduleState = (
@@ -565,14 +569,9 @@ const sanitizeTaskAssignees = async (
 const getPlanForBundle = async (
   ctx: QueryCtx,
   roomId: Id<"successRooms">,
-  planState: Doc<"successRoomPlanStates"> | null,
+  planState: PlanState,
 ) => {
-  if (!planState) {
-    return emptyPlanState();
-  }
-
   return {
-    selectedBenefitIds: planState.selectedBenefitIds,
     checkedTaskIds: planState.checkedTaskIds,
     dateOverrides: planState.dateOverrides,
     taskAssigneeMemberIds: await sanitizeTaskAssignees(
@@ -586,16 +585,49 @@ const getPlanForBundle = async (
 const getMutualSuccessPlanStateForBundle = async (
   ctx: QueryCtx,
   room: Doc<"successRooms">,
+  roomState: Doc<"successRoomStates"> | null,
 ) => {
   if (!isResourceEnabled(room, mutualSuccessPlanResourceKey)) {
     return undefined;
   }
 
-  const planState = await getPlanStateByRoomId(ctx, room._id);
-
   return {
-    plan: await getPlanForBundle(ctx, room._id, planState),
+    plan: await getPlanForBundle(ctx, room._id, roomState?.plan ?? emptyPlanState()),
   };
+};
+
+const getBenefitCardsForBundle = async (
+  ctx: QueryCtx,
+  roomId: Id<"successRooms">,
+) => {
+  const benefitCards = await ctx.db
+    .query("successRoomBenefitCards")
+    .withIndex("by_room", (q) => q.eq("roomId", roomId))
+    .collect();
+
+  return activeSortedRows(benefitCards, maxBenefitCards).map(benefitCardSummary);
+};
+
+const sanitizeSelectedBenefitCardIds = async (
+  ctx: QueryCtx | MutationCtx,
+  roomId: Id<"successRooms">,
+  selectedCardIds: string[],
+) => {
+  const benefitCards = await ctx.db
+    .query("successRoomBenefitCards")
+    .withIndex("by_room", (q) => q.eq("roomId", roomId))
+    .collect();
+  const activeCardIds = new Set(
+    benefitCards.filter((card) => card.active).map((card) => card.key),
+  );
+
+  return uniqueStrings(selectedCardIds).filter((cardId) => activeCardIds.has(cardId));
+};
+
+const sanitizePainPoints = (painPoints: string[]) => {
+  assertMaxLength(painPoints, maxPainPoints, "Pain points");
+
+  return painPoints;
 };
 
 const getMutualSuccessPlanCatalogForBundle = async (
@@ -604,36 +636,26 @@ const getMutualSuccessPlanCatalogForBundle = async (
 ) => {
   if (!isResourceEnabled(room, mutualSuccessPlanResourceKey)) {
     return {
-      benefitCards: [],
       planAccordions: [],
     };
   }
 
-  const benefitCards = await ctx.db
-    .query("successRoomBenefitCards")
-    .withIndex("by_room", (q) => q.eq("roomId", room._id))
-    .collect();
   const planAccordions = await ctx.db
     .query("successRoomPlanAccordions")
     .withIndex("by_room", (q) => q.eq("roomId", room._id))
     .collect();
 
   return {
-    benefitCards: activeSortedRows(benefitCards, maxBenefitCards).map(benefitCardSummary),
     planAccordions: activeSortedRows(planAccordions, maxPlanAccordions).map(planAccordionSummary),
   };
 };
 
-const getQuestionsForBundle = async (
-  ctx: QueryCtx,
-  roomId: Id<"successRooms">,
+const getRoomStateForBundle = (
+  roomState: Doc<"successRoomStates"> | null,
 ) => {
-  const questions = await ctx.db
-    .query("successRoomQuestions")
-    .withIndex("by_room", (q) => q.eq("roomId", roomId))
-    .collect();
-
-  return activeSortedRows(questions).map(questionSummary);
+  return {
+    benefits: roomState?.benefits ?? emptyBenefitsState(),
+  };
 };
 
 const getEditableTextsForBundle = async (
@@ -870,9 +892,15 @@ export const getRoomBundle = query({
 
     await assertAccess(room, args.accessToken);
 
-    const mutualSuccessPlanState = await getMutualSuccessPlanStateForBundle(ctx, room);
+    const roomState = await getRoomStateByRoomId(ctx, room._id);
+    const roomStateSummary = getRoomStateForBundle(roomState);
+    const mutualSuccessPlanState = await getMutualSuccessPlanStateForBundle(
+      ctx,
+      room,
+      roomState,
+    );
     const mutualSuccessPlanCatalog = await getMutualSuccessPlanCatalogForBundle(ctx, room);
-    const questions = await getQuestionsForBundle(ctx, room._id);
+    const benefitCards = await getBenefitCardsForBundle(ctx, room._id);
     const editableTexts = await getEditableTextsForBundle(ctx, room);
     const kickoffSchedules = await getKickoffSchedulesForBundle(ctx, room);
     const teamMembers = await ctx.db
@@ -898,10 +926,11 @@ export const getRoomBundle = query({
         team: teamMembers.map((member) =>
           teamMemberSummary(member, teamMemberPhotoByMemberId.get(member._id)),
         ),
+        benefitCards,
         mutualSuccessPlanCatalog,
-        questions,
       },
       state: {
+        benefits: roomStateSummary.benefits,
         ...(mutualSuccessPlanState ? { mutualSuccessPlan: mutualSuccessPlanState } : {}),
         editableTexts,
         kickoffSchedules,
@@ -1058,33 +1087,40 @@ export const addTeamMember = mutation({
   },
 });
 
-export const patchQuestionAnswers = mutation({
+export const patchBenefits = mutation({
   args: {
     slug: v.string(),
     accessToken: v.string(),
-    answers: v.record(v.string(), v.string()),
+    benefits: benefitsPatch,
   },
   handler: async (ctx, args) => {
     const room = await ensureRoom(ctx, args.slug);
 
     await assertAccess(room, args.accessToken);
 
-    const questions = await ctx.db
-      .query("successRoomQuestions")
-      .withIndex("by_room", (q) => q.eq("roomId", room._id))
-      .collect();
-    const now = Date.now();
+    if (
+      args.benefits.selectedCardIds === undefined &&
+      args.benefits.painPoints === undefined
+    ) {
+      throw new ConvexError("Benefits update is required");
+    }
 
-    await Promise.all(
-      questions
-        .filter((question) => question.active && question.key in args.answers)
-        .map((question) =>
-          ctx.db.patch(question._id, {
-            answer: args.answers[question.key],
-            updatedAt: now,
-          }),
-        ),
-    );
+    await upsertRoomState(ctx, room._id, {
+      benefits: {
+        ...(args.benefits.selectedCardIds !== undefined
+          ? {
+              selectedCardIds: await sanitizeSelectedBenefitCardIds(
+                ctx,
+                room._id,
+                args.benefits.selectedCardIds,
+              ),
+            }
+          : {}),
+        ...(args.benefits.painPoints !== undefined
+          ? { painPoints: sanitizePainPoints(args.benefits.painPoints) }
+          : {}),
+      },
+    });
   },
 });
 
@@ -1105,23 +1141,14 @@ export const replacePlan = mutation({
       room._id,
       args.plan.taskAssigneeMemberIds,
     );
-    const existingState = await getPlanStateByRoomId(ctx, room._id);
-    const now = Date.now();
-    const nextState = {
-      roomId: room._id,
-      selectedBenefitIds: args.plan.selectedBenefitIds,
-      checkedTaskIds: args.plan.checkedTaskIds,
-      dateOverrides: args.plan.dateOverrides,
-      taskAssigneeMemberIds,
-      createdAt: existingState?.createdAt ?? now,
-      updatedAt: now,
-    };
 
-    if (existingState) {
-      await ctx.db.replace(existingState._id, nextState);
-    } else {
-      await ctx.db.insert("successRoomPlanStates", nextState);
-    }
+    await upsertRoomState(ctx, room._id, {
+      plan: {
+        checkedTaskIds: args.plan.checkedTaskIds,
+        dateOverrides: args.plan.dateOverrides,
+        taskAssigneeMemberIds,
+      },
+    });
   },
 });
 
@@ -1292,11 +1319,17 @@ export const createSuccessRoom = mutation({
     password: v.string(),
     deck: fileInput,
     audio: fileInput,
-    questions: v.array(seedQuestion),
+    benefitCards: v.array(seedBenefitCard),
   },
   handler: async (ctx, args) => {
     assertSeedAccess(args.seedSecret);
     const slug = await normalizeNewSuccessRoomSlug(ctx, args.slug);
+
+    if (args.benefitCards.length === 0) {
+      throw new ConvexError("Benefit cards are required");
+    }
+
+    assertMaxLength(args.benefitCards, maxBenefitCards, "Benefit cards");
 
     const now = Date.now();
     const roomId = await ctx.db.insert("successRooms", {
@@ -1306,6 +1339,13 @@ export const createSuccessRoom = mutation({
       passwordHash: await hashPassword(args.password),
       passwordUpdatedAt: now,
       archived: false,
+      createdAt: now,
+      updatedAt: now,
+    });
+    await replaceBenefitCards(ctx, roomId, args.benefitCards, now);
+    await ctx.db.insert("successRoomStates", {
+      roomId,
+      ...emptyRoomState(),
       createdAt: now,
       updatedAt: now,
     });
@@ -1333,12 +1373,42 @@ export const createSuccessRoom = mutation({
       updatedAt: now,
     });
 
-    await upsertQuestions(ctx, roomId, args.questions, now);
-
     return {
       roomId,
       deckId,
       audioId,
+    };
+  },
+});
+
+export const nukeSuccessRoomData = mutation({
+  args: {
+    seedSecret: v.string(),
+  },
+  handler: async (ctx, args) => {
+    assertSeedAccess(args.seedSecret);
+
+    const storageFiles = await ctx.db.system.query("_storage").collect();
+
+    for (const file of storageFiles) {
+      await ctx.storage.delete(file._id);
+    }
+
+    const deletedRows: Record<string, number> = {};
+
+    for (const tableName of successRoomTableNames) {
+      const rows = await ctx.db.query(tableName).collect();
+
+      deletedRows[tableName] = rows.length;
+
+      for (const row of rows) {
+        await ctx.db.delete(row._id);
+      }
+    }
+
+    return {
+      deletedStorageFiles: storageFiles.length,
+      deletedRows,
     };
   },
 });
@@ -1348,7 +1418,6 @@ export const enableSuccessRoomSections = mutation({
     seedSecret: v.string(),
     slug: v.string(),
     resourceKeys: v.array(optionalResourceKey),
-    benefitCards: v.array(seedBenefitCard),
     planAccordions: v.array(seedPlanAccordion),
   },
   handler: async (ctx, args) => {
@@ -1364,11 +1433,10 @@ export const enableSuccessRoomSections = mutation({
     const now = Date.now();
 
     if (requestedResourceKeys.includes(mutualSuccessPlanResourceKey)) {
-      if (args.benefitCards.length === 0 || args.planAccordions.length === 0) {
+      if (args.planAccordions.length === 0) {
         throw new ConvexError("Mutual success plan content is required");
       }
 
-      assertMaxLength(args.benefitCards, maxBenefitCards, "Benefit cards");
       assertMaxLength(args.planAccordions, maxPlanAccordions, "Plan accordions");
 
       for (const accordion of args.planAccordions) {
@@ -1379,13 +1447,10 @@ export const enableSuccessRoomSections = mutation({
         );
       }
 
-      await replaceMutualSuccessPlanContent(
+      await replaceMutualSuccessPlanPlan(
         ctx,
         room._id,
-        {
-          benefitCards: args.benefitCards,
-          planAccordions: args.planAccordions,
-        },
+        args.planAccordions,
         now,
       );
     }

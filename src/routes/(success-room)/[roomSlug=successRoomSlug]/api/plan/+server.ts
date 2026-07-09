@@ -40,7 +40,6 @@ export const POST: RequestHandler = async ({ cookies, params, request }) => {
       : invalidPlan();
 
   if (
-    !('selectedBenefitIds' in plan) ||
     !('checkedTaskIds' in plan) ||
     !('dateOverrides' in plan) ||
     !('taskAssigneeMemberIds' in plan)
@@ -52,7 +51,6 @@ export const POST: RequestHandler = async ({ cookies, params, request }) => {
     slug: params.roomSlug,
     accessToken,
     plan: {
-      selectedBenefitIds: parseStringArray(plan.selectedBenefitIds),
       checkedTaskIds: parseStringArray(plan.checkedTaskIds),
       dateOverrides: parseStringRecord(plan.dateOverrides),
       taskAssigneeMemberIds: parseTeamMemberIdRecord(plan.taskAssigneeMemberIds),

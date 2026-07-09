@@ -1,7 +1,4 @@
 <script lang="ts">
-  import PillTabs from '$lib/ui/PillTabs.svelte';
-  import type { PillTab } from '$lib/ui/PillTabs.svelte';
-  import BenefitsPanel from './BenefitsPanel.svelte';
   import PlanPanel from './PlanPanel.svelte';
   import type {
     SuccessRoom,
@@ -9,25 +6,6 @@
     SuccessRoomPlanState,
     SuccessRoomPlanUpdate
   } from '../domain/types';
-
-  type MutualSuccessPlanSection = PillTab & {
-    description: string;
-  };
-
-  const mutualSuccessPlanSections = [
-    {
-      key: 'benefits',
-      label: 'Benefits',
-      description:
-        'Dummy description text that explains how these benefits connect to the shared proof of concept goals.'
-    },
-    {
-      key: 'plan',
-      label: 'Plan',
-      description:
-        'Dummy description text that introduces the timeline, responsibilities, and next steps for the mutual success plan.'
-    }
-  ] as const satisfies readonly MutualSuccessPlanSection[];
 
   const panelContentClasses = 'grid gap-[22px]';
   const panelDescriptionClasses =
@@ -46,33 +24,16 @@
   } = $props();
 </script>
 
-<PillTabs
-  idBase={`success-room-${room.slug}-${resource.slug}`}
-  tabs={mutualSuccessPlanSections}
-  ariaLabel={`${resource.title} sections`}
-  defaultActiveTabKey="benefits"
-  listClass="mt-[34px]"
-  panelClass="mt-[28px]"
->
-  {#snippet children(section)}
-    <div class={panelContentClasses}>
-      <p class={panelDescriptionClasses}>{section.description}</p>
+<div class={[panelContentClasses, 'mt-[34px]']}>
+  <p class={panelDescriptionClasses}>
+    Customizable step-by-step plan to start generating revenue together
+  </p>
 
-      {#if section.key === 'benefits'}
-        <BenefitsPanel
-          benefitCards={resource.catalog.benefitCards}
-          {plan}
-          {onPlanChange}
-        />
-      {:else if section.key === 'plan'}
-        <PlanPanel
-          {resource}
-          team={room.team}
-          planAccordions={resource.catalog.planAccordions}
-          {plan}
-          {onPlanChange}
-        />
-      {/if}
-    </div>
-  {/snippet}
-</PillTabs>
+  <PlanPanel
+    {resource}
+    team={room.team}
+    planAccordions={resource.catalog.planAccordions}
+    {plan}
+    {onPlanChange}
+  />
+</div>

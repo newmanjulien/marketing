@@ -103,7 +103,6 @@ export const validateNewSuccessRoomSlug = async ({ client, seedSecret, slug }) =
 export const enableSuccessRoomSection = async ({
   slug,
   resourceKey,
-  benefitCards = [],
   planAccordions = [],
 }) => {
   const { client, seedSecret } = await createSeedClient();
@@ -112,7 +111,6 @@ export const enableSuccessRoomSection = async ({
     seedSecret,
     slug,
     resourceKeys: [resourceKey],
-    benefitCards,
     planAccordions,
   });
 

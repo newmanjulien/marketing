@@ -18,13 +18,13 @@
       key: 'format',
       label: 'Format',
       description:
-        'Dummy description text that explains how this format structures the first Overbase follow-up.'
+        'Sample of the email your team will receive with an optional attachment'
     },
     {
       key: 'data-sources',
       label: 'Data sources',
       description:
-        'Dummy description text that introduces the source fields this format can reference.'
+        'Da†a sources we will need to connect for this initial email format'
     }
   ] as const satisfies readonly EditableTextSection[];
 

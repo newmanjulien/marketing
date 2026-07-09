@@ -148,10 +148,6 @@ export const createSuccessRoomResourceDraft = (
     },
     updatePlan(update: SuccessRoomPlanUpdate) {
       const nextPlan = {
-        selectedBenefitIds:
-          update.selectedBenefitIds !== undefined
-            ? [...update.selectedBenefitIds]
-            : plan.selectedBenefitIds,
         checkedTaskIds:
           update.checkedTaskIds !== undefined
             ? [...update.checkedTaskIds]

@@ -50,8 +50,7 @@
   <p
     class="max-w-[42rem] text-[14px] font-book leading-[1.45] tracking-normal text-stone-500 sm:text-[15px]"
   >
-    Meet the people supporting this evaluation, including the team members helping align the proof
-    of concept, answer technical questions, and keep next steps moving as the work progresses.
+    Meet the people supporting this evaluation, including the team members from Overbase and from your team
   </p>
 
   <TeamGallery

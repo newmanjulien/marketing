@@ -57,25 +57,17 @@ export default defineSchema({
     .index("by_room", ["roomId"])
     .index("by_room_key", ["roomId", "key"]),
 
-  successRoomQuestions: defineTable({
+  successRoomStates: defineTable({
     roomId: v.id("successRooms"),
-    key: v.string(),
-    question: v.string(),
-    answer: v.string(),
-    sortOrder: v.number(),
-    active: v.boolean(),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  })
-    .index("by_room", ["roomId"])
-    .index("by_room_key", ["roomId", "key"]),
-
-  successRoomPlanStates: defineTable({
-    roomId: v.id("successRooms"),
-    selectedBenefitIds: v.array(v.string()),
-    checkedTaskIds: v.array(v.string()),
-    dateOverrides: v.record(v.string(), v.string()),
-    taskAssigneeMemberIds: v.record(v.string(), v.id("successRoomTeamMembers")),
+    benefits: v.object({
+      selectedCardIds: v.array(v.string()),
+      painPoints: v.array(v.string()),
+    }),
+    plan: v.object({
+      checkedTaskIds: v.array(v.string()),
+      dateOverrides: v.record(v.string(), v.string()),
+      taskAssigneeMemberIds: v.record(v.string(), v.id("successRoomTeamMembers")),
+    }),
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_room", ["roomId"]),

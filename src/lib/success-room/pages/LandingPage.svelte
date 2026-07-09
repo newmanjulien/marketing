@@ -5,34 +5,50 @@
   import type { PillTab } from '$lib/ui/PillTabs.svelte';
   import ResourceCard from '../documents/ResourceCard.svelte';
   import Header from '../shell/Header.svelte';
-  import QuestionsPanel from './QuestionsPanel.svelte';
+  import BenefitsPanel from '../plan/BenefitsPanel.svelte';
+  import PainPointsPanel from './PainPointsPanel.svelte';
   import TeamPanel from '../team/TeamPanel.svelte';
   import { createSuccessRoomLandingDraft } from '../persistence/landingDraft.svelte';
-  import type { SuccessRoom } from '../domain/types';
+  import type { SuccessRoom, SuccessRoomState } from '../domain/types';
 
   const baseSuccessRoomSections = [
     {
-      key: 'documents',
-      label: 'Documents'
+      key: 'benefits',
+      label: 'Benefits'
+    },
+    {
+      key: 'pain-points',
+      label: 'Pain points'
     },
     {
       key: 'team',
       label: 'Team'
     },
     {
-      key: 'questions',
-      label: 'Questions'
+      key: 'documents',
+      label: 'Documents'
     }
   ] as const satisfies readonly PillTab[];
 
-  let { room }: { room: SuccessRoom } = $props();
-  const successRoomSections = $derived(
-    room.questions.length > 0
-      ? baseSuccessRoomSections
-      : baseSuccessRoomSections.filter((section) => section.key !== 'questions')
-  );
+  let {
+    room,
+    state: successRoomState
+  }: { room: SuccessRoom; state: SuccessRoomState } = $props();
 
-  const draft = createSuccessRoomLandingDraft(() => room);
+  const draft = createSuccessRoomLandingDraft(
+    () => room,
+    () => successRoomState
+  );
+  const hasSelectedBenefits = $derived(draft.selectedBenefitIds.length > 0);
+  const successRoomSections = $derived(
+    baseSuccessRoomSections.filter((section) => {
+      if (section.key === 'pain-points') {
+        return hasSelectedBenefits;
+      }
+
+      return true;
+    })
+  );
 </script>
 
 <PageFrame>
@@ -47,7 +63,8 @@
       idBase={`success-room-${room.slug}`}
       tabs={successRoomSections}
       ariaLabel={`${room.prospectName} success room sections`}
-      defaultActiveTabKey="documents"
+      defaultActiveTabKey="benefits"
+      animatedTabKeys={['pain-points']}
       listClass="mt-[34px]"
       panelClass="mt-[38px]"
     >
@@ -61,13 +78,18 @@
               <ResourceCard {room} {resource} />
             {/each}
           </nav>
+        {:else if section.key === 'benefits'}
+          <BenefitsPanel
+            benefitCards={room.benefitCards}
+            selectedBenefitIds={draft.selectedBenefitIds}
+            onSelectedBenefitIdsChange={draft.setSelectedBenefitIds}
+          />
         {:else if section.key === 'team'}
           <TeamPanel roomSlug={room.slug} team={room.team} />
-        {:else if section.key === 'questions'}
-          <QuestionsPanel
-            questions={room.questions}
-            questionAnswers={draft.questionAnswers}
-            onQuestionAnswersChange={draft.setQuestionAnswers}
+        {:else if section.key === 'pain-points'}
+          <PainPointsPanel
+            painPoints={draft.painPoints}
+            onPainPointsChange={draft.setPainPoints}
           />
         {/if}
       {/snippet}

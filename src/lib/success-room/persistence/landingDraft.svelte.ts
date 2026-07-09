@@ -3,42 +3,65 @@ import {
   createSuccessRoomSaveQueue
 } from './saveQueue';
 import { getSuccessRoomApiPath } from '../domain/urls';
-import type { SuccessRoom } from '../domain/types';
+import type { SuccessRoom, SuccessRoomBenefitsState, SuccessRoomState } from '../domain/types';
 
-const cloneQuestionAnswers = (questions: SuccessRoom['questions']) =>
-  Object.fromEntries(questions.map((question) => [question.id, question.answer]));
+const minimumPainPointCount = 3;
 
-const getQuestionVersion = (questions: SuccessRoom['questions']) =>
-  questions.map((question) => `${question.id}\u0000${question.answer}`).join('\u0001');
+const normalizePainPointsForEditor = (painPoints: string[]) => {
+  const normalizedPainPoints = [...painPoints];
+
+  while (normalizedPainPoints.length < minimumPainPointCount) {
+    normalizedPainPoints.push('');
+  }
+
+  return normalizedPainPoints;
+};
+
+const normalizeBenefitsForEditor = (
+  benefits: SuccessRoomBenefitsState
+): SuccessRoomBenefitsState => ({
+  selectedCardIds: [...benefits.selectedCardIds],
+  painPoints: normalizePainPointsForEditor(benefits.painPoints)
+});
+
+const getBenefitsVersion = (benefits: SuccessRoomBenefitsState) => JSON.stringify(benefits);
 
 export const createSuccessRoomLandingDraft = (
   getRoom: () => SuccessRoom,
+  getState: () => SuccessRoomState,
 ) => {
   const saveQueue = createSuccessRoomSaveQueue();
 
-  let roomSlug = $state('');
-  let questionVersion = $state('');
-  let serverQuestionAnswers = $state<Record<string, string>>({});
-  let questionAnswers = $state<Record<string, string>>({});
+  let benefitRoomSlug = $state('');
+  let benefitsVersion = $state('');
+  let benefits = $state<SuccessRoomBenefitsState>(
+    normalizeBenefitsForEditor({
+      selectedCardIds: [],
+      painPoints: []
+    })
+  );
 
   attachSuccessRoomSaveQueueLifecycle(saveQueue);
 
-  const saveQuestionAnswers = (nextQuestionAnswers: Record<string, string>) => {
+  const saveBenefits = (
+    key: string,
+    benefits: Partial<SuccessRoomState['benefits']>
+  ) => {
     saveQueue.schedule(
-      'questionAnswers',
+      key,
       async () => {
-        const response = await fetch(getSuccessRoomApiPath(getRoom().slug, 'questions'), {
+        const response = await fetch(getSuccessRoomApiPath(getRoom().slug, 'benefits'), {
           method: 'POST',
           headers: {
             'content-type': 'application/json'
           },
           body: JSON.stringify({
-            answers: nextQuestionAnswers
+            benefits
           })
         });
 
         if (!response.ok) {
-          throw new Error('Success room question answers could not be saved.');
+          throw new Error('Success room benefits could not be saved.');
         }
       },
       500
@@ -47,41 +70,41 @@ export const createSuccessRoomLandingDraft = (
 
   $effect(() => {
     const room = getRoom();
+    const state = getState();
     const currentRoomSlug = room.slug;
-    const currentQuestionVersion = getQuestionVersion(room.questions);
+    const currentBenefitsVersion = getBenefitsVersion(state.benefits);
 
-    if (roomSlug !== currentRoomSlug || questionVersion !== currentQuestionVersion) {
-      const nextServerQuestionAnswers = cloneQuestionAnswers(room.questions);
-      const preserveLocalAnswers = roomSlug === currentRoomSlug;
-
-      roomSlug = currentRoomSlug;
-      questionVersion = currentQuestionVersion;
-      questionAnswers = Object.fromEntries(
-        room.questions.map((question) => {
-          const currentAnswer = questionAnswers[question.id];
-          const serverAnswer = serverQuestionAnswers[question.id];
-          const hasLocalEdit =
-            preserveLocalAnswers &&
-            serverAnswer !== undefined &&
-            currentAnswer !== serverAnswer;
-
-          return [
-            question.id,
-            hasLocalEdit ? currentAnswer : nextServerQuestionAnswers[question.id] ?? ''
-          ];
-        })
-      );
-      serverQuestionAnswers = nextServerQuestionAnswers;
+    if (benefitRoomSlug !== currentRoomSlug || benefitsVersion !== currentBenefitsVersion) {
+      benefitRoomSlug = currentRoomSlug;
+      benefitsVersion = currentBenefitsVersion;
+      benefits = normalizeBenefitsForEditor(state.benefits);
     }
   });
 
   return {
-    get questionAnswers() {
-      return questionAnswers;
+    get selectedBenefitIds() {
+      return benefits.selectedCardIds;
     },
-    setQuestionAnswers(nextQuestionAnswers: Record<string, string>) {
-      questionAnswers = { ...nextQuestionAnswers };
-      saveQuestionAnswers(questionAnswers);
+    get painPoints() {
+      return benefits.painPoints;
+    },
+    setSelectedBenefitIds(nextSelectedBenefitIds: string[]) {
+      benefits = {
+        ...benefits,
+        selectedCardIds: [...nextSelectedBenefitIds]
+      };
+      saveBenefits('selectedBenefits', {
+        selectedCardIds: benefits.selectedCardIds
+      });
+    },
+    setPainPoints(nextPainPoints: string[]) {
+      benefits = {
+        ...benefits,
+        painPoints: normalizePainPointsForEditor(nextPainPoints)
+      };
+      saveBenefits('painPoints', {
+        painPoints: benefits.painPoints
+      });
     }
   };
 };

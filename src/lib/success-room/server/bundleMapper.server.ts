@@ -185,11 +185,15 @@ export const mapSuccessRoomBundle = (
       slug: bundle.room.slug,
       prospectName: bundle.room.prospectName,
       description: successRoomDescription,
+      benefitCards: bundle.room.benefitCards,
       team: teamMembers,
-      questions: bundle.room.questions,
       resources,
     },
     state: {
+      benefits: {
+        selectedCardIds: bundle.state.benefits.selectedCardIds,
+        painPoints: bundle.state.benefits.painPoints,
+      },
       ...(mutualSuccessPlan ? { mutualSuccessPlan } : {}),
       editableTexts: mapEditableTextStates(bundle.room.slug, bundle.state.editableTexts),
       kickoffSchedules: bundle.state.kickoffSchedules,
