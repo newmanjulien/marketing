@@ -58,12 +58,17 @@
       return { duration: 0 };
     }
 
+    if (globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      return { duration: 0 };
+    }
+
     return {
-      duration: 140,
+      duration: 220,
       easing: cubicOut,
       css: (t: number) => `
         opacity: ${t};
-        transform: scale(${0.96 + t * 0.04});
+        transform: translateY(${(1 - t) * 4}px) scale(${0.985 + t * 0.015});
+        transform-origin: center left;
       `
     };
   };

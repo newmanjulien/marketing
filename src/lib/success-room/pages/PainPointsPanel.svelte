@@ -13,9 +13,9 @@
   const textAreaClasses =
     'min-h-[108px] w-full resize-y rounded-[10px] border border-stone-200 bg-white px-[18px] py-[14px] text-[14px] font-book leading-[1.45] text-stone-800 outline-none transition-colors duration-150 placeholder:text-stone-400 focus:border-stone-300 focus:ring-2 focus:ring-stone-900/20 sm:min-h-[120px] sm:px-[20px] sm:py-[16px] sm:text-[15px]';
   const painPointPrompts = [
-    'First pain point',
-    'Second pain point',
-    'Third pain point'
+    'Your first pain point and related metrics',
+    'Is there a second pain point?',
+    'And a third pain point?'
   ];
 
   const setPainPoint = (index: number, value: string) => {
@@ -29,7 +29,7 @@
 
 <div class={promptListClasses}>
   <p class={descriptionClasses}>
-    What pain points are currently stopping you from getting the benefits you selected
+    What pain points are currently stopping you from getting the benefits you selected?
   </p>
 
   {#each painPoints as painPoint, index}
