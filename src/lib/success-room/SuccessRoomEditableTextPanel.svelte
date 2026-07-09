@@ -1,5 +1,6 @@
 <script lang="ts">
   import { FileIcon, PaperclipIcon, XIcon } from 'phosphor-svelte';
+  import { getSuccessRoomApiPath } from './successRoomUrls';
   import type {
     SuccessRoomEditableTextResource,
     SuccessRoomEditableTextState,
@@ -45,7 +46,7 @@
   };
 
   const uploadAttachment = async (file: File) => {
-    const uploadUrlResponse = await fetch(`/success-room/${roomSlug}/api/upload-url`, {
+    const uploadUrlResponse = await fetch(getSuccessRoomApiPath(roomSlug, 'upload-url'), {
       method: 'POST'
     });
 
@@ -67,7 +68,7 @@
     }
 
     const { storageId } = await uploadResponse.json();
-    const attachmentResponse = await fetch(`/success-room/${roomSlug}/api/editable-attachment`, {
+    const attachmentResponse = await fetch(getSuccessRoomApiPath(roomSlug, 'editable-attachment'), {
       method: 'POST',
       headers: {
         'content-type': 'application/json'
@@ -98,7 +99,7 @@
   };
 
   const removeAttachment = async () => {
-    await fetch(`/success-room/${roomSlug}/api/editable-attachment`, {
+    await fetch(getSuccessRoomApiPath(roomSlug, 'editable-attachment'), {
       method: 'DELETE',
       headers: {
         'content-type': 'application/json'
@@ -124,7 +125,7 @@
     aria-label={resource.title}
     rows={resource.editorRows ?? defaultEditorRows}
     value={editableState.content}
-    placeholder="Write the editable text."
+    placeholder="Write the initial format"
     spellcheck="true"
     oninput={(event) => setContent(event.currentTarget.value)}
   ></textarea>

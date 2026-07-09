@@ -8,6 +8,12 @@ import {
   successRoomDescription,
   successRoomResourceDefinitions
 } from '$lib/success-room/successRoomConfig';
+import {
+  getSuccessRoomEditableAttachmentPath,
+  getSuccessRoomPath,
+  getSuccessRoomResourceFilePath,
+  getSuccessRoomTeamMemberPhotoPath
+} from '$lib/success-room/successRoomUrls';
 import type {
   SuccessRoomAssetResourceDefinition,
   SuccessRoomAssetResourceSlug,
@@ -49,7 +55,7 @@ export const setSuccessRoomAccessToken = (
   accessToken: string,
 ) => {
   cookies.set(successRoomAccessCookieName(roomSlug), accessToken, {
-    path: `/success-room/${roomSlug}`,
+    path: getSuccessRoomPath(roomSlug),
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
@@ -59,7 +65,7 @@ export const setSuccessRoomAccessToken = (
 
 export const clearSuccessRoomAccessToken = (cookies: Cookies, roomSlug: string) => {
   cookies.delete(successRoomAccessCookieName(roomSlug), {
-    path: `/success-room/${roomSlug}`,
+    path: getSuccessRoomPath(roomSlug),
   });
 };
 
@@ -78,20 +84,14 @@ export const verifySuccessRoomPassword = async (roomSlug: string, password: stri
     password,
   });
 
-const resourceFileHref = (roomSlug: string, resourceSlug: string) =>
-  `/success-room/${roomSlug}/resource-file/${resourceSlug}`;
-
 export const getSuccessRoomEditableAttachmentHref = (roomSlug: string, resourceSlug: string) =>
-  `/success-room/${roomSlug}/editable-attachment/${resourceSlug}`;
-
-const teamMemberPhotoHref = (roomSlug: string, memberId: string) =>
-  `/success-room/${roomSlug}/team-member-photo/${memberId}`;
+  getSuccessRoomEditableAttachmentPath(roomSlug, resourceSlug);
 
 const routeDelivery = { type: 'route' } satisfies SuccessRoomRouteDelivery;
 
 const assetDelivery = (roomSlug: string, resourceSlug: string): SuccessRoomAssetDelivery => ({
   type: 'asset',
-  href: resourceFileHref(roomSlug, resourceSlug),
+  href: getSuccessRoomResourceFilePath(roomSlug, resourceSlug),
 });
 
 const mapTeamMember = (
@@ -103,7 +103,7 @@ const mapTeamMember = (
     photo
       ? ({
           ...photo,
-          href: teamMemberPhotoHref(roomSlug, member.id),
+          href: getSuccessRoomTeamMemberPhotoPath(roomSlug, member.id),
         } satisfies SuccessRoomLinkedTeamMemberPhotoMetadata)
       : undefined;
 

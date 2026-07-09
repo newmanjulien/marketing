@@ -2,6 +2,7 @@ import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
+import { parseSuccessRoomSlug } from "../shared/successRoomSlugs";
 
 const maxBenefitCards = 10;
 const maxPlanAccordions = 10;
@@ -128,6 +129,16 @@ const assertMaxLength = (items: unknown[], maxLength: number, label: string) => 
   if (items.length > maxLength) {
     throw new ConvexError(`${label} must include ${maxLength} items or fewer`);
   }
+};
+
+const normalizeAdminSuccessRoomSlug = (slug: string) => {
+  const parsedSlug = parseSuccessRoomSlug(slug);
+
+  if (!parsedSlug) {
+    throw new ConvexError("Success room slug is reserved or invalid");
+  }
+
+  return parsedSlug;
 };
 
 const normalizeEnabledResourceKeys = (room: Doc<"successRooms">): SuccessRoomResourceKey[] => [
@@ -610,6 +621,7 @@ export const generateSeedUploadUrl = mutation({
   },
   handler: async (ctx, args) => {
     assertSeedAccess(args.seedSecret);
+    normalizeAdminSuccessRoomSlug(args.slug);
 
     return await ctx.storage.generateUploadUrl();
   },
@@ -1061,8 +1073,9 @@ export const seedSuccessRoom = mutation({
   },
   handler: async (ctx, args) => {
     assertSeedAccess(args.seedSecret);
+    const slug = normalizeAdminSuccessRoomSlug(args.slug);
 
-    const existingRoom = await getRoomBySlug(ctx, args.slug);
+    const existingRoom = await getRoomBySlug(ctx, slug);
 
     if (existingRoom) {
       await deleteExistingRoom(ctx, existingRoom);
@@ -1070,7 +1083,7 @@ export const seedSuccessRoom = mutation({
 
     const now = Date.now();
     const roomId = await ctx.db.insert("successRooms", {
-      slug: args.slug,
+      slug,
       prospectName: args.prospectName,
       enabledResourceKeys: [...baseResourceKeys],
       passwordHash: await hashPassword(args.password),
@@ -1128,13 +1141,14 @@ export const enableSuccessRoomSections = mutation({
   },
   handler: async (ctx, args) => {
     assertSeedAccess(args.seedSecret);
+    const slug = normalizeAdminSuccessRoomSlug(args.slug);
 
     if (args.resourceKeys.length === 0) {
       throw new ConvexError("At least one success room section is required");
     }
 
     const requestedResourceKeys = [...new Set<OptionalSuccessRoomResourceKey>(args.resourceKeys)];
-    const room = await ensureRoom(ctx, args.slug);
+    const room = await ensureRoom(ctx, slug);
     const now = Date.now();
 
     if (requestedResourceKeys.includes(mutualSuccessPlanResourceKey)) {

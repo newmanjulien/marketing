@@ -2,6 +2,7 @@ import {
   attachSuccessRoomSaveQueueLifecycle,
   createSuccessRoomSaveQueue
 } from './successRoomSaveQueue';
+import { getSuccessRoomApiPath } from './successRoomUrls';
 import type {
   SuccessRoom,
   SuccessRoomEditableTextResource,
@@ -68,7 +69,7 @@ export const createSuccessRoomLandingDraft = (
     saveQueue.schedule(
       'questions',
       async () => {
-        const response = await fetch(`/success-room/${getRoom().slug}/api/questions`, {
+        const response = await fetch(getSuccessRoomApiPath(getRoom().slug, 'questions'), {
           method: 'POST',
           headers: {
             'content-type': 'application/json'
@@ -123,7 +124,7 @@ export const createSuccessRoomResourceDraft = (
     const planToSave = clonePlan(planSnapshot);
 
     saveQueue.schedule('plan', async () => {
-      const response = await fetch(`/success-room/${getRoom().slug}/api/plan`, {
+      const response = await fetch(getSuccessRoomApiPath(getRoom().slug, 'plan'), {
         method: 'POST',
         headers: {
           'content-type': 'application/json'
@@ -148,7 +149,7 @@ export const createSuccessRoomResourceDraft = (
     saveQueue.schedule(
       `editable-text:${resourceSlug}`,
       async () => {
-        const response = await fetch(`/success-room/${getRoom().slug}/api/editable-text`, {
+        const response = await fetch(getSuccessRoomApiPath(getRoom().slug, 'editable-text'), {
           method: 'POST',
           headers: {
             'content-type': 'application/json'

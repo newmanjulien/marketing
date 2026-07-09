@@ -1,6 +1,7 @@
 <script lang="ts">
   import SuccessRoomAddTeamMemberModal from './SuccessRoomAddTeamMemberModal.svelte';
   import SuccessRoomTeamGallery from './SuccessRoomTeamGallery.svelte';
+  import { getSuccessRoomApiPath, getSuccessRoomTeamMemberPhotoPath } from './successRoomUrls';
   import type {
     SuccessRoomLinkedTeamMemberPhotoMetadata,
     SuccessRoomTeamMember,
@@ -51,7 +52,7 @@
       throw new Error('Team member photo must be an image.');
     }
 
-    const uploadUrlResponse = await fetch(`/success-room/${roomSlug}/api/upload-url`, {
+    const uploadUrlResponse = await fetch(getSuccessRoomApiPath(roomSlug, 'upload-url'), {
       method: 'POST'
     });
 
@@ -73,7 +74,7 @@
     }
 
     const { storageId }: { storageId: string } = await uploadResponse.json();
-    const response = await fetch(`/success-room/${roomSlug}/api/team-members`, {
+    const response = await fetch(getSuccessRoomApiPath(roomSlug, 'team-members'), {
       method: 'POST',
       headers: {
         'content-type': 'application/json'
@@ -102,12 +103,12 @@
         id: createdMember.id,
         name: createdMember.name,
         role: createdMember.role,
-        imageHref: `/success-room/${roomSlug}/team-member-photo/${createdMember.id}`,
+        imageHref: getSuccessRoomTeamMemberPhotoPath(roomSlug, createdMember.id),
         ...(createdMember.photo
           ? {
               photo: {
                 ...createdMember.photo,
-                href: `/success-room/${roomSlug}/team-member-photo/${createdMember.id}`
+                href: getSuccessRoomTeamMemberPhotoPath(roomSlug, createdMember.id)
               } satisfies SuccessRoomLinkedTeamMemberPhotoMetadata
             }
           : {})

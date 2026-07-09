@@ -3,6 +3,7 @@ import type {
   SuccessRoomResource,
   SuccessRoomRoutedResource,
 } from './successRoomTypes';
+import { getSuccessRoomPath, getSuccessRoomResourcePath } from './successRoomUrls';
 
 export type SuccessRoomRoutedResourceLink = {
   href: string;
@@ -21,7 +22,7 @@ export type SuccessRoomResourceLink =
   | SuccessRoomDirectResourceLink;
 
 export const getSuccessRoomHref = (room: Pick<SuccessRoom, 'slug'>) =>
-  `/success-room/${room.slug}`;
+  getSuccessRoomPath(room.slug);
 
 export const getSuccessRoomResourceLink = (
   room: Pick<SuccessRoom, 'slug'>,
@@ -37,7 +38,7 @@ export const getSuccessRoomResourceLink = (
   }
 
   return {
-    href: `${getSuccessRoomHref(room)}/${resource.slug}`,
+    href: getSuccessRoomResourcePath(room.slug, resource.slug),
     isRouted: true,
   };
 };
