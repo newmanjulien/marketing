@@ -4,13 +4,13 @@
   import type { TransitionConfig } from 'svelte/transition';
   import SuccessRoomDatePickerModal from './SuccessRoomDatePickerModal.svelte';
   import SuccessRoomPlanTaskRow from './SuccessRoomPlanTaskRow.svelte';
-  import SuccessRoomTeamListModal from './SuccessRoomTeamListModal.svelte';
-  import { mutualSuccessPlanItems, type MutualSuccessPlanItem } from './successRoomMutualSuccessPlan';
+  import SuccessRoomTaskAssigneeModal from './SuccessRoomTaskAssigneeModal.svelte';
   import { formatTaskDateLabel, parseTaskDateLabel } from './successRoomTaskDates';
   import type {
     SuccessRoomMutualSuccessPlanResource,
-    SuccessRoomPlanPatch,
+    SuccessRoomPlanAccordion,
     SuccessRoomPlanState,
+    SuccessRoomPlanUpdate,
     SuccessRoomTeamMember
   } from './successRoomTypes';
 
@@ -19,23 +19,30 @@
     selectedDate: Date;
   };
 
+  type AssigneePickerContext = {
+    taskId: string;
+  };
+
   let {
     resource,
     team,
+    planAccordions,
     plan,
     onPlanChange
   }: {
     resource: SuccessRoomMutualSuccessPlanResource;
     team: SuccessRoomTeamMember[];
+    planAccordions: SuccessRoomPlanAccordion[];
     plan: SuccessRoomPlanState;
-    onPlanChange: (patch: SuccessRoomPlanPatch) => void;
+    onPlanChange: (update: SuccessRoomPlanUpdate) => void;
   } = $props();
 
   let openItemId = $state<string | null>(null);
-  let teamListModalOpen = $state(false);
+  let assigneePickerContext = $state<AssigneePickerContext | null>(null);
   let datePickerContext = $state<DatePickerContext | null>(null);
   let checkedTaskIds = $derived(new Set(plan.checkedTaskIds));
   let taskDateOverrides = $derived(plan.dateOverrides);
+  let taskAssigneeMemberIds = $derived(plan.taskAssigneeMemberIds);
 
   const fallbackDatePickerDate = new Date();
   const accordionListClasses = 'grid w-full gap-[14px]';
@@ -70,7 +77,7 @@
     }
   } as const;
 
-  type AccordionCardVariantKey = NonNullable<MutualSuccessPlanItem['variant']> | 'default';
+  type AccordionCardVariantKey = SuccessRoomPlanAccordion['variant'];
 
   const accordionMotion = {
     openDurationMs: 360,
@@ -133,7 +140,7 @@
     openItemId = openItemId === itemId ? null : itemId;
   };
 
-  const getTaskId = (itemId: string, taskIndex: number) => `${itemId}-task-${taskIndex}`;
+  const getTaskId = (itemId: string, taskId: string) => `${itemId}:${taskId}`;
 
   const parseIsoDate = (value: string) => {
     const [year, month, day] = value.split('-').map(Number);
@@ -152,19 +159,17 @@
   const getTaskDisplayDate = (taskId: string, dateLabel: string) =>
     taskDateOverrides[taskId] ? parseIsoDate(taskDateOverrides[taskId]) : parseTaskDateLabel(dateLabel);
 
-  const getAccordionCardVariant = (item: MutualSuccessPlanItem) => {
-    const variantKey: AccordionCardVariantKey = item.variant ?? 'default';
+  const getAccordionCardVariant = (item: SuccessRoomPlanAccordion) => {
+    const variantKey: AccordionCardVariantKey = item.variant;
 
     return accordionCardVariants[variantKey];
   };
 
-  const getTaskWithRoomAssignee = (task: MutualSuccessPlanItem['tasks'][number]) => ({
-    ...task,
-    assigneeImageHref:
-      task.assigneeImageHref === '/julien.png'
-        ? (team.find((member) => member.id === 'julien-newman')?.imageHref ?? task.assigneeImageHref)
-        : task.assigneeImageHref
-  });
+  const getAssignedTeamMember = (taskId: string) => {
+    const memberId = taskAssigneeMemberIds[taskId];
+
+    return memberId ? team.find((member) => member.id === memberId) : undefined;
+  };
 
   const setTaskChecked = (taskId: string, checked: boolean) => {
     const nextCheckedTaskIds = new Set(plan.checkedTaskIds);
@@ -180,8 +185,32 @@
     });
   };
 
-  const openTeamListModal = () => {
-    teamListModalOpen = true;
+  const openAssigneePickerModal = (taskId: string) => {
+    assigneePickerContext = {
+      taskId
+    };
+  };
+
+  const closeAssigneePickerModal = () => {
+    assigneePickerContext = null;
+  };
+
+  const selectTaskAssignee = (memberId: string | null) => {
+    if (!assigneePickerContext) {
+      return;
+    }
+
+    const nextTaskAssigneeMemberIds = { ...plan.taskAssigneeMemberIds };
+
+    if (memberId) {
+      nextTaskAssigneeMemberIds[assigneePickerContext.taskId] = memberId;
+    } else {
+      delete nextTaskAssigneeMemberIds[assigneePickerContext.taskId];
+    }
+
+    onPlanChange({
+      taskAssigneeMemberIds: nextTaskAssigneeMemberIds
+    });
   };
 
   const openDatePickerModal = (taskId: string, dateLabel: string) => {
@@ -209,10 +238,13 @@
   };
 
   const selectedDatePickerDate = $derived(datePickerContext?.selectedDate ?? fallbackDatePickerDate);
+  const selectedAssigneeMemberId = $derived(
+    assigneePickerContext ? taskAssigneeMemberIds[assigneePickerContext.taskId] : undefined
+  );
 </script>
 
 <ul class={accordionListClasses} aria-label={`${resource.title} content`}>
-  {#each mutualSuccessPlanItems as item (item.id)}
+  {#each planAccordions as item (item.id)}
     {@const isOpen = openItemId === item.id}
     {@const ToggleIcon = isOpen ? MinusIcon : PlusIcon}
     {@const cardVariant = getAccordionCardVariant(item)}
@@ -245,19 +277,20 @@
           in:mutualSuccessPlanOpen
           out:mutualSuccessPlanClose
         >
-          {#each item.tasks as task, taskIndex (task.title)}
-            {@const taskId = getTaskId(item.id, taskIndex)}
+          {#each item.tasks as task (task.id)}
+            {@const taskId = getTaskId(item.id, task.id)}
             {@const displayDate = getTaskDisplayDate(taskId, task.date)}
-            {@const displayTask = getTaskWithRoomAssignee(task)}
+            {@const assignedTeamMember = getAssignedTeamMember(taskId)}
             <SuccessRoomPlanTaskRow
-              task={displayTask}
+              {task}
               {taskId}
               checked={checkedTaskIds.has(taskId)}
+              {assignedTeamMember}
               displayDateLabel={formatTaskDateLabel(displayDate)}
               textClass={cardVariant.taskText}
               dateClass={cardVariant.taskDate}
               onCheckedChange={(checked) => setTaskChecked(taskId, checked)}
-              onOpenTeam={openTeamListModal}
+              onOpenAssignee={() => openAssigneePickerModal(taskId)}
               onOpenDatePicker={() => openDatePickerModal(taskId, task.date)}
             />
           {/each}
@@ -267,10 +300,12 @@
   {/each}
 </ul>
 
-<SuccessRoomTeamListModal
-  open={teamListModalOpen}
+<SuccessRoomTaskAssigneeModal
+  open={assigneePickerContext !== null}
   {team}
-  onClose={() => (teamListModalOpen = false)}
+  selectedMemberId={selectedAssigneeMemberId}
+  onSelectMember={selectTaskAssignee}
+  onClose={closeAssigneePickerModal}
 />
 
 <SuccessRoomDatePickerModal

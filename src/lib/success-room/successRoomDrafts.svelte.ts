@@ -6,18 +6,29 @@ import type {
   SuccessRoom,
   SuccessRoomEditableTextResource,
   SuccessRoomEditableTextState,
-  SuccessRoomPlanPatch,
   SuccessRoomPlanState,
+  SuccessRoomPlanUpdate,
   SuccessRoomRoutedResource,
   SuccessRoomState
 } from './successRoomTypes';
 
 const cloneQuestions = (questions: Record<string, string>) => ({ ...questions });
 
-const clonePlan = (plan?: SuccessRoomPlanState): SuccessRoomPlanState => ({
-  checkedTaskIds: [...(plan?.checkedTaskIds ?? [])],
+const getDefaultPlanState = (): SuccessRoomPlanState => ({
+  selectedBenefitIds: [],
+  checkedTaskIds: [],
+  dateOverrides: {},
+  taskAssigneeMemberIds: {}
+});
+
+const clonePlan = (plan: SuccessRoomPlanState): SuccessRoomPlanState => ({
+  selectedBenefitIds: [...plan.selectedBenefitIds],
+  checkedTaskIds: [...plan.checkedTaskIds],
   dateOverrides: {
-    ...(plan?.dateOverrides ?? {})
+    ...plan.dateOverrides
+  },
+  taskAssigneeMemberIds: {
+    ...plan.taskAssigneeMemberIds
   }
 });
 
@@ -37,10 +48,8 @@ const cloneEditableTexts = (editableTexts: Record<string, SuccessRoomEditableTex
     ])
   );
 
-const getDefaultEditableTextState = (
-  resource: SuccessRoomEditableTextResource,
-): SuccessRoomEditableTextState => ({
-  content: resource.initialText,
+const getDefaultEditableTextState = (): SuccessRoomEditableTextState => ({
+  content: '',
   dataSources: []
 });
 
@@ -105,23 +114,13 @@ export const createSuccessRoomResourceDraft = (
   const saveQueue = createSuccessRoomSaveQueue();
 
   let roomResourceIdentity = $state('');
-  let plan = $state<SuccessRoomPlanState>({
-    checkedTaskIds: [],
-    dateOverrides: {}
-  });
+  let plan = $state<SuccessRoomPlanState>(getDefaultPlanState());
   let editableTexts = $state<Record<string, SuccessRoomEditableTextState>>({});
 
   attachSuccessRoomSaveQueueLifecycle(saveQueue);
 
-  const savePlanPatch = (patch: SuccessRoomPlanPatch) => {
-    const patchToSave: SuccessRoomPlanPatch = {
-      ...(patch.checkedTaskIds !== undefined
-        ? { checkedTaskIds: [...patch.checkedTaskIds] }
-        : {}),
-      ...(patch.dateOverrides !== undefined
-        ? { dateOverrides: { ...patch.dateOverrides } }
-        : {})
-    };
+  const savePlanSnapshot = (planSnapshot: SuccessRoomPlanState) => {
+    const planToSave = clonePlan(planSnapshot);
 
     saveQueue.schedule('plan', async () => {
       const response = await fetch(`/success-room/${getRoom().slug}/api/plan`, {
@@ -130,7 +129,7 @@ export const createSuccessRoomResourceDraft = (
           'content-type': 'application/json'
         },
         body: JSON.stringify({
-          plan: patchToSave
+          plan: planToSave
         })
       });
 
@@ -175,13 +174,13 @@ export const createSuccessRoomResourceDraft = (
 
     if (roomResourceIdentity !== currentRoomResourceIdentity) {
       roomResourceIdentity = currentRoomResourceIdentity;
-      plan = clonePlan(getState().plan);
+      plan = clonePlan(getState().mutualSuccessPlan?.plan ?? getDefaultPlanState());
       editableTexts = cloneEditableTexts(getState().editableTexts);
 
       if (resource.kind === 'editable-text' && !editableTexts[resource.slug]) {
         editableTexts = {
           ...editableTexts,
-          [resource.slug]: getDefaultEditableTextState(resource)
+          [resource.slug]: getDefaultEditableTextState()
         };
       }
     }
@@ -191,19 +190,29 @@ export const createSuccessRoomResourceDraft = (
     get plan() {
       return plan;
     },
-    patchPlan(patch: SuccessRoomPlanPatch) {
-      plan = {
+    updatePlan(update: SuccessRoomPlanUpdate) {
+      const nextPlan = {
+        selectedBenefitIds:
+          update.selectedBenefitIds !== undefined
+            ? [...update.selectedBenefitIds]
+            : plan.selectedBenefitIds,
         checkedTaskIds:
-          patch.checkedTaskIds !== undefined
-            ? [...patch.checkedTaskIds]
+          update.checkedTaskIds !== undefined
+            ? [...update.checkedTaskIds]
             : plan.checkedTaskIds,
         dateOverrides:
-          patch.dateOverrides !== undefined ? { ...patch.dateOverrides } : plan.dateOverrides
+          update.dateOverrides !== undefined ? { ...update.dateOverrides } : plan.dateOverrides,
+        taskAssigneeMemberIds:
+          update.taskAssigneeMemberIds !== undefined
+            ? { ...update.taskAssigneeMemberIds }
+            : plan.taskAssigneeMemberIds
       };
-      savePlanPatch(patch);
+
+      plan = nextPlan;
+      savePlanSnapshot(nextPlan);
     },
     getEditableTextState(resource: SuccessRoomEditableTextResource) {
-      return editableTexts[resource.slug] ?? getDefaultEditableTextState(resource);
+      return editableTexts[resource.slug] ?? getDefaultEditableTextState();
     },
     setEditableTextState(
       resourceSlug: string,

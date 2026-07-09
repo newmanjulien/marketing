@@ -6,8 +6,8 @@
   import type {
     SuccessRoom,
     SuccessRoomMutualSuccessPlanResource,
-    SuccessRoomPlanPatch,
-    SuccessRoomPlanState
+    SuccessRoomPlanState,
+    SuccessRoomPlanUpdate
   } from './successRoomTypes';
 
   type MutualSuccessPlanSection = PillTab & {
@@ -42,7 +42,7 @@
     room: SuccessRoom;
     resource: SuccessRoomMutualSuccessPlanResource;
     plan: SuccessRoomPlanState;
-    onPlanChange: (patch: SuccessRoomPlanPatch) => void;
+    onPlanChange: (update: SuccessRoomPlanUpdate) => void;
   } = $props();
 </script>
 
@@ -59,9 +59,19 @@
       <p class={panelDescriptionClasses}>{section.description}</p>
 
       {#if section.key === 'benefits'}
-        <SuccessRoomBenefitsPanel />
+        <SuccessRoomBenefitsPanel
+          benefitCards={resource.catalog.benefitCards}
+          {plan}
+          {onPlanChange}
+        />
       {:else if section.key === 'plan'}
-        <SuccessRoomPlanPanel {resource} team={room.team} {plan} {onPlanChange} />
+        <SuccessRoomPlanPanel
+          {resource}
+          team={room.team}
+          planAccordions={resource.catalog.planAccordions}
+          {plan}
+          {onPlanChange}
+        />
       {/if}
     </div>
   {/snippet}

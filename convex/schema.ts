@@ -2,23 +2,17 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
-  successRoomGlobalFiles: defineTable({
-    key: v.string(),
-    storageId: v.id("_storage"),
-    filename: v.string(),
-    contentType: v.string(),
-    byteSize: v.number(),
-    active: v.boolean(),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  })
-    .index("by_key", ["key"])
-    .index("by_storage_id", ["storageId"]),
-
   successRooms: defineTable({
     slug: v.string(),
     prospectName: v.string(),
-    description: v.string(),
+    enabledResourceKeys: v.array(
+      v.union(
+        v.literal("deck"),
+        v.literal("audio"),
+        v.literal("mutual-success-plan"),
+        v.literal("initial-format"),
+      ),
+    ),
 
     passwordHash: v.string(),
     passwordUpdatedAt: v.number(),
@@ -28,38 +22,51 @@ export default defineSchema({
     updatedAt: v.number(),
   }).index("by_slug", ["slug"]),
 
-  successRoomResources: defineTable({
+  successRoomBenefitCards: defineTable({
     roomId: v.id("successRooms"),
-    slug: v.string(),
-    kind: v.union(
-      v.literal("deck"),
-      v.literal("audio"),
-      v.literal("downloadable-file"),
-      v.literal("mutual-success-plan"),
-      v.literal("editable-text"),
-    ),
+    key: v.string(),
     title: v.string(),
-    actionLabel: v.string(),
-    description: v.optional(v.string()),
+    description: v.string(),
     sortOrder: v.number(),
-    editorRows: v.optional(v.number()),
-    initialText: v.optional(v.string()),
     active: v.boolean(),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_room", ["roomId"])
-    .index("by_room_slug", ["roomId", "slug"]),
+    .index("by_room_key", ["roomId", "key"]),
 
-  successRoomStates: defineTable({
+  successRoomPlanAccordions: defineTable({
+    roomId: v.id("successRooms"),
+    key: v.string(),
+    title: v.string(),
+    description: v.string(),
+    variant: v.union(v.literal("default"), v.literal("muted")),
+    sortOrder: v.number(),
+    tasks: v.array(
+      v.object({
+        key: v.string(),
+        title: v.string(),
+        dateLabel: v.string(),
+      }),
+    ),
+    active: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_room", ["roomId"])
+    .index("by_room_key", ["roomId", "key"]),
+
+  successRoomVisitorStates: defineTable({
     roomId: v.id("successRooms"),
 
     questions: v.record(v.string(), v.string()),
 
     plan: v.optional(
       v.object({
+        selectedBenefitIds: v.array(v.string()),
         checkedTaskIds: v.array(v.string()),
         dateOverrides: v.record(v.string(), v.string()),
+        taskAssigneeMemberIds: v.record(v.string(), v.id("successRoomTeamMembers")),
       }),
     ),
 
@@ -71,7 +78,6 @@ export default defineSchema({
     roomId: v.id("successRooms"),
     name: v.string(),
     role: v.string(),
-    email: v.optional(v.string()),
     active: v.boolean(),
     createdAt: v.number(),
     updatedAt: v.number(),
@@ -96,25 +102,19 @@ export default defineSchema({
 
   successRoomEditableTextStates: defineTable({
     roomId: v.id("successRooms"),
-    resourceId: v.id("successRoomResources"),
+    resourceKey: v.string(),
     content: v.string(),
     dataSources: v.array(v.string()),
-    attachmentFileId: v.optional(v.id("successRoomFiles")),
+    attachmentFileId: v.optional(v.id("successRoomEditableAttachmentFiles")),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_room", ["roomId"])
-    .index("by_room_resource", ["roomId", "resourceId"]),
+    .index("by_room_resource_key", ["roomId", "resourceKey"]),
 
-  successRoomFiles: defineTable({
+  successRoomResourceFiles: defineTable({
     roomId: v.id("successRooms"),
-
-    purpose: v.union(
-      v.literal("primary-resource-file"),
-      v.literal("editable-attachment"),
-    ),
-
-    resourceId: v.id("successRoomResources"),
+    resourceKey: v.string(),
     storageId: v.id("_storage"),
     filename: v.string(),
     contentType: v.string(),
@@ -125,7 +125,22 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_room", ["roomId"])
-    .index("by_room_resource", ["roomId", "resourceId"])
-    .index("by_room_resource_purpose", ["roomId", "resourceId", "purpose"])
+    .index("by_room_resource_key", ["roomId", "resourceKey"])
+    .index("by_storage_id", ["storageId"]),
+
+  successRoomEditableAttachmentFiles: defineTable({
+    roomId: v.id("successRooms"),
+    resourceKey: v.string(),
+    storageId: v.id("_storage"),
+    filename: v.string(),
+    contentType: v.string(),
+    byteSize: v.number(),
+
+    active: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_room", ["roomId"])
+    .index("by_room_resource_key", ["roomId", "resourceKey"])
     .index("by_storage_id", ["storageId"]),
 });

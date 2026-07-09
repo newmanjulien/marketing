@@ -4,6 +4,7 @@ import {
   getProtectedSuccessRoomBundle,
   getPublicSuccessRoom,
   getSuccessRoomAccessToken,
+  isSuccessRoomAccessError,
   setSuccessRoomAccessToken,
   verifySuccessRoomPassword,
 } from '$lib/server/successRoomConvex';
@@ -18,7 +19,11 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
         locked: false,
         ...(await getProtectedSuccessRoomBundle(params.roomSlug, accessToken)),
       };
-    } catch {
+    } catch (loadError) {
+      if (!isSuccessRoomAccessError(loadError)) {
+        throw loadError;
+      }
+
       clearSuccessRoomAccessToken(cookies, params.roomSlug);
     }
   }

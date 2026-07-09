@@ -43,7 +43,7 @@
         {room}
         {resource}
         plan={draft.plan}
-        onPlanChange={draft.patchPlan}
+        onPlanChange={draft.updatePlan}
       />
     {:else if resource.kind === 'editable-text'}
       <SuccessRoomEditableTextResourcePanel

@@ -31,13 +31,13 @@ export type SuccessRoomDownloadableFileResource =
 export type SuccessRoomMutualSuccessPlanResource =
   SuccessRoomResourceBase<'mutual-success-plan'> & {
     description: string;
+    catalog: SuccessRoomMutualSuccessPlanCatalog;
     delivery: SuccessRoomRouteDelivery;
   };
 
 export type SuccessRoomEditableTextResource =
   SuccessRoomResourceBase<'editable-text'> & {
     delivery: SuccessRoomRouteDelivery;
-    initialText: string;
     editorRows?: number;
   };
 
@@ -62,17 +62,6 @@ export type SuccessRoomLinkedFileMetadata = SuccessRoomFileMetadata & {
   href: string;
 };
 
-export type SuccessRoomGlobalFileMetadata = {
-  globalFileId: string;
-  filename: string;
-  contentType: string;
-  byteSize: number;
-};
-
-export type SuccessRoomLinkedGlobalFileMetadata = SuccessRoomGlobalFileMetadata & {
-  href: string;
-};
-
 export type SuccessRoomTeamMemberPhotoMetadata = {
   photoId: string;
   filename: string;
@@ -89,15 +78,46 @@ export type SuccessRoomTeamMember = {
   name: string;
   role: string;
   imageHref: string;
-  photo?: SuccessRoomLinkedGlobalFileMetadata | SuccessRoomLinkedTeamMemberPhotoMetadata;
+  photo?: SuccessRoomLinkedTeamMemberPhotoMetadata;
+};
+
+export type SuccessRoomBenefitCard = {
+  id: string;
+  title: string;
+  description: string;
+};
+
+export type SuccessRoomPlanTask = {
+  id: string;
+  title: string;
+  date: string;
+};
+
+export type SuccessRoomPlanAccordion = {
+  id: string;
+  title: string;
+  description: string;
+  variant: 'default' | 'muted';
+  tasks: SuccessRoomPlanTask[];
+};
+
+export type SuccessRoomMutualSuccessPlanCatalog = {
+  benefitCards: SuccessRoomBenefitCard[];
+  planAccordions: SuccessRoomPlanAccordion[];
 };
 
 export type SuccessRoomPlanState = {
+  selectedBenefitIds: string[];
   checkedTaskIds: string[];
   dateOverrides: Record<string, string>;
+  taskAssigneeMemberIds: Record<string, string>;
 };
 
-export type SuccessRoomPlanPatch = Partial<SuccessRoomPlanState>;
+export type SuccessRoomPlanUpdate = Partial<SuccessRoomPlanState>;
+
+export type SuccessRoomMutualSuccessPlanState = {
+  plan: SuccessRoomPlanState;
+};
 
 export type SuccessRoomEditableTextState = {
   content: string;
@@ -107,7 +127,7 @@ export type SuccessRoomEditableTextState = {
 
 export type SuccessRoomState = {
   questions: Record<string, string>;
-  plan?: SuccessRoomPlanState;
+  mutualSuccessPlan?: SuccessRoomMutualSuccessPlanState;
   editableTexts: Record<string, SuccessRoomEditableTextState>;
 };
 

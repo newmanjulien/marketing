@@ -1,8 +1,22 @@
 <script lang="ts">
   import SuccessRoomCheckbox from './SuccessRoomCheckbox.svelte';
-  import { mutualSuccessBenefitCards } from './successRoomMutualSuccessPlan';
+  import type {
+    SuccessRoomBenefitCard,
+    SuccessRoomPlanState,
+    SuccessRoomPlanUpdate
+  } from './successRoomTypes';
 
-  let checkedBenefitIds = $state(new Set<string>());
+  let {
+    benefitCards,
+    plan,
+    onPlanChange
+  }: {
+    benefitCards: SuccessRoomBenefitCard[];
+    plan: SuccessRoomPlanState;
+    onPlanChange: (update: SuccessRoomPlanUpdate) => void;
+  } = $props();
+
+  let checkedBenefitIds = $derived(new Set(plan.selectedBenefitIds));
 
   const cardClasses =
     'group flex h-[132px] cursor-pointer flex-col rounded-[10px] border border-stone-200/70 bg-white px-[18px] py-[14px] text-stone-900 shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] focus-within:border-stone-300 focus-within:ring-2 focus-within:ring-stone-900/20 sm:px-[20px] sm:py-[16px]';
@@ -23,12 +37,14 @@
       nextCheckedBenefitIds.delete(benefitId);
     }
 
-    checkedBenefitIds = nextCheckedBenefitIds;
+    onPlanChange({
+      selectedBenefitIds: Array.from(nextCheckedBenefitIds)
+    });
   };
 </script>
 
 <ul class="grid w-full gap-[14px] sm:grid-cols-2" aria-label="Benefits">
-  {#each mutualSuccessBenefitCards as card (card.id)}
+  {#each benefitCards as card (card.id)}
     {@const isChecked = checkedBenefitIds.has(card.id)}
     <li>
       <label class={[cardClasses, isChecked && checkedCardClasses]}>

@@ -4,23 +4,36 @@ import { api } from '../../../convex/_generated/api';
 import type { FunctionReturnType } from 'convex/server';
 import type { Cookies } from '@sveltejs/kit';
 import type { Id } from '../../../convex/_generated/dataModel';
+import {
+  successRoomDescription,
+  successRoomResourceDefinitions
+} from '$lib/success-room/successRoomConfig';
+import type {
+  SuccessRoomAssetResourceDefinition,
+  SuccessRoomAssetResourceSlug,
+  SuccessRoomEditableTextResourceSlug,
+  SuccessRoomEditableTextResourceDefinition,
+  SuccessRoomMutualSuccessPlanResourceDefinition,
+  SuccessRoomResourceDefinition
+} from '$lib/success-room/successRoomConfig';
 import type {
   SuccessRoom,
-  SuccessRoomAudioResource,
+  SuccessRoomAssetDelivery,
   SuccessRoomDownloadableFileResource,
   SuccessRoomEditableTextResource,
-  SuccessRoomGlobalFileMetadata,
   SuccessRoomLinkedFileMetadata,
-  SuccessRoomLinkedGlobalFileMetadata,
   SuccessRoomLinkedTeamMemberPhotoMetadata,
+  SuccessRoomAudioResource,
   SuccessRoomMutualSuccessPlanResource,
+  SuccessRoomMutualSuccessPlanCatalog,
   SuccessRoomPdfResource,
+  SuccessRoomResource,
+  SuccessRoomRouteDelivery,
   SuccessRoomState,
   SuccessRoomTeamMember,
 } from '$lib/success-room/successRoomTypes';
 
 type RoomBundle = FunctionReturnType<typeof api.successRooms.getRoomBundle>;
-type PublicResource = RoomBundle['room']['resources'][number];
 
 export const convex = new ConvexHttpClient(PUBLIC_CONVEX_URL);
 
@@ -50,8 +63,14 @@ export const clearSuccessRoomAccessToken = (cookies: Cookies, roomSlug: string) 
   });
 };
 
-export const getPublicSuccessRoom = async (roomSlug: string) =>
-  await convex.query(api.successRooms.getPublicRoom, { slug: roomSlug });
+export const isSuccessRoomAccessError = (error: unknown) =>
+  error instanceof Error && error.message.includes('Success room access denied');
+
+export const getPublicSuccessRoom = async (roomSlug: string) => {
+  const room = await convex.query(api.successRooms.getPublicRoom, { slug: roomSlug });
+
+  return room ? { ...room, description: successRoomDescription } : null;
+};
 
 export const verifySuccessRoomPassword = async (roomSlug: string, password: string) =>
   await convex.mutation(api.successRooms.verifyPassword, {
@@ -65,127 +84,90 @@ const resourceFileHref = (roomSlug: string, resourceSlug: string) =>
 export const getSuccessRoomEditableAttachmentHref = (roomSlug: string, resourceSlug: string) =>
   `/success-room/${roomSlug}/editable-attachment/${resourceSlug}`;
 
-const globalFileHref = (roomSlug: string, key: string) =>
-  `/success-room/${roomSlug}/global-file/${key}`;
-
 const teamMemberPhotoHref = (roomSlug: string, memberId: string) =>
   `/success-room/${roomSlug}/team-member-photo/${memberId}`;
 
-const globalMetadataWithHref = (
-  roomSlug: string,
-  metadata: SuccessRoomGlobalFileMetadata | undefined,
-  key: string,
-): SuccessRoomLinkedGlobalFileMetadata | undefined =>
-  metadata
-    ? {
-        ...metadata,
-        href: globalFileHref(roomSlug, key),
-      }
-    : undefined;
+const routeDelivery = { type: 'route' } satisfies SuccessRoomRouteDelivery;
+
+const assetDelivery = (roomSlug: string, resourceSlug: string): SuccessRoomAssetDelivery => ({
+  type: 'asset',
+  href: resourceFileHref(roomSlug, resourceSlug),
+});
 
 const mapTeamMember = (
   roomSlug: string,
   member: RoomBundle['room']['team'][number],
 ): SuccessRoomTeamMember => {
   const photo = 'photo' in member ? member.photo : undefined;
-  const globalPhoto =
-    photo && 'globalFileId' in photo
-      ? globalMetadataWithHref(roomSlug, photo, 'julien-newman-photo')
-      : undefined;
   const teamMemberPhoto =
-    photo && 'photoId' in photo
+    photo
       ? ({
           ...photo,
           href: teamMemberPhotoHref(roomSlug, member.id),
         } satisfies SuccessRoomLinkedTeamMemberPhotoMetadata)
       : undefined;
-  const photoWithHref = globalPhoto ?? teamMemberPhoto;
 
   return {
     id: member.id,
     name: member.name,
     role: member.role,
-    ...(photoWithHref ? { photo: photoWithHref } : {}),
-    imageHref: photoWithHref?.href ?? '',
+    ...(teamMemberPhoto ? { photo: teamMemberPhoto } : {}),
+    imageHref: teamMemberPhoto?.href ?? '',
   };
 };
 
+const mapAssetResource = (
+  roomSlug: string,
+  resource: SuccessRoomAssetResourceDefinition,
+): SuccessRoomPdfResource | SuccessRoomAudioResource | SuccessRoomDownloadableFileResource => ({
+  kind: resource.kind,
+  slug: resource.slug,
+  title: resource.title,
+  actionLabel: resource.actionLabel,
+  description: resource.description,
+  delivery: assetDelivery(roomSlug, resource.slug),
+});
+
+const mapMutualSuccessPlanResource = (
+  resource: SuccessRoomMutualSuccessPlanResourceDefinition,
+  catalog: SuccessRoomMutualSuccessPlanCatalog,
+): SuccessRoomMutualSuccessPlanResource => ({
+  kind: resource.kind,
+  slug: resource.slug,
+  title: resource.title,
+  actionLabel: resource.actionLabel,
+  description: resource.description,
+  catalog,
+  delivery: routeDelivery,
+});
+
+const mapEditableTextResource = (
+  resource: SuccessRoomEditableTextResourceDefinition,
+): SuccessRoomEditableTextResource => ({
+  kind: resource.kind,
+  slug: resource.slug,
+  title: resource.title,
+  actionLabel: resource.actionLabel,
+  description: resource.description,
+  editorRows: resource.editorRows,
+  delivery: routeDelivery,
+});
+
 const mapRoomResource = (
   roomSlug: string,
-  resource: PublicResource,
-):
-  | SuccessRoomPdfResource
-  | SuccessRoomAudioResource
-  | SuccessRoomDownloadableFileResource
-  | SuccessRoomMutualSuccessPlanResource
-  | SuccessRoomEditableTextResource => {
-  if (resource.kind === 'deck') {
-    return {
-      kind: 'pdf',
-      slug: resource.slug,
-      title: resource.title,
-      actionLabel: resource.actionLabel,
-      description: resource.description,
-      delivery: {
-        type: 'asset',
-        href: resourceFileHref(roomSlug, resource.slug),
-      },
-    };
+  resource: SuccessRoomResourceDefinition,
+  mutualSuccessPlanCatalog: SuccessRoomMutualSuccessPlanCatalog,
+): SuccessRoomResource => {
+  switch (resource.kind) {
+    case 'pdf':
+    case 'audio':
+    case 'downloadable-file':
+      return mapAssetResource(roomSlug, resource);
+    case 'mutual-success-plan':
+      return mapMutualSuccessPlanResource(resource, mutualSuccessPlanCatalog);
+    case 'editable-text':
+      return mapEditableTextResource(resource);
   }
-
-  if (resource.kind === 'audio') {
-    return {
-      kind: 'audio',
-      slug: resource.slug,
-      title: resource.title,
-      actionLabel: resource.actionLabel,
-      description: resource.description,
-      delivery: {
-        type: 'asset',
-        href: resourceFileHref(roomSlug, resource.slug),
-      },
-    };
-  }
-
-  if (resource.kind === 'downloadable-file') {
-    return {
-      kind: 'downloadable-file',
-      slug: resource.slug,
-      title: resource.title,
-      actionLabel: resource.actionLabel,
-      description: resource.description,
-      delivery: {
-        type: 'asset',
-        href: resourceFileHref(roomSlug, resource.slug),
-      },
-    };
-  }
-
-  if (resource.kind === 'mutual-success-plan') {
-    return {
-      kind: 'mutual-success-plan',
-      slug: resource.slug,
-      title: resource.title,
-      actionLabel: resource.actionLabel,
-      description: resource.description ?? '',
-      delivery: {
-        type: 'route',
-      },
-    };
-  }
-
-  return {
-    kind: 'editable-text',
-    slug: resource.slug,
-    title: resource.title,
-    actionLabel: resource.actionLabel,
-    description: resource.description ?? '',
-    editorRows: resource.editorRows,
-    initialText: resource.initialText ?? '',
-    delivery: {
-      type: 'route',
-    },
-  };
 };
 
 const mapEditableTextStates = (
@@ -210,25 +192,38 @@ const mapEditableTextStates = (
     ]),
   );
 
+const mapMutualSuccessPlanState = (
+  mutualSuccessPlan: RoomBundle['state']['mutualSuccessPlan'],
+): SuccessRoomState['mutualSuccessPlan'] =>
+  mutualSuccessPlan
+    ? {
+        plan: mutualSuccessPlan.plan,
+      }
+    : undefined;
+
 export const mapSuccessRoomBundle = (bundle: RoomBundle): { room: SuccessRoom; state: SuccessRoomState } => {
-  const resources = bundle.room.resources.map((resource) =>
-    mapRoomResource(bundle.room.slug, resource),
-  );
+  const enabledResourceKeys = new Set(bundle.room.enabledResourceKeys);
+  const resources = successRoomResourceDefinitions
+    .filter((resource) => enabledResourceKeys.has(resource.slug))
+    .map((resource) =>
+      mapRoomResource(bundle.room.slug, resource, bundle.room.mutualSuccessPlanCatalog)
+    );
   const teamMembers = bundle.room.team.map((member) =>
     mapTeamMember(bundle.room.slug, member),
   );
+  const mutualSuccessPlan = mapMutualSuccessPlanState(bundle.state.mutualSuccessPlan);
 
   return {
     room: {
       slug: bundle.room.slug,
       prospectName: bundle.room.prospectName,
-      description: bundle.room.description,
+      description: successRoomDescription,
       team: teamMembers,
       resources,
     },
     state: {
       questions: bundle.state.questions,
-      plan: bundle.state.plan,
+      ...(mutualSuccessPlan ? { mutualSuccessPlan } : {}),
       editableTexts: mapEditableTextStates(bundle.room.slug, bundle.state.editableTexts),
     },
   };
@@ -246,7 +241,7 @@ export const getProtectedSuccessRoomResourceFile = async (
   roomSlug: string,
   accessToken: string,
   args: {
-    resourceSlug: string;
+    resourceSlug: SuccessRoomAssetResourceSlug;
   },
 ) =>
   await convex.query(api.successRooms.getResourceFileForDownload, {
@@ -259,24 +254,13 @@ export const getProtectedSuccessRoomEditableAttachmentFile = async (
   roomSlug: string,
   accessToken: string,
   args: {
-    resourceSlug: string;
+    resourceSlug: SuccessRoomEditableTextResourceSlug;
   },
 ) =>
   await convex.query(api.successRooms.getEditableAttachmentForDownload, {
     slug: roomSlug,
     accessToken,
     resourceSlug: args.resourceSlug,
-  });
-
-export const getProtectedSuccessRoomGlobalFile = async (
-  roomSlug: string,
-  accessToken: string,
-  key: 'julien-newman-photo',
-) =>
-  await convex.query(api.successRooms.getGlobalFileForDownload, {
-    slug: roomSlug,
-    accessToken,
-    key,
   });
 
 export const getProtectedSuccessRoomTeamMemberPhoto = async (

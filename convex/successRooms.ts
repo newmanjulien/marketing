@@ -3,19 +3,51 @@ import { mutation, query } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 
-const seedResource = v.object({
-  slug: v.string(),
-  kind: v.union(
-    v.literal("downloadable-file"),
-    v.literal("mutual-success-plan"),
-    v.literal("editable-text"),
-  ),
+const maxBenefitCards = 10;
+const maxPlanAccordions = 10;
+const maxPlanTasksPerAccordion = 10;
+const deckResourceKey = "deck";
+const audioResourceKey = "audio";
+const mutualSuccessPlanResourceKey = "mutual-success-plan";
+const initialFormatResourceKey = "initial-format";
+const baseResourceKeys = [deckResourceKey, audioResourceKey] as const;
+const allResourceKeys = [
+  deckResourceKey,
+  audioResourceKey,
+  mutualSuccessPlanResourceKey,
+  initialFormatResourceKey,
+] as const;
+
+const assetResourceKey = v.union(v.literal(deckResourceKey), v.literal(audioResourceKey));
+const optionalResourceKey = v.union(
+  v.literal(mutualSuccessPlanResourceKey),
+  v.literal(initialFormatResourceKey),
+);
+const editableTextResourceKey = v.literal(initialFormatResourceKey);
+
+type SuccessRoomResourceKey = (typeof allResourceKeys)[number];
+type OptionalSuccessRoomResourceKey = typeof mutualSuccessPlanResourceKey | typeof initialFormatResourceKey;
+
+const seedBenefitCard = v.object({
+  key: v.string(),
   title: v.string(),
-  actionLabel: v.string(),
-  description: v.optional(v.string()),
+  description: v.string(),
   sortOrder: v.number(),
-  editorRows: v.optional(v.number()),
-  initialText: v.optional(v.string()),
+});
+
+const seedPlanTask = v.object({
+  key: v.string(),
+  title: v.string(),
+  dateLabel: v.string(),
+});
+
+const seedPlanAccordion = v.object({
+  key: v.string(),
+  title: v.string(),
+  description: v.string(),
+  variant: v.union(v.literal("default"), v.literal("muted")),
+  sortOrder: v.number(),
+  tasks: v.array(seedPlanTask),
 });
 
 const fileInput = v.object({
@@ -25,8 +57,46 @@ const fileInput = v.object({
   byteSize: v.number(),
 });
 
-const globalFileKey = v.literal("julien-newman-photo");
-const julienPhotoGlobalFileKey = "julien-newman-photo";
+const planSnapshot = v.object({
+  selectedBenefitIds: v.array(v.string()),
+  checkedTaskIds: v.array(v.string()),
+  dateOverrides: v.record(v.string(), v.string()),
+  taskAssigneeMemberIds: v.record(v.string(), v.id("successRoomTeamMembers")),
+});
+
+type PlanState = {
+  selectedBenefitIds: string[];
+  checkedTaskIds: string[];
+  dateOverrides: Record<string, string>;
+  taskAssigneeMemberIds: Record<string, Id<"successRoomTeamMembers">>;
+};
+
+type SeedBenefitCard = {
+  key: string;
+  title: string;
+  description: string;
+  sortOrder: number;
+};
+
+type SeedPlanAccordion = {
+  key: string;
+  title: string;
+  description: string;
+  variant: "default" | "muted";
+  sortOrder: number;
+  tasks: Array<{
+    key: string;
+    title: string;
+    dateLabel: string;
+  }>;
+};
+
+const emptyPlanState = (): PlanState => ({
+  selectedBenefitIds: [],
+  checkedTaskIds: [],
+  dateOverrides: {},
+  taskAssigneeMemberIds: {},
+});
 
 const hashPassword = async (password: string) => {
   const data = new TextEncoder().encode(password);
@@ -54,6 +124,72 @@ const assertSeedAccess = (seedSecret: string) => {
   }
 };
 
+const assertMaxLength = (items: unknown[], maxLength: number, label: string) => {
+  if (items.length > maxLength) {
+    throw new ConvexError(`${label} must include ${maxLength} items or fewer`);
+  }
+};
+
+const normalizeEnabledResourceKeys = (room: Doc<"successRooms">): SuccessRoomResourceKey[] => [
+  ...new Set<SuccessRoomResourceKey>([
+    ...baseResourceKeys,
+    ...room.enabledResourceKeys.filter((key) => allResourceKeys.includes(key)),
+  ]),
+];
+
+const isResourceEnabled = (
+  room: Doc<"successRooms">,
+  resourceKey: SuccessRoomResourceKey,
+) => normalizeEnabledResourceKeys(room).includes(resourceKey);
+
+const assertResourceEnabled = (
+  room: Doc<"successRooms">,
+  resourceKey: SuccessRoomResourceKey,
+) => {
+  if (!isResourceEnabled(room, resourceKey)) {
+    throw new ConvexError("Success room resource not found");
+  }
+};
+
+const deleteByRoomId = async (
+  ctx: MutationCtx,
+  table:
+    | "successRoomBenefitCards"
+    | "successRoomPlanAccordions"
+    | "successRoomVisitorStates"
+    | "successRoomTeamMembers"
+    | "successRoomTeamMemberPhotos"
+    | "successRoomEditableTextStates"
+    | "successRoomResourceFiles"
+    | "successRoomEditableAttachmentFiles",
+  roomId: Id<"successRooms">,
+) => {
+  const rows = await ctx.db
+    .query(table)
+    .withIndex("by_room", (q) => q.eq("roomId", roomId))
+    .collect();
+
+  await Promise.all(rows.map((row) => ctx.db.delete(row._id)));
+};
+
+const deleteExistingRoom = async (
+  ctx: MutationCtx,
+  room: Doc<"successRooms">,
+) => {
+  await Promise.all([
+    deleteByRoomId(ctx, "successRoomBenefitCards", room._id),
+    deleteByRoomId(ctx, "successRoomPlanAccordions", room._id),
+    deleteByRoomId(ctx, "successRoomVisitorStates", room._id),
+    deleteByRoomId(ctx, "successRoomTeamMemberPhotos", room._id),
+    deleteByRoomId(ctx, "successRoomTeamMembers", room._id),
+    deleteByRoomId(ctx, "successRoomEditableTextStates", room._id),
+    deleteByRoomId(ctx, "successRoomResourceFiles", room._id),
+    deleteByRoomId(ctx, "successRoomEditableAttachmentFiles", room._id),
+  ]);
+
+  await ctx.db.delete(room._id);
+};
+
 async function getRoomBySlug(ctx: QueryCtx | MutationCtx, slug: string) {
   return await ctx.db
     .query("successRooms")
@@ -71,47 +207,39 @@ const ensureRoom = async (ctx: QueryCtx | MutationCtx, slug: string) => {
   return room;
 };
 
-const getStateByRoomId = async (
+const getVisitorStateByRoomId = async (
   ctx: QueryCtx | MutationCtx,
   roomId: Id<"successRooms">,
 ) =>
   await ctx.db
-    .query("successRoomStates")
+    .query("successRoomVisitorStates")
     .withIndex("by_room", (q) => q.eq("roomId", roomId))
     .unique();
 
-const getActiveGlobalFile = async (ctx: QueryCtx | MutationCtx, key: string) => {
+const getActiveResourceFile = async (
+  ctx: QueryCtx | MutationCtx,
+  roomId: Id<"successRooms">,
+  resourceKey: string,
+) => {
   const files = await ctx.db
-    .query("successRoomGlobalFiles")
-    .withIndex("by_key", (q) => q.eq("key", key))
+    .query("successRoomResourceFiles")
+    .withIndex("by_room_resource_key", (q) =>
+      q.eq("roomId", roomId).eq("resourceKey", resourceKey),
+    )
     .collect();
 
   return files.find((file) => file.active) ?? null;
 };
 
-const getActiveResourceBySlug = async (
+const getActiveEditableAttachmentFile = async (
   ctx: QueryCtx | MutationCtx,
   roomId: Id<"successRooms">,
-  resourceSlug: string,
-) => {
-  const resource = await ctx.db
-    .query("successRoomResources")
-    .withIndex("by_room_slug", (q) => q.eq("roomId", roomId).eq("slug", resourceSlug))
-    .unique();
-
-  return resource?.active ? resource : null;
-};
-
-const getActiveResourceFile = async (
-  ctx: QueryCtx | MutationCtx,
-  roomId: Id<"successRooms">,
-  resourceId: Id<"successRoomResources">,
-  purpose: "primary-resource-file" | "editable-attachment",
+  resourceKey: string,
 ) => {
   const files = await ctx.db
-    .query("successRoomFiles")
-    .withIndex("by_room_resource_purpose", (q) =>
-      q.eq("roomId", roomId).eq("resourceId", resourceId).eq("purpose", purpose),
+    .query("successRoomEditableAttachmentFiles")
+    .withIndex("by_room_resource_key", (q) =>
+      q.eq("roomId", roomId).eq("resourceKey", resourceKey),
     )
     .collect();
 
@@ -133,7 +261,9 @@ const getActiveTeamMemberPhoto = async (
   return files.find((file) => file.active) ?? null;
 };
 
-const fileSummary = (file: Doc<"successRoomFiles">) => ({
+const fileSummary = (
+  file: Doc<"successRoomResourceFiles"> | Doc<"successRoomEditableAttachmentFiles">,
+) => ({
   fileId: file._id,
   filename: file.filename,
   contentType: file.contentType,
@@ -147,24 +277,22 @@ const teamMemberPhotoSummary = (photo: Doc<"successRoomTeamMemberPhotos">) => ({
   byteSize: photo.byteSize,
 });
 
-const globalFileSummary = (file: Doc<"successRoomGlobalFiles">) => ({
-  globalFileId: file._id,
-  key: file.key,
-  filename: file.filename,
-  contentType: file.contentType,
-  byteSize: file.byteSize,
+const benefitCardSummary = (card: Doc<"successRoomBenefitCards">) => ({
+  id: card.key,
+  title: card.title,
+  description: card.description,
 });
 
-const resourceSummary = (resource: Doc<"successRoomResources">) => ({
-  resourceId: resource._id,
-  slug: resource.slug,
-  kind: resource.kind,
-  title: resource.title,
-  actionLabel: resource.actionLabel,
-  description: resource.description,
-  sortOrder: resource.sortOrder,
-  editorRows: resource.editorRows,
-  initialText: resource.initialText,
+const planAccordionSummary = (accordion: Doc<"successRoomPlanAccordions">) => ({
+  id: accordion.key,
+  title: accordion.title,
+  description: accordion.description,
+  variant: accordion.variant,
+  tasks: accordion.tasks.slice(0, maxPlanTasksPerAccordion).map((task) => ({
+    id: task.key,
+    title: task.title,
+    date: task.dateLabel,
+  })),
 });
 
 const visitorTeamMemberSummary = (
@@ -177,49 +305,256 @@ const visitorTeamMemberSummary = (
   ...(photo ? { photo: teamMemberPhotoSummary(photo) } : {}),
 });
 
-const lockedRoom = (room: Doc<"successRooms">) => ({
-  slug: room.slug,
-  prospectName: room.prospectName,
-  description: room.description,
-});
+const upsertBenefitCards = async (
+  ctx: MutationCtx,
+  roomId: Id<"successRooms">,
+  cards: SeedBenefitCard[],
+  now: number,
+) => {
+  for (const card of cards) {
+    const existingCard = await ctx.db
+      .query("successRoomBenefitCards")
+      .withIndex("by_room_key", (q) => q.eq("roomId", roomId).eq("key", card.key))
+      .unique();
+    const nextCard = {
+      roomId,
+      key: card.key,
+      title: card.title,
+      description: card.description,
+      sortOrder: card.sortOrder,
+      active: true,
+      createdAt: existingCard?.createdAt ?? now,
+      updatedAt: now,
+    };
 
-const buildStatePatch = (
-  state: Doc<"successRoomStates">,
+    if (existingCard) {
+      await ctx.db.replace(existingCard._id, nextCard);
+    } else {
+      await ctx.db.insert("successRoomBenefitCards", nextCard);
+    }
+  }
+};
+
+const upsertPlanAccordions = async (
+  ctx: MutationCtx,
+  roomId: Id<"successRooms">,
+  accordions: SeedPlanAccordion[],
+  now: number,
+) => {
+  for (const accordion of accordions) {
+    const existingAccordion = await ctx.db
+      .query("successRoomPlanAccordions")
+      .withIndex("by_room_key", (q) => q.eq("roomId", roomId).eq("key", accordion.key))
+      .unique();
+    const nextAccordion = {
+      roomId,
+      key: accordion.key,
+      title: accordion.title,
+      description: accordion.description,
+      variant: accordion.variant,
+      sortOrder: accordion.sortOrder,
+      tasks: accordion.tasks,
+      active: true,
+      createdAt: existingAccordion?.createdAt ?? now,
+      updatedAt: now,
+    };
+
+    if (existingAccordion) {
+      await ctx.db.replace(existingAccordion._id, nextAccordion);
+    } else {
+      await ctx.db.insert("successRoomPlanAccordions", nextAccordion);
+    }
+  }
+};
+
+const buildVisitorStatePatch = (
+  state: Doc<"successRoomVisitorStates">,
   update: {
     questions?: Record<string, string>;
-    plan?: {
-      checkedTaskIds: string[];
-      dateOverrides: Record<string, string>;
-    };
+    plan?: PlanState;
     updatedAt: number;
   },
 ) => ({
   roomId: state.roomId,
   questions: update.questions ?? state.questions,
-  ...(update.plan ?? state.plan
-    ? {
-        plan: update.plan ?? state.plan,
-      }
-    : {}),
+  ...((update.plan ?? state.plan) ? { plan: update.plan ?? state.plan } : {}),
   createdAt: state.createdAt,
   updatedAt: update.updatedAt,
 });
+
+const initializePlanState = async (
+  ctx: MutationCtx,
+  roomId: Id<"successRooms">,
+  now: number,
+) => {
+  const state = await getVisitorStateByRoomId(ctx, roomId);
+
+  if (!state || state.plan) {
+    return;
+  }
+
+  await ctx.db.replace(
+    state._id,
+    buildVisitorStatePatch(state, {
+      plan: emptyPlanState(),
+      updatedAt: now,
+    }),
+  );
+};
+
+const lockedRoom = (room: Doc<"successRooms">) => ({
+  slug: room.slug,
+  prospectName: room.prospectName,
+  enabledResourceKeys: normalizeEnabledResourceKeys(room),
+});
+
+const sanitizeTaskAssignees = async (
+  ctx: QueryCtx | MutationCtx,
+  roomId: Id<"successRooms">,
+  assignments: Record<string, Id<"successRoomTeamMembers">>,
+) => {
+  const entries = await Promise.all(
+    Object.entries(assignments).map(async ([taskId, memberId]) => {
+      const member = await ctx.db.get(memberId);
+
+      return member && member.roomId === roomId && member.active
+        ? ([taskId, memberId] as const)
+        : null;
+    }),
+  );
+
+  return Object.fromEntries(entries.filter((entry) => entry !== null));
+};
+
+const getPlanForBundle = async (
+  ctx: QueryCtx,
+  roomId: Id<"successRooms">,
+  statePlan: Doc<"successRoomVisitorStates">["plan"],
+) => {
+  if (!statePlan) {
+    return emptyPlanState();
+  }
+
+  return {
+    selectedBenefitIds: statePlan.selectedBenefitIds,
+    checkedTaskIds: statePlan.checkedTaskIds,
+    dateOverrides: statePlan.dateOverrides,
+    taskAssigneeMemberIds: await sanitizeTaskAssignees(
+      ctx,
+      roomId,
+      statePlan.taskAssigneeMemberIds,
+    ),
+  };
+};
+
+const getMutualSuccessPlanStateForBundle = async (
+  ctx: QueryCtx,
+  room: Doc<"successRooms">,
+  statePlan: Doc<"successRoomVisitorStates">["plan"],
+) => {
+  if (!isResourceEnabled(room, mutualSuccessPlanResourceKey)) {
+    return undefined;
+  }
+
+  return {
+    plan: await getPlanForBundle(ctx, room._id, statePlan),
+  };
+};
+
+const getMutualSuccessPlanCatalogForBundle = async (
+  ctx: QueryCtx,
+  room: Doc<"successRooms">,
+) => {
+  if (!isResourceEnabled(room, mutualSuccessPlanResourceKey)) {
+    return {
+      benefitCards: [],
+      planAccordions: [],
+    };
+  }
+
+  const benefitCards = await ctx.db
+    .query("successRoomBenefitCards")
+    .withIndex("by_room", (q) => q.eq("roomId", room._id))
+    .collect();
+  const planAccordions = await ctx.db
+    .query("successRoomPlanAccordions")
+    .withIndex("by_room", (q) => q.eq("roomId", room._id))
+    .collect();
+
+  return {
+    benefitCards: benefitCards
+      .filter((card) => card.active)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .slice(0, maxBenefitCards)
+      .map(benefitCardSummary),
+    planAccordions: planAccordions
+      .filter((accordion) => accordion.active)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .slice(0, maxPlanAccordions)
+      .map(planAccordionSummary),
+  };
+};
+
+const getEditableTextsForBundle = async (
+  ctx: QueryCtx,
+  room: Doc<"successRooms">,
+) => {
+  const editableTexts: Record<
+    string,
+    {
+      content: string;
+      dataSources: string[];
+      attachment?: ReturnType<typeof fileSummary>;
+    }
+  > = {};
+
+  if (!isResourceEnabled(room, initialFormatResourceKey)) {
+    return editableTexts;
+  }
+
+  const editableStates = await ctx.db
+    .query("successRoomEditableTextStates")
+    .withIndex("by_room", (q) => q.eq("roomId", room._id))
+    .collect();
+
+  for (const editableState of editableStates) {
+    const attachment =
+      editableState.attachmentFileId !== undefined
+        ? await ctx.db.get(editableState.attachmentFileId)
+        : null;
+    const activeAttachment =
+      attachment &&
+      attachment.roomId === room._id &&
+      attachment.resourceKey === editableState.resourceKey &&
+      attachment.active
+        ? attachment
+        : null;
+
+    editableTexts[editableState.resourceKey] = {
+      content: editableState.content,
+      dataSources: editableState.dataSources,
+      ...(activeAttachment ? { attachment: fileSummary(activeAttachment) } : {}),
+    };
+  }
+
+  return editableTexts;
+};
 
 const upsertEditableTextState = async (
   ctx: MutationCtx,
   args: {
     roomId: Id<"successRooms">;
-    resourceId: Id<"successRoomResources">;
+    resourceKey: string;
     content: string;
     dataSources: string[];
-    attachmentFileId?: Id<"successRoomFiles">;
+    attachmentFileId?: Id<"successRoomEditableAttachmentFiles">;
   },
 ) => {
   const now = Date.now();
   const existingState = await ctx.db
     .query("successRoomEditableTextStates")
-    .withIndex("by_room_resource", (q) =>
-      q.eq("roomId", args.roomId).eq("resourceId", args.resourceId),
+    .withIndex("by_room_resource_key", (q) =>
+      q.eq("roomId", args.roomId).eq("resourceKey", args.resourceKey),
     )
     .unique();
   const attachmentFileId = args.attachmentFileId ?? existingState?.attachmentFileId;
@@ -230,8 +565,7 @@ const upsertEditableTextState = async (
     if (
       !attachmentFile ||
       attachmentFile.roomId !== args.roomId ||
-      attachmentFile.resourceId !== args.resourceId ||
-      attachmentFile.purpose !== "editable-attachment" ||
+      attachmentFile.resourceKey !== args.resourceKey ||
       !attachmentFile.active
     ) {
       throw new ConvexError("Editable attachment file is invalid");
@@ -240,7 +574,7 @@ const upsertEditableTextState = async (
 
   const nextState = {
     roomId: args.roomId,
-    resourceId: args.resourceId,
+    resourceKey: args.resourceKey,
     content: args.content,
     dataSources: args.dataSources,
     ...(attachmentFileId ? { attachmentFileId } : {}),
@@ -277,95 +611,7 @@ export const generateSeedUploadUrl = mutation({
   handler: async (ctx, args) => {
     assertSeedAccess(args.seedSecret);
 
-    const existingRoom = await getRoomBySlug(ctx, args.slug);
-
-    if (existingRoom) {
-      throw new ConvexError("Success room already exists");
-    }
-
     return await ctx.storage.generateUploadUrl();
-  },
-});
-
-export const generateGlobalSeedUploadUrl = mutation({
-  args: {
-    seedSecret: v.string(),
-  },
-  handler: async (ctx, args) => {
-    assertSeedAccess(args.seedSecret);
-
-    return await ctx.storage.generateUploadUrl();
-  },
-});
-
-export const seedGlobalFile = mutation({
-  args: {
-    seedSecret: v.string(),
-    key: globalFileKey,
-    file: fileInput,
-  },
-  handler: async (ctx, args) => {
-    assertSeedAccess(args.seedSecret);
-
-    const now = Date.now();
-    const existing = await ctx.db
-      .query("successRoomGlobalFiles")
-      .withIndex("by_key", (q) => q.eq("key", args.key))
-      .collect();
-
-    await Promise.all(
-      existing
-        .filter((file) => file.active)
-        .map((file) =>
-          ctx.db.patch(file._id, {
-            active: false,
-            updatedAt: now,
-          }),
-        ),
-    );
-
-    const globalFileId = await ctx.db.insert("successRoomGlobalFiles", {
-      key: args.key,
-      storageId: args.file.storageId,
-      filename: args.file.filename,
-      contentType: args.file.contentType,
-      byteSize: args.file.byteSize,
-      active: true,
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    return {
-      globalFileId,
-      filename: args.file.filename,
-      contentType: args.file.contentType,
-      byteSize: args.file.byteSize,
-    };
-  },
-});
-
-export const cleanupLegacyTeamMemberEmails = mutation({
-  args: {
-    seedSecret: v.string(),
-  },
-  handler: async (ctx, args) => {
-    assertSeedAccess(args.seedSecret);
-
-    const teamMembers = await ctx.db.query("successRoomTeamMembers").collect();
-    const membersWithEmail = teamMembers.filter((member) => "email" in member);
-
-    await Promise.all(
-      membersWithEmail.map((member) =>
-        ctx.db.patch(member._id, {
-          email: undefined,
-          updatedAt: Date.now(),
-        }),
-      ),
-    );
-
-    return {
-      updatedCount: membersWithEmail.length,
-    };
   },
 });
 
@@ -410,18 +656,15 @@ export const getRoomBundle = query({
 
     await assertAccess(room, args.accessToken);
 
-    const state = await getStateByRoomId(ctx, room._id);
-    const resources = await ctx.db
-      .query("successRoomResources")
-      .withIndex("by_room", (q) => q.eq("roomId", room._id))
-      .collect();
-    const activeResources = resources
-      .filter((resource) => resource.active)
-      .sort((a, b) => a.sortOrder - b.sortOrder);
-    const editableStates = await ctx.db
-      .query("successRoomEditableTextStates")
-      .withIndex("by_room", (q) => q.eq("roomId", room._id))
-      .collect();
+    const state = await getVisitorStateByRoomId(ctx, room._id);
+
+    if (!state) {
+      throw new ConvexError("Success room visitor state not found");
+    }
+
+    const mutualSuccessPlanState = await getMutualSuccessPlanStateForBundle(ctx, room, state.plan);
+    const mutualSuccessPlanCatalog = await getMutualSuccessPlanCatalogForBundle(ctx, room);
+    const editableTexts = await getEditableTextsForBundle(ctx, room);
     const visitorTeamMembers = await ctx.db
       .query("successRoomTeamMembers")
       .withIndex("by_room_active_created_at", (q) =>
@@ -432,70 +675,24 @@ export const getRoomBundle = query({
       .query("successRoomTeamMemberPhotos")
       .withIndex("by_room", (q) => q.eq("roomId", room._id))
       .collect();
-    const julienPhoto = await getActiveGlobalFile(ctx, julienPhotoGlobalFileKey);
 
-    if (!state) {
-      throw new ConvexError("Success room state not found");
-    }
-
-    if (!julienPhoto) {
-      throw new ConvexError("Julien photo global file is not seeded");
-    }
-
-    const editableStateByResourceId = new Map(
-      editableStates.map((editableState) => [editableState.resourceId, editableState]),
-    );
     const visitorTeamMemberPhotoByMemberId = new Map(
       visitorTeamMemberPhotos
         .filter((photo) => photo.active)
         .map((photo) => [photo.teamMemberId, photo]),
     );
-    const editableTexts: Record<
-      string,
-      {
-        content: string;
-        dataSources: string[];
-        attachment?: ReturnType<typeof fileSummary>;
-      }
-    > = {};
-
-    for (const resource of activeResources) {
-      if (resource.kind !== "editable-text") {
-        continue;
-      }
-
-      const editableState = editableStateByResourceId.get(resource._id);
-      const attachment =
-        editableState?.attachmentFileId !== undefined
-          ? await ctx.db.get(editableState.attachmentFileId)
-          : null;
-
-      editableTexts[resource.slug] = {
-        content: editableState?.content ?? resource.initialText ?? "",
-        dataSources: editableState?.dataSources ?? [],
-        ...(attachment?.active ? { attachment: fileSummary(attachment) } : {}),
-      };
-    }
 
     return {
       room: {
         ...lockedRoom(room),
-        resources: activeResources.map(resourceSummary),
-        team: [
-          {
-            id: "julien-newman",
-            name: "Julien Newman",
-            role: "Founder",
-            photo: globalFileSummary(julienPhoto),
-          },
-          ...visitorTeamMembers.map((member) =>
-            visitorTeamMemberSummary(member, visitorTeamMemberPhotoByMemberId.get(member._id)),
-          ),
-        ],
+        team: visitorTeamMembers.map((member) =>
+          visitorTeamMemberSummary(member, visitorTeamMemberPhotoByMemberId.get(member._id)),
+        ),
+        mutualSuccessPlanCatalog,
       },
       state: {
         questions: state.questions,
-        plan: state.plan,
+        ...(mutualSuccessPlanState ? { mutualSuccessPlan: mutualSuccessPlanState } : {}),
         editableTexts,
       },
     };
@@ -506,28 +703,15 @@ export const getResourceFileForDownload = query({
   args: {
     slug: v.string(),
     accessToken: v.string(),
-    resourceSlug: v.string(),
+    resourceSlug: assetResourceKey,
   },
   handler: async (ctx, args) => {
     const room = await ensureRoom(ctx, args.slug);
 
     await assertAccess(room, args.accessToken);
+    assertResourceEnabled(room, args.resourceSlug);
 
-    const resource = await getActiveResourceBySlug(ctx, room._id, args.resourceSlug);
-
-    if (
-      !resource ||
-      !["deck", "audio", "downloadable-file"].includes(resource.kind)
-    ) {
-      return null;
-    }
-
-    const file = await getActiveResourceFile(
-      ctx,
-      room._id,
-      resource._id,
-      "primary-resource-file",
-    );
+    const file = await getActiveResourceFile(ctx, room._id, args.resourceSlug);
 
     if (!file) {
       return null;
@@ -548,25 +732,15 @@ export const getEditableAttachmentForDownload = query({
   args: {
     slug: v.string(),
     accessToken: v.string(),
-    resourceSlug: v.string(),
+    resourceSlug: editableTextResourceKey,
   },
   handler: async (ctx, args) => {
     const room = await ensureRoom(ctx, args.slug);
 
     await assertAccess(room, args.accessToken);
+    assertResourceEnabled(room, args.resourceSlug);
 
-    const resource = await getActiveResourceBySlug(ctx, room._id, args.resourceSlug);
-
-    if (!resource || resource.kind !== "editable-text") {
-      return null;
-    }
-
-    const file = await getActiveResourceFile(
-      ctx,
-      room._id,
-      resource._id,
-      "editable-attachment",
-    );
+    const file = await getActiveEditableAttachmentFile(ctx, room._id, args.resourceSlug);
 
     if (!file) {
       return null;
@@ -580,34 +754,6 @@ export const getEditableAttachmentForDownload = query({
           url,
         }
       : null;
-  },
-});
-
-export const getGlobalFileForDownload = query({
-  args: {
-    slug: v.string(),
-    accessToken: v.string(),
-    key: globalFileKey,
-  },
-  handler: async (ctx, args) => {
-    const room = await ensureRoom(ctx, args.slug);
-
-    await assertAccess(room, args.accessToken);
-
-    const file = await getActiveGlobalFile(ctx, args.key);
-
-    if (!file) {
-      return null;
-    }
-
-    const url = await ctx.storage.getUrl(file.storageId);
-
-    return url
-      ? {
-          ...globalFileSummary(file),
-          url,
-        }
-        : null;
   },
 });
 
@@ -712,15 +858,15 @@ export const patchQuestions = mutation({
 
     await assertAccess(room, args.accessToken);
 
-    const state = await getStateByRoomId(ctx, room._id);
+    const state = await getVisitorStateByRoomId(ctx, room._id);
 
     if (!state) {
-      throw new ConvexError("Success room state not found");
+      throw new ConvexError("Success room visitor state not found");
     }
 
     await ctx.db.replace(
       state._id,
-      buildStatePatch(state, {
+      buildVisitorStatePatch(state, {
         questions: args.questions,
         updatedAt: Date.now(),
       }),
@@ -728,37 +874,38 @@ export const patchQuestions = mutation({
   },
 });
 
-export const patchPlan = mutation({
+export const replacePlan = mutation({
   args: {
     slug: v.string(),
     accessToken: v.string(),
-    plan: v.object({
-      checkedTaskIds: v.optional(v.array(v.string())),
-      dateOverrides: v.optional(v.record(v.string(), v.string())),
-    }),
+    plan: planSnapshot,
   },
   handler: async (ctx, args) => {
     const room = await ensureRoom(ctx, args.slug);
 
     await assertAccess(room, args.accessToken);
+    assertResourceEnabled(room, mutualSuccessPlanResourceKey);
 
-    const state = await getStateByRoomId(ctx, room._id);
+    const state = await getVisitorStateByRoomId(ctx, room._id);
 
     if (!state) {
-      throw new ConvexError("Success room state not found");
+      throw new ConvexError("Success room visitor state not found");
     }
 
-    const existingPlan = state.plan ?? {
-      checkedTaskIds: [],
-      dateOverrides: {},
-    };
+    const taskAssigneeMemberIds = await sanitizeTaskAssignees(
+      ctx,
+      room._id,
+      args.plan.taskAssigneeMemberIds,
+    );
 
     await ctx.db.replace(
       state._id,
-      buildStatePatch(state, {
+      buildVisitorStatePatch(state, {
         plan: {
-          checkedTaskIds: args.plan.checkedTaskIds ?? existingPlan.checkedTaskIds,
-          dateOverrides: args.plan.dateOverrides ?? existingPlan.dateOverrides,
+          selectedBenefitIds: args.plan.selectedBenefitIds,
+          checkedTaskIds: args.plan.checkedTaskIds,
+          dateOverrides: args.plan.dateOverrides,
+          taskAssigneeMemberIds,
         },
         updatedAt: Date.now(),
       }),
@@ -770,7 +917,7 @@ export const patchEditableText = mutation({
   args: {
     slug: v.string(),
     accessToken: v.string(),
-    resourceSlug: v.string(),
+    resourceSlug: editableTextResourceKey,
     content: v.string(),
     dataSources: v.array(v.string()),
   },
@@ -778,16 +925,11 @@ export const patchEditableText = mutation({
     const room = await ensureRoom(ctx, args.slug);
 
     await assertAccess(room, args.accessToken);
-
-    const resource = await getActiveResourceBySlug(ctx, room._id, args.resourceSlug);
-
-    if (!resource || resource.kind !== "editable-text") {
-      throw new ConvexError("Editable text resource not found");
-    }
+    assertResourceEnabled(room, args.resourceSlug);
 
     await upsertEditableTextState(ctx, {
       roomId: room._id,
-      resourceId: resource._id,
+      resourceKey: args.resourceSlug,
       content: args.content,
       dataSources: args.dataSources,
     });
@@ -798,7 +940,7 @@ export const registerEditableAttachment = mutation({
   args: {
     slug: v.string(),
     accessToken: v.string(),
-    resourceSlug: v.string(),
+    resourceSlug: editableTextResourceKey,
     file: fileInput,
     content: v.string(),
     dataSources: v.array(v.string()),
@@ -807,18 +949,13 @@ export const registerEditableAttachment = mutation({
     const room = await ensureRoom(ctx, args.slug);
 
     await assertAccess(room, args.accessToken);
-
-    const resource = await getActiveResourceBySlug(ctx, room._id, args.resourceSlug);
-
-    if (!resource || resource.kind !== "editable-text") {
-      throw new ConvexError("Editable text resource not found");
-    }
+    assertResourceEnabled(room, args.resourceSlug);
 
     const now = Date.now();
     const existingFiles = await ctx.db
-      .query("successRoomFiles")
-      .withIndex("by_room_resource_purpose", (q) =>
-        q.eq("roomId", room._id).eq("resourceId", resource._id).eq("purpose", "editable-attachment"),
+      .query("successRoomEditableAttachmentFiles")
+      .withIndex("by_room_resource_key", (q) =>
+        q.eq("roomId", room._id).eq("resourceKey", args.resourceSlug),
       )
       .collect();
 
@@ -833,10 +970,9 @@ export const registerEditableAttachment = mutation({
         ),
     );
 
-    const fileId = await ctx.db.insert("successRoomFiles", {
+    const fileId = await ctx.db.insert("successRoomEditableAttachmentFiles", {
       roomId: room._id,
-      resourceId: resource._id,
-      purpose: "editable-attachment",
+      resourceKey: args.resourceSlug,
       storageId: args.file.storageId,
       filename: args.file.filename,
       contentType: args.file.contentType,
@@ -848,7 +984,7 @@ export const registerEditableAttachment = mutation({
 
     await upsertEditableTextState(ctx, {
       roomId: room._id,
-      resourceId: resource._id,
+      resourceKey: args.resourceSlug,
       content: args.content,
       dataSources: args.dataSources,
       attachmentFileId: fileId,
@@ -867,23 +1003,18 @@ export const removeEditableAttachment = mutation({
   args: {
     slug: v.string(),
     accessToken: v.string(),
-    resourceSlug: v.string(),
+    resourceSlug: editableTextResourceKey,
   },
   handler: async (ctx, args) => {
     const room = await ensureRoom(ctx, args.slug);
 
     await assertAccess(room, args.accessToken);
-
-    const resource = await getActiveResourceBySlug(ctx, room._id, args.resourceSlug);
-
-    if (!resource || resource.kind !== "editable-text") {
-      throw new ConvexError("Editable text resource not found");
-    }
+    assertResourceEnabled(room, args.resourceSlug);
 
     const editableState = await ctx.db
       .query("successRoomEditableTextStates")
-      .withIndex("by_room_resource", (q) =>
-        q.eq("roomId", room._id).eq("resourceId", resource._id),
+      .withIndex("by_room_resource_key", (q) =>
+        q.eq("roomId", room._id).eq("resourceKey", args.resourceSlug),
       )
       .unique();
 
@@ -897,8 +1028,7 @@ export const removeEditableAttachment = mutation({
       if (
         !attachmentFile ||
         attachmentFile.roomId !== room._id ||
-        attachmentFile.resourceId !== resource._id ||
-        attachmentFile.purpose !== "editable-attachment"
+        attachmentFile.resourceKey !== args.resourceSlug
       ) {
         throw new ConvexError("Editable attachment file is invalid");
       }
@@ -911,7 +1041,7 @@ export const removeEditableAttachment = mutation({
 
     await ctx.db.replace(editableState._id, {
       roomId: editableState.roomId,
-      resourceId: editableState.resourceId,
+      resourceKey: editableState.resourceKey,
       content: editableState.content,
       dataSources: editableState.dataSources,
       createdAt: editableState.createdAt,
@@ -925,11 +1055,9 @@ export const seedSuccessRoom = mutation({
     seedSecret: v.string(),
     slug: v.string(),
     prospectName: v.string(),
-    description: v.string(),
     password: v.string(),
     deck: fileInput,
     audio: fileInput,
-    optionalResources: v.array(seedResource),
   },
   handler: async (ctx, args) => {
     assertSeedAccess(args.seedSecret);
@@ -937,20 +1065,14 @@ export const seedSuccessRoom = mutation({
     const existingRoom = await getRoomBySlug(ctx, args.slug);
 
     if (existingRoom) {
-      throw new ConvexError("Success room already exists");
-    }
-
-    const julienPhoto = await getActiveGlobalFile(ctx, julienPhotoGlobalFileKey);
-
-    if (!julienPhoto) {
-      throw new ConvexError("Julien photo global file is not seeded");
+      await deleteExistingRoom(ctx, existingRoom);
     }
 
     const now = Date.now();
     const roomId = await ctx.db.insert("successRooms", {
       slug: args.slug,
       prospectName: args.prospectName,
-      description: args.description,
+      enabledResourceKeys: [...baseResourceKeys],
       passwordHash: await hashPassword(args.password),
       passwordUpdatedAt: now,
       archived: false,
@@ -958,54 +1080,9 @@ export const seedSuccessRoom = mutation({
       updatedAt: now,
     });
 
-    const insertResource = async (resource: {
-      slug: string;
-      kind: "deck" | "audio" | "downloadable-file" | "mutual-success-plan" | "editable-text";
-      title: string;
-      actionLabel: string;
-      description?: string;
-      sortOrder: number;
-      editorRows?: number;
-      initialText?: string;
-    }) =>
-      await ctx.db.insert("successRoomResources", {
-        roomId,
-        slug: resource.slug,
-        kind: resource.kind,
-        title: resource.title,
-        actionLabel: resource.actionLabel,
-        description: resource.description,
-        sortOrder: resource.sortOrder,
-        editorRows: resource.editorRows,
-        initialText: resource.initialText,
-        active: true,
-        createdAt: now,
-        updatedAt: now,
-      });
-
-    const deckResourceId = await insertResource({
-      slug: "deck",
-      kind: "deck",
-      title: "Sales deck",
-      actionLabel: "Download the custom sales deck",
-      sortOrder: 0,
-    });
-    const audioResourceId = await insertResource({
-      slug: "audio",
-      kind: "audio",
-      title: "Audio summary",
-      actionLabel: "Download the audio summary",
-      sortOrder: 1,
-    });
-
-    for (const resource of args.optionalResources) {
-      await insertResource(resource);
-    }
-
-    const deckId = await ctx.db.insert("successRoomFiles", {
+    const deckId = await ctx.db.insert("successRoomResourceFiles", {
       roomId,
-      resourceId: deckResourceId,
-      purpose: "primary-resource-file",
+      resourceKey: deckResourceKey,
       storageId: args.deck.storageId,
       filename: args.deck.filename,
       contentType: args.deck.contentType,
@@ -1014,10 +1091,9 @@ export const seedSuccessRoom = mutation({
       createdAt: now,
       updatedAt: now,
     });
-    const audioId = await ctx.db.insert("successRoomFiles", {
+    const audioId = await ctx.db.insert("successRoomResourceFiles", {
       roomId,
-      resourceId: audioResourceId,
-      purpose: "primary-resource-file",
+      resourceKey: audioResourceKey,
       storageId: args.audio.storageId,
       filename: args.audio.filename,
       contentType: args.audio.contentType,
@@ -1027,7 +1103,7 @@ export const seedSuccessRoom = mutation({
       updatedAt: now,
     });
 
-    await ctx.db.insert("successRoomStates", {
+    await ctx.db.insert("successRoomVisitorStates", {
       roomId,
       questions: {},
       createdAt: now,
@@ -1038,6 +1114,64 @@ export const seedSuccessRoom = mutation({
       roomId,
       deckId,
       audioId,
+    };
+  },
+});
+
+export const enableSuccessRoomSections = mutation({
+  args: {
+    seedSecret: v.string(),
+    slug: v.string(),
+    resourceKeys: v.array(optionalResourceKey),
+    benefitCards: v.array(seedBenefitCard),
+    planAccordions: v.array(seedPlanAccordion),
+  },
+  handler: async (ctx, args) => {
+    assertSeedAccess(args.seedSecret);
+
+    if (args.resourceKeys.length === 0) {
+      throw new ConvexError("At least one success room section is required");
+    }
+
+    const requestedResourceKeys = [...new Set<OptionalSuccessRoomResourceKey>(args.resourceKeys)];
+    const room = await ensureRoom(ctx, args.slug);
+    const now = Date.now();
+
+    if (requestedResourceKeys.includes(mutualSuccessPlanResourceKey)) {
+      if (args.benefitCards.length === 0 || args.planAccordions.length === 0) {
+        throw new ConvexError("Mutual success plan content is required");
+      }
+
+      assertMaxLength(args.benefitCards, maxBenefitCards, "Benefit cards");
+      assertMaxLength(args.planAccordions, maxPlanAccordions, "Plan accordions");
+
+      for (const accordion of args.planAccordions) {
+        assertMaxLength(
+          accordion.tasks,
+          maxPlanTasksPerAccordion,
+          `Plan accordion "${accordion.key}" tasks`,
+        );
+      }
+
+      await upsertBenefitCards(ctx, room._id, args.benefitCards, now);
+      await upsertPlanAccordions(ctx, room._id, args.planAccordions, now);
+      await initializePlanState(ctx, room._id, now);
+    }
+
+    const enabledResourceKeys = [
+      ...new Set<SuccessRoomResourceKey>([
+        ...normalizeEnabledResourceKeys(room),
+        ...requestedResourceKeys,
+      ]),
+    ];
+
+    await ctx.db.patch(room._id, {
+      enabledResourceKeys,
+      updatedAt: now,
+    });
+
+    return {
+      enabledResourceKeys,
     };
   },
 });

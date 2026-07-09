@@ -1,26 +1,28 @@
 <script lang="ts">
   import SuccessRoomCheckbox from './SuccessRoomCheckbox.svelte';
-  import type { MutualSuccessPlanTask } from './successRoomMutualSuccessPlan';
+  import type { SuccessRoomPlanTask, SuccessRoomTeamMember } from './successRoomTypes';
 
   let {
     task,
     taskId,
     checked,
+    assignedTeamMember,
     displayDateLabel,
     textClass,
     dateClass,
     onCheckedChange,
-    onOpenTeam,
+    onOpenAssignee,
     onOpenDatePicker
   }: {
-    task: MutualSuccessPlanTask;
+    task: SuccessRoomPlanTask;
     taskId: string;
     checked: boolean;
+    assignedTeamMember?: SuccessRoomTeamMember;
     displayDateLabel: string;
     textClass: string;
     dateClass: string;
     onCheckedChange: (checked: boolean) => void;
-    onOpenTeam: () => void;
+    onOpenAssignee: () => void;
     onOpenDatePicker: () => void;
   } = $props();
 
@@ -61,17 +63,22 @@
       <button
         type="button"
         class={taskAssigneeButtonClasses}
-        aria-label="View team members"
-        onclick={onOpenTeam}
+        aria-label={`${assignedTeamMember ? 'Change' : 'Assign'} owner for ${task.title}`}
+        onclick={onOpenAssignee}
       >
-        {#if task.assigneeImageHref}
+        {#if assignedTeamMember?.imageHref}
           <img
-            src={task.assigneeImageHref}
+            src={assignedTeamMember.imageHref}
             alt=""
+            title={assignedTeamMember.name}
             class={taskAssigneeImageClasses}
             loading="lazy"
             decoding="async"
           />
+        {:else if assignedTeamMember}
+          <span class={taskEmptyAssigneeClasses} title={assignedTeamMember.name} aria-label={assignedTeamMember.name}>
+            {assignedTeamMember.name.slice(0, 1)}
+          </span>
         {:else}
           <span class={taskEmptyAssigneeClasses} aria-label="Unassigned">?</span>
         {/if}
