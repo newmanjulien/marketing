@@ -26,7 +26,7 @@
 
 <div class={[panelContentClasses, 'mt-[34px]']}>
   <p class={panelDescriptionClasses}>
-    Customizable step-by-step plan to start generating revenue together
+    Customize the step-by-step plan for starting to generate revenue together.
   </p>
 
   <PlanPanel

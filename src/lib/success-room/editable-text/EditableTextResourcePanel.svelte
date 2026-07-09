@@ -18,13 +18,13 @@
       key: 'format',
       label: 'Format',
       description:
-        'Sample of the email your team will receive with an optional attachment'
+        'Review the sample email your team will receive, with an optional attachment.'
     },
     {
       key: 'data-sources',
       label: 'Data sources',
       description:
-        'Da†a sources we will need to connect for this initial email format'
+        'List the data sources we will need to connect for this initial email format.'
     }
   ] as const satisfies readonly EditableTextSection[];
 

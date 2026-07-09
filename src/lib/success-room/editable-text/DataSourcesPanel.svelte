@@ -10,11 +10,11 @@
   } = $props();
 
   const editableTextDataSourceFields = [
-    'First data source for this format',
-    'Second data source for this format (optional)',
-    'Third data source for this format (optional)',
-    'Fourth data source for this format (optional)',
-    'Fifth data source for this format (optional)'
+    'Add the first data source for this format',
+    'Add a second data source, if needed',
+    'Add a third data source, if needed',
+    'Add a fourth data source, if needed',
+    'Add a fifth data source, if needed'
   ] as const;
 
   const dataSourceInputClasses =

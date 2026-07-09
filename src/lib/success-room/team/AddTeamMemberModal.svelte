@@ -1,12 +1,7 @@
 <script lang="ts">
   import ModalShell from '$lib/ui/ModalShell.svelte';
   import TeamMemberPhotoPicker from './TeamMemberPhotoPicker.svelte';
-
-  type TeamMemberInput = {
-    name: string;
-    role: string;
-    photoFile: File;
-  };
+  import type { TeamMemberInput } from './teamClient';
 
   let {
     open,
@@ -64,7 +59,7 @@
       resetForm();
       onClose();
     } catch {
-      errorMessage = 'Team member could not be added.';
+      errorMessage = 'Could not add this team member.';
     } finally {
       submitting = false;
     }
@@ -111,7 +106,7 @@
         class="h-[36px] rounded-[8px] border border-stone-900 bg-stone-900 px-[13px] font-body text-[13px] font-book leading-none tracking-normal text-white transition-colors duration-150 hover:border-stone-700 hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:border-stone-200 disabled:bg-stone-100 disabled:text-stone-400"
         disabled={!name.trim() || !role.trim() || !photoFile || submitting}
       >
-        {submitting ? 'Adding' : 'Add'}
+        {submitting ? 'Adding...' : 'Add'}
       </button>
     </div>
   </form>

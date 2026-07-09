@@ -64,7 +64,7 @@ export const unlockSuccessRoom = async ({
 
   if (typeof password !== 'string' || password.trim() === '') {
     return fail(400, {
-      message: 'Enter the room password.'
+      message: 'Enter the password for this room.'
     });
   }
 
@@ -72,7 +72,7 @@ export const unlockSuccessRoom = async ({
 
   if (!accessToken) {
     return fail(401, {
-      message: 'That password is not correct.'
+      message: "That password doesn't match."
     });
   }
 

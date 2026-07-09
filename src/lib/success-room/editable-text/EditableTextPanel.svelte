@@ -40,7 +40,7 @@
     aria-label={resource.title}
     rows={resource.editorRows ?? defaultEditorRows}
     value={editableState.content}
-    placeholder="Write the initial format"
+    placeholder="Write the initial email format"
     spellcheck="true"
     oninput={(event) => setContent(event.currentTarget.value)}
   ></textarea>

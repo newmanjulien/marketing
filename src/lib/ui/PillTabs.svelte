@@ -7,6 +7,7 @@
 
 <script lang="ts" generics="Tab extends PillTab">
   import type { Snippet } from 'svelte';
+  import { flip } from 'svelte/animate';
   import { cubicOut } from 'svelte/easing';
 
   let {
@@ -53,12 +54,15 @@
 
   const getTabId = (tabKey: string) => `${idBase}-${tabKey}-tab`;
   const getPanelId = (tabKey: string) => `${idBase}-${tabKey}-panel`;
+  const prefersReducedMotion = () =>
+    globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+  const getPillTabReflowDuration = () => (prefersReducedMotion() ? 0 : 160);
   const pillTabEntry = (_node: Element, tabKey: string) => {
     if (!animatedTabKeys.includes(tabKey)) {
       return { duration: 0 };
     }
 
-    if (globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    if (prefersReducedMotion()) {
       return { duration: 0 };
     }
 
@@ -68,6 +72,25 @@
       css: (t: number) => `
         opacity: ${t};
         transform: translateY(${(1 - t) * 4}px) scale(${0.985 + t * 0.015});
+        transform-origin: center left;
+      `
+    };
+  };
+  const pillTabExit = (_node: Element, tabKey: string) => {
+    if (!animatedTabKeys.includes(tabKey)) {
+      return { duration: 0 };
+    }
+
+    if (prefersReducedMotion()) {
+      return { duration: 0 };
+    }
+
+    return {
+      duration: 160,
+      easing: cubicOut,
+      css: (t: number) => `
+        opacity: ${t};
+        transform: translateY(${(1 - t) * 2}px) scale(${0.985 + t * 0.015});
         transform-origin: center left;
       `
     };
@@ -110,22 +133,28 @@
 {#if activeTab}
   <div class={[baseListClasses, listClass]} role="tablist" aria-label={ariaLabel}>
     {#each tabs as tab (tab.key)}
-      <button
-        id={getTabId(tab.key)}
-        type="button"
-        role="tab"
-        aria-selected={activeTabKey === tab.key}
-        aria-controls={activeTabKey === tab.key ? getPanelId(tab.key) : undefined}
-        tabindex={activeTabKey === tab.key ? 0 : -1}
-        class={[tabClasses, activeTabKey === tab.key && activeTabClasses]}
-        in:pillTabEntry={tab.key}
-        onclick={() => {
-          selectedTabKey = tab.key;
-        }}
-        onkeydown={handleTabKeydown}
+      <span
+        class="inline-flex"
+        animate:flip={{ duration: getPillTabReflowDuration, easing: cubicOut }}
       >
-        {tab.label}
-      </button>
+        <button
+          id={getTabId(tab.key)}
+          type="button"
+          role="tab"
+          aria-selected={activeTabKey === tab.key}
+          aria-controls={activeTabKey === tab.key ? getPanelId(tab.key) : undefined}
+          tabindex={activeTabKey === tab.key ? 0 : -1}
+          class={[tabClasses, activeTabKey === tab.key && activeTabClasses]}
+          in:pillTabEntry={tab.key}
+          out:pillTabExit={tab.key}
+          onclick={() => {
+            selectedTabKey = tab.key;
+          }}
+          onkeydown={handleTabKeydown}
+        >
+          {tab.label}
+        </button>
+      </span>
     {/each}
   </div>
 

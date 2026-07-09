@@ -25,17 +25,63 @@ import type {
   SuccessRoomState
 } from '../domain/types';
 
+type SuccessRoomResourceDraftSnapshot = {
+  roomResourceIdentity: string;
+  plan: SuccessRoomPlanState;
+  editableTexts: Record<string, SuccessRoomEditableTextState>;
+  kickoffSchedules: Record<string, SuccessRoomKickoffScheduleState>;
+};
+
+const createResourceDraftSnapshot = (
+  room: SuccessRoom,
+  resource: SuccessRoomRoutedResource,
+  state: SuccessRoomState,
+): SuccessRoomResourceDraftSnapshot => {
+  let editableTexts = cloneEditableTexts(state.editableTexts);
+  let kickoffSchedules = cloneKickoffSchedules(state.kickoffSchedules);
+
+  if (resource.kind === 'editable-text' && !editableTexts[resource.slug]) {
+    editableTexts = {
+      ...editableTexts,
+      [resource.slug]: getDefaultEditableTextState()
+    };
+  }
+
+  if (resource.kind === 'kickoff-schedule' && !kickoffSchedules[resource.slug]) {
+    kickoffSchedules = {
+      ...kickoffSchedules,
+      [resource.slug]: getDefaultKickoffScheduleState()
+    };
+  }
+
+  return {
+    roomResourceIdentity: `${room.slug}:${resource.slug}`,
+    plan: clonePlan(state.mutualSuccessPlan?.plan ?? getDefaultPlanState()),
+    editableTexts,
+    kickoffSchedules
+  };
+};
+
 export const createSuccessRoomResourceDraft = (
   getRoom: () => SuccessRoom,
   getResource: () => SuccessRoomRoutedResource,
   getState: () => SuccessRoomState,
 ) => {
   const saveQueue = createSuccessRoomSaveQueue();
+  const initialSnapshot = createResourceDraftSnapshot(
+    getRoom(),
+    getResource(),
+    getState()
+  );
 
-  let roomResourceIdentity = $state('');
-  let plan = $state<SuccessRoomPlanState>(getDefaultPlanState());
-  let editableTexts = $state<Record<string, SuccessRoomEditableTextState>>({});
-  let kickoffSchedules = $state<Record<string, SuccessRoomKickoffScheduleState>>({});
+  let roomResourceIdentity = $state(initialSnapshot.roomResourceIdentity);
+  let plan = $state<SuccessRoomPlanState>(initialSnapshot.plan);
+  let editableTexts = $state<Record<string, SuccessRoomEditableTextState>>(
+    initialSnapshot.editableTexts
+  );
+  let kickoffSchedules = $state<Record<string, SuccessRoomKickoffScheduleState>>(
+    initialSnapshot.kickoffSchedules
+  );
 
   attachSuccessRoomSaveQueueLifecycle(saveQueue);
 
@@ -118,27 +164,15 @@ export const createSuccessRoomResourceDraft = (
   $effect(() => {
     const room = getRoom();
     const resource = getResource();
-    const currentRoomResourceIdentity = `${room.slug}:${resource.slug}`;
+    const nextRoomResourceIdentity = `${room.slug}:${resource.slug}`;
 
-    if (roomResourceIdentity !== currentRoomResourceIdentity) {
-      roomResourceIdentity = currentRoomResourceIdentity;
-      plan = clonePlan(getState().mutualSuccessPlan?.plan ?? getDefaultPlanState());
-      editableTexts = cloneEditableTexts(getState().editableTexts);
-      kickoffSchedules = cloneKickoffSchedules(getState().kickoffSchedules);
+    if (roomResourceIdentity !== nextRoomResourceIdentity) {
+      const nextSnapshot = createResourceDraftSnapshot(room, resource, getState());
 
-      if (resource.kind === 'editable-text' && !editableTexts[resource.slug]) {
-        editableTexts = {
-          ...editableTexts,
-          [resource.slug]: getDefaultEditableTextState()
-        };
-      }
-
-      if (resource.kind === 'kickoff-schedule' && !kickoffSchedules[resource.slug]) {
-        kickoffSchedules = {
-          ...kickoffSchedules,
-          [resource.slug]: getDefaultKickoffScheduleState()
-        };
-      }
+      roomResourceIdentity = nextSnapshot.roomResourceIdentity;
+      plan = nextSnapshot.plan;
+      editableTexts = nextSnapshot.editableTexts;
+      kickoffSchedules = nextSnapshot.kickoffSchedules;
     }
   });
 

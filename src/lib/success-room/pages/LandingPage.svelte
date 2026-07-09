@@ -7,6 +7,7 @@
   import Header from '../shell/Header.svelte';
   import BenefitsPanel from '../plan/BenefitsPanel.svelte';
   import PainPointsPanel from './PainPointsPanel.svelte';
+  import TeamImagePreloader from '../team/TeamImagePreloader.svelte';
   import TeamPanel from '../team/TeamPanel.svelte';
   import { createSuccessRoomLandingDraft } from '../persistence/landingDraft.svelte';
   import type { SuccessRoom, SuccessRoomState } from '../domain/types';
@@ -59,6 +60,8 @@
       description={room.description}
     />
 
+    <TeamImagePreloader team={draft.team} />
+
     <PillTabs
       idBase={`success-room-${room.slug}`}
       tabs={successRoomSections}
@@ -85,9 +88,10 @@
             onSelectedBenefitIdsChange={draft.setSelectedBenefitIds}
           />
         {:else if section.key === 'team'}
-          <TeamPanel roomSlug={room.slug} team={room.team} />
+          <TeamPanel team={draft.team} onAddTeamMember={draft.addTeamMember} />
         {:else if section.key === 'pain-points'}
           <PainPointsPanel
+            selectedBenefitCount={draft.selectedBenefitIds.length}
             painPoints={draft.painPoints}
             onPainPointsChange={draft.setPainPoints}
           />

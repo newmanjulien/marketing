@@ -12,16 +12,19 @@ type AddedTeamMember = {
   photo?: SuccessRoomTeamMemberPhotoMetadata;
 };
 
+export type TeamMemberInput = {
+  name: string;
+  role: string;
+  photoFile: File;
+};
+
 export const createTeamMember = async ({
   roomSlug,
   name,
   role,
   photoFile
-}: {
+}: TeamMemberInput & {
   roomSlug: string;
-  name: string;
-  role: string;
-  photoFile: File;
 }): Promise<SuccessRoomTeamMember> => {
   if (!photoFile.type.startsWith('image/')) {
     throw new Error('Team member photo must be an image.');

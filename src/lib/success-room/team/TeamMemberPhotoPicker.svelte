@@ -114,7 +114,7 @@
       </div>
 
       <p class="mt-[8px] truncate text-[12px] leading-[1.25] tracking-normal text-stone-400">
-        {value ? value.name : 'Square headshots work best.'}
+        {value ? value.name : 'Use a square headshot for the best fit.'}
       </p>
     </div>
   </div>

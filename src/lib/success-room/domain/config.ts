@@ -2,7 +2,7 @@ import type { SuccessRoomResource } from "./types";
 export { kickoffScheduleColumns } from "../../../../shared/successRoomResources";
 
 export const successRoomDescription =
-  "All the material we create together as we prepare for a proof of concept and decide if we should collaborate";
+  "A shared space for everything we create while preparing for a proof of concept and deciding whether to collaborate.";
 
 type SuccessRoomResourceDefinitionBase<
   Kind extends SuccessRoomResource["kind"],
@@ -44,38 +44,38 @@ export const successRoomResourceDefinitions = [
     kind: "pdf",
     slug: "deck",
     title: "Sales deck",
-    actionLabel: "Download your Custom Deck",
+    actionLabel: "Download your custom deck",
   },
   {
     kind: "audio",
     slug: "audio",
     title: "Audio summary",
-    actionLabel: "Download your Audio Summary",
+    actionLabel: "Download your audio summary",
   },
   {
     kind: "mutual-success-plan",
     slug: "mutual-success-plan",
     title: "Mutual success plan",
-    actionLabel: "View and edit your Mutual Success Plan",
+    actionLabel: "View and edit your mutual success plan",
     description:
-      "How we will collaborate to easily and quickly start generating revenue for your business",
+      "Review how we will work together to start generating revenue for your business quickly and smoothly.",
   },
   {
     kind: "editable-text",
     slug: "initial-format",
     title: "Initial email format",
-    actionLabel: "View and edit your Initial Email Format",
+    actionLabel: "View and edit your initial email format",
     description:
-      "The initial format we'll send to your team during the proof of concept phase",
+      "Review and edit the initial email format we will send to your team during the proof of concept.",
     editorRows: 14,
   },
   {
     kind: "kickoff-schedule",
     slug: "kickoff-schedule",
     title: "Kickoff schedule",
-    actionLabel: "View and edit your Kickoff Schedule",
+    actionLabel: "View and edit your kickoff schedule",
     description:
-      "Schedule for when Overbase's engineer comes to your office in person to kick off our collaboration",
+      "Review and edit the schedule for Overbase's engineer to come to your office and kick off our collaboration in person.",
   },
 ] as const satisfies readonly SuccessRoomResourceDefinition[];
 
