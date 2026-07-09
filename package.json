@@ -7,9 +7,13 @@
     "dev": "vite --host 127.0.0.1",
     "convex:dev": "convex dev",
     "convex:codegen": "convex codegen",
-    "seed:success-room": "node scripts/seed-success-room.mjs",
-    "build": "svelte-kit sync && vite build",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+    "generate:reserved-slugs": "node scripts/success-room/generate-reserved-slugs.mjs",
+    "create:success-room": "node scripts/success-room/create.mjs",
+    "add:success-room:mutual-success-plan": "node scripts/success-room/add-sections/mutual-success-plan.mjs",
+    "add:success-room:initial-format": "node scripts/success-room/add-sections/initial-format.mjs",
+    "add:success-room:kickoff-schedule": "node scripts/success-room/add-sections/kickoff-schedule.mjs",
+    "build": "npm run generate:reserved-slugs && svelte-kit sync && vite build",
+    "check": "npm run generate:reserved-slugs && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
     "@sveltejs/kit": "^2.16.0",

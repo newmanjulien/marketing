@@ -11,6 +11,7 @@ export default defineSchema({
         v.literal("audio"),
         v.literal("mutual-success-plan"),
         v.literal("initial-format"),
+        v.literal("kickoff-schedule"),
       ),
     ),
 
@@ -56,20 +57,25 @@ export default defineSchema({
     .index("by_room", ["roomId"])
     .index("by_room_key", ["roomId", "key"]),
 
-  successRoomVisitorStates: defineTable({
+  successRoomQuestions: defineTable({
     roomId: v.id("successRooms"),
+    key: v.string(),
+    question: v.string(),
+    answer: v.string(),
+    sortOrder: v.number(),
+    active: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_room", ["roomId"])
+    .index("by_room_key", ["roomId", "key"]),
 
-    questions: v.record(v.string(), v.string()),
-
-    plan: v.optional(
-      v.object({
-        selectedBenefitIds: v.array(v.string()),
-        checkedTaskIds: v.array(v.string()),
-        dateOverrides: v.record(v.string(), v.string()),
-        taskAssigneeMemberIds: v.record(v.string(), v.id("successRoomTeamMembers")),
-      }),
-    ),
-
+  successRoomPlanStates: defineTable({
+    roomId: v.id("successRooms"),
+    selectedBenefitIds: v.array(v.string()),
+    checkedTaskIds: v.array(v.string()),
+    dateOverrides: v.record(v.string(), v.string()),
+    taskAssigneeMemberIds: v.record(v.string(), v.id("successRoomTeamMembers")),
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_room", ["roomId"]),
@@ -100,12 +106,27 @@ export default defineSchema({
     .index("by_room_team_member", ["roomId", "teamMemberId"])
     .index("by_storage_id", ["storageId"]),
 
-  successRoomEditableTextStates: defineTable({
+  successRoomResourceStates: defineTable({
     roomId: v.id("successRooms"),
     resourceKey: v.string(),
-    content: v.string(),
-    dataSources: v.array(v.string()),
-    attachmentFileId: v.optional(v.id("successRoomEditableAttachmentFiles")),
+    state: v.union(
+      v.object({
+        kind: v.literal("editable-text"),
+        content: v.string(),
+        dataSources: v.array(v.string()),
+        attachmentFileId: v.optional(v.id("successRoomEditableAttachmentFiles")),
+      }),
+      v.object({
+        kind: v.literal("kickoff-schedule"),
+        rows: v.array(
+          v.object({
+            key: v.string(),
+            sortOrder: v.number(),
+            cells: v.record(v.string(), v.string()),
+          }),
+        ),
+      }),
+    ),
     createdAt: v.number(),
     updatedAt: v.number(),
   })

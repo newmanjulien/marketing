@@ -1,15 +1,4 @@
-export const reservedSuccessRoomSlugs = [
-  'about',
-  'pricing',
-  'legal',
-  'docs',
-  'industries',
-  'annual-survey',
-  'success-room',
-  'api',
-  'cmos',
-  'screenshots'
-] as const;
+import { reservedSuccessRoomSlugs } from './generated/reservedSuccessRoomSlugs';
 
 const reservedSuccessRoomSlugSet = new Set<string>(reservedSuccessRoomSlugs);
 const successRoomSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;

@@ -10,12 +10,12 @@
 </script>
 
 <script lang="ts">
-  import SurveyProfile from '$lib/survey/SurveyProfile.svelte';
-  import SurveyProfileSeries from '$lib/survey/SurveyProfileSeries.svelte';
+  import Profile from '$lib/survey/components/Profile.svelte';
+  import ProfileSeries from '$lib/survey/components/ProfileSeries.svelte';
 </script>
 
-<SurveyProfileSeries>
-  <SurveyProfile
+<ProfileSeries>
+  <Profile
     label="Best Use Of AI"
     title="Melanie Pickett, Head of Asset Servicing for the Americas at Northern Trust"
     imageSrc="/cmos/melaniepickett.png"
@@ -47,9 +47,9 @@
       December, Pickett was named chief transformation officer, a newly created role focused on
       innovation, operations, and digital strategy.
     </p>
-  </SurveyProfile>
+  </Profile>
 
-  <SurveyProfile
+  <Profile
     label="Adoption & Change Management"
     title="Chris Wearing, Chief Commercial Officer at Teneo"
     imageSrc="/cmos/chriswearing.png"
@@ -81,5 +81,5 @@
       The expansion under Wearing strengthened Teneo’s position as a CEO advisory firm and gave
       it more ways to compete for high-value work beyond traditional communications.
     </p>
-  </SurveyProfile>
-</SurveyProfileSeries>
+  </Profile>
+</ProfileSeries>

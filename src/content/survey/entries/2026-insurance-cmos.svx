@@ -10,12 +10,12 @@
 </script>
 
 <script lang="ts">
-  import SurveyProfile from '$lib/survey/SurveyProfile.svelte';
-  import SurveyProfileSeries from '$lib/survey/SurveyProfileSeries.svelte';
+  import Profile from '$lib/survey/components/Profile.svelte';
+  import ProfileSeries from '$lib/survey/components/ProfileSeries.svelte';
 </script>
 
-<SurveyProfileSeries>
-  <SurveyProfile
+<ProfileSeries>
+  <Profile
     label="Best Use Of AI"
     title="John Newell, Chief Commercial Officer at Newfront"
     imageSrc="/cmos/johnnewell.png"
@@ -50,9 +50,9 @@
       deal worth up to $1.3 billion, giving WTW a bigger presence in the US middle market and more
       scale in sectors including technology, fintech, and life sciences.
     </p>
-  </SurveyProfile>
+  </Profile>
 
-  <SurveyProfile
+  <Profile
     label="Adoption & Change Management"
     title="Kate Pennell, Global Head of Brand and Marketing at Howden Group"
     imageSrc="/cmos/katepennell.png"
@@ -89,5 +89,5 @@
       financial year, the company completed 65 strategic acquisitions and passed £3 billion in
       adjusted revenue for the first time, up 23%.
     </p>
-  </SurveyProfile>
-</SurveyProfileSeries>
+  </Profile>
+</ProfileSeries>

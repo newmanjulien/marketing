@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { getSurveyPost } from '$lib/survey/surveyPosts';
+import { getSurveyPost } from '$lib/survey/domain/posts';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {

@@ -1,6 +1,6 @@
 declare module '$content/survey/entries/*.svx' {
   import type { Component } from 'svelte';
-  import type { SurveyPostContent } from '$lib/survey/surveyTypes';
+  import type { SurveyPostContent } from '$lib/survey/domain/types';
 
   export const post: SurveyPostContent;
 

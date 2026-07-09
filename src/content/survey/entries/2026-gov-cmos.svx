@@ -10,12 +10,12 @@
 </script>
 
 <script lang="ts">
-  import SurveyProfile from '$lib/survey/SurveyProfile.svelte';
-  import SurveyProfileSeries from '$lib/survey/SurveyProfileSeries.svelte';
+  import Profile from '$lib/survey/components/Profile.svelte';
+  import ProfileSeries from '$lib/survey/components/ProfileSeries.svelte';
 </script>
 
-<SurveyProfileSeries>
-  <SurveyProfile
+<ProfileSeries>
+  <Profile
     label="Best Use Of AI"
     title="Ed Rogers, Founding Partner and Advisory Board Co-Chair at BGR Group"
     imageSrc="/cmos/edrogers.png"
@@ -53,9 +53,9 @@
       including a $560,000 contract with Columbia University. BGR’s federal lobbying revenue
       jumped nearly 60% in 2025, to more than $71.5 million.
     </p>
-  </SurveyProfile>
+  </Profile>
 
-  <SurveyProfile
+  <Profile
     label="Adoption & Change Management"
     title="Wendy Taylor, Chief Marketing and Business Development Officer at Brownstein Hyatt Farber Schreck"
     imageSrc="/cmos/wendytaylor.png"
@@ -91,5 +91,5 @@
       $73.8 million in 2025, keeping Brownstein among the country’s top two highest-earning
       lobbying firms.
     </p>
-  </SurveyProfile>
-</SurveyProfileSeries>
+  </Profile>
+</ProfileSeries>

@@ -2,7 +2,7 @@ import {
   getLockedSuccessRoomPayload,
   getUnlockedSuccessRoomBundle,
   unlockSuccessRoom
-} from '$lib/server/successRoomPageServer';
+} from '$lib/success-room/server/pageServer.server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ cookies, params }) => {

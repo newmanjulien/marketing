@@ -10,12 +10,12 @@
 </script>
 
 <script lang="ts">
-  import SurveyProfile from '$lib/survey/SurveyProfile.svelte';
-  import SurveyProfileSeries from '$lib/survey/SurveyProfileSeries.svelte';
+  import Profile from '$lib/survey/components/Profile.svelte';
+  import ProfileSeries from '$lib/survey/components/ProfileSeries.svelte';
 </script>
 
-<SurveyProfileSeries>
-  <SurveyProfile
+<ProfileSeries>
+  <Profile
     label="Best Use Of AI"
     title="Katherine D'Urso, Chief Business Development and Marketing Officer at Freshfields"
     imageSrc="/cmos/katherinedurso.png"
@@ -53,9 +53,9 @@
       financial year, the firm reported global revenue of £2.25 billion, up 6%, while US revenue
       rose 20% to £473 million.
     </p>
-  </SurveyProfile>
+  </Profile>
 
-  <SurveyProfile
+  <Profile
     label="Adoption & Change Management"
     title="Trish Lilley, Chief Marketing and Business Development Officer at Barnes & Thornburg"
     imageSrc="/cmos/trishlilley.png"
@@ -88,5 +88,5 @@
       more connected across the firm. In 2024, the firm reported gross revenue of $747.2 million,
       up 3.2%, and rose to No. 73 on the Am Law 200.
     </p>
-  </SurveyProfile>
-</SurveyProfileSeries>
+  </Profile>
+</ProfileSeries>

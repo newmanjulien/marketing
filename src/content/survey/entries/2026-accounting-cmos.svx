@@ -10,12 +10,12 @@
 </script>
 
 <script lang="ts">
-  import SurveyProfile from '$lib/survey/SurveyProfile.svelte';
-  import SurveyProfileSeries from '$lib/survey/SurveyProfileSeries.svelte';
+  import Profile from '$lib/survey/components/Profile.svelte';
+  import ProfileSeries from '$lib/survey/components/ProfileSeries.svelte';
 </script>
 
-<SurveyProfileSeries>
-  <SurveyProfile
+<ProfileSeries>
+  <Profile
     label="Best Use Of AI"
     title="Brunella C. Reid, Partner and Chief Marketing Officer at Moore Colson"
     imageSrc="/cmos/brunellacreid.png"
@@ -51,9 +51,9 @@
       wave. The firm reached $44.8 million in net revenue for fiscal 2024 and ranked No. 17 among
       regional leaders in the Southeast.
     </p>
-  </SurveyProfile>
+  </Profile>
 
-  <SurveyProfile
+  <Profile
     label="Adoption & Change Management"
     title="Tim York, Partner and Chief Growth Officer at Forvis Mazars"
     imageSrc="/cmos/timyork.png"
@@ -88,5 +88,5 @@
       For FY24/25, Forvis Mazars reported more than $5.7 billion in global revenue, up 11% on a
       comparable basis, while US revenue rose 4% to $2.24 billion.
     </p>
-  </SurveyProfile>
-</SurveyProfileSeries>
+  </Profile>
+</ProfileSeries>

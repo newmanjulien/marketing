@@ -1,0 +1,10 @@
+accordionKey,accordionTitle,accordionDescription,accordionVariant,accordionSortOrder,taskKey,taskTitle,taskDateLabel,taskSortOrder
+setup-proof-of-concept,Set up proof of concept,"Confirm goals, data access, stakeholders, and success criteria.",default,0,confirm-sponsor,Confirm the proof of concept sponsor and day-to-day owner.,Jul 12,0
+setup-proof-of-concept,Set up proof of concept,"Confirm goals, data access, stakeholders, and success criteria.",default,0,document-workflow,Document the target workflow and sample output expectations.,Jul 15,1
+setup-proof-of-concept,Set up proof of concept,"Confirm goals, data access, stakeholders, and success criteria.",default,0,share-access-requirements,Share access requirements for source systems and stakeholder calendars.,Jul 18,2
+start-proof-of-concept,Start 6-week proof of concept,"Launch the workflow, review early outputs, and tune the process.",default,1,kickoff-review,Kick off the first workflow review with the core project team.,Jul 22,0
+start-proof-of-concept,Start 6-week proof of concept,"Launch the workflow, review early outputs, and tune the process.",default,1,review-initial-records,"Review initial records for completeness, accuracy, and formatting.",Jul 29,1
+start-proof-of-concept,Start 6-week proof of concept,"Launch the workflow, review early outputs, and tune the process.",default,1,agree-feedback-cadence,Agree on the weekly feedback cadence and decision log.,Aug 2,2
+evaluate-proof-of-concept,Proof of concept evaluation,"Assess results, document learnings, and decide whether to move forward.",muted,2,compare-outcomes,Compare proof of concept outcomes against agreed success criteria.,Aug 26,0
+evaluate-proof-of-concept,Proof of concept evaluation,"Assess results, document learnings, and decide whether to move forward.",muted,2,summarize-learnings,"Summarize operational learnings, risks, and recommended next steps.",Aug 29,1
+evaluate-proof-of-concept,Proof of concept evaluation,"Assess results, document learnings, and decide whether to move forward.",muted,2,confirm-go-forward,Confirm the go-forward decision and implementation owners.,Sep 3,2

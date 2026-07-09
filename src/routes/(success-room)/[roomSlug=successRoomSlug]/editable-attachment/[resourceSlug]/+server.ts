@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
-import { streamProtectedSuccessRoomFile } from '$lib/server/successRoomFileResponse';
-import { getProtectedSuccessRoomEditableAttachmentFile } from '$lib/server/successRoomConvex';
-import { isSuccessRoomEditableTextResourceSlug } from '$lib/success-room/successRoomConfig';
+import { streamProtectedSuccessRoomFile } from '$lib/success-room/server/fileResponse.server';
+import { getProtectedSuccessRoomEditableAttachmentFile } from '$lib/success-room/server/convexQueries.server';
+import { isSuccessRoomEditableTextResourceSlug } from '$lib/success-room/domain/config';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ cookies, fetch, params }) => {

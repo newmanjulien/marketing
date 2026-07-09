@@ -3,8 +3,8 @@ import {
   getLockedSuccessRoomPayload,
   getUnlockedSuccessRoomBundle,
   unlockSuccessRoom
-} from '$lib/server/successRoomPageServer';
-import { getSuccessRoomResource, isSuccessRoomRoutedResource } from '$lib/success-room/successRooms';
+} from '$lib/success-room/server/pageServer.server';
+import { getSuccessRoomResource, isSuccessRoomRoutedResource } from '$lib/success-room/domain/resources';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ cookies, params }) => {

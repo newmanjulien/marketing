@@ -1,7 +1,7 @@
 import { error, json } from '@sveltejs/kit';
 import { api } from '../../../../../../convex/_generated/api';
-import { convex } from '$lib/server/successRoomConvex';
-import { requireSuccessRoomAccessToken } from '$lib/server/successRoomAccess';
+import { convex } from '$lib/success-room/server/convexClient.server';
+import { requireSuccessRoomAccessToken } from '$lib/success-room/server/access.server';
 import type { Id } from '../../../../../../convex/_generated/dataModel';
 import type { RequestHandler } from './$types';
 

@@ -1,5 +1,5 @@
-import { streamProtectedSuccessRoomFile } from '$lib/server/successRoomFileResponse';
-import { getProtectedSuccessRoomTeamMemberPhoto } from '$lib/server/successRoomConvex';
+import { streamProtectedSuccessRoomFile } from '$lib/success-room/server/fileResponse.server';
+import { getProtectedSuccessRoomTeamMemberPhoto } from '$lib/success-room/server/convexQueries.server';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ cookies, fetch, params }) => {
