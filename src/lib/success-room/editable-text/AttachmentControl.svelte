@@ -4,18 +4,17 @@
     deleteEditableTextAttachment,
     uploadEditableTextAttachment
   } from './editableTextClient';
+  import type { SuccessRoomEditableTextResourceSlug } from '../domain/config';
   import type { SuccessRoomEditableTextState } from '../domain/types';
 
   let {
     roomSlug,
     resourceSlug,
-    editableState,
-    onStateChange
+    editableState = $bindable<SuccessRoomEditableTextState>()
   }: {
     roomSlug: string;
-    resourceSlug: string;
+    resourceSlug: SuccessRoomEditableTextResourceSlug;
     editableState: SuccessRoomEditableTextState;
-    onStateChange: (state: SuccessRoomEditableTextState) => void;
   } = $props();
 
   let fileInput: HTMLInputElement | undefined = $state();
@@ -35,18 +34,17 @@
     const attachment = await uploadEditableTextAttachment({
       roomSlug,
       resourceSlug,
-      file,
-      state: editableState
+      file
     });
 
     if (!attachment) {
       return;
     }
 
-    onStateChange({
+    editableState = {
       ...editableState,
       attachment
-    });
+    };
   };
 
   const removeAttachment = async () => {
@@ -55,10 +53,10 @@
       resourceSlug
     });
 
-    onStateChange({
+    editableState = {
       content: editableState.content,
       dataSources: editableState.dataSources
-    });
+    };
   };
 </script>
 

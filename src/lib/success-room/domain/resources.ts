@@ -1,5 +1,5 @@
 import type {
-  SuccessRoom,
+  SuccessRoomBaseRoom,
   SuccessRoomResource,
   SuccessRoomRoutedResource,
 } from './types';
@@ -21,11 +21,11 @@ export type SuccessRoomResourceLink =
   | SuccessRoomRoutedResourceLink
   | SuccessRoomDirectResourceLink;
 
-export const getSuccessRoomHref = (room: Pick<SuccessRoom, 'slug'>) =>
+export const getSuccessRoomHref = (room: Pick<SuccessRoomBaseRoom, 'slug'>) =>
   getSuccessRoomPath(room.slug);
 
 export const getSuccessRoomResourceLink = (
-  room: Pick<SuccessRoom, 'slug'>,
+  room: Pick<SuccessRoomBaseRoom, 'slug'>,
   resource: SuccessRoomResource,
 ): SuccessRoomResourceLink => {
   if (resource.delivery.type === 'asset') {
@@ -44,7 +44,7 @@ export const getSuccessRoomResourceLink = (
 };
 
 export function getSuccessRoomResource(
-  room: SuccessRoom,
+  room: { resources: SuccessRoomResource[] },
   resourceSlug: string,
 ): SuccessRoomResource | undefined {
   return room.resources.find((item) => item.slug === resourceSlug);

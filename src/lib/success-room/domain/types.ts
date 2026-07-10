@@ -1,3 +1,9 @@
+import type { kickoffScheduleColumns } from '../../../../shared/successRoomResources';
+import type {
+  SuccessRoomEditableTextResourceSlug,
+  SuccessRoomKickoffScheduleResourceSlug
+} from './config';
+
 export type SuccessRoomAssetDelivery = {
   type: 'asset';
   href: string;
@@ -7,9 +13,9 @@ export type SuccessRoomRouteDelivery = {
   type: 'route';
 };
 
-export type SuccessRoomResourceBase<Kind extends string> = {
+export type SuccessRoomResourceBase<Kind extends string, Slug extends string = string> = {
   kind: Kind;
-  slug: string;
+  slug: Slug;
   title: string;
   actionLabel: string;
   description?: string;
@@ -23,11 +29,6 @@ export type SuccessRoomAudioResource = SuccessRoomResourceBase<'audio'> & {
   delivery: SuccessRoomAssetDelivery;
 };
 
-export type SuccessRoomDownloadableFileResource =
-  SuccessRoomResourceBase<'downloadable-file'> & {
-  delivery: SuccessRoomAssetDelivery;
-};
-
 export type SuccessRoomMutualSuccessPlanResource =
   SuccessRoomResourceBase<'mutual-success-plan'> & {
     description: string;
@@ -36,13 +37,13 @@ export type SuccessRoomMutualSuccessPlanResource =
   };
 
 export type SuccessRoomEditableTextResource =
-  SuccessRoomResourceBase<'editable-text'> & {
+  SuccessRoomResourceBase<'editable-text', SuccessRoomEditableTextResourceSlug> & {
     delivery: SuccessRoomRouteDelivery;
     editorRows?: number;
   };
 
 export type SuccessRoomKickoffScheduleResource =
-  SuccessRoomResourceBase<'kickoff-schedule'> & {
+  SuccessRoomResourceBase<'kickoff-schedule', SuccessRoomKickoffScheduleResourceSlug> & {
     description: string;
     delivery: SuccessRoomRouteDelivery;
   };
@@ -55,7 +56,6 @@ export type SuccessRoomRoutedResource =
 export type SuccessRoomResource =
   | SuccessRoomPdfResource
   | SuccessRoomAudioResource
-  | SuccessRoomDownloadableFileResource
   | SuccessRoomRoutedResource;
 
 export type SuccessRoomFileMetadata = {
@@ -81,7 +81,7 @@ export type SuccessRoomLinkedTeamMemberPhotoMetadata = SuccessRoomTeamMemberPhot
 };
 
 export type SuccessRoomTeamMember = {
-  id: string;
+  key: string;
   name: string;
   role: string;
   imageHref: string;
@@ -89,19 +89,19 @@ export type SuccessRoomTeamMember = {
 };
 
 export type SuccessRoomBenefitCard = {
-  id: string;
+  key: string;
   title: string;
   description: string;
 };
 
 export type SuccessRoomPlanTask = {
-  id: string;
+  key: string;
   title: string;
   date: string;
 };
 
 export type SuccessRoomPlanAccordion = {
-  id: string;
+  key: string;
   title: string;
   description: string;
   variant: 'default' | 'muted';
@@ -113,21 +113,17 @@ export type SuccessRoomMutualSuccessPlanCatalog = {
 };
 
 export type SuccessRoomBenefitsState = {
-  selectedCardIds: string[];
+  selectedCardKeys: string[];
   painPoints: string[];
 };
 
 export type SuccessRoomPlanState = {
-  checkedTaskIds: string[];
-  dateOverrides: Record<string, string>;
-  taskAssigneeMemberIds: Record<string, string>;
+  checkedTaskKeys: string[];
+  dateOverridesByTaskKey: Record<string, string>;
+  assigneeKeyByTaskKey: Record<string, string>;
 };
 
 export type SuccessRoomPlanUpdate = Partial<SuccessRoomPlanState>;
-
-export type SuccessRoomMutualSuccessPlanState = {
-  plan: SuccessRoomPlanState;
-};
 
 export type SuccessRoomEditableTextState = {
   content: string;
@@ -135,10 +131,7 @@ export type SuccessRoomEditableTextState = {
   attachment?: SuccessRoomLinkedFileMetadata;
 };
 
-export type SuccessRoomKickoffScheduleColumn = {
-  key: string;
-  label: string;
-};
+export type SuccessRoomKickoffScheduleColumn = (typeof kickoffScheduleColumns)[number];
 
 export type SuccessRoomKickoffScheduleRow = {
   key: string;
@@ -150,18 +143,36 @@ export type SuccessRoomKickoffScheduleState = {
   rows: SuccessRoomKickoffScheduleRow[];
 };
 
-export type SuccessRoomState = {
-  benefits: SuccessRoomBenefitsState;
-  mutualSuccessPlan?: SuccessRoomMutualSuccessPlanState;
-  editableTexts: Record<string, SuccessRoomEditableTextState>;
-  kickoffSchedules: Record<string, SuccessRoomKickoffScheduleState>;
-};
-
-export type SuccessRoom = {
+export type SuccessRoomBaseRoom = {
   slug: string;
   prospectName: string;
   description: string;
+};
+
+export type SuccessRoomLandingRoom = SuccessRoomBaseRoom & {
   benefitCards: SuccessRoomBenefitCard[];
   team: SuccessRoomTeamMember[];
   resources: SuccessRoomResource[];
 };
+
+export type SuccessRoomLandingState = {
+  benefits: SuccessRoomBenefitsState;
+};
+
+export type SuccessRoomResourceRoom = SuccessRoomBaseRoom & {
+  team: SuccessRoomTeamMember[];
+};
+
+export type SuccessRoomResourceState =
+  | {
+      kind: 'mutual-success-plan';
+      plan: SuccessRoomPlanState;
+    }
+  | {
+      kind: 'editable-text';
+      editableText: SuccessRoomEditableTextState;
+    }
+  | {
+      kind: 'kickoff-schedule';
+      kickoffSchedule: SuccessRoomKickoffScheduleState;
+    };

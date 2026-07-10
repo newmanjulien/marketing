@@ -1,16 +1,20 @@
 import { getSuccessRoomApiPath } from '../domain/urls';
-import type { SuccessRoomEditableTextState, SuccessRoomLinkedFileMetadata } from '../domain/types';
+import type {
+  SuccessRoomDeleteApiBody,
+  SuccessRoomPostApiBody,
+  SuccessRoomUploadedFileInput
+} from '../domain/api';
+import type { SuccessRoomEditableTextResourceSlug } from '../domain/config';
+import type { SuccessRoomLinkedFileMetadata } from '../domain/types';
 
 export const uploadEditableTextAttachment = async ({
   roomSlug,
   resourceSlug,
-  file,
-  state
+  file
 }: {
   roomSlug: string;
-  resourceSlug: string;
+  resourceSlug: SuccessRoomEditableTextResourceSlug;
   file: File;
-  state: SuccessRoomEditableTextState;
 }) => {
   const contentType = file.type || 'application/octet-stream';
   const uploadUrlResponse = await fetch(getSuccessRoomApiPath(roomSlug, 'upload-url'), {
@@ -34,7 +38,8 @@ export const uploadEditableTextAttachment = async ({
     return null;
   }
 
-  const { storageId }: { storageId: string } = await uploadResponse.json();
+  const { storageId }: { storageId: SuccessRoomUploadedFileInput['storageId'] } =
+    await uploadResponse.json();
   const attachmentResponse = await fetch(getSuccessRoomApiPath(roomSlug, 'editable-attachment'), {
     method: 'POST',
     headers: {
@@ -47,9 +52,8 @@ export const uploadEditableTextAttachment = async ({
         filename: file.name,
         contentType,
         byteSize: file.size
-      },
-      state
-    })
+      }
+    } satisfies SuccessRoomPostApiBody<'editable-attachment'>)
   });
 
   if (!attachmentResponse.ok) {
@@ -67,7 +71,7 @@ export const deleteEditableTextAttachment = async ({
   resourceSlug
 }: {
   roomSlug: string;
-  resourceSlug: string;
+  resourceSlug: SuccessRoomEditableTextResourceSlug;
 }) => {
   await fetch(getSuccessRoomApiPath(roomSlug, 'editable-attachment'), {
     method: 'DELETE',
@@ -76,6 +80,6 @@ export const deleteEditableTextAttachment = async ({
     },
     body: JSON.stringify({
       resourceSlug
-    })
+    } satisfies SuccessRoomDeleteApiBody<'editable-attachment'>)
   });
 };

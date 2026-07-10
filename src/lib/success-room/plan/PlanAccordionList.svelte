@@ -2,7 +2,6 @@
   import { MinusIcon, PlusIcon } from 'phosphor-svelte';
   import PlanTaskRow from './PlanTaskRow.svelte';
   import { formatTaskDateLabel, resolveTaskDisplayDate } from './planDates';
-  import { getPlanTaskId } from './planState';
   import { mutualSuccessPlanClose, mutualSuccessPlanOpen } from './planTransitions';
   import type {
     SuccessRoomMutualSuccessPlanResource,
@@ -27,15 +26,15 @@
     planAccordions: SuccessRoomPlanAccordion[];
     plan: SuccessRoomPlanState;
     openItemId: string | null;
-    onToggleItem: (itemId: string) => void;
-    onTaskCheckedChange: (taskId: string, checked: boolean) => void;
-    onOpenAssigneePicker: (taskId: string) => void;
-    onOpenDatePicker: (taskId: string, dateLabel: string) => void;
+    onToggleItem: (accordionKey: string) => void;
+    onTaskCheckedChange: (taskKey: string, checked: boolean) => void;
+    onOpenAssigneePicker: (taskKey: string) => void;
+    onOpenDatePicker: (taskKey: string, dateLabel: string) => void;
   } = $props();
 
-  let checkedTaskIds = $derived(new Set(plan.checkedTaskIds));
-  let taskDateOverrides = $derived(plan.dateOverrides);
-  let taskAssigneeMemberIds = $derived(plan.taskAssigneeMemberIds);
+  let checkedTaskKeys = $derived(new Set(plan.checkedTaskKeys));
+  let dateOverridesByTaskKey = $derived(plan.dateOverridesByTaskKey);
+  let assigneeKeyByTaskKey = $derived(plan.assigneeKeyByTaskKey);
 
   const accordionListClasses = 'grid w-full gap-[14px]';
   const accordionItemClasses =
@@ -69,16 +68,16 @@
     }
   } as const;
 
-  const getAssignedTeamMember = (taskId: string) => {
-    const memberId = taskAssigneeMemberIds[taskId];
+  const getAssignedTeamMember = (taskKey: string) => {
+    const memberKey = assigneeKeyByTaskKey[taskKey];
 
-    return memberId ? team.find((member) => member.id === memberId) : undefined;
+    return memberKey ? team.find((member) => member.key === memberKey) : undefined;
   };
 </script>
 
 <ul class={accordionListClasses} aria-label={`${resource.title} content`}>
-  {#each planAccordions as item (item.id)}
-    {@const isOpen = openItemId === item.id}
+  {#each planAccordions as item (item.key)}
+    {@const isOpen = openItemId === item.key}
     {@const ToggleIcon = isOpen ? MinusIcon : PlusIcon}
     {@const cardVariant = accordionCardVariants[item.variant]}
     <li class={[accordionItemClasses, cardVariant.item]}>
@@ -86,8 +85,8 @@
         type="button"
         class={accordionTriggerClasses}
         aria-expanded={isOpen}
-        aria-controls={`${item.id}-tasks`}
-        onclick={() => onToggleItem(item.id)}
+        aria-controls={`${item.key}-tasks`}
+        onclick={() => onToggleItem(item.key)}
       >
         <span class={[accordionTitleClasses, cardVariant.title]}>
           {item.title}
@@ -104,31 +103,33 @@
 
       {#if isOpen}
         <ul
-          id={`${item.id}-tasks`}
+          id={`${item.key}-tasks`}
           class={accordionTaskListClasses}
           aria-label={`${item.title} tasks`}
           in:mutualSuccessPlanOpen
           out:mutualSuccessPlanClose
         >
-          {#each item.tasks as task (task.id)}
-            {@const taskId = getPlanTaskId(item.id, task.id)}
+          {#each item.tasks as task (task.key)}
+            {@const taskKey = task.key}
             {@const displayDate = resolveTaskDisplayDate({
-              dateOverrides: taskDateOverrides,
-              taskId,
+              dateOverridesByTaskKey,
+              taskKey,
               fallbackDateLabel: task.date
             })}
-            {@const assignedTeamMember = getAssignedTeamMember(taskId)}
+            {@const assignedTeamMember = getAssignedTeamMember(taskKey)}
             <PlanTaskRow
               {task}
-              {taskId}
-              checked={checkedTaskIds.has(taskId)}
+              taskKey={taskKey}
+              bind:checked={
+                () => checkedTaskKeys.has(taskKey),
+                (checked) => onTaskCheckedChange(taskKey, checked)
+              }
               {assignedTeamMember}
               displayDateLabel={formatTaskDateLabel(displayDate)}
               textClass={cardVariant.taskText}
               dateClass={cardVariant.taskDate}
-              onCheckedChange={(checked) => onTaskCheckedChange(taskId, checked)}
-              onOpenAssignee={() => onOpenAssigneePicker(taskId)}
-              onOpenDatePicker={() => onOpenDatePicker(taskId, task.date)}
+              onOpenAssignee={() => onOpenAssigneePicker(taskKey)}
+              onOpenDatePicker={() => onOpenDatePicker(taskKey, task.date)}
             />
           {/each}
         </ul>

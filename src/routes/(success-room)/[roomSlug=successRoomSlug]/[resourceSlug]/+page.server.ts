@@ -1,31 +1,28 @@
 import { error } from '@sveltejs/kit';
 import {
   getLockedSuccessRoomPayload,
-  getUnlockedSuccessRoomBundle,
+  getUnlockedSuccessRoomResourcePage,
   unlockSuccessRoom
 } from '$lib/success-room/server/pageServer.server';
-import { getSuccessRoomResource, isSuccessRoomRoutedResource } from '$lib/success-room/domain/resources';
+import { isSuccessRoomRoutedResourceSlug } from '$lib/success-room/domain/config';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ cookies, params }) => {
-  const bundle = await getUnlockedSuccessRoomBundle(cookies, params.roomSlug);
-
-  if (bundle) {
-    const resource = getSuccessRoomResource(bundle.room, params.resourceSlug);
-
-    if (!resource || !isSuccessRoomRoutedResource(resource)) {
-      error(404, 'Success room resource not found');
-    }
-
-    return {
-      locked: false as const,
-      room: bundle.room,
-      state: bundle.state,
-      resource
-    };
+  if (!isSuccessRoomRoutedResourceSlug(params.resourceSlug)) {
+    error(404, 'Success room resource not found');
   }
 
-  return await getLockedSuccessRoomPayload(params.roomSlug);
+  const payload = await getUnlockedSuccessRoomResourcePage(
+    cookies,
+    params.roomSlug,
+    params.resourceSlug
+  );
+
+  if (payload) {
+    return payload;
+  }
+
+  return getLockedSuccessRoomPayload(params.roomSlug);
 };
 
 export const actions = {

@@ -1,51 +1,49 @@
 import type { SuccessRoomPlanState, SuccessRoomPlanUpdate } from '../domain/types';
 import { formatIsoDate } from './planDates';
 
-export const getPlanTaskId = (itemId: string, taskId: string) => `${itemId}:${taskId}`;
-
 export const createCheckedTaskUpdate = (
   plan: SuccessRoomPlanState,
-  taskId: string,
+  taskKey: string,
   checked: boolean,
 ): SuccessRoomPlanUpdate => {
-  const nextCheckedTaskIds = new Set(plan.checkedTaskIds);
+  const nextCheckedTaskKeys = new Set(plan.checkedTaskKeys);
 
   if (checked) {
-    nextCheckedTaskIds.add(taskId);
+    nextCheckedTaskKeys.add(taskKey);
   } else {
-    nextCheckedTaskIds.delete(taskId);
+    nextCheckedTaskKeys.delete(taskKey);
   }
 
   return {
-    checkedTaskIds: Array.from(nextCheckedTaskIds)
+    checkedTaskKeys: Array.from(nextCheckedTaskKeys)
   };
 };
 
 export const createTaskAssigneeUpdate = (
   plan: SuccessRoomPlanState,
-  taskId: string,
-  memberId: string | null,
+  taskKey: string,
+  memberKey: string | null,
 ): SuccessRoomPlanUpdate => {
-  const nextTaskAssigneeMemberIds = { ...plan.taskAssigneeMemberIds };
+  const nextAssigneeKeyByTaskKey = { ...plan.assigneeKeyByTaskKey };
 
-  if (memberId) {
-    nextTaskAssigneeMemberIds[taskId] = memberId;
+  if (memberKey) {
+    nextAssigneeKeyByTaskKey[taskKey] = memberKey;
   } else {
-    delete nextTaskAssigneeMemberIds[taskId];
+    delete nextAssigneeKeyByTaskKey[taskKey];
   }
 
   return {
-    taskAssigneeMemberIds: nextTaskAssigneeMemberIds
+    assigneeKeyByTaskKey: nextAssigneeKeyByTaskKey
   };
 };
 
 export const createTaskDateUpdate = (
   plan: SuccessRoomPlanState,
-  taskId: string,
+  taskKey: string,
   date: Date,
 ): SuccessRoomPlanUpdate => ({
-  dateOverrides: {
-    ...plan.dateOverrides,
-    [taskId]: formatIsoDate(date)
+  dateOverridesByTaskKey: {
+    ...plan.dateOverridesByTaskKey,
+    [taskKey]: formatIsoDate(date)
   }
 });

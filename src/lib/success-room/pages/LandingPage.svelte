@@ -10,7 +10,7 @@
   import TeamImagePreloader from '../team/TeamImagePreloader.svelte';
   import TeamPanel from '../team/TeamPanel.svelte';
   import { createSuccessRoomLandingDraft } from '../persistence/landingDraft.svelte';
-  import type { SuccessRoom, SuccessRoomState } from '../domain/types';
+  import type { SuccessRoomLandingRoom, SuccessRoomLandingState } from '../domain/types';
 
   const baseSuccessRoomSections = [
     {
@@ -34,13 +34,13 @@
   let {
     room,
     state: successRoomState
-  }: { room: SuccessRoom; state: SuccessRoomState } = $props();
+  }: { room: SuccessRoomLandingRoom; state: SuccessRoomLandingState } = $props();
 
   const draft = createSuccessRoomLandingDraft(
     () => room,
     () => successRoomState
   );
-  const hasSelectedBenefits = $derived(draft.selectedBenefitIds.length > 0);
+  const hasSelectedBenefits = $derived(draft.selectedBenefitKeys.length > 0);
   const successRoomSections = $derived(
     baseSuccessRoomSections.filter((section) => {
       if (section.key === 'pain-points') {
@@ -84,16 +84,14 @@
         {:else if section.key === 'benefits'}
           <BenefitsPanel
             benefitCards={room.benefitCards}
-            selectedBenefitIds={draft.selectedBenefitIds}
-            onSelectedBenefitIdsChange={draft.setSelectedBenefitIds}
+            bind:selectedBenefitKeys={draft.selectedBenefitKeys}
           />
         {:else if section.key === 'team'}
           <TeamPanel team={draft.team} onAddTeamMember={draft.addTeamMember} />
         {:else if section.key === 'pain-points'}
           <PainPointsPanel
-            selectedBenefitCount={draft.selectedBenefitIds.length}
-            painPoints={draft.painPoints}
-            onPainPointsChange={draft.setPainPoints}
+            selectedBenefitCount={draft.selectedBenefitKeys.length}
+            bind:painPoints={draft.painPoints}
           />
         {/if}
       {/snippet}

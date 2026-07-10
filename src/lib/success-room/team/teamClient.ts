@@ -1,4 +1,5 @@
-import { getSuccessRoomApiPath, getSuccessRoomTeamMemberPhotoPath } from '../domain/urls';
+import { getSuccessRoomApiPath } from '../domain/urls';
+import type { SuccessRoomPostApiBody, SuccessRoomUploadedFileInput } from '../domain/api';
 import type {
   SuccessRoomLinkedTeamMemberPhotoMetadata,
   SuccessRoomTeamMember,
@@ -6,10 +7,12 @@ import type {
 } from '../domain/types';
 
 type AddedTeamMember = {
-  id: string;
+  key: string;
   name: string;
   role: string;
-  photo?: SuccessRoomTeamMemberPhotoMetadata;
+  photo?: SuccessRoomTeamMemberPhotoMetadata & {
+    url: string;
+  };
 };
 
 export type TeamMemberInput = {
@@ -51,7 +54,8 @@ export const createTeamMember = async ({
     throw new Error('Team member photo could not be uploaded.');
   }
 
-  const { storageId }: { storageId: string } = await uploadResponse.json();
+  const { storageId }: { storageId: SuccessRoomUploadedFileInput['storageId'] } =
+    await uploadResponse.json();
   const response = await fetch(getSuccessRoomApiPath(roomSlug, 'team-members'), {
     method: 'POST',
     headers: {
@@ -66,7 +70,7 @@ export const createTeamMember = async ({
         contentType: photoFile.type,
         byteSize: photoFile.size
       }
-    })
+    } satisfies SuccessRoomPostApiBody<'team-members'>)
   });
 
   if (!response.ok) {
@@ -74,17 +78,20 @@ export const createTeamMember = async ({
   }
 
   const { member }: { member: AddedTeamMember } = await response.json();
-  const photoHref = getSuccessRoomTeamMemberPhotoPath(roomSlug, member.id);
+  const photoHref = member.photo?.url ?? '';
 
   return {
-    id: member.id,
+    key: member.key,
     name: member.name,
     role: member.role,
     imageHref: photoHref,
     ...(member.photo
       ? {
           photo: {
-            ...member.photo,
+            photoId: member.photo.photoId,
+            filename: member.photo.filename,
+            contentType: member.photo.contentType,
+            byteSize: member.photo.byteSize,
             href: photoHref
           } satisfies SuccessRoomLinkedTeamMemberPhotoMetadata
         }

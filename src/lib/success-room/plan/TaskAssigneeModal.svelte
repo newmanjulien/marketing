@@ -5,19 +5,19 @@
   let {
     open,
     team,
-    selectedMemberId,
-    onSelectMember,
+    selectedMemberKey,
+    onSelectMemberKey,
     onClose
   }: {
     open: boolean;
     team: SuccessRoomTeamMember[];
-    selectedMemberId?: string;
-    onSelectMember: (memberId: string | null) => void;
+    selectedMemberKey?: string;
+    onSelectMemberKey: (memberKey: string | null) => void;
     onClose: () => void;
   } = $props();
 
-  const selectMember = (memberId: string | null) => {
-    onSelectMember(memberId);
+  const selectMember = (memberKey: string | null) => {
+    onSelectMemberKey(memberKey);
     onClose();
   };
 </script>
@@ -30,8 +30,8 @@
   {:else}
     <div class="grid gap-[16px]">
       <ul class="grid gap-[10px]" aria-label="Task assignees">
-        {#each team as member (member.id)}
-          {@const selected = selectedMemberId === member.id}
+        {#each team as member (member.key)}
+          {@const selected = selectedMemberKey === member.key}
           <li>
             <button
               type="button"
@@ -40,7 +40,7 @@
                 selected ? 'border-stone-400' : 'border-stone-200 hover:border-stone-300'
               ]}
               aria-pressed={selected}
-              onclick={() => selectMember(member.id)}
+              onclick={() => selectMember(member.key)}
             >
               {#if member.imageHref}
                 <img
@@ -78,7 +78,7 @@
         {/each}
       </ul>
 
-      {#if selectedMemberId}
+      {#if selectedMemberKey}
         <button
           type="button"
           class="h-[36px] justify-self-start rounded-[8px] border border-stone-200 bg-white px-[13px] font-body text-[13px] font-book leading-none tracking-normal text-stone-600 transition-colors duration-150 hover:border-stone-300 hover:text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20"

@@ -1,23 +1,24 @@
 <script lang="ts">
+  import type { HTMLInputAttributes } from 'svelte/elements';
+
+  type CheckboxProps = Omit<HTMLInputAttributes, 'type' | 'checked'> & {
+    checked?: boolean;
+  };
+
   let {
     id,
-    checked,
-    onCheckedChange,
-    class: className
-  }: {
-    id: string;
-    checked: boolean;
-    onCheckedChange: (checked: boolean) => void;
-    class?: string;
-  } = $props();
+    checked = $bindable(false),
+    class: className,
+    ...inputProps
+  }: CheckboxProps = $props();
 </script>
 
 <input
+  {...inputProps}
   {id}
   type="checkbox"
   class={['success-room-checkbox', className]}
-  {checked}
-  onchange={(event) => onCheckedChange(event.currentTarget.checked)}
+  bind:checked
 />
 
 <style>

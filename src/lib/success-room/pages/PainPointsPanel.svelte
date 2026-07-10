@@ -1,12 +1,10 @@
 <script lang="ts">
   let {
     selectedBenefitCount,
-    painPoints,
-    onPainPointsChange
+    painPoints = $bindable<string[]>([])
   }: {
     selectedBenefitCount: number;
     painPoints: string[];
-    onPainPointsChange: (painPoints: string[]) => void;
   } = $props();
 
   const promptListClasses = 'grid gap-[18px]';
@@ -24,10 +22,8 @@
   );
 
   const setPainPoint = (index: number, value: string) => {
-    onPainPointsChange(
-      painPoints.map((painPoint, painPointIndex) =>
-        painPointIndex === index ? value : painPoint
-      )
+    painPoints = painPoints.map((painPoint, painPointIndex) =>
+      painPointIndex === index ? value : painPoint
     );
   };
 </script>
@@ -43,8 +39,10 @@
       class={textAreaClasses}
       aria-label={painPointPrompt}
       placeholder={painPointPrompt}
-      value={painPoint}
-      oninput={(event) => setPainPoint(index, event.currentTarget.value)}
+      bind:value={
+        () => painPoint,
+        (value) => setPainPoint(index, value)
+      }
     ></textarea>
   {/each}
 </div>

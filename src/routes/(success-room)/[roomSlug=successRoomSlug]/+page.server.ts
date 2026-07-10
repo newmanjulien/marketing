@@ -1,21 +1,18 @@
 import {
   getLockedSuccessRoomPayload,
-  getUnlockedSuccessRoomBundle,
+  getUnlockedSuccessRoomLandingPage,
   unlockSuccessRoom
 } from '$lib/success-room/server/pageServer.server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ cookies, params }) => {
-  const bundle = await getUnlockedSuccessRoomBundle(cookies, params.roomSlug);
+  const payload = await getUnlockedSuccessRoomLandingPage(cookies, params.roomSlug);
 
-  if (bundle) {
-    return {
-      locked: false as const,
-      ...bundle
-    };
+  if (payload) {
+    return payload;
   }
 
-  return await getLockedSuccessRoomPayload(params.roomSlug);
+  return getLockedSuccessRoomPayload(params.roomSlug);
 };
 
 export const actions = {

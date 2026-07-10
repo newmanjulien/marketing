@@ -2,12 +2,12 @@ import {
   attachSuccessRoomSaveQueueLifecycle,
   createSuccessRoomSaveQueue
 } from './saveQueue';
-import { getSuccessRoomApiPath } from '../domain/urls';
+import { createSyncedSnapshot, scheduleJsonSave } from './autosave.svelte';
 import { createTeamMember, type TeamMemberInput } from '../team/teamClient';
 import type {
-  SuccessRoom,
   SuccessRoomBenefitsState,
-  SuccessRoomState,
+  SuccessRoomLandingRoom,
+  SuccessRoomLandingState,
   SuccessRoomTeamMember
 } from '../domain/types';
 
@@ -26,7 +26,7 @@ const normalizePainPointsForEditor = (painPoints: string[]) => {
 const normalizeBenefitsForEditor = (
   benefits: SuccessRoomBenefitsState
 ): SuccessRoomBenefitsState => ({
-  selectedCardIds: [...benefits.selectedCardIds],
+  selectedCardKeys: [...benefits.selectedCardKeys],
   painPoints: normalizePainPointsForEditor(benefits.painPoints)
 });
 
@@ -35,7 +35,7 @@ const getBenefitsVersion = (benefits: SuccessRoomBenefitsState) => JSON.stringif
 const getTeamVersion = (team: SuccessRoomTeamMember[]) =>
   JSON.stringify(
     team.map((member) => ({
-      id: member.id,
+      key: member.key,
       name: member.name,
       role: member.role,
       imageHref: member.imageHref,
@@ -50,8 +50,8 @@ const appendMissingTeamMembers = (
   const mergedTeamMembers = new Map<string, SuccessRoomTeamMember>();
 
   for (const member of [...baseTeam, ...additionalTeam]) {
-    if (!mergedTeamMembers.has(member.id)) {
-      mergedTeamMembers.set(member.id, member);
+    if (!mergedTeamMembers.has(member.key)) {
+      mergedTeamMembers.set(member.key, member);
     }
   }
 
@@ -71,8 +71,8 @@ type SuccessRoomTeamDraftSnapshot = {
 };
 
 const createBenefitsDraftSnapshot = (
-  room: SuccessRoom,
-  state: SuccessRoomState,
+  room: SuccessRoomLandingRoom,
+  state: SuccessRoomLandingState,
   benefitsVersion = getBenefitsVersion(state.benefits),
 ): SuccessRoomBenefitsDraftSnapshot => ({
   roomSlug: room.slug,
@@ -80,24 +80,34 @@ const createBenefitsDraftSnapshot = (
   benefits: normalizeBenefitsForEditor(state.benefits)
 });
 
-const createTeamDraftSnapshot = (room: SuccessRoom): SuccessRoomTeamDraftSnapshot => ({
+const createTeamDraftSnapshot = (room: SuccessRoomLandingRoom): SuccessRoomTeamDraftSnapshot => ({
   roomSlug: room.slug,
   serverTeamVersion: getTeamVersion(room.team),
   serverTeam: [...room.team]
 });
 
 export const createSuccessRoomLandingDraft = (
-  getRoom: () => SuccessRoom,
-  getState: () => SuccessRoomState,
+  getRoom: () => SuccessRoomLandingRoom,
+  getState: () => SuccessRoomLandingState,
 ) => {
   const saveQueue = createSuccessRoomSaveQueue();
   const initialRoom = getRoom();
   const initialBenefitsSnapshot = createBenefitsDraftSnapshot(initialRoom, getState());
   const initialTeamSnapshot = createTeamDraftSnapshot(initialRoom);
+  const benefitsDraft = createSyncedSnapshot({
+    initial: initialBenefitsSnapshot,
+    getSnapshot: () => {
+      const state = getState();
+      return createBenefitsDraftSnapshot(
+        getRoom(),
+        state,
+        getBenefitsVersion(state.benefits)
+      );
+    },
+    shouldReplace: (current, next) =>
+      current.roomSlug !== next.roomSlug || current.benefitsVersion !== next.benefitsVersion
+  });
 
-  let benefitsRoomSlug = $state(initialBenefitsSnapshot.roomSlug);
-  let benefitsVersion = $state(initialBenefitsSnapshot.benefitsVersion);
-  let benefits = $state<SuccessRoomBenefitsState>(initialBenefitsSnapshot.benefits);
   let teamRoomSlug = $state(initialTeamSnapshot.roomSlug);
   let serverTeamVersion = $state(initialTeamSnapshot.serverTeamVersion);
   let serverTeam = $state<SuccessRoomTeamMember[]>(initialTeamSnapshot.serverTeam);
@@ -108,42 +118,18 @@ export const createSuccessRoomLandingDraft = (
 
   const saveBenefits = (
     key: string,
-    benefits: Partial<SuccessRoomState['benefits']>
+    benefits: Partial<SuccessRoomLandingState['benefits']>
   ) => {
-    saveQueue.schedule(
+    scheduleJsonSave({
+      saveQueue,
       key,
-      async () => {
-        const response = await fetch(getSuccessRoomApiPath(getRoom().slug, 'benefits'), {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            benefits
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error('Success room benefits could not be saved.');
-        }
-      },
-      500
-    );
+      roomSlug: getRoom().slug,
+      endpoint: 'benefits',
+      body: { benefits },
+      errorMessage: 'Success room benefits could not be saved.',
+      debounceMs: 500
+    });
   };
-
-  $effect(() => {
-    const room = getRoom();
-    const state = getState();
-    const nextBenefitsVersion = getBenefitsVersion(state.benefits);
-
-    if (benefitsRoomSlug !== room.slug || benefitsVersion !== nextBenefitsVersion) {
-      const nextSnapshot = createBenefitsDraftSnapshot(room, state, nextBenefitsVersion);
-
-      benefitsRoomSlug = nextSnapshot.roomSlug;
-      benefitsVersion = nextSnapshot.benefitsVersion;
-      benefits = nextSnapshot.benefits;
-    }
-  });
 
   $effect(() => {
     const room = getRoom();
@@ -161,43 +147,59 @@ export const createSuccessRoomLandingDraft = (
 
     if (serverTeamVersion !== currentServerTeamVersion) {
       const nextServerTeam = [...room.team];
-      const nextServerTeamMemberIds = new Set(nextServerTeam.map((member) => member.id));
+      const nextServerTeamMemberKeys = new Set(nextServerTeam.map((member) => member.key));
 
       serverTeamVersion = currentServerTeamVersion;
       serverTeam = nextServerTeam;
       locallyAddedTeamMembers = locallyAddedTeamMembers.filter(
-        (member) => !nextServerTeamMemberIds.has(member.id)
+        (member) => !nextServerTeamMemberKeys.has(member.key)
       );
     }
   });
 
+  const setSelectedBenefitKeys = (nextSelectedBenefitKeys: string[]) => {
+    const benefits = {
+      ...benefitsDraft.current.benefits,
+      selectedCardKeys: [...nextSelectedBenefitKeys]
+    };
+    benefitsDraft.replace({
+      ...benefitsDraft.current,
+      benefits
+    });
+    saveBenefits('selectedBenefits', {
+      selectedCardKeys: benefits.selectedCardKeys
+    });
+  };
+
+  const setPainPoints = (nextPainPoints: string[]) => {
+    const benefits = {
+      ...benefitsDraft.current.benefits,
+      painPoints: normalizePainPointsForEditor(nextPainPoints)
+    };
+    benefitsDraft.replace({
+      ...benefitsDraft.current,
+      benefits
+    });
+    saveBenefits('painPoints', {
+      painPoints: benefits.painPoints
+    });
+  };
+
   return {
-    get selectedBenefitIds() {
-      return benefits.selectedCardIds;
+    get selectedBenefitKeys() {
+      return benefitsDraft.current.benefits.selectedCardKeys;
+    },
+    set selectedBenefitKeys(nextSelectedBenefitKeys: string[]) {
+      setSelectedBenefitKeys(nextSelectedBenefitKeys);
     },
     get painPoints() {
-      return benefits.painPoints;
+      return benefitsDraft.current.benefits.painPoints;
+    },
+    set painPoints(nextPainPoints: string[]) {
+      setPainPoints(nextPainPoints);
     },
     get team() {
       return team;
-    },
-    setSelectedBenefitIds(nextSelectedBenefitIds: string[]) {
-      benefits = {
-        ...benefits,
-        selectedCardIds: [...nextSelectedBenefitIds]
-      };
-      saveBenefits('selectedBenefits', {
-        selectedCardIds: benefits.selectedCardIds
-      });
-    },
-    setPainPoints(nextPainPoints: string[]) {
-      benefits = {
-        ...benefits,
-        painPoints: normalizePainPointsForEditor(nextPainPoints)
-      };
-      saveBenefits('painPoints', {
-        painPoints: benefits.painPoints
-      });
     },
     async addTeamMember(member: TeamMemberInput) {
       const createdMember = await createTeamMember({

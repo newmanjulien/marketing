@@ -4,9 +4,9 @@
   import DataSourcesPanel from './DataSourcesPanel.svelte';
   import EditableTextPanel from './EditableTextPanel.svelte';
   import type {
-    SuccessRoom,
     SuccessRoomEditableTextResource,
-    SuccessRoomEditableTextState
+    SuccessRoomEditableTextState,
+    SuccessRoomResourceRoom
   } from '../domain/types';
 
   type EditableTextSection = PillTab & {
@@ -35,13 +35,11 @@
   let {
     room,
     resource,
-    state,
-    onStateChange
+    editableState = $bindable<SuccessRoomEditableTextState>()
   }: {
-    room: SuccessRoom;
+    room: SuccessRoomResourceRoom;
     resource: SuccessRoomEditableTextResource;
-    state: SuccessRoomEditableTextState;
-    onStateChange: (state: SuccessRoomEditableTextState) => void;
+    editableState: SuccessRoomEditableTextState;
   } = $props();
 </script>
 
@@ -61,13 +59,11 @@
         <EditableTextPanel
           roomSlug={room.slug}
           {resource}
-          editableState={state}
-          {onStateChange}
+          bind:editableState
         />
       {:else if section.key === 'data-sources'}
         <DataSourcesPanel
-          editableState={state}
-          {onStateChange}
+          bind:editableState
         />
       {/if}
     </div>

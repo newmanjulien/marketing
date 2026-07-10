@@ -8,13 +8,11 @@
   let {
     roomSlug,
     resource,
-    editableState,
-    onStateChange
+    editableState = $bindable<SuccessRoomEditableTextState>()
   }: {
     roomSlug: string;
     resource: SuccessRoomEditableTextResource;
     editableState: SuccessRoomEditableTextState;
-    onStateChange: (state: SuccessRoomEditableTextState) => void;
   } = $props();
 
   const textareaClasses =
@@ -24,10 +22,10 @@
   const defaultEditorRows = 9;
 
   const setContent = (content: string) => {
-    onStateChange({
+    editableState = {
       ...editableState,
       content
-    });
+    };
   };
 </script>
 
@@ -39,18 +37,19 @@
     class={textareaClasses}
     aria-label={resource.title}
     rows={resource.editorRows ?? defaultEditorRows}
-    value={editableState.content}
+    bind:value={
+      () => editableState.content,
+      (content) => setContent(content)
+    }
     placeholder="Write the initial email format"
     spellcheck="true"
-    oninput={(event) => setContent(event.currentTarget.value)}
   ></textarea>
 
   <div class={footerClasses}>
     <AttachmentControl
       {roomSlug}
       resourceSlug={resource.slug}
-      {editableState}
-      {onStateChange}
+      bind:editableState
     />
   </div>
 </section>

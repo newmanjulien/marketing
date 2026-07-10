@@ -7,12 +7,10 @@
 
   let {
     columns,
-    schedule,
-    onStateChange
+    schedule = $bindable<SuccessRoomKickoffScheduleState>()
   }: {
     columns: readonly SuccessRoomKickoffScheduleColumn[];
     schedule: SuccessRoomKickoffScheduleState;
-    onStateChange: (schedule: SuccessRoomKickoffScheduleState) => void;
   } = $props();
 
   const tableShellClasses =
@@ -25,7 +23,7 @@
     'block min-h-[72px] w-full resize-none border-0 bg-transparent px-[14px] py-[12px] font-body text-[14px] font-book leading-[1.45] tracking-normal text-stone-650 outline-none placeholder:text-stone-300 focus:bg-stone-50/70 focus:text-stone-900';
 
   const updateCell = (rowKey: string, columnKey: string, value: string) => {
-    onStateChange({
+    schedule = {
       rows: schedule.rows.map((row) =>
         row.key === rowKey
           ? {
@@ -37,7 +35,7 @@
             }
           : row
       )
-    });
+    };
   };
 </script>
 
@@ -61,9 +59,11 @@
                     class={textareaClasses}
                     aria-label={`${column.label} row ${rowIndex + 1}`}
                     rows="3"
-                    value={row.cells[column.key] ?? ''}
+                    bind:value={
+                      () => row.cells[column.key] ?? '',
+                      (value) => updateCell(row.key, column.key, value)
+                    }
                     spellcheck="true"
-                    oninput={(event) => updateCell(row.key, column.key, event.currentTarget.value)}
                   ></textarea>
                 </td>
               {/each}

@@ -1,10 +1,10 @@
 <script lang="ts">
   import PlanPanel from './PlanPanel.svelte';
   import type {
-    SuccessRoom,
     SuccessRoomMutualSuccessPlanResource,
     SuccessRoomPlanState,
-    SuccessRoomPlanUpdate
+    SuccessRoomPlanUpdate,
+    SuccessRoomResourceRoom
   } from '../domain/types';
 
   const panelContentClasses = 'grid gap-[22px]';
@@ -17,7 +17,7 @@
     plan,
     onPlanChange
   }: {
-    room: SuccessRoom;
+    room: SuccessRoomResourceRoom;
     resource: SuccessRoomMutualSuccessPlanResource;
     plan: SuccessRoomPlanState;
     onPlanChange: (update: SuccessRoomPlanUpdate) => void;

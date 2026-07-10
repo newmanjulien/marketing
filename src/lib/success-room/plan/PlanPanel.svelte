@@ -17,12 +17,12 @@
   } from '../domain/types';
 
   type DatePickerContext = {
-    taskId: string;
+    taskKey: string;
     selectedDate: Date;
   };
 
   type AssigneePickerContext = {
-    taskId: string;
+    taskKey: string;
   };
 
   let {
@@ -42,7 +42,7 @@
   let openItemId = $state<string | null>(null);
   let assigneePickerContext = $state<AssigneePickerContext | null>(null);
   let datePickerContext = $state<DatePickerContext | null>(null);
-  let taskAssigneeMemberIds = $derived(plan.taskAssigneeMemberIds);
+  let assigneeKeyByTaskKey = $derived(plan.assigneeKeyByTaskKey);
 
   const fallbackDatePickerDate = new Date();
 
@@ -50,13 +50,13 @@
     openItemId = openItemId === itemId ? null : itemId;
   };
 
-  const setTaskChecked = (taskId: string, checked: boolean) => {
-    onPlanChange(createCheckedTaskUpdate(plan, taskId, checked));
+  const setTaskChecked = (taskKey: string, checked: boolean) => {
+    onPlanChange(createCheckedTaskUpdate(plan, taskKey, checked));
   };
 
-  const openAssigneePickerModal = (taskId: string) => {
+  const openAssigneePickerModal = (taskKey: string) => {
     assigneePickerContext = {
-      taskId
+      taskKey
     };
   };
 
@@ -64,20 +64,20 @@
     assigneePickerContext = null;
   };
 
-  const selectTaskAssignee = (memberId: string | null) => {
+  const selectTaskAssignee = (memberKey: string | null) => {
     if (!assigneePickerContext) {
       return;
     }
 
-    onPlanChange(createTaskAssigneeUpdate(plan, assigneePickerContext.taskId, memberId));
+    onPlanChange(createTaskAssigneeUpdate(plan, assigneePickerContext.taskKey, memberKey));
   };
 
-  const openDatePickerModal = (taskId: string, dateLabel: string) => {
+  const openDatePickerModal = (taskKey: string, dateLabel: string) => {
     datePickerContext = {
-      taskId,
+      taskKey,
       selectedDate: resolveTaskDisplayDate({
-        dateOverrides: plan.dateOverrides,
-        taskId,
+        dateOverridesByTaskKey: plan.dateOverridesByTaskKey,
+        taskKey,
         fallbackDateLabel: dateLabel
       })
     };
@@ -92,12 +92,14 @@
       return;
     }
 
-    onPlanChange(createTaskDateUpdate(plan, datePickerContext.taskId, date));
+    onPlanChange(createTaskDateUpdate(plan, datePickerContext.taskKey, date));
   };
 
   const selectedDatePickerDate = $derived(datePickerContext?.selectedDate ?? fallbackDatePickerDate);
-  const selectedAssigneeMemberId = $derived(
-    assigneePickerContext ? taskAssigneeMemberIds[assigneePickerContext.taskId] : undefined
+  const selectedAssigneeMemberKey = $derived(
+    assigneePickerContext
+      ? assigneeKeyByTaskKey[assigneePickerContext.taskKey]
+      : undefined
   );
 </script>
 
@@ -116,8 +118,8 @@
 <TaskAssigneeModal
   open={assigneePickerContext !== null}
   {team}
-  selectedMemberId={selectedAssigneeMemberId}
-  onSelectMember={selectTaskAssignee}
+  selectedMemberKey={selectedAssigneeMemberKey}
+  onSelectMemberKey={selectTaskAssignee}
   onClose={closeAssigneePickerModal}
 />
 

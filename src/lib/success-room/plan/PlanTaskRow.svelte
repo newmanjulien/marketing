@@ -4,24 +4,22 @@
 
   let {
     task,
-    taskId,
-    checked,
+    taskKey,
+    checked = $bindable(false),
     assignedTeamMember,
     displayDateLabel,
     textClass,
     dateClass,
-    onCheckedChange,
     onOpenAssignee,
     onOpenDatePicker
   }: {
     task: SuccessRoomPlanTask;
-    taskId: string;
+    taskKey: string;
     checked: boolean;
     assignedTeamMember?: SuccessRoomTeamMember;
     displayDateLabel: string;
     textClass: string;
     dateClass: string;
-    onCheckedChange: (checked: boolean) => void;
     onOpenAssignee: () => void;
     onOpenDatePicker: () => void;
   } = $props();
@@ -42,20 +40,20 @@
   const taskAssigneeButtonClasses =
     'flex h-[20px] w-[20px] shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-stone-900/20';
   const checkboxClasses = 'h-[13px] w-[13px] flex-none opacity-100';
+  const checkboxId = $derived(`plan-task-${taskKey}`);
 </script>
 
 <li class={taskItemClasses}>
   <div class={[taskRowClasses, textClass, 'font-book']}>
     <span class={taskCheckboxCellClasses}>
       <Checkbox
-        id={taskId}
+        id={checkboxId}
         class={checkboxClasses}
-        {checked}
-        onCheckedChange={onCheckedChange}
+        bind:checked
       />
     </span>
 
-    <label for={taskId} class={taskLabelClasses}>
+    <label for={checkboxId} class={taskLabelClasses}>
       <span class={taskTitleClasses}>{task.title}</span>
     </label>
 

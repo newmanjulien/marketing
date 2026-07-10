@@ -47,7 +47,7 @@
 
   const galleryItems = $derived<TeamGalleryItem[]>([
     ...team.map((member) => ({
-      key: member.id,
+      key: member.key,
       type: 'member' as const,
       member
     })),

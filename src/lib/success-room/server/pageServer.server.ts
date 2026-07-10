@@ -7,12 +7,18 @@ import {
   setSuccessRoomAccessToken
 } from './access.server';
 import {
-  getProtectedSuccessRoomBundle,
+  getProtectedSuccessRoomLandingPage,
+  getProtectedSuccessRoomResourcePage,
   getPublicSuccessRoom,
   verifySuccessRoomPassword
 } from './convexQueries.server';
+import type { SuccessRoomRoutedResourceSlug } from '$lib/success-room/domain/config';
 
-export const getUnlockedSuccessRoomBundle = async (cookies: Cookies, roomSlug: string) => {
+const getUnlockedSuccessRoomPayload = async <Payload>(
+  cookies: Cookies,
+  roomSlug: string,
+  loadPayload: (accessToken: string) => Promise<Payload>
+) => {
   const accessToken = getSuccessRoomAccessToken(cookies, roomSlug);
 
   if (!accessToken) {
@@ -20,7 +26,7 @@ export const getUnlockedSuccessRoomBundle = async (cookies: Cookies, roomSlug: s
   }
 
   try {
-    return await getProtectedSuccessRoomBundle(roomSlug, accessToken);
+    return await loadPayload(accessToken);
   } catch (loadError) {
     if (!isSuccessRoomAccessError(loadError)) {
       throw loadError;
@@ -30,6 +36,20 @@ export const getUnlockedSuccessRoomBundle = async (cookies: Cookies, roomSlug: s
     return null;
   }
 };
+
+export const getUnlockedSuccessRoomLandingPage = async (cookies: Cookies, roomSlug: string) =>
+  getUnlockedSuccessRoomPayload(cookies, roomSlug, (accessToken) =>
+    getProtectedSuccessRoomLandingPage(roomSlug, accessToken)
+  );
+
+export const getUnlockedSuccessRoomResourcePage = async (
+  cookies: Cookies,
+  roomSlug: string,
+  resourceSlug: SuccessRoomRoutedResourceSlug
+) =>
+  getUnlockedSuccessRoomPayload(cookies, roomSlug, (accessToken) =>
+    getProtectedSuccessRoomResourcePage(roomSlug, accessToken, resourceSlug)
+  );
 
 export const getLockedSuccessRoomPayload = async (roomSlug: string) => {
   const room = await getPublicSuccessRoom(roomSlug);

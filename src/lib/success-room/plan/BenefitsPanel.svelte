@@ -4,15 +4,13 @@
 
   let {
     benefitCards,
-    selectedBenefitIds,
-    onSelectedBenefitIdsChange
+    selectedBenefitKeys = $bindable<string[]>([])
   }: {
     benefitCards: SuccessRoomBenefitCard[];
-    selectedBenefitIds: string[];
-    onSelectedBenefitIdsChange: (selectedBenefitIds: string[]) => void;
+    selectedBenefitKeys: string[];
   } = $props();
 
-  let checkedBenefitIds = $derived(new Set(selectedBenefitIds));
+  let checkedBenefitKeys = $derived(new Set(selectedBenefitKeys));
 
   const cardClasses =
     'group flex h-[132px] cursor-pointer flex-col rounded-[10px] border border-stone-200/70 bg-white px-[18px] py-[14px] text-stone-900 shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] focus-within:border-stone-300 focus-within:ring-2 focus-within:ring-stone-900/20 sm:px-[20px] sm:py-[16px]';
@@ -24,31 +22,33 @@
   const descriptionClasses =
     'mt-[10px] block max-w-[26rem] text-[13px] font-book leading-[1.4] tracking-normal text-stone-500 sm:text-[14px]';
 
-  const setBenefitChecked = (benefitId: string, checked: boolean) => {
-    const nextCheckedBenefitIds = new Set(checkedBenefitIds);
+  const setBenefitChecked = (benefitKey: string, checked: boolean) => {
+    const nextSelectedBenefitKeys = new Set(checkedBenefitKeys);
 
     if (checked) {
-      nextCheckedBenefitIds.add(benefitId);
+      nextSelectedBenefitKeys.add(benefitKey);
     } else {
-      nextCheckedBenefitIds.delete(benefitId);
+      nextSelectedBenefitKeys.delete(benefitKey);
     }
 
-    onSelectedBenefitIdsChange(Array.from(nextCheckedBenefitIds));
+    selectedBenefitKeys = Array.from(nextSelectedBenefitKeys);
   };
 </script>
 
 <ul class="grid w-full gap-[14px] sm:grid-cols-2" aria-label="Benefits">
-  {#each benefitCards as card (card.id)}
-    {@const isChecked = checkedBenefitIds.has(card.id)}
+  {#each benefitCards as card (card.key)}
+    {@const isChecked = checkedBenefitKeys.has(card.key)}
     <li>
       <label class={[cardClasses, isChecked && checkedCardClasses]}>
         <span class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-[14px]">
           <span class={titleClasses}>{card.title}</span>
           <Checkbox
-            id={`benefit-${card.id}`}
+            id={`benefit-${card.key}`}
             class={checkboxClasses}
-            checked={isChecked}
-            onCheckedChange={(checked) => setBenefitChecked(card.id, checked)}
+            bind:checked={
+              () => isChecked,
+              (checked) => setBenefitChecked(card.key, checked)
+            }
           />
         </span>
 

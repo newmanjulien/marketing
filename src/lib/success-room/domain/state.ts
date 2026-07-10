@@ -9,18 +9,18 @@ import {
 } from '../../../../shared/successRoomResources';
 
 export const getDefaultPlanState = (): SuccessRoomPlanState => ({
-  checkedTaskIds: [],
-  dateOverrides: {},
-  taskAssigneeMemberIds: {}
+  checkedTaskKeys: [],
+  dateOverridesByTaskKey: {},
+  assigneeKeyByTaskKey: {}
 });
 
 export const clonePlan = (plan: SuccessRoomPlanState): SuccessRoomPlanState => ({
-  checkedTaskIds: [...plan.checkedTaskIds],
-  dateOverrides: {
-    ...plan.dateOverrides
+  checkedTaskKeys: [...plan.checkedTaskKeys],
+  dateOverridesByTaskKey: {
+    ...plan.dateOverridesByTaskKey
   },
-  taskAssigneeMemberIds: {
-    ...plan.taskAssigneeMemberIds
+  assigneeKeyByTaskKey: {
+    ...plan.assigneeKeyByTaskKey
   }
 });
 
@@ -31,16 +31,6 @@ export const cloneEditableTextState = (
   dataSources: [...editableState.dataSources],
   ...(editableState.attachment ? { attachment: editableState.attachment } : {})
 });
-
-export const cloneEditableTexts = (
-  editableTexts: Record<string, SuccessRoomEditableTextState>,
-) =>
-  Object.fromEntries(
-    Object.entries(editableTexts).map(([resourceSlug, editableState]) => [
-      resourceSlug,
-      cloneEditableTextState(editableState)
-    ])
-  );
 
 export const getDefaultEditableTextState = (): SuccessRoomEditableTextState => ({
   content: '',
@@ -69,13 +59,3 @@ export const cloneKickoffScheduleState = (
     )
   }))
 });
-
-export const cloneKickoffSchedules = (
-  kickoffSchedules: Record<string, SuccessRoomKickoffScheduleState>,
-) =>
-  Object.fromEntries(
-    Object.entries(kickoffSchedules).map(([resourceSlug, schedule]) => [
-      resourceSlug,
-      cloneKickoffScheduleState(schedule)
-    ])
-  );

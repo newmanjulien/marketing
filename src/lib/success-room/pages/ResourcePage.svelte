@@ -9,9 +9,9 @@
   import { createSuccessRoomResourceDraft } from '../persistence/resourceDraft.svelte';
   import { getSuccessRoomHref } from '../domain/resources';
   import type {
-    SuccessRoom,
+    SuccessRoomResourceRoom,
     SuccessRoomRoutedResource,
-    SuccessRoomState
+    SuccessRoomResourceState
   } from '../domain/types';
 
   let {
@@ -19,9 +19,9 @@
     resource,
     state: roomState
   }: {
-    room: SuccessRoom;
+    room: SuccessRoomResourceRoom;
     resource: SuccessRoomRoutedResource;
-    state: SuccessRoomState;
+    state: SuccessRoomResourceState;
   } = $props();
 
   const draft = createSuccessRoomResourceDraft(
@@ -51,14 +51,12 @@
       <EditableTextResourcePanel
         {room}
         {resource}
-        state={draft.getEditableTextState(resource)}
-        onStateChange={(nextState) => draft.setEditableTextState(resource.slug, nextState)}
+        bind:editableState={draft.editableTextState}
       />
     {:else if resource.kind === 'kickoff-schedule'}
       <KickoffSchedulePanel
         columns={kickoffScheduleColumns}
-        schedule={draft.getKickoffScheduleState(resource)}
-        onStateChange={(nextState) => draft.setKickoffScheduleState(resource.slug, nextState)}
+        bind:schedule={draft.kickoffScheduleState}
       />
     {/if}
   </ContentMeasure>
