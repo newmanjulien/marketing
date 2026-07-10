@@ -9,11 +9,6 @@ import type {
   IndustryPageSections,
 } from "./types";
 
-const sharedIntroParagraphs = [
-  "Selling with ecosystem partners should create a steady stream of warm, high-fit opportunities that are easier to start and faster to close",
-  "But in practice, partnerships rarely work cleanly. Coordination is hard, overlap is hidden, and incentives get in the way. Overbase changes that",
-] as const;
-
 const sharedSectionCopy: IndustryPageSections = {
   setup: {
     id: "setup",
@@ -56,7 +51,7 @@ export const getIndustryPageContent = (
 
   return {
     heading: page.heading,
-    introParagraphs: sharedIntroParagraphs,
+    introParagraphs: page.introParagraphs,
     sections: sharedSectionCopy,
     screenshots: page.screenshots,
   };

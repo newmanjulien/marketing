@@ -32,6 +32,7 @@ export type IndustryScreenshots = {
 
 export type IndustryContentDefinition = {
   heading: string;
+  introParagraphs: readonly [string, string];
   screenshots: IndustryScreenshots;
 };
 

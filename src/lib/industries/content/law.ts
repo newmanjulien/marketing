@@ -2,6 +2,10 @@ import type { IndustryContentDefinition } from "../types";
 
 export const lawContent = {
   heading: "Overbase for law firms",
+  introParagraphs: [
+    "Law firms have a large network of natural partners—data providers who track when clients need legal help, other lawyers who pass along relevant cases, and headhunters who flag open roles where you can recommend your contacts",
+    "These partnerships drive growth, but many opportunities never surface. Because everyone's data is trapped in separate systems",
+  ],
   screenshots: {
     setup: {
       src: "/screenshots/law1.png",

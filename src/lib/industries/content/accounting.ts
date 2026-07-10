@@ -2,6 +2,10 @@ import type { IndustryContentDefinition } from "../types";
 
 export const accountingContent = {
   heading: "Overbase for accounting",
+  introParagraphs: [
+    "Accountants have a large network of natural partners—consulting teams within your own firms, lawyers who refer potential clients, and boutique accounting firms that refer clients once they outgrow them",
+    "These partnerships drive growth, but many opportunities never surface. Because everyone's data is trapped in separate systems",
+  ],
   screenshots: {
     setup: {
       src: "/screenshots/consulting1.png",
@@ -21,7 +25,7 @@ export const accountingContent = {
           src: "/screenshots/accounting3_1.png",
           alt: "Gmail opportunity email showing an attached insurance renewal report from Overbase.",
           width: 1408,
-          height: 709,
+          height: 688,
         },
       },
       {

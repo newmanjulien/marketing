@@ -2,6 +2,10 @@ import type { IndustryContentDefinition } from "../types";
 
 export const consultingContent = {
   heading: "Overbase for consulting firms",
+  introParagraphs: [
+    "Consulting firms have a large network of natural partners—technology vendors, other practice areas within your own firm whose clients have adjacent needs, and private equity firms that refer portfolio companies",
+    "These partnerships drive growth, but many opportunities never surface. Because everyone's data is trapped in separate systems",
+  ],
   screenshots: {
     setup: {
       src: "/screenshots/consulting1.png",
