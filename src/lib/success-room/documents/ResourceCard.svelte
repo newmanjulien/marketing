@@ -1,14 +1,14 @@
 <script lang="ts">
   import { CaretRightIcon } from 'phosphor-svelte';
   import { getSuccessRoomResourceLink } from '../domain/resources';
-  import type { SuccessRoomBaseRoom, SuccessRoomResource } from '../domain/types';
+  import type { SuccessRoomBaseRoom, SuccessRoomResourceSummary } from '../domain/types';
 
   let {
     room,
     resource
   }: {
     room: SuccessRoomBaseRoom;
-    resource: SuccessRoomResource;
+    resource: SuccessRoomResourceSummary;
   } = $props();
 
   const link = $derived(getSuccessRoomResourceLink(room, resource));

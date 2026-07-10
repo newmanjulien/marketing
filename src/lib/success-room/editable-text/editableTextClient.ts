@@ -1,9 +1,8 @@
-import { getSuccessRoomApiPath } from '../domain/urls';
-import type {
-  SuccessRoomDeleteApiBody,
-  SuccessRoomPostApiBody,
-  SuccessRoomUploadedFileInput
-} from '../domain/api';
+import {
+  deleteSuccessRoomApi,
+  postSuccessRoomApi,
+  uploadSuccessRoomFile
+} from '../api/client';
 import type { SuccessRoomEditableTextResourceSlug } from '../domain/config';
 import type { SuccessRoomLinkedFileMetadata } from '../domain/types';
 
@@ -16,45 +15,20 @@ export const uploadEditableTextAttachment = async ({
   resourceSlug: SuccessRoomEditableTextResourceSlug;
   file: File;
 }) => {
-  const contentType = file.type || 'application/octet-stream';
-  const uploadUrlResponse = await fetch(getSuccessRoomApiPath(roomSlug, 'upload-url'), {
-    method: 'POST'
-  });
+  const uploadedFile = await uploadSuccessRoomFile(roomSlug, file);
 
-  if (!uploadUrlResponse.ok) {
+  if (!uploadedFile) {
     return null;
   }
 
-  const { uploadUrl }: { uploadUrl: string } = await uploadUrlResponse.json();
-  const uploadResponse = await fetch(uploadUrl, {
-    method: 'POST',
-    headers: {
-      'content-type': contentType
-    },
-    body: file
-  });
-
-  if (!uploadResponse.ok) {
-    return null;
-  }
-
-  const { storageId }: { storageId: SuccessRoomUploadedFileInput['storageId'] } =
-    await uploadResponse.json();
-  const attachmentResponse = await fetch(getSuccessRoomApiPath(roomSlug, 'editable-attachment'), {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
+  const attachmentResponse = await postSuccessRoomApi(
+    roomSlug,
+    'editable-attachment',
+    {
       resourceSlug,
-      file: {
-        storageId,
-        filename: file.name,
-        contentType,
-        byteSize: file.size
-      }
-    } satisfies SuccessRoomPostApiBody<'editable-attachment'>)
-  });
+      file: uploadedFile
+    }
+  );
 
   if (!attachmentResponse.ok) {
     return null;
@@ -73,13 +47,13 @@ export const deleteEditableTextAttachment = async ({
   roomSlug: string;
   resourceSlug: SuccessRoomEditableTextResourceSlug;
 }) => {
-  await fetch(getSuccessRoomApiPath(roomSlug, 'editable-attachment'), {
-    method: 'DELETE',
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
+  const response = await deleteSuccessRoomApi(
+    roomSlug,
+    'editable-attachment',
+    {
       resourceSlug
-    } satisfies SuccessRoomDeleteApiBody<'editable-attachment'>)
-  });
+    }
+  );
+
+  return response.ok;
 };

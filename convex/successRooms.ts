@@ -1,4 +1,4 @@
-import { ConvexError, v } from "convex/values";
+import { ConvexError, v, type Infer } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
@@ -20,6 +20,21 @@ import {
   successRoomResourceDefinitions,
 } from "../shared/successRoomResources";
 
+type SuccessRoom = Doc<"successRooms">;
+type SuccessRoomFile = Doc<"successRoomFiles">;
+type SuccessRoomResourceKey = SuccessRoom["enabledResourceKeys"][number];
+type AssetSuccessRoomResourceKey = Extract<
+  SuccessRoomResourceKey,
+  typeof deckResourceKey | typeof audioResourceKey
+>;
+type FileKind = SuccessRoomFile["kind"];
+type RoomState = SuccessRoom["state"];
+type BenefitsState = RoomState["benefits"];
+type PlanState = RoomState["plan"];
+type EditableTextState = RoomState["editableText"];
+type KickoffScheduleState = RoomState["kickoffSchedule"];
+type TeamMember = SuccessRoom["teamMembers"][number];
+
 const maxBenefitCards = 10;
 const maxPainPoints = 3;
 const maxPlanAccordions = 10;
@@ -28,95 +43,18 @@ const kickoffScheduleColumnKeys = new Set<string>(
   kickoffScheduleColumns.map((column) => column.key),
 );
 const baseResourceKeys = [deckResourceKey, audioResourceKey] as const;
-const allResourceKeys = [
-  deckResourceKey,
-  audioResourceKey,
-  mutualSuccessPlanResourceKey,
-  initialFormatResourceKey,
-  kickoffScheduleResourceKey,
-] as const;
+const allResourceKeys: SuccessRoomResourceKey[] = successRoomResourceDefinitions.map(
+  ({ slug }) => slug,
+);
 
 const optionalResourceKey = v.union(
   v.literal(mutualSuccessPlanResourceKey),
   v.literal(initialFormatResourceKey),
   v.literal(kickoffScheduleResourceKey),
 );
+type OptionalSuccessRoomResourceKey = Infer<typeof optionalResourceKey>;
 const editableTextResourceKey = v.literal(initialFormatResourceKey);
 const kickoffScheduleResourceSlug = v.literal(kickoffScheduleResourceKey);
-
-type SuccessRoomResourceKey = (typeof allResourceKeys)[number];
-type OptionalSuccessRoomResourceKey =
-  | typeof mutualSuccessPlanResourceKey
-  | typeof initialFormatResourceKey
-  | typeof kickoffScheduleResourceKey;
-type AssetSuccessRoomResourceKey = typeof deckResourceKey | typeof audioResourceKey;
-type FileKind = "deck" | "audio" | "team-member-photo" | "editable-attachment";
-type SuccessRoom = Doc<"successRooms">;
-type SuccessRoomFile = Doc<"successRoomFiles">;
-
-type BenefitsState = {
-  selectedCardKeys: string[];
-  painPoints: string[];
-};
-
-type PlanState = {
-  checkedTaskKeys: string[];
-  dateOverridesByTaskKey: Record<string, string>;
-  assigneeKeyByTaskKey: Record<string, string>;
-};
-
-type EditableTextState = {
-  content: string;
-  dataSources: string[];
-  attachmentFileKey?: string;
-};
-
-type KickoffScheduleRow = {
-  key: string;
-  sortOrder: number;
-  cells: Record<string, string>;
-};
-
-type KickoffScheduleState = {
-  rows: KickoffScheduleRow[];
-};
-
-type RoomState = {
-  benefits: BenefitsState;
-  plan: PlanState;
-  editableText: EditableTextState;
-  kickoffSchedule: KickoffScheduleState;
-};
-
-type TeamMember = {
-  key: string;
-  name: string;
-  role: string;
-  photoFileKey?: string;
-  active: boolean;
-  createdAt: number;
-  updatedAt: number;
-};
-
-type SeedBenefitCard = {
-  key: string;
-  title: string;
-  description: string;
-  sortOrder: number;
-};
-
-type SeedPlanAccordion = {
-  key: string;
-  title: string;
-  description: string;
-  variant: "default" | "muted";
-  sortOrder: number;
-  tasks: Array<{
-    key: string;
-    title: string;
-    dateLabel: string;
-  }>;
-};
 
 const seedBenefitCard = v.object({
   key: v.string(),
@@ -139,6 +77,8 @@ const seedPlanAccordion = v.object({
   sortOrder: v.number(),
   tasks: v.array(seedPlanTask),
 });
+type SeedBenefitCard = Infer<typeof seedBenefitCard>;
+type SeedPlanAccordion = Infer<typeof seedPlanAccordion>;
 
 const fileInput = v.object({
   storageId: v.id("_storage"),
@@ -386,11 +326,7 @@ const sanitizeBenefitsState = (room: SuccessRoom, state: BenefitsState): Benefit
 
 const sanitizePlanState = (
   room: SuccessRoom,
-  state: {
-    checkedTaskKeys: string[];
-    dateOverridesByTaskKey: Record<string, string>;
-    assigneeKeyByTaskKey: Record<string, string>;
-  },
+  state: PlanState,
 ): PlanState => {
   const validTaskKeys = activePlanTaskKeys(room);
   const validMemberKeys = activeTeamMemberKeys(room);
@@ -444,12 +380,7 @@ const insertFile = async (
     kind: FileKind;
     resourceKey?: string;
     ownerKey?: string;
-    file: {
-      storageId: Id<"_storage">;
-      filename: string;
-      contentType: string;
-      byteSize: number;
-    };
+    file: Infer<typeof fileInput>;
     key?: string;
     now: number;
   },
@@ -636,13 +567,10 @@ const assetResource = async (
   };
 };
 
-const routedResource = (resourceKey: OptionalSuccessRoomResourceKey) => {
+const routedResourceSummary = (resourceKey: OptionalSuccessRoomResourceKey) => {
   if (resourceKey === mutualSuccessPlanResourceKey) {
     return {
       ...mutualSuccessPlanResourceDefinition,
-      catalog: {
-        planAccordions: [],
-      },
       delivery: { type: "route" as const },
     };
   }
@@ -673,16 +601,7 @@ const landingResource = async (
     return await assetResource(ctx, room, resourceKey);
   }
 
-  if (resourceKey === mutualSuccessPlanResourceKey) {
-    return {
-      ...routedResource(resourceKey),
-      catalog: {
-        planAccordions: sortActiveItems(room.planAccordions).map(planAccordionSummary),
-      },
-    };
-  }
-
-  return routedResource(resourceKey);
+  return routedResourceSummary(resourceKey);
 };
 
 const landingResources = async (ctx: QueryCtx, room: SuccessRoom) => {
@@ -717,10 +636,7 @@ const publicResourcePayload = async (
 
   const basePayload = {
     locked: false as const,
-    room: {
-      ...baseRoom(room),
-      team: await activeTeamSummaries(ctx, room),
-    },
+    room: baseRoom(room),
   };
 
   if (resourceSlug === mutualSuccessPlanResourceKey) {
@@ -732,6 +648,7 @@ const publicResourcePayload = async (
         ...mutualSuccessPlanResourceDefinition,
         catalog: {
           planAccordions: sortActiveItems(room.planAccordions).map(planAccordionSummary),
+          team: await activeTeamSummaries(ctx, room),
         },
         delivery: { type: "route" as const },
       },
@@ -756,7 +673,10 @@ const publicResourcePayload = async (
 
     return {
       ...basePayload,
-      resource: routedResource(initialFormatResourceKey),
+      resource: {
+        ...initialFormatResourceDefinition,
+        delivery: { type: "route" as const },
+      },
       state: {
         kind: "editable-text" as const,
         editableText: {
@@ -780,7 +700,10 @@ const publicResourcePayload = async (
 
   return {
     ...basePayload,
-    resource: routedResource(kickoffScheduleResourceKey),
+    resource: {
+      ...kickoffScheduleResourceDefinition,
+      delivery: { type: "route" as const },
+    },
     state: {
       kind: "kickoff-schedule" as const,
       kickoffSchedule: sanitizeKickoffScheduleState(room.state.kickoffSchedule),
@@ -933,18 +856,7 @@ export const addTeamMember = mutation({
       updatedAt: now,
     });
 
-    const photo = await linkedTeamMemberPhotoSummary(
-      ctx,
-      (await activeFileByKey(ctx, room._id, photoFileKey))!,
-    );
-
-    return {
-      key: member.key,
-      name: member.name,
-      role: member.role,
-      imageHref: photo.url,
-      photo,
-    };
+    return await teamMemberSummary(ctx, room, member);
   },
 });
 

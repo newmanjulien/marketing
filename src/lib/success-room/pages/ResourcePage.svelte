@@ -34,7 +34,7 @@
 <PageFrame>
   <ContentMeasure as="article" width="narrow">
     <Header
-      backHref={getSuccessRoomHref(room)}
+      backHref={getSuccessRoomHref(room, 'documents')}
       backLabel="Success room"
       title={resource.title}
       description={resource.description}
@@ -42,7 +42,6 @@
 
     {#if resource.kind === 'mutual-success-plan'}
       <MutualSuccessPlanResourcePanel
-        {room}
         {resource}
         plan={draft.plan}
         onPlanChange={draft.updatePlan}

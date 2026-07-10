@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
+  import { page } from '$app/state';
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import PageFrame from '$lib/page/PageFrame.svelte';
   import PillTabs from '$lib/ui/PillTabs.svelte';
@@ -50,6 +52,32 @@
       return true;
     })
   );
+  const requestedSectionKey = $derived(page.url.searchParams.get('section'));
+  const activeSectionKey = $derived(
+    requestedSectionKey && successRoomSections.some((section) => section.key === requestedSectionKey)
+      ? requestedSectionKey
+      : 'benefits'
+  );
+
+  const updateSectionUrl = async (sectionKey: string, replace = false) => {
+    const url = new URL(page.url);
+
+    if (sectionKey === 'benefits') {
+      url.searchParams.delete('section');
+    } else {
+      url.searchParams.set('section', sectionKey);
+    }
+
+    const href = `${url.pathname}${url.search}${url.hash}`;
+
+    await goto(href, { replaceState: replace, keepFocus: true, noScroll: true });
+  };
+
+  $effect(() => {
+    if (requestedSectionKey && requestedSectionKey !== activeSectionKey) {
+      updateSectionUrl(activeSectionKey, true);
+    }
+  });
 </script>
 
 <PageFrame>
@@ -67,6 +95,8 @@
       tabs={successRoomSections}
       ariaLabel={`${room.prospectName} success room sections`}
       defaultActiveTabKey="benefits"
+      activeTabKey={activeSectionKey}
+      onActiveTabKeyChange={(sectionKey) => updateSectionUrl(sectionKey)}
       animatedTabKeys={['pain-points']}
       listClass="mt-[34px]"
       panelClass="mt-[38px]"

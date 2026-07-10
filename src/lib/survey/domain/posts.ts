@@ -1,4 +1,4 @@
-import type { SurveyPost, SurveyPostDefinition } from './types';
+import type { SurveyPost, SurveyPostModule } from './types';
 
 const surveyDateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'long',
@@ -7,43 +7,30 @@ const surveyDateFormatter = new Intl.DateTimeFormat('en-US', {
   timeZone: 'UTC'
 });
 
-export const surveyPostDefinitions = [
-  {
-    slug: '2026-law-firm-cmos',
-    load: () => import('$content/survey/entries/2026-law-firm-cmos.svx')
-  },
-  {
-    slug: '2026-insurance-cmos',
-    load: () => import('$content/survey/entries/2026-insurance-cmos.svx')
-  },
-  {
-    slug: '2026-consulting-cmos',
-    load: () => import('$content/survey/entries/2026-consulting-cmos.svx')
-  },
-  {
-    slug: '2026-accounting-cmos',
-    load: () => import('$content/survey/entries/2026-accounting-cmos.svx')
-  },
-  {
-    slug: '2026-gov-cmos',
-    load: () => import('$content/survey/entries/2026-gov-cmos.svx')
-  },
-] as const satisfies readonly SurveyPostDefinition[];
+const surveyPostModules = import.meta.glob<SurveyPostModule>(
+  '../../../content/survey/entries/*.svx'
+);
+const surveyPostLoaders = new Map(
+  Object.entries(surveyPostModules).map(([path, load]) => [
+    path.slice(path.lastIndexOf('/') + 1, -4),
+    load
+  ])
+);
 
 const formatSurveyDate = (publishedAt: string) => surveyDateFormatter.format(new Date(publishedAt));
 
 export const getSurveyPost = async (slug: string): Promise<SurveyPost | undefined> => {
-  const definition = surveyPostDefinitions.find((post) => post.slug === slug);
+  const loadPost = surveyPostLoaders.get(slug);
 
-  if (!definition) {
+  if (!loadPost) {
     return undefined;
   }
 
-  const postModule = await definition.load();
+  const postModule = await loadPost();
   const { post } = postModule;
 
   return {
-    slug: definition.slug,
+    slug,
     ...post,
     publishedAtLabel: formatSurveyDate(post.publishedAt),
     bodyComponent: postModule.default

@@ -29,11 +29,15 @@ export type SuccessRoomAudioResource = SuccessRoomResourceBase<'audio'> & {
   delivery: SuccessRoomAssetDelivery;
 };
 
-export type SuccessRoomMutualSuccessPlanResource =
+export type SuccessRoomMutualSuccessPlanResourceSummary =
   SuccessRoomResourceBase<'mutual-success-plan'> & {
     description: string;
-    catalog: SuccessRoomMutualSuccessPlanCatalog;
     delivery: SuccessRoomRouteDelivery;
+  };
+
+export type SuccessRoomMutualSuccessPlanResource =
+  SuccessRoomMutualSuccessPlanResourceSummary & {
+    catalog: SuccessRoomMutualSuccessPlanCatalog;
   };
 
 export type SuccessRoomEditableTextResource =
@@ -53,10 +57,15 @@ export type SuccessRoomRoutedResource =
   | SuccessRoomEditableTextResource
   | SuccessRoomKickoffScheduleResource;
 
-export type SuccessRoomResource =
+export type SuccessRoomRoutedResourceSummary =
+  | SuccessRoomMutualSuccessPlanResourceSummary
+  | SuccessRoomEditableTextResource
+  | SuccessRoomKickoffScheduleResource;
+
+export type SuccessRoomResourceSummary =
   | SuccessRoomPdfResource
   | SuccessRoomAudioResource
-  | SuccessRoomRoutedResource;
+  | SuccessRoomRoutedResourceSummary;
 
 export type SuccessRoomFileMetadata = {
   fileId: string;
@@ -110,6 +119,7 @@ export type SuccessRoomPlanAccordion = {
 
 export type SuccessRoomMutualSuccessPlanCatalog = {
   planAccordions: SuccessRoomPlanAccordion[];
+  team: SuccessRoomTeamMember[];
 };
 
 export type SuccessRoomBenefitsState = {
@@ -152,16 +162,14 @@ export type SuccessRoomBaseRoom = {
 export type SuccessRoomLandingRoom = SuccessRoomBaseRoom & {
   benefitCards: SuccessRoomBenefitCard[];
   team: SuccessRoomTeamMember[];
-  resources: SuccessRoomResource[];
+  resources: SuccessRoomResourceSummary[];
 };
 
 export type SuccessRoomLandingState = {
   benefits: SuccessRoomBenefitsState;
 };
 
-export type SuccessRoomResourceRoom = SuccessRoomBaseRoom & {
-  team: SuccessRoomTeamMember[];
-};
+export type SuccessRoomResourceRoom = SuccessRoomBaseRoom;
 
 export type SuccessRoomResourceState =
   | {

@@ -1,4 +1,4 @@
-import { getSuccessRoomApiPath } from '../domain/urls';
+import { postSuccessRoomApi } from '../api/client';
 import type { SuccessRoomPostApiBody, SuccessRoomPostApiOperation } from '../domain/api';
 import type { SuccessRoomSaveQueue } from './saveQueue';
 
@@ -51,13 +51,7 @@ export const scheduleJsonSave = <Endpoint extends Exclude<SuccessRoomPostApiOper
   saveQueue.schedule(
     key,
     async () => {
-      const response = await fetch(getSuccessRoomApiPath(roomSlug, endpoint), {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
+      const response = await postSuccessRoomApi(roomSlug, endpoint, body);
 
       if (!response.ok) {
         throw new Error(errorMessage);

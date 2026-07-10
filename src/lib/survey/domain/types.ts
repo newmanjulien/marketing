@@ -12,11 +12,6 @@ export type SurveyPostModule = {
   post: SurveyPostContent;
 };
 
-export type SurveyPostDefinition = {
-  slug: string;
-  load: () => Promise<SurveyPostModule>;
-};
-
 export type SurveyPost = SurveyPostContent & {
   slug: string;
   publishedAtLabel: string;

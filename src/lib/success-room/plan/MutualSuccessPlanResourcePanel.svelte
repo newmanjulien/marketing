@@ -3,8 +3,7 @@
   import type {
     SuccessRoomMutualSuccessPlanResource,
     SuccessRoomPlanState,
-    SuccessRoomPlanUpdate,
-    SuccessRoomResourceRoom
+    SuccessRoomPlanUpdate
   } from '../domain/types';
 
   const panelContentClasses = 'grid gap-[22px]';
@@ -12,12 +11,10 @@
     'max-w-[42rem] text-[14px] font-book leading-[1.45] tracking-normal text-stone-500 sm:text-[15px]';
 
   let {
-    room,
     resource,
     plan,
     onPlanChange
   }: {
-    room: SuccessRoomResourceRoom;
     resource: SuccessRoomMutualSuccessPlanResource;
     plan: SuccessRoomPlanState;
     onPlanChange: (update: SuccessRoomPlanUpdate) => void;
@@ -31,7 +28,7 @@
 
   <PlanPanel
     {resource}
-    team={room.team}
+    team={resource.catalog.team}
     planAccordions={resource.catalog.planAccordions}
     {plan}
     {onPlanChange}

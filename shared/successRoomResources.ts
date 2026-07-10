@@ -71,6 +71,3 @@ export const kickoffScheduleRowKeys = [
   "row-4",
   "row-5",
 ] as const;
-
-export type KickoffScheduleColumnKey = (typeof kickoffScheduleColumns)[number]["key"];
-export type KickoffScheduleRowKey = (typeof kickoffScheduleRowKeys)[number];

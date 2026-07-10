@@ -12,7 +12,3 @@ export const industryNavigationItems = [
 
 export type IndustryNavigationItem = (typeof industryNavigationItems)[number];
 export type IndustryId = IndustryNavigationItem["id"];
-
-export const getIndustryHref = (industryId: IndustryId) =>
-  industryNavigationItems.find((industry) => industry.id === industryId)?.href ??
-  `/industries/${industryId}`;

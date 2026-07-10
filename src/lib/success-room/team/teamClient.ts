@@ -1,19 +1,5 @@
-import { getSuccessRoomApiPath } from '../domain/urls';
-import type { SuccessRoomPostApiBody, SuccessRoomUploadedFileInput } from '../domain/api';
-import type {
-  SuccessRoomLinkedTeamMemberPhotoMetadata,
-  SuccessRoomTeamMember,
-  SuccessRoomTeamMemberPhotoMetadata
-} from '../domain/types';
-
-type AddedTeamMember = {
-  key: string;
-  name: string;
-  role: string;
-  photo?: SuccessRoomTeamMemberPhotoMetadata & {
-    url: string;
-  };
-};
+import { postSuccessRoomApi, uploadSuccessRoomFile } from '../api/client';
+import type { SuccessRoomTeamMember } from '../domain/types';
 
 export type TeamMemberInput = {
   name: string;
@@ -33,68 +19,27 @@ export const createTeamMember = async ({
     throw new Error('Team member photo must be an image.');
   }
 
-  const uploadUrlResponse = await fetch(getSuccessRoomApiPath(roomSlug, 'upload-url'), {
-    method: 'POST'
-  });
+  const photo = await uploadSuccessRoomFile(roomSlug, photoFile);
 
-  if (!uploadUrlResponse.ok) {
+  if (!photo) {
     throw new Error('Team member photo could not be uploaded.');
   }
 
-  const { uploadUrl }: { uploadUrl: string } = await uploadUrlResponse.json();
-  const uploadResponse = await fetch(uploadUrl, {
-    method: 'POST',
-    headers: {
-      'content-type': photoFile.type
-    },
-    body: photoFile
-  });
-
-  if (!uploadResponse.ok) {
-    throw new Error('Team member photo could not be uploaded.');
-  }
-
-  const { storageId }: { storageId: SuccessRoomUploadedFileInput['storageId'] } =
-    await uploadResponse.json();
-  const response = await fetch(getSuccessRoomApiPath(roomSlug, 'team-members'), {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
+  const response = await postSuccessRoomApi(
+    roomSlug,
+    'team-members',
+    {
       name,
       role,
-      photo: {
-        storageId,
-        filename: photoFile.name,
-        contentType: photoFile.type,
-        byteSize: photoFile.size
-      }
-    } satisfies SuccessRoomPostApiBody<'team-members'>)
-  });
+      photo
+    }
+  );
 
   if (!response.ok) {
     throw new Error('Team member could not be added.');
   }
 
-  const { member }: { member: AddedTeamMember } = await response.json();
-  const photoHref = member.photo?.url ?? '';
+  const { member }: { member: SuccessRoomTeamMember } = await response.json();
 
-  return {
-    key: member.key,
-    name: member.name,
-    role: member.role,
-    imageHref: photoHref,
-    ...(member.photo
-      ? {
-          photo: {
-            photoId: member.photo.photoId,
-            filename: member.photo.filename,
-            contentType: member.photo.contentType,
-            byteSize: member.photo.byteSize,
-            href: photoHref
-          } satisfies SuccessRoomLinkedTeamMemberPhotoMetadata
-        }
-      : {})
-  };
+  return member;
 };

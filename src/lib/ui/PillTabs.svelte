@@ -15,6 +15,8 @@
     tabs,
     ariaLabel,
     defaultActiveTabKey,
+    activeTabKey: controlledActiveTabKey,
+    onActiveTabKeyChange,
     animatedTabKeys = [],
     listClass,
     panelClass,
@@ -24,6 +26,8 @@
     tabs: readonly Tab[];
     ariaLabel: string;
     defaultActiveTabKey?: string;
+    activeTabKey?: string;
+    onActiveTabKeyChange?: (tabKey: string) => void;
     animatedTabKeys?: readonly string[];
     listClass?: string;
     panelClass?: string;
@@ -36,10 +40,14 @@
   const resolveTab = (tabKey: string | undefined) =>
     tabs.find(({ key }) => key === tabKey) ?? getFallbackTab();
 
-  let activeTab = $derived(resolveTab(selectedTabKey));
+  let activeTab = $derived(resolveTab(controlledActiveTabKey ?? selectedTabKey));
   let activeTabKey = $derived(activeTab?.key);
 
   $effect(() => {
+    if (controlledActiveTabKey !== undefined) {
+      return;
+    }
+
     const resolvedTabKey = resolveTab(selectedTabKey)?.key;
 
     if (selectedTabKey !== resolvedTabKey) {
@@ -98,11 +106,18 @@
   const focusTab = (tabKey: string) => {
     document.getElementById(getTabId(tabKey))?.focus();
   };
+  const selectTab = (tabKey: string) => {
+    if (controlledActiveTabKey === undefined) {
+      selectedTabKey = tabKey;
+    }
+
+    onActiveTabKeyChange?.(tabKey);
+  };
   const selectTabAt = (index: number) => {
     const tab = tabs[index];
 
     if (tab) {
-      selectedTabKey = tab.key;
+      selectTab(tab.key);
       focusTab(tab.key);
     }
   };
@@ -148,7 +163,7 @@
           in:pillTabEntry={tab.key}
           out:pillTabExit={tab.key}
           onclick={() => {
-            selectedTabKey = tab.key;
+            selectTab(tab.key);
           }}
           onkeydown={handleTabKeydown}
         >

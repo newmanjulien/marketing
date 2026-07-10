@@ -48,10 +48,14 @@
   };
 
   const removeAttachment = async () => {
-    await deleteEditableTextAttachment({
+    const removed = await deleteEditableTextAttachment({
       roomSlug,
       resourceSlug
     });
+
+    if (!removed) {
+      return;
+    }
 
     editableState = {
       content: editableState.content,
@@ -75,6 +79,7 @@
   type="file"
   onchange={(event) => {
     const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = '';
 
     if (file) {
       void uploadAttachment(file);

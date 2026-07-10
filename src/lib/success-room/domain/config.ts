@@ -28,13 +28,8 @@ export type SuccessRoomRoutedResourceSlug = Exclude<
   SuccessRoomAssetResourceSlug
 >;
 
-export const getSuccessRoomResourceDefinition = (resourceSlug: string) =>
+const getSuccessRoomResourceDefinition = (resourceSlug: string) =>
   successRoomResourceDefinitions.find((resource) => resource.slug === resourceSlug);
-
-export const isSuccessRoomEditableTextResourceSlug = (
-  resourceSlug: string,
-): resourceSlug is SuccessRoomEditableTextResourceSlug =>
-  getSuccessRoomResourceDefinition(resourceSlug)?.kind === 'editable-text';
 
 export const isSuccessRoomRoutedResourceSlug = (
   resourceSlug: string,
