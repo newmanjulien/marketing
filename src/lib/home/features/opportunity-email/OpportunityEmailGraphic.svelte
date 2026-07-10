@@ -43,12 +43,11 @@ There's also a proposal our partner Thoughtworks submitted to them last month.`,
 
     accounting: `Hi Shlok,
 
-Our review of Linamar’s tax return identified indicators that suggest the client is expanding into Europe. This may be an opportunity to help assess cyber considerations related to data protection and third-party risk.
+Our review of Linamar’s tax return suggests the client is expanding into Europe. This may be an opportunity to help them assess cyber considerations related to data protection.
 
-You could connect with Tax Partner Scott Duarte to gather context and find where we can provide value. 
+Tax Partner Scott Duarte would be the best person to connect with for additional context.
 
-Topics to explore with Scott: new sources of revenue outside of Canada and the US, increased travel activities in Europe, new professional services engagements in Europe.
-`
+Topics to explore with Scott: Linamar’s new sources of revenue outside of Canada and the U.S., increased travel activity in Europe, and new professional services engagements related to European real estate.`
   } as const satisfies Record<HomeIndustryId, string>;
 
   let selectedIndustryId = $state<HomeIndustryId>('insurance');
