@@ -18,19 +18,19 @@
       key: 'format',
       label: 'Format',
       description:
-        'Review the sample email your team will receive, with an optional attachment.'
+        'Review the sample email your team will receive, with an optional attachment'
     },
     {
       key: 'data-sources',
       label: 'Data sources',
       description:
-        'List the data sources we will need to connect for this initial email format.'
+        'List the data sources we will need to connect for this initial email format'
     }
   ] as const satisfies readonly EditableTextSection[];
 
   const panelContentClasses = 'grid gap-[22px]';
   const panelDescriptionClasses =
-    'max-w-[42rem] text-[14px] font-book leading-[1.45] tracking-normal text-stone-500 sm:text-[15px]';
+    'max-w-[42rem] text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]';
 
   let {
     room,

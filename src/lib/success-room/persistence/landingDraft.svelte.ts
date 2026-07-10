@@ -5,6 +5,7 @@ import {
 import { createSyncedSnapshot, scheduleJsonSave } from './autosave.svelte';
 import { createTeamMember, type TeamMemberInput } from '../team/teamClient';
 import type {
+  SuccessRoomBenefitsPatch,
   SuccessRoomBenefitsState,
   SuccessRoomLandingRoom,
   SuccessRoomLandingState,
@@ -27,6 +28,7 @@ const normalizeBenefitsForEditor = (
   benefits: SuccessRoomBenefitsState
 ): SuccessRoomBenefitsState => ({
   selectedCardKeys: [...benefits.selectedCardKeys],
+  selectedCustomBenefit: benefits.selectedCustomBenefit,
   painPoints: normalizePainPointsForEditor(benefits.painPoints)
 });
 
@@ -62,6 +64,7 @@ type SuccessRoomBenefitsDraftSnapshot = {
   roomSlug: string;
   benefitsVersion: string;
   benefits: SuccessRoomBenefitsState;
+  customBenefitInput: string;
 };
 
 type SuccessRoomTeamDraftSnapshot = {
@@ -77,7 +80,8 @@ const createBenefitsDraftSnapshot = (
 ): SuccessRoomBenefitsDraftSnapshot => ({
   roomSlug: room.slug,
   benefitsVersion,
-  benefits: normalizeBenefitsForEditor(state.benefits)
+  benefits: normalizeBenefitsForEditor(state.benefits),
+  customBenefitInput: state.benefits.selectedCustomBenefit ?? ''
 });
 
 const createTeamDraftSnapshot = (room: SuccessRoomLandingRoom): SuccessRoomTeamDraftSnapshot => ({
@@ -118,7 +122,7 @@ export const createSuccessRoomLandingDraft = (
 
   const saveBenefits = (
     key: string,
-    benefits: Partial<SuccessRoomLandingState['benefits']>
+    benefits: SuccessRoomBenefitsPatch
   ) => {
     scheduleJsonSave({
       saveQueue,
@@ -171,6 +175,32 @@ export const createSuccessRoomLandingDraft = (
     });
   };
 
+  const updateCustomBenefit = (customBenefitInput: string, selected: boolean) => {
+    const currentBenefits = benefitsDraft.current.benefits;
+    const wasSelected = currentBenefits.selectedCustomBenefit !== null;
+    const normalizedInput = customBenefitInput.trim();
+    const isSelected = selected && normalizedInput.length > 0;
+    const nextCustomBenefitInput =
+      isSelected && !wasSelected ? normalizedInput : customBenefitInput;
+    const selectedCustomBenefit = isSelected ? nextCustomBenefitInput : null;
+    const benefits = {
+      ...currentBenefits,
+      selectedCustomBenefit
+    };
+
+    benefitsDraft.replace({
+      ...benefitsDraft.current,
+      benefits,
+      customBenefitInput: nextCustomBenefitInput
+    });
+
+    if (wasSelected || isSelected) {
+      saveBenefits('customBenefit', {
+        selectedCustomBenefit
+      });
+    }
+  };
+
   const setPainPoints = (nextPainPoints: string[]) => {
     const benefits = {
       ...benefitsDraft.current.benefits,
@@ -191,6 +221,27 @@ export const createSuccessRoomLandingDraft = (
     },
     set selectedBenefitKeys(nextSelectedBenefitKeys: string[]) {
       setSelectedBenefitKeys(nextSelectedBenefitKeys);
+    },
+    get customBenefitInput() {
+      return benefitsDraft.current.customBenefitInput;
+    },
+    set customBenefitInput(customBenefitInput: string) {
+      updateCustomBenefit(
+        customBenefitInput,
+        benefitsDraft.current.benefits.selectedCustomBenefit !== null
+      );
+    },
+    get customBenefitSelected() {
+      return benefitsDraft.current.benefits.selectedCustomBenefit !== null;
+    },
+    set customBenefitSelected(selected: boolean) {
+      updateCustomBenefit(benefitsDraft.current.customBenefitInput, selected);
+    },
+    get selectedBenefitCount() {
+      return (
+        benefitsDraft.current.benefits.selectedCardKeys.length +
+        (benefitsDraft.current.benefits.selectedCustomBenefit !== null ? 1 : 0)
+      );
     },
     get painPoints() {
       return benefitsDraft.current.benefits.painPoints;

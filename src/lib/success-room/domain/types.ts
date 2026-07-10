@@ -1,5 +1,9 @@
 import type { kickoffScheduleColumns } from '../../../../shared/successRoomResources';
 import type {
+  SuccessRoomPlanAction as SharedSuccessRoomPlanAction,
+  SuccessRoomPlanState as SharedSuccessRoomPlanState
+} from '../../../../shared/successRoomPlan';
+import type {
   SuccessRoomEditableTextResourceSlug,
   SuccessRoomKickoffScheduleResourceSlug
 } from './config';
@@ -124,16 +128,19 @@ export type SuccessRoomMutualSuccessPlanCatalog = {
 
 export type SuccessRoomBenefitsState = {
   selectedCardKeys: string[];
+  selectedCustomBenefit: string | null;
   painPoints: string[];
 };
 
-export type SuccessRoomPlanState = {
-  checkedTaskKeys: string[];
-  dateOverridesByTaskKey: Record<string, string>;
-  assigneeKeyByTaskKey: Record<string, string>;
+export type SuccessRoomBenefitsPatch = {
+  selectedCardKeys?: string[];
+  selectedCustomBenefit?: string | null;
+  painPoints?: string[];
 };
 
-export type SuccessRoomPlanUpdate = Partial<SuccessRoomPlanState>;
+export type SuccessRoomPlanState = SharedSuccessRoomPlanState;
+
+export type SuccessRoomPlanAction = SharedSuccessRoomPlanAction;
 
 export type SuccessRoomEditableTextState = {
   content: string;

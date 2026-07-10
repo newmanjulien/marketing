@@ -62,9 +62,11 @@ export default defineSchema({
     state: v.object({
       benefits: v.object({
         selectedCardKeys: v.array(v.string()),
+        selectedCustomBenefit: v.union(v.string(), v.null()),
         painPoints: v.array(v.string()),
       }),
       plan: v.object({
+        lastOpenedAccordionKey: v.union(v.string(), v.null()),
         checkedTaskKeys: v.array(v.string()),
         dateOverridesByTaskKey: v.record(v.string(), v.string()),
         assigneeKeyByTaskKey: v.record(v.string(), v.string()),

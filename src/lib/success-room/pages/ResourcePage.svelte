@@ -44,7 +44,7 @@
       <MutualSuccessPlanResourcePanel
         {resource}
         plan={draft.plan}
-        onPlanChange={draft.updatePlan}
+        onPlanAction={draft.dispatchPlanAction}
       />
     {:else if resource.kind === 'editable-text'}
       <EditableTextResourcePanel

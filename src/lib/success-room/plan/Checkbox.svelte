@@ -26,7 +26,7 @@
     -webkit-appearance: none;
     appearance: none;
     border: 1px solid rgb(214 211 209);
-    border-radius: 2px;
+    border-radius: 4px;
     background: white;
     display: grid;
     place-content: center;

@@ -4,10 +4,10 @@ import type {
   SuccessRoomKickoffScheduleResourceSlug
 } from './config';
 import type {
-  SuccessRoomBenefitsState,
+  SuccessRoomBenefitsPatch,
   SuccessRoomEditableTextState,
   SuccessRoomKickoffScheduleState,
-  SuccessRoomPlanState
+  SuccessRoomPlanAction
 } from './types';
 
 export type SuccessRoomUploadedFileInput = {
@@ -19,10 +19,10 @@ export type SuccessRoomUploadedFileInput = {
 
 export type SuccessRoomPostApiBodyByOperation = {
   benefits: {
-    benefits: Partial<SuccessRoomBenefitsState>;
+    benefits: SuccessRoomBenefitsPatch;
   };
   plan: {
-    plan: SuccessRoomPlanState;
+    action: SuccessRoomPlanAction;
   };
   'editable-text': {
     resourceSlug: SuccessRoomEditableTextResourceSlug;

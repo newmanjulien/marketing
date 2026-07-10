@@ -9,12 +9,14 @@ import {
 } from '../../../../shared/successRoomResources';
 
 export const getDefaultPlanState = (): SuccessRoomPlanState => ({
+  lastOpenedAccordionKey: null,
   checkedTaskKeys: [],
   dateOverridesByTaskKey: {},
   assigneeKeyByTaskKey: {}
 });
 
 export const clonePlan = (plan: SuccessRoomPlanState): SuccessRoomPlanState => ({
+  lastOpenedAccordionKey: plan.lastOpenedAccordionKey,
   checkedTaskKeys: [...plan.checkedTaskKeys],
   dateOverridesByTaskKey: {
     ...plan.dateOverridesByTaskKey

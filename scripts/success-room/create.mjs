@@ -6,66 +6,12 @@
 // and uploads its configured deck/audio files.
 
 import { api } from "../../convex/_generated/api.js";
-import {
-  assertUniqueKey,
-  parseSortOrder,
-  readCsvRecords,
-  requireValue,
-} from "./helpers/csv.mjs";
+import { readBenefitCards } from "./helpers/benefit-cards.mjs";
 import {
   createSeedClient,
   uploadSeedFile,
   validateNewSuccessRoomSlug,
 } from "./helpers/seed-common.mjs";
-
-const benefitsCsvFilename = "create-benefits.csv";
-const benefitHeaders = ["key", "title", "description", "sortOrder"];
-
-const readBenefitCards = async () => {
-  const records = await readCsvRecords({
-    baseDir: import.meta.dirname,
-    filename: benefitsCsvFilename,
-    expectedHeaders: benefitHeaders,
-  });
-  const benefitKeys = new Map();
-  const benefitCards = records
-    .map((record, index) => {
-      const rowNumber = index + 2;
-      const key = requireValue(record, "key", benefitsCsvFilename, rowNumber);
-
-      assertUniqueKey(
-        benefitKeys,
-        key,
-        benefitsCsvFilename,
-        rowNumber,
-        "benefit key",
-      );
-
-      return {
-        key,
-        title: requireValue(record, "title", benefitsCsvFilename, rowNumber),
-        description: requireValue(
-          record,
-          "description",
-          benefitsCsvFilename,
-          rowNumber,
-        ),
-        sortOrder: parseSortOrder(
-          record,
-          "sortOrder",
-          benefitsCsvFilename,
-          rowNumber,
-        ),
-      };
-    })
-    .sort((left, right) => left.sortOrder - right.sortOrder);
-
-  if (benefitCards.length === 0) {
-    throw new Error(`${benefitsCsvFilename} must include at least one benefit.`);
-  }
-
-  return benefitCards;
-};
 
 // Add a new base room here. This script creates deck, audio, and benefits.
 // It never adds extra sections and never overwrites an existing room.
@@ -84,7 +30,7 @@ const room = {
 };
 
 const { client, seedSecret } = await createSeedClient();
-const benefitCards = await readBenefitCards();
+const benefitCards = await readBenefitCards(import.meta.dirname);
 const slug = await validateNewSuccessRoomSlug({
   client,
   seedSecret,

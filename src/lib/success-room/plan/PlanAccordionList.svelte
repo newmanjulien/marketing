@@ -15,8 +15,8 @@
     team,
     planAccordions,
     plan,
-    openItemId,
-    onToggleItem,
+    openAccordionKey,
+    onOpenAccordion,
     onTaskCheckedChange,
     onOpenAssigneePicker,
     onOpenDatePicker
@@ -25,8 +25,8 @@
     team: SuccessRoomTeamMember[];
     planAccordions: SuccessRoomPlanAccordion[];
     plan: SuccessRoomPlanState;
-    openItemId: string | null;
-    onToggleItem: (accordionKey: string) => void;
+    openAccordionKey: string | null;
+    onOpenAccordion: (accordionKey: string) => void;
     onTaskCheckedChange: (taskKey: string, checked: boolean) => void;
     onOpenAssigneePicker: (taskKey: string) => void;
     onOpenDatePicker: (taskKey: string, dateLabel: string) => void;
@@ -77,7 +77,7 @@
 
 <ul class={accordionListClasses} aria-label={`${resource.title} content`}>
   {#each planAccordions as item (item.key)}
-    {@const isOpen = openItemId === item.key}
+    {@const isOpen = openAccordionKey === item.key}
     {@const ToggleIcon = isOpen ? MinusIcon : PlusIcon}
     {@const cardVariant = accordionCardVariants[item.variant]}
     <li class={[accordionItemClasses, cardVariant.item]}>
@@ -86,7 +86,7 @@
         class={accordionTriggerClasses}
         aria-expanded={isOpen}
         aria-controls={`${item.key}-tasks`}
-        onclick={() => onToggleItem(item.key)}
+        onclick={() => onOpenAccordion(item.key)}
       >
         <span class={[accordionTitleClasses, cardVariant.title]}>
           {item.title}

@@ -1,49 +1,36 @@
-import type { SuccessRoomPlanState, SuccessRoomPlanUpdate } from '../domain/types';
+import type { SuccessRoomPlanAction } from '../domain/types';
 import { formatIsoDate } from './planDates';
 
-export const createCheckedTaskUpdate = (
-  plan: SuccessRoomPlanState,
+export const createOpenAccordionAction = (
+  accordionKey: string,
+): SuccessRoomPlanAction => ({
+  type: 'open-accordion',
+  accordionKey
+});
+
+export const createTaskCheckedAction = (
   taskKey: string,
   checked: boolean,
-): SuccessRoomPlanUpdate => {
-  const nextCheckedTaskKeys = new Set(plan.checkedTaskKeys);
+): SuccessRoomPlanAction => ({
+  type: 'set-task-checked',
+  taskKey,
+  checked
+});
 
-  if (checked) {
-    nextCheckedTaskKeys.add(taskKey);
-  } else {
-    nextCheckedTaskKeys.delete(taskKey);
-  }
-
-  return {
-    checkedTaskKeys: Array.from(nextCheckedTaskKeys)
-  };
-};
-
-export const createTaskAssigneeUpdate = (
-  plan: SuccessRoomPlanState,
+export const createTaskAssigneeAction = (
   taskKey: string,
   memberKey: string | null,
-): SuccessRoomPlanUpdate => {
-  const nextAssigneeKeyByTaskKey = { ...plan.assigneeKeyByTaskKey };
+): SuccessRoomPlanAction => ({
+  type: 'set-task-assignee',
+  taskKey,
+  memberKey
+});
 
-  if (memberKey) {
-    nextAssigneeKeyByTaskKey[taskKey] = memberKey;
-  } else {
-    delete nextAssigneeKeyByTaskKey[taskKey];
-  }
-
-  return {
-    assigneeKeyByTaskKey: nextAssigneeKeyByTaskKey
-  };
-};
-
-export const createTaskDateUpdate = (
-  plan: SuccessRoomPlanState,
+export const createTaskDateAction = (
   taskKey: string,
   date: Date,
-): SuccessRoomPlanUpdate => ({
-  dateOverridesByTaskKey: {
-    ...plan.dateOverridesByTaskKey,
-    [taskKey]: formatIsoDate(date)
-  }
+): SuccessRoomPlanAction => ({
+  type: 'set-task-date',
+  taskKey,
+  date: formatIsoDate(date)
 });

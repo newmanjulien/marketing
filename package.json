@@ -9,6 +9,7 @@
     "convex:codegen": "convex codegen",
     "generate:reserved-slugs": "node scripts/success-room/generate-reserved-slugs.mjs",
     "create:success-room": "node scripts/success-room/create.mjs",
+    "refresh:success-room:benefits": "node scripts/success-room/refresh-benefits.mjs",
     "add:success-room:mutual-success-plan": "node scripts/success-room/add-sections/mutual-success-plan.mjs",
     "add:success-room:initial-format": "node scripts/success-room/add-sections/initial-format.mjs",
     "add:success-room:kickoff-schedule": "node scripts/success-room/add-sections/kickoff-schedule.mjs",

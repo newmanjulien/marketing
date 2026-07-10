@@ -3,6 +3,8 @@ import { mutation, query } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { parseSuccessRoomSlug } from "../shared/successRoomSlugs";
+import { maxCustomBenefitLength } from "../shared/successRoomBenefits";
+import { applySuccessRoomPlanAction } from "../shared/successRoomPlan";
 import {
   audioResourceDefinition,
   audioResourceKey,
@@ -87,11 +89,27 @@ const fileInput = v.object({
   byteSize: v.number(),
 });
 
-const planSnapshot = v.object({
-  checkedTaskKeys: v.array(v.string()),
-  dateOverridesByTaskKey: v.record(v.string(), v.string()),
-  assigneeKeyByTaskKey: v.record(v.string(), v.string()),
-});
+const planAction = v.union(
+  v.object({
+    type: v.literal("open-accordion"),
+    accordionKey: v.string(),
+  }),
+  v.object({
+    type: v.literal("set-task-checked"),
+    taskKey: v.string(),
+    checked: v.boolean(),
+  }),
+  v.object({
+    type: v.literal("set-task-assignee"),
+    taskKey: v.string(),
+    memberKey: v.union(v.string(), v.null()),
+  }),
+  v.object({
+    type: v.literal("set-task-date"),
+    taskKey: v.string(),
+    date: v.string(),
+  }),
+);
 
 const kickoffScheduleSnapshot = v.object({
   rows: v.array(
@@ -105,15 +123,18 @@ const kickoffScheduleSnapshot = v.object({
 
 const benefitsPatch = v.object({
   selectedCardKeys: v.optional(v.array(v.string())),
+  selectedCustomBenefit: v.optional(v.union(v.string(), v.null())),
   painPoints: v.optional(v.array(v.string())),
 });
 
 const emptyBenefitsState = (): BenefitsState => ({
   selectedCardKeys: [],
+  selectedCustomBenefit: null,
   painPoints: [],
 });
 
 const emptyPlanState = (): PlanState => ({
+  lastOpenedAccordionKey: null,
   checkedTaskKeys: [],
   dateOverridesByTaskKey: {},
   assigneeKeyByTaskKey: {},
@@ -309,14 +330,25 @@ const activePlanTaskKeys = (room: SuccessRoom) =>
     ),
   );
 
+const activePlanAccordionKeys = (room: SuccessRoom) =>
+  new Set(sortActiveItems(room.planAccordions).map((accordion) => accordion.key));
+
 const activeTeamMemberKeys = (room: SuccessRoom) =>
   new Set(sortActiveTeamMembers(room.teamMembers).map((member) => member.key));
 
 const sanitizeBenefitsState = (room: SuccessRoom, state: BenefitsState): BenefitsState => {
   const validCardKeys = activeBenefitKeys(room);
+  const selectedCustomBenefit = state.selectedCustomBenefit?.trim() || null;
+
+  if (selectedCustomBenefit && selectedCustomBenefit.length > maxCustomBenefitLength) {
+    throw new ConvexError(
+      `Custom benefit must include ${maxCustomBenefitLength} characters or fewer`,
+    );
+  }
 
   return {
     selectedCardKeys: uniqueItems(state.selectedCardKeys).filter((id) => validCardKeys.has(id)),
+    selectedCustomBenefit,
     painPoints: state.painPoints
       .map((painPoint) => painPoint.trim())
       .filter(Boolean)
@@ -328,10 +360,16 @@ const sanitizePlanState = (
   room: SuccessRoom,
   state: PlanState,
 ): PlanState => {
+  const validAccordionKeys = activePlanAccordionKeys(room);
   const validTaskKeys = activePlanTaskKeys(room);
   const validMemberKeys = activeTeamMemberKeys(room);
+  const lastOpenedAccordionKey = state.lastOpenedAccordionKey;
 
   return {
+    lastOpenedAccordionKey:
+      lastOpenedAccordionKey && validAccordionKeys.has(lastOpenedAccordionKey)
+        ? lastOpenedAccordionKey
+        : null,
     checkedTaskKeys: uniqueItems(state.checkedTaskKeys).filter((key) => validTaskKeys.has(key)),
     dateOverridesByTaskKey: Object.fromEntries(
       Object.entries(state.dateOverridesByTaskKey).filter(([taskKey]) => validTaskKeys.has(taskKey)),
@@ -655,6 +693,7 @@ const publicResourcePayload = async (
       state: {
         kind: mutualSuccessPlanResourceKey as typeof mutualSuccessPlanResourceKey,
         plan: {
+          lastOpenedAccordionKey: plan.lastOpenedAccordionKey,
           checkedTaskKeys: plan.checkedTaskKeys,
           dateOverridesByTaskKey: plan.dateOverridesByTaskKey,
           assigneeKeyByTaskKey: plan.assigneeKeyByTaskKey,
@@ -868,8 +907,13 @@ export const patchBenefits = mutation({
   },
   handler: async (ctx, args) => {
     const room = await requireAuthorizedRoom(ctx, args.slug, args.accessToken);
+    const selectedCustomBenefit =
+      args.benefits.selectedCustomBenefit === undefined
+        ? room.state.benefits.selectedCustomBenefit
+        : args.benefits.selectedCustomBenefit;
     const nextBenefits = sanitizeBenefitsState(room, {
       selectedCardKeys: args.benefits.selectedCardKeys ?? room.state.benefits.selectedCardKeys,
+      selectedCustomBenefit,
       painPoints: args.benefits.painPoints ?? room.state.benefits.painPoints,
     });
 
@@ -880,19 +924,20 @@ export const patchBenefits = mutation({
   },
 });
 
-export const replacePlan = mutation({
+export const applyPlanAction = mutation({
   args: {
     slug: v.string(),
     accessToken: v.string(),
-    plan: planSnapshot,
+    action: planAction,
   },
   handler: async (ctx, args) => {
     const room = await requireAuthorizedRoom(ctx, args.slug, args.accessToken);
     assertResourceEnabled(room, mutualSuccessPlanResourceKey);
+    const nextPlan = applySuccessRoomPlanAction(room.state.plan, args.action);
 
     await patchRoomState(ctx, room, {
       ...room.state,
-      plan: sanitizePlanState(room, args.plan),
+      plan: sanitizePlanState(room, nextPlan),
     });
   },
 });
@@ -1065,6 +1110,25 @@ export const createSuccessRoom = mutation({
     });
 
     return { slug, roomId };
+  },
+});
+
+export const replaceSuccessRoomBenefitCards = mutation({
+  args: {
+    seedSecret: v.string(),
+    slug: v.string(),
+    benefitCards: v.array(seedBenefitCard),
+  },
+  handler: async (ctx, args) => {
+    assertSeedAccess(args.seedSecret);
+
+    const room = await requireRoom(ctx, args.slug);
+    const now = Date.now();
+
+    await ctx.db.patch(room._id, {
+      benefitCards: sanitizeSeedBenefitCards(args.benefitCards, now),
+      updatedAt: now,
+    });
   },
 });
 

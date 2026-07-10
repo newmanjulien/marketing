@@ -2,6 +2,7 @@ import {
   attachSuccessRoomSaveQueueLifecycle,
   createSuccessRoomSaveQueue
 } from './saveQueue';
+import { applySuccessRoomPlanAction } from '../../../../shared/successRoomPlan';
 import { createSyncedSnapshot, scheduleJsonSave } from './autosave.svelte';
 import {
   cloneKickoffScheduleState,
@@ -18,8 +19,8 @@ import type {
 import type {
   SuccessRoomEditableTextState,
   SuccessRoomKickoffScheduleState,
+  SuccessRoomPlanAction,
   SuccessRoomPlanState,
-  SuccessRoomPlanUpdate,
   SuccessRoomResourceRoom,
   SuccessRoomRoutedResource,
   SuccessRoomResourceState
@@ -94,15 +95,18 @@ export const createSuccessRoomResourceDraft = (
     return resource.slug;
   };
 
-  const savePlanSnapshot = (planSnapshot: SuccessRoomPlanState) => {
-    const planToSave = clonePlan(planSnapshot);
+  const getPlanActionSaveKey = (action: SuccessRoomPlanAction) =>
+    action.type === 'open-accordion'
+      ? 'plan:open-accordion'
+      : `plan:${action.taskKey}:${action.type}`;
 
+  const savePlanAction = (action: SuccessRoomPlanAction) => {
     scheduleJsonSave({
       saveQueue,
-      key: 'plan',
+      key: getPlanActionSaveKey(action),
       roomSlug: getRoom().slug,
       endpoint: 'plan',
-      body: { plan: planToSave },
+      body: { action },
       errorMessage: 'Success room plan could not be saved.'
     });
   };
@@ -180,28 +184,14 @@ export const createSuccessRoomResourceDraft = (
     get plan() {
       return draft.current.plan;
     },
-    updatePlan(update: SuccessRoomPlanUpdate) {
-      const currentPlan = draft.current.plan;
-      const nextPlan = {
-        checkedTaskKeys:
-          update.checkedTaskKeys !== undefined
-            ? [...update.checkedTaskKeys]
-            : currentPlan.checkedTaskKeys,
-        dateOverridesByTaskKey:
-          update.dateOverridesByTaskKey !== undefined
-            ? { ...update.dateOverridesByTaskKey }
-            : currentPlan.dateOverridesByTaskKey,
-        assigneeKeyByTaskKey:
-          update.assigneeKeyByTaskKey !== undefined
-            ? { ...update.assigneeKeyByTaskKey }
-            : currentPlan.assigneeKeyByTaskKey
-      };
+    dispatchPlanAction(action: SuccessRoomPlanAction) {
+      const nextPlan = applySuccessRoomPlanAction(draft.current.plan, action);
 
       draft.replace({
         ...draft.current,
         plan: nextPlan
       });
-      savePlanSnapshot(nextPlan);
+      savePlanAction(action);
     },
     get editableTextState() {
       return draft.current.editableText;

@@ -4,15 +4,16 @@
   import TaskAssigneeModal from './TaskAssigneeModal.svelte';
   import { resolveTaskDisplayDate } from './planDates';
   import {
-    createCheckedTaskUpdate,
-    createTaskAssigneeUpdate,
-    createTaskDateUpdate
+    createOpenAccordionAction,
+    createTaskAssigneeAction,
+    createTaskCheckedAction,
+    createTaskDateAction
   } from './planState';
   import type {
     SuccessRoomMutualSuccessPlanResource,
     SuccessRoomPlanAccordion,
+    SuccessRoomPlanAction,
     SuccessRoomPlanState,
-    SuccessRoomPlanUpdate,
     SuccessRoomTeamMember
   } from '../domain/types';
 
@@ -30,28 +31,37 @@
     team,
     planAccordions,
     plan,
-    onPlanChange
+    onPlanAction
   }: {
     resource: SuccessRoomMutualSuccessPlanResource;
     team: SuccessRoomTeamMember[];
     planAccordions: SuccessRoomPlanAccordion[];
     plan: SuccessRoomPlanState;
-    onPlanChange: (update: SuccessRoomPlanUpdate) => void;
+    onPlanAction: (action: SuccessRoomPlanAction) => void;
   } = $props();
 
-  let openItemId = $state<string | null>(null);
   let assigneePickerContext = $state<AssigneePickerContext | null>(null);
   let datePickerContext = $state<DatePickerContext | null>(null);
   let assigneeKeyByTaskKey = $derived(plan.assigneeKeyByTaskKey);
+  let openAccordionKey = $derived(
+    plan.lastOpenedAccordionKey &&
+      planAccordions.some((accordion) => accordion.key === plan.lastOpenedAccordionKey)
+      ? plan.lastOpenedAccordionKey
+      : (planAccordions[0]?.key ?? null)
+  );
 
   const fallbackDatePickerDate = new Date();
 
-  const toggleItem = (itemId: string) => {
-    openItemId = openItemId === itemId ? null : itemId;
+  const openAccordion = (accordionKey: string) => {
+    if (accordionKey === openAccordionKey) {
+      return;
+    }
+
+    onPlanAction(createOpenAccordionAction(accordionKey));
   };
 
   const setTaskChecked = (taskKey: string, checked: boolean) => {
-    onPlanChange(createCheckedTaskUpdate(plan, taskKey, checked));
+    onPlanAction(createTaskCheckedAction(taskKey, checked));
   };
 
   const openAssigneePickerModal = (taskKey: string) => {
@@ -69,7 +79,7 @@
       return;
     }
 
-    onPlanChange(createTaskAssigneeUpdate(plan, assigneePickerContext.taskKey, memberKey));
+    onPlanAction(createTaskAssigneeAction(assigneePickerContext.taskKey, memberKey));
   };
 
   const openDatePickerModal = (taskKey: string, dateLabel: string) => {
@@ -92,7 +102,7 @@
       return;
     }
 
-    onPlanChange(createTaskDateUpdate(plan, datePickerContext.taskKey, date));
+    onPlanAction(createTaskDateAction(datePickerContext.taskKey, date));
   };
 
   const selectedDatePickerDate = $derived(datePickerContext?.selectedDate ?? fallbackDatePickerDate);
@@ -108,8 +118,8 @@
   {team}
   {planAccordions}
   {plan}
-  {openItemId}
-  onToggleItem={toggleItem}
+  {openAccordionKey}
+  onOpenAccordion={openAccordion}
   onTaskCheckedChange={setTaskChecked}
   onOpenAssigneePicker={openAssigneePickerModal}
   onOpenDatePicker={openDatePickerModal}

@@ -1,5 +1,5 @@
 export const successRoomDescription =
-  "A shared space for everything we create while preparing for a proof of concept and deciding whether to collaborate.";
+  "A shared space for everything we create while preparing for a proof of concept and deciding whether to collaborate";
 
 export const deckResourceKey = "deck";
 export const audioResourceKey = "audio";
@@ -27,7 +27,7 @@ export const mutualSuccessPlanResourceDefinition = {
   title: "Mutual success plan",
   actionLabel: "View and edit your mutual success plan",
   description:
-    "Review how we will work together to start generating revenue for your business quickly and smoothly.",
+    "Review how we will work together to start generating revenue for your business quickly and smoothly",
 } as const;
 
 export const initialFormatResourceDefinition = {
@@ -36,7 +36,7 @@ export const initialFormatResourceDefinition = {
   title: "Initial email format",
   actionLabel: "View and edit your initial email format",
   description:
-    "Review and edit the initial email format we will send to your team during the proof of concept.",
+    "Review and edit the initial email format we will send to your team during the proof of concept",
   editorRows: 14,
 } as const;
 
@@ -46,7 +46,7 @@ export const kickoffScheduleResourceDefinition = {
   title: "Kickoff schedule",
   actionLabel: "View and edit your kickoff schedule",
   description:
-    "Review and edit the schedule for Overbase's engineer to come to your office and kick off our collaboration in person.",
+    "Review and edit the schedule for Overbase's engineer to come to your office and kick off our collaboration in person",
 } as const;
 
 export const successRoomResourceDefinitions = [

@@ -72,7 +72,7 @@ const operations: Record<string, Partial<Record<Method, Operation>>> = {
   },
   plan: {
     POST: bridgeOperation('POST', 'plan', {
-      mutation: api.successRooms.replacePlan,
+      mutation: api.successRooms.applyPlanAction,
       args: ({ slug, accessToken, body }) => ({ slug, accessToken, ...body })
     })
   },

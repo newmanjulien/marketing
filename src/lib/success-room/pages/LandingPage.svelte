@@ -42,7 +42,9 @@
     () => room,
     () => successRoomState
   );
-  const hasSelectedBenefits = $derived(draft.selectedBenefitKeys.length > 0);
+  const hasSelectedBenefits = $derived(draft.selectedBenefitCount > 0);
+  const panelDescriptionClasses =
+    'max-w-[42rem] text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]';
   const successRoomSections = $derived(
     baseSuccessRoomSections.filter((section) => {
       if (section.key === 'pain-points') {
@@ -103,24 +105,32 @@
     >
       {#snippet children(section)}
         {#if section.key === 'documents'}
-          <nav
-            class="grid grid-cols-1 gap-[14px] sm:grid-cols-2 sm:gap-[18px]"
-            aria-label={`${room.prospectName} success room resources`}
-          >
-            {#each room.resources as resource (resource.slug)}
-              <ResourceCard {room} {resource} />
-            {/each}
-          </nav>
+          <div class="grid gap-[18px]">
+            <p class={panelDescriptionClasses}>
+              Explore the documents and resources we co-created during this evaluation process
+            </p>
+
+            <nav
+              class="grid grid-cols-1 gap-[14px] sm:grid-cols-2 sm:gap-[18px]"
+              aria-label={`${room.prospectName} success room resources`}
+            >
+              {#each room.resources as resource (resource.slug)}
+                <ResourceCard {room} {resource} />
+              {/each}
+            </nav>
+          </div>
         {:else if section.key === 'benefits'}
           <BenefitsPanel
             benefitCards={room.benefitCards}
             bind:selectedBenefitKeys={draft.selectedBenefitKeys}
+            bind:customBenefitInput={draft.customBenefitInput}
+            bind:customBenefitSelected={draft.customBenefitSelected}
           />
         {:else if section.key === 'team'}
           <TeamPanel team={draft.team} onAddTeamMember={draft.addTeamMember} />
         {:else if section.key === 'pain-points'}
           <PainPointsPanel
-            selectedBenefitCount={draft.selectedBenefitKeys.length}
+            selectedBenefitCount={draft.selectedBenefitCount}
             bind:painPoints={draft.painPoints}
           />
         {/if}
