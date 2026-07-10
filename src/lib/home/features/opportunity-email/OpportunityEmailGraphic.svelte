@@ -43,10 +43,11 @@ There's also a proposal our partner Thoughtworks submitted to them last month.`,
 
     accounting: `Hi Shlok,
 
-You recently completed the tax return for TCC. And you can upload it for analysis here: 
-https://nrt.overbase.app/encrypted-upload
+Our review of Linamar’s tax return identified indicators that suggest the client is expanding into Europe. This may be an opportunity to help assess cyber considerations related to data protection and third-party risk.
 
-We will generate an opportunity report showing where TCC may need additional tax planning or advisory work. We will also point out where it may make sense to involve trusted professionals from your network.
+You could connect with Tax Partner Scott Duarte to gather context and find where we can provide value. 
+
+Topics to explore with Scott: new sources of revenue outside of Canada and the US, increased travel activities in Europe, new professional services engagements in Europe.
 `
   } as const satisfies Record<HomeIndustryId, string>;
 
