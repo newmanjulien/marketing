@@ -11,8 +11,7 @@
 
   const opportunityGroupCount = $derived(content.screenshots.opportunityGroups.length);
   const activeOpportunityGroup = $derived(
-    content.screenshots.opportunityGroups[activeOpportunityGroupIndex] ??
-      content.screenshots.opportunityGroups[0],
+    content.screenshots.opportunityGroups[activeOpportunityGroupIndex],
   );
   const renderedSections = $derived([
     {

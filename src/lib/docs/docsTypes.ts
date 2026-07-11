@@ -1,11 +1,5 @@
 import type { Component } from 'svelte';
-
-export type DocsSection = 'overview' | 'instructions';
-
-export type DocsSectionDefinition = {
-  key: DocsSection;
-  label: string;
-};
+import type { DocsSectionDefinition } from './docsSections';
 
 export type DocsPageSection = DocsSectionDefinition & {
   component: Component;

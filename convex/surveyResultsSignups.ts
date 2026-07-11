@@ -83,18 +83,17 @@ export const register = mutation({
       await ctx.db.patch(existingSignup._id, { lastSubmittedAt: submittedAt });
       return {
         status: "registered" as const,
-        signupId: existingSignup._id,
         created: false,
       };
     }
 
-    const signupId = await ctx.db.insert("surveyResultsSignups", {
+    await ctx.db.insert("surveyResultsSignups", {
       email,
       createdAt: submittedAt,
       lastSubmittedAt: submittedAt,
     });
 
-    return { status: "registered" as const, signupId, created: true };
+    return { status: "registered" as const, created: true };
   },
 });
 
@@ -118,7 +117,5 @@ export const deleteExpiredRateLimits = internalMutation({
         cutoff,
       });
     }
-
-    return { deletedRateLimits: expiredRateLimits.length };
   },
 });

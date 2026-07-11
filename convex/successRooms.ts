@@ -562,21 +562,6 @@ const deactivateFile = async (ctx: MutationCtx, file: SuccessRoomFile) => {
   });
 };
 
-const deactivateActiveFiles = async (
-  ctx: MutationCtx,
-  roomId: Id<"successRooms">,
-  predicate: (file: SuccessRoomFile) => boolean,
-) => {
-  for (const file of await ctx.db
-    .query("successRoomFiles")
-    .withIndex("by_room", (q) => q.eq("roomId", roomId))
-    .collect()) {
-    if (file.active && predicate(file)) {
-      await deactivateFile(ctx, file);
-    }
-  }
-};
-
 const linkedFileSummary = async (ctx: QueryCtx | MutationCtx, file: SuccessRoomFile) => {
   const url = await ctx.storage.getUrl(file.storageId);
 
@@ -714,13 +699,16 @@ const claimEditableAttachmentUpload = async (
   attachment: Infer<typeof fileInput>,
 ) => {
   assertResourceEnabled(room, purpose.resourceSlug);
-  await deactivateActiveFiles(
-    ctx,
-    room._id,
-    (file) =>
-      file.kind === "editable-attachment" &&
-      file.resourceKey === purpose.resourceSlug,
-  );
+  for (const file of await ctx.db
+    .query("successRoomFiles")
+    .withIndex("by_room_kind_active", (q) =>
+      q.eq("roomId", room._id).eq("kind", "editable-attachment").eq("active", true),
+    )
+    .collect()) {
+    if (file.resourceKey === purpose.resourceSlug) {
+      await deactivateFile(ctx, file);
+    }
+  }
 
   const now = Date.now();
   const fileKey = createKey("editable-attachment");

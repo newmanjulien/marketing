@@ -15,7 +15,7 @@ type SuccessRoomMutation = FunctionReference<'mutation', 'public', Record<string
 type RuntimeOperationContext = {
   slug: string;
   accessToken: string;
-  body: RequestBody | undefined;
+  body: RequestBody;
 };
 type OperationBodyByMethod = {
   POST: SuccessRoomPostApiBodyByOperation;
@@ -26,7 +26,6 @@ type OperationName<OperationMethod extends Method> = keyof OperationBodyByMethod
 
 type Operation = {
   mutation: SuccessRoomMutation;
-  readBody?: boolean;
   args: (context: RuntimeOperationContext) => Record<string, unknown>;
   response?: (output: unknown) => unknown;
 };
@@ -41,7 +40,6 @@ const bridgeOperation = <
   _name: Name,
   config: {
     mutation: Mutation;
-    readBody?: boolean;
     args: (context: {
       slug: string;
       accessToken: string;
@@ -51,7 +49,6 @@ const bridgeOperation = <
   }
 ): Operation => ({
   mutation: config.mutation,
-  readBody: config.readBody,
   args: ({ slug, accessToken, body }) =>
     config.args({
       slug,
@@ -130,7 +127,7 @@ const handleOperation = async (
   }
 
   const accessToken = requireSuccessRoomAccessToken(cookies, params.roomSlug);
-  const body = operation.readBody === false ? undefined : await readRequestBody(request);
+  const body = await readRequestBody(request);
   const output = await createConvexClient().mutation(
     operation.mutation,
     operation.args({

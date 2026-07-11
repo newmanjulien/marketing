@@ -1,27 +1,12 @@
+import type { api } from '../../../../convex/_generated/api';
 import type { Id } from '../../../../convex/_generated/dataModel';
-import type {
-  SuccessRoomEditableTextResourceSlug,
-  SuccessRoomKickoffScheduleResourceSlug
-} from './config';
-import type {
-  SuccessRoomBenefitsPatch,
-  SuccessRoomEditableTextState,
-  SuccessRoomKickoffScheduleState,
-  SuccessRoomLinkedFileMetadata,
-  SuccessRoomPlanAction,
-  SuccessRoomTeamMember
-} from './types';
+import type { FunctionArgs, FunctionReference } from 'convex/server';
+import type { SuccessRoomLinkedFileMetadata, SuccessRoomTeamMember } from './types';
 
-export type SuccessRoomUploadPurpose =
-  | {
-      type: 'editable-attachment';
-      resourceSlug: SuccessRoomEditableTextResourceSlug;
-    }
-  | {
-      type: 'team-member-photo';
-      name: string;
-      role: string;
-    };
+type MutationBody<Mutation extends FunctionReference<'mutation', 'public'>> = Omit<
+  FunctionArgs<Mutation>,
+  'slug' | 'accessToken'
+>;
 
 export type SuccessRoomUploadResult =
   | {
@@ -40,34 +25,22 @@ export type SuccessRoomUploadCapability = {
 };
 
 export type SuccessRoomAutosaveApiBodyByOperation = {
-  benefits: {
-    benefits: SuccessRoomBenefitsPatch;
-  };
-  plan: {
-    action: SuccessRoomPlanAction;
-  };
-  'editable-text': {
-    resourceSlug: SuccessRoomEditableTextResourceSlug;
-    editableText: Pick<SuccessRoomEditableTextState, 'content' | 'dataSources'>;
-  };
-  'kickoff-schedule': {
-    resourceSlug: SuccessRoomKickoffScheduleResourceSlug;
-    kickoffSchedule: SuccessRoomKickoffScheduleState;
-  };
+  benefits: MutationBody<typeof api.successRooms.patchBenefits>;
+  plan: MutationBody<typeof api.successRooms.applyPlanAction>;
+  'editable-text': MutationBody<typeof api.successRooms.patchEditableText>;
+  'kickoff-schedule': MutationBody<typeof api.successRooms.replaceKickoffSchedule>;
 };
 
 export type SuccessRoomPostApiBodyByOperation = SuccessRoomAutosaveApiBodyByOperation & {
-  'upload-intent': {
-    filename: string;
-    purpose: SuccessRoomUploadPurpose;
-  };
+  'upload-intent': MutationBody<typeof api.successRooms.createUploadIntent>;
 };
 
 export type SuccessRoomDeleteApiBodyByOperation = {
-  'editable-attachment': {
-    resourceSlug: SuccessRoomEditableTextResourceSlug;
-  };
+  'editable-attachment': MutationBody<typeof api.successRooms.removeEditableAttachment>;
 };
+
+export type SuccessRoomUploadPurpose =
+  SuccessRoomPostApiBodyByOperation['upload-intent']['purpose'];
 
 export type SuccessRoomAutosaveApiOperation = keyof SuccessRoomAutosaveApiBodyByOperation;
 export type SuccessRoomPostApiOperation = keyof SuccessRoomPostApiBodyByOperation;

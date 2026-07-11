@@ -1,10 +1,5 @@
-import type {
-  DocsPage,
-  DocsPageRegistryEntry,
-  DocsSection,
-  DocsSectionModule
-} from './docsTypes';
-import { docsSections, isDocsSection } from './docsSections';
+import type { DocsPage, DocsPageRegistryEntry, DocsSectionModule } from './docsTypes';
+import { docsSections, isDocsSection, type DocsSection } from './docsSections';
 
 const docsCategoryLabels: Record<string, string> = {
   insurance: 'Insurance'
@@ -42,17 +37,10 @@ type ResolvedDocsSection = (typeof docsSections)[number] & {
 const getDocsPageKey = (category: string, slug: string) => `${category}/${slug}`;
 
 const getDocsSectionPathParts = (path: string) => {
-  const match = path.match(/\/docs\/([^/]+)\/([^/]+)\/([^/]+)\.svx$/);
+  const [category, slug, filename] = path.split('/').slice(-3);
+  const section = filename.slice(0, -4);
 
-  if (!match) {
-    return undefined;
-  }
-
-  const section = match[3];
-
-  return isDocsSection(section)
-    ? { category: match[1], slug: match[2], section }
-    : undefined;
+  return isDocsSection(section) ? { category, slug, section } : undefined;
 };
 
 const docsPageRegistry = new Map(

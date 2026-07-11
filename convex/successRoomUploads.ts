@@ -20,15 +20,6 @@ const response = (body: string | null, status: number) =>
     headers: corsHeaders,
   });
 
-const jsonResponse = (body: unknown) =>
-  new Response(JSON.stringify(body), {
-    status: 200,
-    headers: {
-      ...corsHeaders,
-      "Content-Type": "application/json",
-    },
-  });
-
 const readCapability = (request: Request) => {
   const uploadIntentId = request.headers.get(successRoomUploadIntentHeader)?.trim();
   const authorization = request.headers.get("authorization")?.trim();
@@ -78,7 +69,9 @@ export const uploadSuccessRoomFile = httpAction(async (ctx, request) => {
       storageId,
     });
 
-    return jsonResponse(result);
+    return Response.json(result, {
+      headers: corsHeaders,
+    });
   } catch (uploadError) {
     if (storageId) {
       try {

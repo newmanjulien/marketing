@@ -25,8 +25,6 @@ export const deleteExpiredUploadIntents = internalMutation({
         cutoff,
       });
     }
-
-    return { deletedIntents: expiredIntents.length };
   },
 });
 
@@ -47,7 +45,6 @@ export const deleteOrphanedStorage = internalMutation({
     const orphanCandidates = storagePage.page.filter(
       (storedFile) => storedFile._creationTime < cutoff,
     );
-    let deletedFiles = 0;
 
     // All durable storage in this app is represented by successRoomFiles.
     for (const storedFile of orphanCandidates) {
@@ -58,7 +55,6 @@ export const deleteOrphanedStorage = internalMutation({
 
       if (!claimedFile) {
         await ctx.storage.delete(storedFile._id);
-        deletedFiles += 1;
       }
     }
 
@@ -71,7 +67,5 @@ export const deleteOrphanedStorage = internalMutation({
         cutoff,
       });
     }
-
-    return { deletedFiles, complete };
   },
 });

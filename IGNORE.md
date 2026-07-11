@@ -4,7 +4,7 @@ Look over all of this again. Tell me about how we could accomplish the same user
 
 Create a plan for a fresh agent who has no context. Explain from first principles without any information that's not necessary
 
-Compare this codebase vs head. What changes do you disagree with?
+Compare this codebase vs head. What changes do you disagree with (if any)?
 
 Are there other similar or adjacent opportunities?
 

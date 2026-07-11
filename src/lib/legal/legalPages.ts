@@ -9,14 +9,11 @@ const legalDateFormatter = new Intl.DateTimeFormat('en-US', {
 
 const legalPageModules = import.meta.glob<LegalPageModule>('../../content/legal/pages/*.svx');
 
-const getSlugFromPath = (path: string) => path.match(/\/([^/]+)\.svx$/)?.[1];
-
 const legalPageLoaders = new Map(
-  Object.entries(legalPageModules).flatMap(([path, load]) => {
-    const slug = getSlugFromPath(path);
-
-    return slug ? [[slug, load]] : [];
-  })
+  Object.entries(legalPageModules).map(([path, load]) => [
+    path.slice(path.lastIndexOf('/') + 1, -4),
+    load
+  ])
 );
 
 const formatLegalDate = (updatedAt: string) => legalDateFormatter.format(new Date(updatedAt));

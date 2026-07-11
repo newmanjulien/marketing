@@ -1,9 +1,10 @@
-import type { DocsSection, DocsSectionDefinition } from './docsTypes';
-
 export const docsSections = [
   { key: 'overview', label: 'Overview' },
   { key: 'instructions', label: 'Instructions' }
-] as const satisfies readonly DocsSectionDefinition[];
+] as const;
+
+export type DocsSectionDefinition = (typeof docsSections)[number];
+export type DocsSection = DocsSectionDefinition['key'];
 
 const docsSectionKeys = new Set<string>(docsSections.map(({ key }) => key));
 
