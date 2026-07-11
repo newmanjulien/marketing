@@ -35,7 +35,7 @@ export const revealWhenViewed: Action<HTMLElement> = (node) => {
 
     observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry?.isIntersecting) {
+        if (entry.isIntersecting) {
           showSection();
         } else {
           hideSection();

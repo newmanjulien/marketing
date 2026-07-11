@@ -1,9 +1,9 @@
 <script lang="ts">
   import DocumentRequestPage from '$lib/success-room/pages/DocumentRequestPage.svelte';
   import PasswordGate from '$lib/success-room/pages/PasswordGate.svelte';
-  import type { ActionData, PageData } from './$types';
+  import type { PageProps } from './$types';
 
-  let { data, form }: { data: PageData; form: ActionData } = $props();
+  let { data, form }: PageProps = $props();
 </script>
 
 {#if data.locked === true}

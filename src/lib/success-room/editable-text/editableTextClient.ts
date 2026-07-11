@@ -1,10 +1,6 @@
-import {
-  deleteSuccessRoomApi,
-  postSuccessRoomApi,
-  uploadSuccessRoomFile
-} from '../api/client';
+import { deleteSuccessRoomApi } from '../api/client';
+import { uploadSuccessRoomFile } from '../api/uploads';
 import type { SuccessRoomEditableTextResourceSlug } from '../domain/config';
-import type { SuccessRoomLinkedFileMetadata } from '../domain/types';
 
 export const uploadEditableTextAttachment = async ({
   roomSlug,
@@ -15,29 +11,20 @@ export const uploadEditableTextAttachment = async ({
   resourceSlug: SuccessRoomEditableTextResourceSlug;
   file: File;
 }) => {
-  const uploadedFile = await uploadSuccessRoomFile(roomSlug, file);
-
-  if (!uploadedFile) {
-    return null;
-  }
-
-  const attachmentResponse = await postSuccessRoomApi(
+  const result = await uploadSuccessRoomFile({
     roomSlug,
-    'editable-attachment',
-    {
-      resourceSlug,
-      file: uploadedFile
+    file,
+    purpose: {
+      type: 'editable-attachment',
+      resourceSlug
     }
-  );
+  });
 
-  if (!attachmentResponse.ok) {
-    return null;
+  if (result.type !== 'editable-attachment') {
+    throw new Error('Attachment upload returned an unexpected result.');
   }
 
-  const { attachment }: { attachment: SuccessRoomLinkedFileMetadata } =
-    await attachmentResponse.json();
-
-  return attachment;
+  return result.attachment;
 };
 
 export const deleteEditableTextAttachment = async ({
@@ -55,5 +42,7 @@ export const deleteEditableTextAttachment = async ({
     }
   );
 
-  return response.ok;
+  if (!response.ok) {
+    throw new Error('Attachment could not be removed.');
+  }
 };

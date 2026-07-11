@@ -1,31 +1,19 @@
 <script lang="ts">
-  import { browser } from '$app/environment';
-  import { afterNavigate } from '$app/navigation';
   import { page } from '$app/state';
+  import { industryNavigationItems } from '$lib/industries/industryNavigation';
   import { createPortalAuthUrlForCurrentPage } from '$lib/portalAuthLinks';
   import ButtonLink from '$lib/ui/ButtonLink.svelte';
   import { cubicOut } from 'svelte/easing';
   import { slide } from 'svelte/transition';
-  import { authNavItems, industryNavItems, mobilePrimaryNavItems } from './navigation';
+  import { authNavItems, mobilePrimaryNavItems } from './navigation';
 
   const navSections = [
-    { id: 'mobile-industries-heading', label: 'Industries', links: industryNavItems },
+    { id: 'mobile-industries-heading', label: 'Industries', links: industryNavigationItems },
     { id: 'mobile-site-heading', label: 'Overbase', links: mobilePrimaryNavItems }
   ] as const;
 
-  let currentHash = $state('');
   const activePath = $derived(page.url.pathname);
-
-  function syncHash() {
-    if (browser) {
-      currentHash = window.location.hash;
-    }
-  }
-
-  afterNavigate(syncHash);
 </script>
-
-<svelte:window onhashchange={syncHash} />
 
 <nav
   id="mobile-menu"
@@ -62,22 +50,20 @@
       {/each}
     </div>
 
-    <div class="mt-[30px] flex flex-col border-t border-stone-200/70">
-      <div class="flex flex-col gap-[12px] px-[20px] pt-[24px]">
-        {#each authNavItems as link (link.authRoute)}
-          {@const href = createPortalAuthUrlForCurrentPage(link.authRoute, page.url, currentHash)}
-          <ButtonLink
-            {href}
-            target="_blank"
-            rel="noopener noreferrer"
-            variant={link.variant === 'primary' ? 'primary' : 'soft'}
-            size="large"
-            fullWidth
-          >
-            {link.label}
-          </ButtonLink>
-        {/each}
-      </div>
+    <div class="mt-[30px] flex flex-col gap-[12px] border-t border-stone-200/70 px-[20px] pt-[24px]">
+      {#each authNavItems as link (link.authRoute)}
+        {@const href = createPortalAuthUrlForCurrentPage(link.authRoute, page.url, page.url.hash)}
+        <ButtonLink
+          {href}
+          target="_blank"
+          rel="noopener noreferrer"
+          variant={link.variant === 'primary' ? 'primary' : 'soft'}
+          size="large"
+          fullWidth
+        >
+          {link.label}
+        </ButtonLink>
+      {/each}
     </div>
   </div>
 </nav>

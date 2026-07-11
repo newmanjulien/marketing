@@ -14,7 +14,6 @@
     content.screenshots.opportunityGroups[activeOpportunityGroupIndex] ??
       content.screenshots.opportunityGroups[0],
   );
-  const canPageExamples = $derived(opportunityGroupCount > 1);
   const renderedSections = $derived([
     {
       ...content.sections.setup,
@@ -24,7 +23,7 @@
     {
       ...content.sections.emailFormat,
       screenshot: activeOpportunityGroup.emailFormat,
-      showPager: canPageExamples,
+      showPager: opportunityGroupCount > 1,
     },
     {
       ...content.sections.opportunityEmail,

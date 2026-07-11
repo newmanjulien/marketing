@@ -1,6 +1,6 @@
 import type { Id } from '../../../../convex/_generated/dataModel';
 import { api } from '../../../../convex/_generated/api';
-import { convex } from './convexClient.server';
+import { createConvexClient } from '$lib/server/convexClient.server';
 
 export const createSuccessRoomDocumentRequest = async ({
   roomSlug,
@@ -11,7 +11,7 @@ export const createSuccessRoomDocumentRequest = async ({
   accessToken: string;
   description: string;
 }) =>
-  await convex.mutation(api.successRooms.createDocumentRequest, {
+  await createConvexClient().mutation(api.successRooms.createDocumentRequest, {
     slug: roomSlug,
     accessToken,
     description
@@ -28,7 +28,7 @@ export const markSuccessRoomDocumentRequestNotification = async ({
   requestId: Id<'successRoomDocumentRequests'>;
   notificationStatus: 'sent' | 'failed';
 }) =>
-  await convex.mutation(api.successRooms.markDocumentRequestNotification, {
+  await createConvexClient().mutation(api.successRooms.markDocumentRequestNotification, {
     slug: roomSlug,
     accessToken,
     requestId,

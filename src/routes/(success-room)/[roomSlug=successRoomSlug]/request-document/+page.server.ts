@@ -6,15 +6,9 @@ import {
 import { submitSuccessRoomDocumentRequest } from '$lib/success-room/server/documentRequests.server';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ cookies, params }) => {
-  const payload = await getUnlockedSuccessRoomBasePage(cookies, params.roomSlug);
-
-  if (payload) {
-    return payload;
-  }
-
-  return getLockedSuccessRoomPayload(params.roomSlug);
-};
+export const load: PageServerLoad = async ({ cookies, params }) =>
+  (await getUnlockedSuccessRoomBasePage(cookies, params.roomSlug)) ??
+  getLockedSuccessRoomPayload(params.roomSlug);
 
 export const actions = {
   unlock: async ({ cookies, params, request, url }) =>

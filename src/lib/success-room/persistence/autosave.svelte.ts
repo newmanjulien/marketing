@@ -1,5 +1,9 @@
+import { untrack } from 'svelte';
 import { postSuccessRoomApi } from '../api/client';
-import type { SuccessRoomPostApiBody, SuccessRoomPostApiOperation } from '../domain/api';
+import type {
+  SuccessRoomAutosaveApiOperation,
+  SuccessRoomPostApiBody
+} from '../domain/api';
 import type { SuccessRoomSaveQueue } from './saveQueue';
 
 export const createSyncedSnapshot = <Snapshot>({
@@ -15,8 +19,9 @@ export const createSyncedSnapshot = <Snapshot>({
 
   $effect(() => {
     const next = getSnapshot();
+    const currentSnapshot = untrack(() => current);
 
-    if (shouldReplace(current, next)) {
+    if (shouldReplace(currentSnapshot, next)) {
       current = next;
     }
   });
@@ -31,7 +36,7 @@ export const createSyncedSnapshot = <Snapshot>({
   };
 };
 
-export const scheduleJsonSave = <Endpoint extends Exclude<SuccessRoomPostApiOperation, 'upload-url'>>({
+export const scheduleJsonSave = <Endpoint extends SuccessRoomAutosaveApiOperation>({
   saveQueue,
   key,
   roomSlug,

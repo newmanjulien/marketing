@@ -4,7 +4,6 @@
   import type { SurveyPost } from '../domain/types';
 
   let { post }: { post: SurveyPost } = $props();
-  let BodyComponent = $derived(post.bodyComponent);
 </script>
 
 <svelte:head>
@@ -35,7 +34,7 @@
     </header>
 
     <div class="mt-[38px]">
-      <BodyComponent />
+      <post.bodyComponent />
     </div>
   </ContentMeasure>
 </PageFrame>

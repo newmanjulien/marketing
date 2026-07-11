@@ -1,11 +1,16 @@
 import { ConvexError, v, type Infer } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { parseSuccessRoomSlug } from "../shared/successRoomSlugs";
 import { maxCustomBenefitLength } from "../shared/successRoomBenefits";
 import { maxSuccessRoomDocumentRequestDescriptionLength } from "../shared/successRoomDocumentRequests";
 import { applySuccessRoomPlanAction } from "../shared/successRoomPlan";
+import {
+  createDefaultEditableTextState,
+  createDefaultKickoffScheduleState,
+  createDefaultPlanState,
+} from "../shared/successRoomState";
 import {
   audioResourceDefinition,
   audioResourceKey,
@@ -16,7 +21,6 @@ import {
   kickoffScheduleColumns,
   kickoffScheduleResourceDefinition,
   kickoffScheduleResourceKey,
-  kickoffScheduleRowKeys,
   mutualSuccessPlanResourceDefinition,
   mutualSuccessPlanResourceKey,
   successRoomDescription,
@@ -25,6 +29,7 @@ import {
 
 type SuccessRoom = Doc<"successRooms">;
 type SuccessRoomFile = Doc<"successRoomFiles">;
+type SuccessRoomUploadIntent = Doc<"successRoomUploadIntents">;
 type SuccessRoomResourceKey = SuccessRoom["enabledResourceKeys"][number];
 type AssetSuccessRoomResourceKey = Extract<
   SuccessRoomResourceKey,
@@ -34,7 +39,6 @@ type FileKind = SuccessRoomFile["kind"];
 type RoomState = SuccessRoom["state"];
 type BenefitsState = RoomState["benefits"];
 type PlanState = RoomState["plan"];
-type EditableTextState = RoomState["editableText"];
 type KickoffScheduleState = RoomState["kickoffSchedule"];
 type TeamMember = SuccessRoom["teamMembers"][number];
 
@@ -49,6 +53,7 @@ const baseResourceKeys = [deckResourceKey, audioResourceKey] as const;
 const allResourceKeys: SuccessRoomResourceKey[] = successRoomResourceDefinitions.map(
   ({ slug }) => slug,
 );
+const uploadIntentLifetimeMs = 60 * 60 * 1000;
 
 const optionalResourceKey = v.union(
   v.literal(mutualSuccessPlanResourceKey),
@@ -90,6 +95,18 @@ const fileInput = v.object({
   contentType: v.string(),
   byteSize: v.number(),
 });
+
+const uploadPurpose = v.union(
+  v.object({
+    type: v.literal("editable-attachment"),
+    resourceSlug: editableTextResourceKey,
+  }),
+  v.object({
+    type: v.literal("team-member-photo"),
+    name: v.string(),
+    role: v.string(),
+  }),
+);
 
 const planAction = v.union(
   v.object({
@@ -140,35 +157,15 @@ const emptyBenefitsState = (): BenefitsState => ({
   painPoints: [],
 });
 
-const emptyPlanState = (): PlanState => ({
-  lastOpenedAccordionKey: null,
-  checkedTaskKeys: [],
-  dateOverridesByTaskKey: {},
-  assigneeKeyByTaskKey: {},
-});
-
-const emptyEditableTextState = (): EditableTextState => ({
-  content: "",
-  dataSources: [],
-});
-
-const emptyKickoffScheduleState = (): KickoffScheduleState => ({
-  rows: kickoffScheduleRowKeys.map((key, index) => ({
-    key,
-    sortOrder: index,
-    cells: {},
-  })),
-});
-
 const emptyRoomState = (): RoomState => ({
   benefits: emptyBenefitsState(),
-  plan: emptyPlanState(),
-  editableText: emptyEditableTextState(),
-  kickoffSchedule: emptyKickoffScheduleState(),
+  plan: createDefaultPlanState(),
+  editableText: createDefaultEditableTextState(),
+  kickoffSchedule: createDefaultKickoffScheduleState(),
 });
 
-const hashPassword = async (password: string) => {
-  const data = new TextEncoder().encode(password);
+const sha256 = async (value: string) => {
+  const data = new TextEncoder().encode(value);
   const digest = await crypto.subtle.digest("SHA-256", data);
 
   return Array.from(new Uint8Array(digest))
@@ -177,7 +174,7 @@ const hashPassword = async (password: string) => {
 };
 
 const getAccessToken = async (room: SuccessRoom) =>
-  await hashPassword(`${room.slug}:${room.passwordHash}:${room.passwordUpdatedAt}:success-room`);
+  await sha256(`${room.slug}:${room.passwordHash}:${room.passwordUpdatedAt}:success-room`);
 
 const assertAccess = async (room: SuccessRoom, accessToken: string) => {
   if (accessToken !== (await getAccessToken(room))) {
@@ -461,23 +458,83 @@ const insertFile = async (
     updatedAt: now,
   });
 
-const activeFilesByKind = async (
+const sanitizeUploadPurpose = (
+  room: SuccessRoom,
+  purpose: Infer<typeof uploadPurpose>,
+): Infer<typeof uploadPurpose> => {
+  if (purpose.type === "editable-attachment") {
+    assertResourceEnabled(room, purpose.resourceSlug);
+    return purpose;
+  }
+
+  const name = purpose.name.trim();
+  const role = purpose.role.trim();
+
+  if (!name || !role) {
+    throw new ConvexError("Team member name and role are required");
+  }
+
+  return { ...purpose, name, role };
+};
+
+const requireUploadIntentCapability = async (
+  ctx: QueryCtx | MutationCtx,
+  uploadIntentId: Id<"successRoomUploadIntents">,
+  uploadToken: string,
+) => {
+  const uploadIntent = await ctx.db.get(uploadIntentId);
+
+  if (!uploadIntent || uploadIntent.uploadTokenHash !== (await sha256(uploadToken))) {
+    throw new ConvexError("Upload capability is invalid");
+  }
+
+  if (uploadIntent.expiresAt <= Date.now()) {
+    throw new ConvexError("Upload capability expired");
+  }
+
+  const room = await ctx.db.get(uploadIntent.roomId);
+
+  if (
+    !room ||
+    room.archived ||
+    uploadIntent.accessTokenHash !== (await sha256(await getAccessToken(room)))
+  ) {
+    throw new ConvexError("Upload capability is no longer authorized");
+  }
+
+  return { uploadIntent, room };
+};
+
+const resolveUploadedFile = async (
+  ctx: MutationCtx,
+  uploadIntent: SuccessRoomUploadIntent,
+  storageId: Id<"_storage">,
+) => {
+  const storedFile = await ctx.db.system.get("_storage", storageId);
+
+  if (!storedFile) {
+    throw new ConvexError("Uploaded file is unavailable");
+  }
+
+  return {
+    storageId,
+    filename: uploadIntent.filename,
+    contentType: storedFile.contentType ?? "application/octet-stream",
+    byteSize: storedFile.size,
+  };
+};
+
+const activeFileByKind = async (
   ctx: QueryCtx | MutationCtx,
   roomId: Id<"successRooms">,
-  kind: FileKind,
+  kind: AssetSuccessRoomResourceKey,
 ) =>
   await ctx.db
     .query("successRoomFiles")
     .withIndex("by_room_kind_active", (q) =>
       q.eq("roomId", roomId).eq("kind", kind).eq("active", true),
     )
-    .collect();
-
-const activeFileByKind = async (
-  ctx: QueryCtx | MutationCtx,
-  roomId: Id<"successRooms">,
-  kind: AssetSuccessRoomResourceKey,
-) => (await activeFilesByKind(ctx, roomId, kind))[0] ?? null;
+    .first();
 
 const fileByKey = async (ctx: QueryCtx | MutationCtx, roomId: Id<"successRooms">, key: string) =>
   await ctx.db
@@ -603,6 +660,106 @@ const activeTeamSummaries = async (ctx: QueryCtx | MutationCtx, room: SuccessRoo
   await Promise.all(
     sortActiveTeamMembers(room.teamMembers).map((member) => teamMemberSummary(ctx, room, member)),
   );
+
+const claimTeamMemberPhotoUpload = async (
+  ctx: MutationCtx,
+  room: SuccessRoom,
+  uploadIntent: SuccessRoomUploadIntent,
+  purpose: Extract<SuccessRoomUploadIntent["purpose"], { type: "team-member-photo" }>,
+  photo: Infer<typeof fileInput>,
+) => {
+  if (!photo.contentType.startsWith("image/")) {
+    throw new ConvexError("Team member photo must be an image");
+  }
+
+  const now = Date.now();
+  const memberKey = createKey("team-member");
+  const photoFileKey = createKey("team-member-photo");
+  await insertFile(ctx, {
+    roomId: room._id,
+    kind: "team-member-photo",
+    ownerKey: memberKey,
+    key: photoFileKey,
+    file: photo,
+    now,
+  });
+
+  const member: TeamMember = {
+    key: memberKey,
+    name: purpose.name,
+    role: purpose.role,
+    photoFileKey,
+    active: true,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  await ctx.db.patch(room._id, {
+    teamMembers: [...room.teamMembers, member],
+    updatedAt: now,
+  });
+  await ctx.db.delete(uploadIntent._id);
+
+  return {
+    type: "team-member-photo" as const,
+    member: await teamMemberSummary(ctx, room, member),
+  };
+};
+
+const claimEditableAttachmentUpload = async (
+  ctx: MutationCtx,
+  room: SuccessRoom,
+  uploadIntent: SuccessRoomUploadIntent,
+  purpose: Extract<SuccessRoomUploadIntent["purpose"], { type: "editable-attachment" }>,
+  attachment: Infer<typeof fileInput>,
+) => {
+  assertResourceEnabled(room, purpose.resourceSlug);
+  await deactivateActiveFiles(
+    ctx,
+    room._id,
+    (file) =>
+      file.kind === "editable-attachment" &&
+      file.resourceKey === purpose.resourceSlug,
+  );
+
+  const now = Date.now();
+  const fileKey = createKey("editable-attachment");
+  const fileDocumentId = await insertFile(ctx, {
+    roomId: room._id,
+    kind: "editable-attachment",
+    resourceKey: purpose.resourceSlug,
+    key: fileKey,
+    file: attachment,
+    now,
+  });
+
+  await patchRoomState(ctx, room, {
+    ...room.state,
+    editableText: {
+      ...room.state.editableText,
+      attachmentFileKey: fileKey,
+    },
+  });
+  await ctx.db.delete(uploadIntent._id);
+
+  const file = await ctx.db.get(fileDocumentId);
+
+  if (!file) {
+    throw new ConvexError("Success room attachment could not be saved");
+  }
+
+  const summary = await linkedFileSummary(ctx, file);
+  return {
+    type: "editable-attachment" as const,
+    attachment: {
+      fileId: summary.fileId,
+      filename: summary.filename,
+      contentType: summary.contentType,
+      byteSize: summary.byteSize,
+      href: summary.url,
+    },
+  };
+};
 
 const assetResourceSummary = async (
   ctx: QueryCtx,
@@ -796,15 +953,87 @@ const publicResourcePayload = async (
   };
 };
 
-export const generateUploadUrl = mutation({
+export const createUploadIntent = mutation({
   args: {
     slug: v.string(),
     accessToken: v.string(),
+    filename: v.string(),
+    purpose: uploadPurpose,
   },
   handler: async (ctx, args) => {
-    await requireAuthorizedRoom(ctx, args.slug, args.accessToken);
+    const room = await requireAuthorizedRoom(ctx, args.slug, args.accessToken);
+    const filename = args.filename.trim();
 
-    return await ctx.storage.generateUploadUrl();
+    if (!filename) {
+      throw new ConvexError("Uploaded filename is required");
+    }
+
+    const now = Date.now();
+    const uploadToken = crypto.randomUUID();
+    const uploadIntentId = await ctx.db.insert("successRoomUploadIntents", {
+      roomId: room._id,
+      filename,
+      accessTokenHash: await sha256(args.accessToken),
+      uploadTokenHash: await sha256(uploadToken),
+      purpose: sanitizeUploadPurpose(room, args.purpose),
+      expiresAt: now + uploadIntentLifetimeMs,
+      createdAt: now,
+    });
+
+    return {
+      uploadIntentId,
+      uploadToken,
+    };
+  },
+});
+
+export const authorizeUploadIntent = internalQuery({
+  args: {
+    uploadIntentId: v.id("successRoomUploadIntents"),
+    uploadToken: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await requireUploadIntentCapability(
+      ctx,
+      args.uploadIntentId,
+      args.uploadToken,
+    );
+
+    return null;
+  },
+});
+
+export const completeUploadIntent = internalMutation({
+  args: {
+    uploadIntentId: v.id("successRoomUploadIntents"),
+    uploadToken: v.string(),
+    storageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    const { uploadIntent, room } = await requireUploadIntentCapability(
+      ctx,
+      args.uploadIntentId,
+      args.uploadToken,
+    );
+    const file = await resolveUploadedFile(ctx, uploadIntent, args.storageId);
+
+    if (uploadIntent.purpose.type === "team-member-photo") {
+      return await claimTeamMemberPhotoUpload(
+        ctx,
+        room,
+        uploadIntent,
+        uploadIntent.purpose,
+        file,
+      );
+    }
+
+    return await claimEditableAttachmentUpload(
+      ctx,
+      room,
+      uploadIntent,
+      uploadIntent.purpose,
+      file,
+    );
   },
 });
 
@@ -847,7 +1076,7 @@ export const verifyPassword = mutation({
   },
   handler: async (ctx, args) => {
     const room = await requireRoom(ctx, args.slug);
-    const passwordHash = await hashPassword(args.password);
+    const passwordHash = await sha256(args.password);
 
     return passwordHash === room.passwordHash ? await getAccessToken(room) : null;
   },
@@ -998,58 +1227,6 @@ export const markDocumentRequestNotification = mutation({
   },
 });
 
-export const addTeamMember = mutation({
-  args: {
-    slug: v.string(),
-    accessToken: v.string(),
-    name: v.string(),
-    role: v.string(),
-    photo: fileInput,
-  },
-  handler: async (ctx, args) => {
-    const room = await requireAuthorizedRoom(ctx, args.slug, args.accessToken);
-    const name = args.name.trim();
-    const role = args.role.trim();
-
-    if (!name || !role) {
-      throw new ConvexError("Team member name and role are required");
-    }
-
-    if (!args.photo.contentType.startsWith("image/")) {
-      throw new ConvexError("Team member photo must be an image");
-    }
-
-    const now = Date.now();
-    const memberKey = createKey("team-member");
-    const photoFileKey = createKey("team-member-photo");
-    await insertFile(ctx, {
-      roomId: room._id,
-      kind: "team-member-photo",
-      ownerKey: memberKey,
-      key: photoFileKey,
-      file: args.photo,
-      now,
-    });
-
-    const member: TeamMember = {
-      key: memberKey,
-      name,
-      role,
-      photoFileKey,
-      active: true,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    await ctx.db.patch(room._id, {
-      teamMembers: [...room.teamMembers, member],
-      updatedAt: now,
-    });
-
-    return await teamMemberSummary(ctx, room, member);
-  },
-});
-
 export const patchBenefits = mutation({
   args: {
     slug: v.string(),
@@ -1136,52 +1313,6 @@ export const replaceKickoffSchedule = mutation({
   },
 });
 
-export const registerEditableAttachment = mutation({
-  args: {
-    slug: v.string(),
-    accessToken: v.string(),
-    resourceSlug: editableTextResourceKey,
-    file: fileInput,
-  },
-  handler: async (ctx, args) => {
-    const room = await requireAuthorizedRoom(ctx, args.slug, args.accessToken);
-    assertResourceEnabled(room, args.resourceSlug);
-
-    await deactivateActiveFiles(
-      ctx,
-      room._id,
-      (file) => file.kind === "editable-attachment" && file.resourceKey === args.resourceSlug,
-    );
-
-    const now = Date.now();
-    const fileKey = createKey("editable-attachment");
-    await insertFile(ctx, {
-      roomId: room._id,
-      kind: "editable-attachment",
-      resourceKey: args.resourceSlug,
-      key: fileKey,
-      file: args.file,
-      now,
-    });
-
-    await patchRoomState(ctx, room, {
-      ...room.state,
-      editableText: {
-        ...room.state.editableText,
-        attachmentFileKey: fileKey,
-      },
-    });
-
-    const file = await activeFileByKey(ctx, room._id, fileKey);
-
-    if (!file) {
-      throw new ConvexError("Success room attachment could not be saved");
-    }
-
-    return await linkedFileSummary(ctx, file);
-  },
-});
-
 export const removeEditableAttachment = mutation({
   args: {
     slug: v.string(),
@@ -1232,7 +1363,7 @@ export const createSuccessRoom = mutation({
       slug,
       prospectName: args.prospectName,
       enabledResourceKeys: [...baseResourceKeys],
-      passwordHash: await hashPassword(args.password),
+      passwordHash: await sha256(args.password),
       passwordUpdatedAt: now,
       benefitCards: sanitizeSeedBenefitCards(args.benefitCards, now),
       planAccordions: [],
@@ -1302,6 +1433,12 @@ export const nukeSuccessRoomData = mutation({
       await ctx.db.delete(file._id);
     }
 
+    const successRoomUploadIntents = await ctx.db.query("successRoomUploadIntents").collect();
+
+    for (const uploadIntent of successRoomUploadIntents) {
+      await ctx.db.delete(uploadIntent._id);
+    }
+
     const successRoomDocumentRequests = await ctx.db
       .query("successRoomDocumentRequests")
       .collect();
@@ -1321,6 +1458,7 @@ export const nukeSuccessRoomData = mutation({
       deletedRows: {
         successRoomDocumentRequests: successRoomDocumentRequests.length,
         successRoomFiles: successRoomFiles.length,
+        successRoomUploadIntents: successRoomUploadIntents.length,
         successRooms: rooms.length,
       },
     };
@@ -1351,15 +1489,11 @@ export const enableSuccessRoomSections = mutation({
 
     if (requestedResourceKeys.includes(mutualSuccessPlanResourceKey)) {
       planAccordions = sanitizeSeedPlanAccordions(args.planAccordions ?? [], now);
-      nextState.plan = emptyPlanState();
+      nextState.plan = createDefaultPlanState();
     }
 
     if (requestedResourceKeys.includes(kickoffScheduleResourceKey)) {
-      nextState.kickoffSchedule = emptyKickoffScheduleState();
-    }
-
-    if (requestedResourceKeys.includes(initialFormatResourceKey)) {
-      nextState.editableText = room.state.editableText ?? emptyEditableTextState();
+      nextState.kickoffSchedule = createDefaultKickoffScheduleState();
     }
 
     await ctx.db.patch(room._id, {

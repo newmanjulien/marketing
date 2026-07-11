@@ -2,8 +2,7 @@ import type {
   SuccessRoomDeleteApiBody,
   SuccessRoomDeleteApiOperation,
   SuccessRoomPostApiBody,
-  SuccessRoomPostApiOperation,
-  SuccessRoomUploadedFileInput
+  SuccessRoomPostApiOperation
 } from '../domain/api';
 import { getSuccessRoomApiPath } from '../domain/urls';
 
@@ -23,9 +22,7 @@ const requestSuccessRoomApi = (
         })
   });
 
-export const postSuccessRoomApi = <
-  Operation extends Exclude<SuccessRoomPostApiOperation, 'upload-url'>
->(
+export const postSuccessRoomApi = <Operation extends SuccessRoomPostApiOperation>(
   roomSlug: string,
   operation: Operation,
   body: SuccessRoomPostApiBody<Operation>
@@ -36,36 +33,3 @@ export const deleteSuccessRoomApi = <Operation extends SuccessRoomDeleteApiOpera
   operation: Operation,
   body: SuccessRoomDeleteApiBody<Operation>
 ) => requestSuccessRoomApi('DELETE', roomSlug, operation, body);
-
-export const uploadSuccessRoomFile = async (
-  roomSlug: string,
-  file: File,
-  contentType = file.type || 'application/octet-stream'
-): Promise<SuccessRoomUploadedFileInput | null> => {
-  const uploadUrlResponse = await requestSuccessRoomApi('POST', roomSlug, 'upload-url');
-
-  if (!uploadUrlResponse.ok) {
-    return null;
-  }
-
-  const { uploadUrl }: { uploadUrl: string } = await uploadUrlResponse.json();
-  const uploadResponse = await fetch(uploadUrl, {
-    method: 'POST',
-    headers: { 'content-type': contentType },
-    body: file
-  });
-
-  if (!uploadResponse.ok) {
-    return null;
-  }
-
-  const { storageId }: { storageId: SuccessRoomUploadedFileInput['storageId'] } =
-    await uploadResponse.json();
-
-  return {
-    storageId,
-    filename: file.name,
-    contentType,
-    byteSize: file.size
-  };
-};

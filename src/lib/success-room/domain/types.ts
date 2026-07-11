@@ -147,6 +147,12 @@ export type SuccessRoomEditableTextState = {
   attachment?: SuccessRoomLinkedFileMetadata;
 };
 
+export type SuccessRoomEditableTextAttachmentUpdate = {
+  roomSlug: string;
+  resourceSlug: SuccessRoomEditableTextResourceSlug;
+  attachment?: SuccessRoomLinkedFileMetadata;
+};
+
 export type SuccessRoomKickoffScheduleColumn = (typeof kickoffScheduleColumns)[number];
 
 export type SuccessRoomKickoffScheduleRow = {

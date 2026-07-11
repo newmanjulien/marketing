@@ -1,4 +1,4 @@
-import { postSuccessRoomApi, uploadSuccessRoomFile } from '../api/client';
+import { uploadSuccessRoomFile } from '../api/uploads';
 import type { SuccessRoomTeamMember } from '../domain/types';
 
 export type TeamMemberInput = {
@@ -19,27 +19,19 @@ export const createTeamMember = async ({
     throw new Error('Team member photo must be an image.');
   }
 
-  const photo = await uploadSuccessRoomFile(roomSlug, photoFile);
-
-  if (!photo) {
-    throw new Error('Team member photo could not be uploaded.');
-  }
-
-  const response = await postSuccessRoomApi(
+  const result = await uploadSuccessRoomFile({
     roomSlug,
-    'team-members',
-    {
+    file: photoFile,
+    purpose: {
+      type: 'team-member-photo',
       name,
-      role,
-      photo
+      role
     }
-  );
+  });
 
-  if (!response.ok) {
-    throw new Error('Team member could not be added.');
+  if (result.type !== 'team-member-photo') {
+    throw new Error('Team member upload returned an unexpected result.');
   }
 
-  const { member }: { member: SuccessRoomTeamMember } = await response.json();
-
-  return member;
+  return result.member;
 };

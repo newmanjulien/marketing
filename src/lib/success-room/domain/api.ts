@@ -7,17 +7,39 @@ import type {
   SuccessRoomBenefitsPatch,
   SuccessRoomEditableTextState,
   SuccessRoomKickoffScheduleState,
-  SuccessRoomPlanAction
+  SuccessRoomLinkedFileMetadata,
+  SuccessRoomPlanAction,
+  SuccessRoomTeamMember
 } from './types';
 
-export type SuccessRoomUploadedFileInput = {
-  storageId: Id<'_storage'>;
-  filename: string;
-  contentType: string;
-  byteSize: number;
+export type SuccessRoomUploadPurpose =
+  | {
+      type: 'editable-attachment';
+      resourceSlug: SuccessRoomEditableTextResourceSlug;
+    }
+  | {
+      type: 'team-member-photo';
+      name: string;
+      role: string;
+    };
+
+export type SuccessRoomUploadResult =
+  | {
+      type: 'editable-attachment';
+      attachment: SuccessRoomLinkedFileMetadata;
+    }
+  | {
+      type: 'team-member-photo';
+      member: SuccessRoomTeamMember;
+    };
+
+export type SuccessRoomUploadCapability = {
+  uploadIntentId: Id<'successRoomUploadIntents'>;
+  uploadToken: string;
+  uploadUrl: string;
 };
 
-export type SuccessRoomPostApiBodyByOperation = {
+export type SuccessRoomAutosaveApiBodyByOperation = {
   benefits: {
     benefits: SuccessRoomBenefitsPatch;
   };
@@ -28,20 +50,17 @@ export type SuccessRoomPostApiBodyByOperation = {
     resourceSlug: SuccessRoomEditableTextResourceSlug;
     editableText: Pick<SuccessRoomEditableTextState, 'content' | 'dataSources'>;
   };
-  'editable-attachment': {
-    resourceSlug: SuccessRoomEditableTextResourceSlug;
-    file: SuccessRoomUploadedFileInput;
-  };
   'kickoff-schedule': {
     resourceSlug: SuccessRoomKickoffScheduleResourceSlug;
     kickoffSchedule: SuccessRoomKickoffScheduleState;
   };
-  'team-members': {
-    name: string;
-    role: string;
-    photo: SuccessRoomUploadedFileInput;
+};
+
+export type SuccessRoomPostApiBodyByOperation = SuccessRoomAutosaveApiBodyByOperation & {
+  'upload-intent': {
+    filename: string;
+    purpose: SuccessRoomUploadPurpose;
   };
-  'upload-url': undefined;
 };
 
 export type SuccessRoomDeleteApiBodyByOperation = {
@@ -50,6 +69,7 @@ export type SuccessRoomDeleteApiBodyByOperation = {
   };
 };
 
+export type SuccessRoomAutosaveApiOperation = keyof SuccessRoomAutosaveApiBodyByOperation;
 export type SuccessRoomPostApiOperation = keyof SuccessRoomPostApiBodyByOperation;
 export type SuccessRoomDeleteApiOperation = keyof SuccessRoomDeleteApiBodyByOperation;
 

@@ -97,7 +97,6 @@
       idBase={`success-room-${room.slug}`}
       tabs={successRoomSections}
       ariaLabel={`${room.prospectName} success room sections`}
-      defaultActiveTabKey="benefits"
       activeTabKey={activeSectionKey}
       onActiveTabKeyChange={(sectionKey) => updateSectionUrl(sectionKey)}
       animatedTabKeys={['pain-points']}

@@ -1,6 +1,7 @@
 <script lang="ts">
   import AttachmentControl from './AttachmentControl.svelte';
   import type {
+    SuccessRoomEditableTextAttachmentUpdate,
     SuccessRoomEditableTextResource,
     SuccessRoomEditableTextState
   } from '../domain/types';
@@ -8,11 +9,13 @@
   let {
     roomSlug,
     resource,
-    editableState = $bindable<SuccessRoomEditableTextState>()
+    editableState = $bindable<SuccessRoomEditableTextState>(),
+    onAttachmentPersisted
   }: {
     roomSlug: string;
     resource: SuccessRoomEditableTextResource;
     editableState: SuccessRoomEditableTextState;
+    onAttachmentPersisted: (update: SuccessRoomEditableTextAttachmentUpdate) => void;
   } = $props();
 
   const textareaClasses =
@@ -46,10 +49,13 @@
   ></textarea>
 
   <div class={footerClasses}>
-    <AttachmentControl
-      {roomSlug}
-      resourceSlug={resource.slug}
-      bind:editableState
-    />
+    {#key `${roomSlug}:${resource.slug}`}
+      <AttachmentControl
+        {roomSlug}
+        resourceSlug={resource.slug}
+        attachment={editableState.attachment}
+        {onAttachmentPersisted}
+      />
+    {/key}
   </div>
 </section>

@@ -5,19 +5,28 @@
     uploadEditableTextAttachment
   } from './editableTextClient';
   import type { SuccessRoomEditableTextResourceSlug } from '../domain/config';
-  import type { SuccessRoomEditableTextState } from '../domain/types';
+  import type {
+    SuccessRoomEditableTextAttachmentUpdate,
+    SuccessRoomLinkedFileMetadata
+  } from '../domain/types';
+
+  type AttachmentOperation = 'uploading' | 'removing';
 
   let {
     roomSlug,
     resourceSlug,
-    editableState = $bindable<SuccessRoomEditableTextState>()
+    attachment,
+    onAttachmentPersisted
   }: {
     roomSlug: string;
     resourceSlug: SuccessRoomEditableTextResourceSlug;
-    editableState: SuccessRoomEditableTextState;
+    attachment?: SuccessRoomLinkedFileMetadata;
+    onAttachmentPersisted: (update: SuccessRoomEditableTextAttachmentUpdate) => void;
   } = $props();
 
   let fileInput: HTMLInputElement | undefined = $state();
+  let pendingOperation = $state<AttachmentOperation | null>(null);
+  let attachmentError = $state('');
 
   const attachmentButtonClasses =
     'inline-flex h-[32px] w-fit items-center gap-[7px] rounded-[8px] border border-stone-200/70 bg-white px-[10px] font-body text-[13px] font-book leading-none tracking-normal text-stone-600 shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-colors duration-150 hover:border-stone-300 hover:text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:bg-stone-50 disabled:text-stone-300 disabled:shadow-none disabled:hover:border-stone-200/70';
@@ -28,90 +37,115 @@
   const attachmentLinkClasses =
     `${attachmentNameClasses} transition-colors duration-150 hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20`;
   const attachmentRemoveButtonClasses =
-    'flex h-[24px] w-[24px] items-center justify-center rounded-[6px] border-0 bg-transparent p-0 text-stone-400 transition-colors duration-150 hover:bg-stone-100 hover:text-stone-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20';
+    'flex h-[24px] w-[24px] items-center justify-center rounded-[6px] border-0 bg-transparent p-0 text-stone-400 transition-colors duration-150 hover:bg-stone-100 hover:text-stone-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:text-stone-300 disabled:hover:bg-transparent disabled:hover:text-stone-300';
 
   const uploadAttachment = async (file: File) => {
-    const attachment = await uploadEditableTextAttachment({
-      roomSlug,
-      resourceSlug,
-      file
-    });
-
-    if (!attachment) {
+    if (pendingOperation) {
       return;
     }
 
-    editableState = {
-      ...editableState,
-      attachment
-    };
+    const target = { roomSlug, resourceSlug };
+    pendingOperation = 'uploading';
+    attachmentError = '';
+
+    try {
+      const uploadedAttachment = await uploadEditableTextAttachment({
+        ...target,
+        file
+      });
+
+      onAttachmentPersisted({
+        ...target,
+        attachment: uploadedAttachment
+      });
+    } catch (error) {
+      attachmentError = error instanceof Error ? error.message : 'Could not upload this attachment.';
+    } finally {
+      pendingOperation = null;
+    }
   };
 
   const removeAttachment = async () => {
-    const removed = await deleteEditableTextAttachment({
-      roomSlug,
-      resourceSlug
-    });
-
-    if (!removed) {
+    if (pendingOperation) {
       return;
     }
 
-    editableState = {
-      content: editableState.content,
-      dataSources: editableState.dataSources
-    };
+    const target = { roomSlug, resourceSlug };
+    pendingOperation = 'removing';
+    attachmentError = '';
+
+    try {
+      await deleteEditableTextAttachment(target);
+      onAttachmentPersisted(target);
+    } catch (error) {
+      attachmentError = error instanceof Error ? error.message : 'Could not remove this attachment.';
+    } finally {
+      pendingOperation = null;
+    }
   };
 </script>
 
-<button
-  type="button"
-  class={attachmentButtonClasses}
-  disabled={Boolean(editableState.attachment)}
-  onclick={() => fileInput?.click()}
->
-  <PaperclipIcon size={15} weight="bold" aria-hidden="true" />
-  <span>Add attachment</span>
-</button>
-<input
-  bind:this={fileInput}
-  class="sr-only"
-  type="file"
-  onchange={(event) => {
-    const file = event.currentTarget.files?.[0];
-    event.currentTarget.value = '';
+<div class="grid gap-[8px]">
+  <button
+    type="button"
+    class={attachmentButtonClasses}
+    disabled={Boolean(attachment) || pendingOperation !== null}
+    onclick={() => fileInput?.click()}
+  >
+    <PaperclipIcon size={15} weight="bold" aria-hidden="true" />
+    <span>{pendingOperation === 'uploading' ? 'Uploading...' : 'Add attachment'}</span>
+  </button>
+  <input
+    bind:this={fileInput}
+    class="sr-only"
+    type="file"
+    disabled={pendingOperation !== null}
+    onchange={(event) => {
+      const file = event.currentTarget.files?.[0];
+      event.currentTarget.value = '';
 
-    if (file) {
-      void uploadAttachment(file);
-    }
-  }}
-/>
+      if (file) {
+        void uploadAttachment(file);
+      }
+    }}
+  />
+
+  {#if attachmentError}
+    <p
+      class="m-0 text-[13px] font-book leading-[1.35] tracking-normal text-red-700"
+      aria-live="polite"
+    >
+      {attachmentError}
+    </p>
+  {/if}
+</div>
 
 <div
-  class={[attachmentChipClasses, !editableState.attachment && 'invisible pointer-events-none']}
-  aria-label={editableState.attachment ? 'Attached file' : undefined}
-  aria-hidden={!editableState.attachment}
+  class={[attachmentChipClasses, !attachment && 'invisible pointer-events-none']}
+  aria-label={attachment ? 'Attached file' : undefined}
+  aria-hidden={!attachment}
 >
   <FileIcon size={18} weight="regular" aria-hidden="true" />
   <span class="min-w-0">
-    {#if editableState.attachment}
+    {#if attachment}
       <a
         class={attachmentLinkClasses}
-        href={editableState.attachment.href}
+        href={attachment.href}
         target="_blank"
         rel="noopener noreferrer"
       >
-        {editableState.attachment.filename}
+        {attachment.filename}
       </a>
     {:else}
       <span class={attachmentNameClasses}>Attachment</span>
     {/if}
   </span>
-  {#if editableState.attachment}
+  {#if attachment}
     <button
       type="button"
       class={attachmentRemoveButtonClasses}
-      aria-label={`Remove ${editableState.attachment.filename}`}
+      aria-label={`${pendingOperation === 'removing' ? 'Removing' : 'Remove'} ${attachment.filename}`}
+      disabled={pendingOperation !== null}
       onclick={() => void removeAttachment()}
     >
       <XIcon size={13} weight="bold" aria-hidden="true" />

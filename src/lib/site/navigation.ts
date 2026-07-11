@@ -1,5 +1,4 @@
 import type { PortalAuthRoute } from "$lib/portalAuthLinks";
-import { industryNavigationItems } from "$lib/industries/industryNavigation";
 
 export type NavLinkItem = {
   label: string;
@@ -20,16 +19,7 @@ export const footerNavItems = [
   { label: "Legal", href: "/legal" },
 ] satisfies NavLinkItem[];
 
-export const industryNavItems = industryNavigationItems.map(
-  ({ label, href }) => ({
-    label,
-    href,
-  }),
-) satisfies NavLinkItem[];
-
 export const mobilePrimaryNavItems = [...productNavItems, ...companyNavItems] satisfies NavLinkItem[];
-
-export const desktopPrimaryNavItems = productNavItems;
 
 export const authNavItems = [
   { label: "Log in", authRoute: "login", variant: "secondary" },

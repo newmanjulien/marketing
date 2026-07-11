@@ -8,25 +8,20 @@
         message: string;
       }
     | {
-        email: string;
+        email?: never;
         success: true;
         message: string;
       };
 
   let { form }: { form?: ResultsSignupForm } = $props();
-  // svelte-ignore state_referenced_locally
-  let email = $state(form?.email ?? '');
   let isSubmitting = $state(false);
 
   const handleSurveySubmit: SubmitFunction = () => {
     isSubmitting = true;
 
-    return async ({ result, update }) => {
+    return async ({ update }) => {
       try {
         await update();
-        if (result.type === 'success') {
-          email = '';
-        }
       } finally {
         isSubmitting = false;
       }
@@ -59,7 +54,7 @@
         name="email"
         autocomplete="email"
         placeholder="you@company.com"
-        bind:value={email}
+        value={form?.email ?? ''}
         aria-describedby={form?.message ? 'survey-results-message' : undefined}
         aria-invalid={form?.message && !('success' in form) ? 'true' : undefined}
         class="h-[40px] w-full rounded-[7px] border border-stone-300 bg-white px-[14px] text-[13px] font-book tracking-normal text-stone-900 placeholder:text-stone-400 focus:border-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-200"

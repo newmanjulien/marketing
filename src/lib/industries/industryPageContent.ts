@@ -47,12 +47,8 @@ export const getIndustryPageContent = (
     return null;
   }
 
-  const page: IndustryContentDefinition = industryPages[industryId];
-
   return {
-    heading: page.heading,
-    introParagraphs: page.introParagraphs,
+    ...industryPages[industryId],
     sections: sharedSectionCopy,
-    screenshots: page.screenshots,
   };
 };

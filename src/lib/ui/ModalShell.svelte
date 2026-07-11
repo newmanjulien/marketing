@@ -8,8 +8,7 @@
     title: string;
     onClose: () => void;
     class?: string;
-    footer?: Snippet;
-    children?: Snippet;
+    children: Snippet;
   };
 
   let {
@@ -17,7 +16,6 @@
     title,
     onClose,
     class: className = '',
-    footer,
     children
   }: ModalShellProps = $props();
 
@@ -65,16 +63,8 @@
       </header>
 
       <div class="min-h-0 flex-1 overflow-y-auto px-6 pb-8">
-        {@render children?.()}
+        {@render children()}
       </div>
-
-      {#if footer}
-        <footer
-          class="flex shrink-0 items-center justify-between gap-3 border-t border-stone-200/80 p-4"
-        >
-          {@render footer()}
-        </footer>
-      {/if}
     </div>
   </div>
 {/if}

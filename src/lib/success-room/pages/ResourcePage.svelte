@@ -51,6 +51,7 @@
         {room}
         {resource}
         bind:editableState={draft.editableTextState}
+        onAttachmentPersisted={draft.applyPersistedEditableTextAttachment}
       />
     {:else if resource.kind === 'kickoff-schedule'}
       <KickoffSchedulePanel

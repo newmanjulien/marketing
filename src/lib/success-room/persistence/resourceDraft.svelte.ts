@@ -3,20 +3,23 @@ import {
   createSuccessRoomSaveQueue
 } from './saveQueue';
 import { applySuccessRoomPlanAction } from '../../../../shared/successRoomPlan';
+import {
+  createDefaultEditableTextState,
+  createDefaultKickoffScheduleState,
+  createDefaultPlanState
+} from '../../../../shared/successRoomState';
 import { createSyncedSnapshot, scheduleJsonSave } from './autosave.svelte';
 import {
   cloneKickoffScheduleState,
   cloneEditableTextState,
-  clonePlan,
-  getDefaultKickoffScheduleState,
-  getDefaultEditableTextState,
-  getDefaultPlanState
+  clonePlan
 } from '../domain/state';
 import type {
   SuccessRoomEditableTextResourceSlug,
   SuccessRoomKickoffScheduleResourceSlug
 } from '../domain/config';
 import type {
+  SuccessRoomEditableTextAttachmentUpdate,
   SuccessRoomEditableTextState,
   SuccessRoomKickoffScheduleState,
   SuccessRoomPlanAction,
@@ -27,7 +30,8 @@ import type {
 } from '../domain/types';
 
 type SuccessRoomResourceDraftSnapshot = {
-  roomResourceIdentity: string;
+  roomSlug: string;
+  resourceSlug: string;
   plan: SuccessRoomPlanState;
   editableText: SuccessRoomEditableTextState;
   kickoffSchedule: SuccessRoomKickoffScheduleState;
@@ -39,19 +43,20 @@ const createResourceDraftSnapshot = (
   state: SuccessRoomResourceState,
 ): SuccessRoomResourceDraftSnapshot => {
   return {
-    roomResourceIdentity: `${room.slug}:${resource.slug}`,
+    roomSlug: room.slug,
+    resourceSlug: resource.slug,
     plan:
       state.kind === 'mutual-success-plan'
         ? clonePlan(state.plan)
-        : getDefaultPlanState(),
+        : createDefaultPlanState(),
     editableText:
       state.kind === 'editable-text'
         ? cloneEditableTextState(state.editableText)
-        : getDefaultEditableTextState(),
+        : createDefaultEditableTextState(),
     kickoffSchedule:
       state.kind === 'kickoff-schedule'
         ? cloneKickoffScheduleState(state.kickoffSchedule)
-        : getDefaultKickoffScheduleState()
+        : createDefaultKickoffScheduleState()
   };
 };
 
@@ -70,7 +75,7 @@ export const createSuccessRoomResourceDraft = (
     initial: initialSnapshot,
     getSnapshot: () => createResourceDraftSnapshot(getRoom(), getResource(), getState()),
     shouldReplace: (current, next) =>
-      current.roomResourceIdentity !== next.roomResourceIdentity
+      current.roomSlug !== next.roomSlug || current.resourceSlug !== next.resourceSlug
   });
 
   attachSuccessRoomSaveQueueLifecycle(saveQueue);
@@ -167,6 +172,26 @@ export const createSuccessRoomResourceDraft = (
     saveEditableTextState(resourceSlug, nextState);
   };
 
+  const applyPersistedEditableTextAttachment = ({
+    roomSlug,
+    resourceSlug,
+    attachment
+  }: SuccessRoomEditableTextAttachmentUpdate) => {
+    if (draft.current.roomSlug !== roomSlug || draft.current.resourceSlug !== resourceSlug) {
+      return;
+    }
+
+    const { attachment: _currentAttachment, ...editableText } = draft.current.editableText;
+
+    draft.replace({
+      ...draft.current,
+      editableText: {
+        ...editableText,
+        ...(attachment ? { attachment } : {})
+      }
+    });
+  };
+
   const setKickoffScheduleState = (
     resourceSlug: SuccessRoomKickoffScheduleResourceSlug,
     schedule: SuccessRoomKickoffScheduleState,
@@ -199,6 +224,7 @@ export const createSuccessRoomResourceDraft = (
     set editableTextState(editableState: SuccessRoomEditableTextState) {
       setEditableTextState(requireEditableTextResourceSlug(), editableState);
     },
+    applyPersistedEditableTextAttachment,
     get kickoffScheduleState() {
       return draft.current.kickoffSchedule;
     },

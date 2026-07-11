@@ -2,13 +2,7 @@
   import DatePickerModal from './DatePickerModal.svelte';
   import PlanAccordionList from './PlanAccordionList.svelte';
   import TaskAssigneeModal from './TaskAssigneeModal.svelte';
-  import { resolveTaskDisplayDate } from './planDates';
-  import {
-    createOpenAccordionAction,
-    createTaskAssigneeAction,
-    createTaskCheckedAction,
-    createTaskDateAction
-  } from './planState';
+  import { formatIsoDate, resolveTaskDisplayDate } from './planDates';
   import type {
     SuccessRoomMutualSuccessPlanResource,
     SuccessRoomPlanAccordion,
@@ -57,11 +51,11 @@
       return;
     }
 
-    onPlanAction(createOpenAccordionAction(accordionKey));
+    onPlanAction({ type: 'open-accordion', accordionKey });
   };
 
   const setTaskChecked = (taskKey: string, checked: boolean) => {
-    onPlanAction(createTaskCheckedAction(taskKey, checked));
+    onPlanAction({ type: 'set-task-checked', taskKey, checked });
   };
 
   const openAssigneePickerModal = (taskKey: string) => {
@@ -79,7 +73,11 @@
       return;
     }
 
-    onPlanAction(createTaskAssigneeAction(assigneePickerContext.taskKey, memberKey));
+    onPlanAction({
+      type: 'set-task-assignee',
+      taskKey: assigneePickerContext.taskKey,
+      memberKey
+    });
   };
 
   const openDatePickerModal = (taskKey: string, dateLabel: string) => {
@@ -102,7 +100,11 @@
       return;
     }
 
-    onPlanAction(createTaskDateAction(datePickerContext.taskKey, date));
+    onPlanAction({
+      type: 'set-task-date',
+      taskKey: datePickerContext.taskKey,
+      date: formatIsoDate(date)
+    });
   };
 
   const selectedDatePickerDate = $derived(datePickerContext?.selectedDate ?? fallbackDatePickerDate);

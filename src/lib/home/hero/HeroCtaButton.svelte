@@ -3,8 +3,9 @@
   import type { HTMLAnchorAttributes } from 'svelte/elements';
   import ButtonLink from '$lib/ui/ButtonLink.svelte';
 
-  type HeroCtaButtonProps = HTMLAnchorAttributes & {
-    children?: Snippet;
+  type HeroCtaButtonProps = Omit<HTMLAnchorAttributes, 'href' | 'children'> & {
+    href: string;
+    children: Snippet;
   };
 
   let { children, class: className, ...anchorProps }: HeroCtaButtonProps = $props();
@@ -22,5 +23,5 @@
     className
   ]}
 >
-  {@render children?.()}
+  {@render children()}
 </ButtonLink>

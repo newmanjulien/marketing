@@ -35,17 +35,10 @@ export const load: PageServerLoad = async ({ cookies, params, setHeaders }) => {
     error(404, 'Success room resource not found');
   }
 
-  const payload = await getUnlockedSuccessRoomResourcePage(
-    cookies,
-    params.roomSlug,
-    params.resourceSlug
+  return (
+    (await getUnlockedSuccessRoomResourcePage(cookies, params.roomSlug, params.resourceSlug)) ??
+    getLockedSuccessRoomPayload(params.roomSlug)
   );
-
-  if (payload) {
-    return payload;
-  }
-
-  return getLockedSuccessRoomPayload(params.roomSlug);
 };
 
 export const actions = {

@@ -16,6 +16,21 @@ const timestampedEditableItem = {
 };
 
 export default defineSchema({
+  surveyResultsSignups: defineTable({
+    email: v.string(),
+    createdAt: v.number(),
+    lastSubmittedAt: v.number(),
+  }).index("by_email", ["email"]),
+
+  surveyResultsSignupRateLimits: defineTable({
+    clientKey: v.string(),
+    windowStartedAt: v.number(),
+    requestCount: v.number(),
+    expiresAt: v.number(),
+  })
+    .index("by_client_key", ["clientKey"])
+    .index("by_expires_at", ["expiresAt"]),
+
   successRooms: defineTable({
     slug: v.string(),
     prospectName: v.string(),
@@ -117,6 +132,28 @@ export default defineSchema({
     .index("by_room_key", ["roomId", "key"])
     .index("by_room_kind_active", ["roomId", "kind", "active"])
     .index("by_storage_id", ["storageId"]),
+
+  successRoomUploadIntents: defineTable({
+    roomId: v.id("successRooms"),
+    filename: v.string(),
+    accessTokenHash: v.string(),
+    uploadTokenHash: v.string(),
+    purpose: v.union(
+      v.object({
+        type: v.literal("editable-attachment"),
+        resourceSlug: v.literal("initial-format"),
+      }),
+      v.object({
+        type: v.literal("team-member-photo"),
+        name: v.string(),
+        role: v.string(),
+      }),
+    ),
+    expiresAt: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_room", ["roomId"])
+    .index("by_expires_at", ["expiresAt"]),
 
   successRoomDocumentRequests: defineTable({
     roomId: v.id("successRooms"),

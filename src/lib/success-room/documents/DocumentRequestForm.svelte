@@ -7,8 +7,6 @@
   } from '../domain/documentRequests';
 
   let { form }: { form?: DocumentRequestFormFailure } = $props();
-  // svelte-ignore state_referenced_locally
-  let description = $state(form?.description ?? '');
   let isSubmitting = $state(false);
 
   const handleSubmit: SubmitFunction = () => {
@@ -16,7 +14,7 @@
 
     return async ({ update }) => {
       try {
-        await update();
+        await update({ invalidateAll: false });
       } finally {
         isSubmitting = false;
       }
@@ -38,7 +36,7 @@
     <textarea
       id="success-room-document-request"
       name="description"
-      bind:value={description}
+      value={form?.description ?? ''}
       maxlength={maxSuccessRoomDocumentRequestDescriptionLength}
       required
       rows="5"

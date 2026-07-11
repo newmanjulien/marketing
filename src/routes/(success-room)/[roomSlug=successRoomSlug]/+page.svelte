@@ -1,9 +1,9 @@
 <script lang="ts">
   import LandingPage from '$lib/success-room/pages/LandingPage.svelte';
   import PasswordGate from '$lib/success-room/pages/PasswordGate.svelte';
-  import type { ActionData, PageData } from './$types';
+  import type { PageProps } from './$types';
 
-  let { data, form }: { data: PageData; form: ActionData } = $props();
+  let { data, form }: PageProps = $props();
 </script>
 
 {#if data.locked === true}
@@ -12,6 +12,6 @@
     description={data.room.description}
     message={form?.message}
   />
-{:else if data.state}
+{:else}
   <LandingPage room={data.room} state={data.state} />
 {/if}

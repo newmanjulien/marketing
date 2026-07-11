@@ -4,6 +4,7 @@
   import DataSourcesPanel from './DataSourcesPanel.svelte';
   import EditableTextPanel from './EditableTextPanel.svelte';
   import type {
+    SuccessRoomEditableTextAttachmentUpdate,
     SuccessRoomEditableTextResource,
     SuccessRoomEditableTextState,
     SuccessRoomResourceRoom
@@ -35,11 +36,13 @@
   let {
     room,
     resource,
-    editableState = $bindable<SuccessRoomEditableTextState>()
+    editableState = $bindable<SuccessRoomEditableTextState>(),
+    onAttachmentPersisted
   }: {
     room: SuccessRoomResourceRoom;
     resource: SuccessRoomEditableTextResource;
     editableState: SuccessRoomEditableTextState;
+    onAttachmentPersisted: (update: SuccessRoomEditableTextAttachmentUpdate) => void;
   } = $props();
 </script>
 
@@ -47,7 +50,6 @@
   idBase={`success-room-${room.slug}-${resource.slug}`}
   tabs={editableTextSections}
   ariaLabel={`${resource.title} sections`}
-  defaultActiveTabKey="format"
   listClass="mt-[34px]"
   panelClass="mt-[28px]"
 >
@@ -60,6 +62,7 @@
           roomSlug={room.slug}
           {resource}
           bind:editableState
+          {onAttachmentPersisted}
         />
       {:else if section.key === 'data-sources'}
         <DataSourcesPanel

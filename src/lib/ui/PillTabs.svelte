@@ -14,7 +14,6 @@
     idBase,
     tabs,
     ariaLabel,
-    defaultActiveTabKey,
     activeTabKey: controlledActiveTabKey,
     onActiveTabKeyChange,
     animatedTabKeys = [],
@@ -25,7 +24,6 @@
     idBase: string;
     tabs: readonly Tab[];
     ariaLabel: string;
-    defaultActiveTabKey?: string;
     activeTabKey?: string;
     onActiveTabKeyChange?: (tabKey: string) => void;
     animatedTabKeys?: readonly string[];
@@ -35,10 +33,8 @@
   } = $props();
 
   let selectedTabKey = $state<string | undefined>();
-  const getFallbackTab = () =>
-    tabs.find(({ key }) => key === defaultActiveTabKey) ?? tabs[0];
   const resolveTab = (tabKey: string | undefined) =>
-    tabs.find(({ key }) => key === tabKey) ?? getFallbackTab();
+    tabs.find(({ key }) => key === tabKey) ?? tabs[0];
 
   let activeTab = $derived(resolveTab(controlledActiveTabKey ?? selectedTabKey));
   let activeTabKey = $derived(activeTab?.key);

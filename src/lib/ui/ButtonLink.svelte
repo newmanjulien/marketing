@@ -2,20 +2,21 @@
   import type { Snippet } from 'svelte';
   import type { HTMLAnchorAttributes } from 'svelte/elements';
 
-  type ButtonLinkProps = HTMLAnchorAttributes & {
-    variant?: 'primary' | 'secondary' | 'soft';
-    size?: 'small' | 'default' | 'large' | 'hero' | 'xlarge';
+  type ButtonLinkProps = Omit<HTMLAnchorAttributes, 'href' | 'children'> & {
+    href: string;
+    variant: 'primary' | 'secondary' | 'soft';
+    size: 'small' | 'large' | 'hero' | 'xlarge';
     textSize?: 'default' | 'compact';
     shape?: 'default' | 'pill';
     fullWidth?: boolean;
     highlightSweep?: boolean;
-    children?: Snippet;
+    children: Snippet;
   };
 
   let {
-    href = '#',
-    variant = 'secondary',
-    size = 'default',
+    href,
+    variant,
+    size,
     textSize = 'default',
     shape = 'default',
     fullWidth = false,
@@ -35,7 +36,6 @@
 
   const sizeClasses = {
     small: 'h-[36px] px-[14px]',
-    default: 'h-[43px] px-[16px] sm:h-[40px]',
     large: 'h-[50px] px-[23px]',
     hero: 'h-[54px] px-[28px]',
     xlarge: 'h-[58px] px-[32px]'
@@ -44,14 +44,12 @@
   const textSizeClasses = {
     default: {
       small: 'text-[14px]',
-      default: 'text-[15px]',
       large: 'text-[17px]',
       hero: 'text-[17px]',
       xlarge: 'text-[18px]'
     },
     compact: {
       small: 'text-[13px]',
-      default: 'text-[14px]',
       large: 'text-[15px]',
       hero: 'text-[16px]',
       xlarge: 'text-[16px]'
@@ -79,7 +77,7 @@
     className
   ]}
 >
-  {@render children?.()}
+  {@render children()}
 </a>
 
 <style>

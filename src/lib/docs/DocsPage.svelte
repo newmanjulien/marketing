@@ -19,11 +19,9 @@
       </h1>
 
       {#if page.description}
-        <div class="mt-[16px] space-y-[8px]">
-          <p class="max-w-[620px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-600">
-            {page.description}
-          </p>
-        </div>
+        <p class="mt-[16px] max-w-[620px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-600">
+          {page.description}
+        </p>
       {/if}
     </header>
 
@@ -101,10 +99,6 @@
     border-left: 2px solid rgb(214 211 209);
     padding-left: 18px;
     color: rgb(87 83 78);
-  }
-
-  :global(.docs-rich-text blockquote p) {
-    max-width: none;
   }
 
   :global(.docs-rich-text ul),

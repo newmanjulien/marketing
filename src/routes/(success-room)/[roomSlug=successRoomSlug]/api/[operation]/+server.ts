@@ -1,7 +1,7 @@
 import { error, json } from '@sveltejs/kit';
 import type { FunctionArgs, FunctionReference, FunctionReturnType } from 'convex/server';
 import { api } from '../../../../../../convex/_generated/api';
-import { convex } from '$lib/success-room/server/convexClient.server';
+import { createConvexClient, convexSiteUrl } from '$lib/server/convexClient.server';
 import { requireSuccessRoomAccessToken } from '$lib/success-room/server/access.server';
 import type {
   SuccessRoomDeleteApiBodyByOperation,
@@ -83,20 +83,6 @@ const operations: Record<string, Partial<Record<Method, Operation>>> = {
     })
   },
   'editable-attachment': {
-    POST: bridgeOperation('POST', 'editable-attachment', {
-      mutation: api.successRooms.registerEditableAttachment,
-      args: ({ slug, accessToken, body }) => ({ slug, accessToken, ...body }),
-      response: (attachment) => ({
-        ok: true,
-        attachment: {
-          fileId: attachment.fileId,
-          filename: attachment.filename,
-          contentType: attachment.contentType,
-          byteSize: attachment.byteSize,
-          href: attachment.url
-        }
-      })
-    }),
     DELETE: bridgeOperation('DELETE', 'editable-attachment', {
       mutation: api.successRooms.removeEditableAttachment,
       args: ({ slug, accessToken, body }) => ({ slug, accessToken, ...body })
@@ -108,19 +94,14 @@ const operations: Record<string, Partial<Record<Method, Operation>>> = {
       args: ({ slug, accessToken, body }) => ({ slug, accessToken, ...body })
     })
   },
-  'team-members': {
-    POST: bridgeOperation('POST', 'team-members', {
-      mutation: api.successRooms.addTeamMember,
+  'upload-intent': {
+    POST: bridgeOperation('POST', 'upload-intent', {
+      mutation: api.successRooms.createUploadIntent,
       args: ({ slug, accessToken, body }) => ({ slug, accessToken, ...body }),
-      response: (member) => ({ member })
-    })
-  },
-  'upload-url': {
-    POST: bridgeOperation('POST', 'upload-url', {
-      mutation: api.successRooms.generateUploadUrl,
-      readBody: false,
-      args: ({ slug, accessToken }) => ({ slug, accessToken }),
-      response: (uploadUrl) => ({ uploadUrl })
+      response: (uploadIntent) => ({
+        ...uploadIntent,
+        uploadUrl: new URL('/success-room/upload', convexSiteUrl).toString()
+      })
     })
   }
 };
@@ -150,7 +131,7 @@ const handleOperation = async (
 
   const accessToken = requireSuccessRoomAccessToken(cookies, params.roomSlug);
   const body = operation.readBody === false ? undefined : await readRequestBody(request);
-  const output = await convex.mutation(
+  const output = await createConvexClient().mutation(
     operation.mutation,
     operation.args({
       slug: params.roomSlug,
