@@ -6,7 +6,6 @@
   } from '$lib/home/industryContent';
   import OpportunityIndustryTabs from './OpportunityIndustryTabs.svelte';
 
-  const AUTO_ADVANCE_START_DELAY_MS = 3_660;
   const AUTO_ADVANCE_INTERVAL_MS = 4_000;
 
   const opportunityEmailByIndustryId = {
@@ -39,7 +38,7 @@ Jackson Reinstein knows Plug Power's VP Strategy. And Sagar Agrawal knows their 
 
     consulting: `Hey Alex,
 
-You're working the pitch for JPMC and Jack London (CCed) in our NYC office pitched them JPMC.
+You're working on the JPMC pitch, and Jack London (CCed) in our NYC office has pitched them before.
 
 I attached the PDF of the final proposal Jack submitted to them. As well as other docs which might give useful context for your pitch.
 
@@ -60,7 +59,7 @@ Topics to explore with Scott: Linamar’s new sources of revenue outside of Cana
     law:
       'Minute-by-minute monitoring of your existing data sources lets your lawyers get hired for matters',
     'government-relations':
-      'Minute-by-minute monitoring of your legislative data lets you turn policy change into an engagements',
+      'Minute-by-minute monitoring of your legislative data lets you turn policy change into engagements',
     consulting:
       'The institutional knowledge from across your consulting firm and from your partners lets you win more pitches',
     accounting:
@@ -108,12 +107,7 @@ Topics to explore with Scott: Linamar’s new sources of revenue outside of Cana
   };
 
   onMount(() => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    autoAdvanceTimer = setTimeout(
-      () => scheduleNextIndustry(0),
-      prefersReducedMotion ? 0 : AUTO_ADVANCE_START_DELAY_MS
-    );
+    scheduleNextIndustry(0);
 
     return clearAutoAdvanceTimer;
   });
