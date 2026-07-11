@@ -45,7 +45,7 @@ Our review of Linamar’s tax return suggests the client is expanding into Europ
 
 Tax Partner Scott Duarte would be the best person to connect with for additional context.
 
-Topics to explore with Scott: Linamar’s new sources of revenue outside of Canada and the U.S., increased travel activity in Europe, and new professional services engagements related to European real estate.`
+Topics to explore with Scott: Linamar’s new sources of revenue outside of the US, increased travel activity in Europe, and new professional services engagements related to European real estate.`
   } as const satisfies Record<HomeIndustryId, string>;
 
   const opportunityExplanationByIndustryId = {
