@@ -15,12 +15,12 @@
     </h2>
 
     <p
-      class="mt-[18px] max-w-[400px] text-[15px] font-book leading-[1.6] tracking-normal text-stone-500 sm:mt-[20px] sm:text-[16px]"
+      class="mt-[18px] max-w-[400px] text-[16px] font-book leading-[1.6] tracking-normal text-stone-500 sm:mt-[20px] sm:text-[17px]"
     >
       You're leaving easy revenue on the table every day your data is siloed from your partners
     </p>
 
-    <div class="mt-[34px] flex items-center justify-center">
+    <div class="mt-[24px] flex items-center justify-center">
       <ButtonLink
         href={joinHref}
         target="_blank"

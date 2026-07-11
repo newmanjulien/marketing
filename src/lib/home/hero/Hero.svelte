@@ -1,15 +1,15 @@
 <script lang="ts">
   import { ArrowRightIcon } from 'phosphor-svelte';
+  import OpportunityEmailGraphic from '$lib/home/features/opportunity-email/OpportunityEmailGraphic.svelte';
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import { createPortalAuthUrlForMarketingPath } from '$lib/portalAuthLinks';
   import HeroCtaButton from './HeroCtaButton.svelte';
-  import HeroIndustryProof from './HeroIndustryProof.svelte';
 
   const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
 </script>
 
 <section
-  class="px-[18px] pt-[calc(115px-var(--site-mobile-header-height))] sm:px-8 sm:pt-[calc(153px-var(--site-mobile-header-height))] lg:pt-[153px]"
+  class="px-[18px] pt-[calc(95px-var(--site-mobile-header-height))] sm:px-8 sm:pt-[calc(133px-var(--site-mobile-header-height))] lg:pt-[133px]"
 >
   <ContentMeasure class="flex !max-w-[780px] flex-col items-center text-center">
     <a
@@ -46,8 +46,13 @@
       </HeroCtaButton>
     </div>
 
-    <div class="hero-proof mt-[56px] w-full translate-y-[4px] opacity-0 will-change-[transform,opacity] sm:mt-[60px]">
-      <HeroIndustryProof />
+  </ContentMeasure>
+
+  <ContentMeasure>
+    <div
+      class="hero-email mt-[79px] translate-y-[4px] opacity-0 will-change-[transform,opacity] sm:mt-[83px]"
+    >
+      <OpportunityEmailGraphic />
     </div>
   </ContentMeasure>
 </section>
@@ -69,12 +74,9 @@
     animation: hero-content-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 890ms both;
   }
 
-  .hero-actions {
+  .hero-actions,
+  .hero-email {
     animation: hero-content-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 990ms both;
-  }
-
-  .hero-proof {
-    animation: hero-content-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 1090ms both;
   }
 
   @keyframes hero-title-lead-settle {
@@ -114,7 +116,7 @@
     .hero-title-growth,
     .hero-support,
     .hero-actions,
-    .hero-proof {
+    .hero-email {
       animation: none;
       opacity: 1;
       transform: none;

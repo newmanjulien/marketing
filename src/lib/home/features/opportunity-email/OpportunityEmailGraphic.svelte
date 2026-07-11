@@ -50,9 +50,23 @@ Tax Partner Scott Duarte would be the best person to connect with for additional
 Topics to explore with Scott: Linamar’s new sources of revenue outside of Canada and the U.S., increased travel activity in Europe, and new professional services engagements related to European real estate.`
   } as const satisfies Record<HomeIndustryId, string>;
 
+  const opportunityExplanationByIndustryId = {
+    insurance:
+      'Carrier data lets insurance brokerages give brokers the benchmarks they need to make sure clients are fully insured',
+    law:
+      'Minute-by-minute monitoring of your existing data sources lets your lawyers get hired for matters',
+    'government-relations':
+      'Minute-by-minute monitoring of your legislative data lets you turn policy change into an engagements',
+    consulting:
+      'The institutional knowledge from across your consulting firm and from your partners lets you win more pitches',
+    accounting:
+      'Securely analyzing client documents lets accounting firms spot opportunities to offer a broader range of services to existing clients'
+  } as const satisfies Record<HomeIndustryId, string>;
+
   let selectedIndustryId = $state<HomeIndustryId>('insurance');
 
   const selectedEmail = $derived(opportunityEmailByIndustryId[selectedIndustryId]);
+  const selectedExplanation = $derived(opportunityExplanationByIndustryId[selectedIndustryId]);
 
   const selectIndustry = (industryId: HomeIndustryId) => {
     selectedIndustryId = industryId;
@@ -60,10 +74,10 @@ Topics to explore with Scott: Linamar’s new sources of revenue outside of Cana
 </script>
 
 <div
-  class="flex h-[380px] flex-col overflow-hidden rounded-[8px] border border-stone-200/70 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)]"
+  class="flex h-[390px] flex-col overflow-hidden rounded-[9px] border border-stone-200/70 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)] sm:h-[410px]"
 >
   <div
-    class="flex min-h-[52px] flex-col gap-[10px] border-b border-stone-200/70 bg-stone-50 px-[12px] py-[10px] sm:flex-row sm:items-start sm:justify-between sm:px-[13px]"
+    class="flex min-h-[56px] items-center overflow-x-auto border-b border-stone-200/70 bg-stone-50/50 px-[10px] py-[10px] sm:px-[14px]"
   >
     <OpportunityIndustryTabs
       industries={homeIndustries}
@@ -75,9 +89,15 @@ Topics to explore with Scott: Linamar’s new sources of revenue outside of Cana
   <div class="min-h-0 flex-1 overflow-auto bg-white">
     <div>
       <div
-        class="whitespace-pre-wrap px-[17px] pb-[4px] pt-[20px] font-body text-[14px] font-book leading-[1.65] tracking-normal text-stone-600 sm:px-[19px] sm:pt-[22px]"
+        class="whitespace-pre-wrap px-[18px] pb-[4px] pt-[22px] font-body text-[14px] font-book leading-[1.68] tracking-normal text-stone-600 sm:px-[26px] sm:pt-[26px] sm:text-[15px]"
       >{selectedEmail}</div>
-      <img class="ml-[17px] mt-[26px] block w-[126px] sm:ml-[19px]" src="/logo_full.png" alt="Overbase" />
+      <img class="ml-[18px] mt-[26px] block w-[126px] sm:ml-[26px]" src="/logo_full.png" alt="Overbase" />
     </div>
   </div>
 </div>
+
+<p
+  class="mt-[18px] max-w-[650px] px-[2px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-400 sm:mt-[20px] sm:text-[16px]"
+>
+  {selectedExplanation}
+</p>

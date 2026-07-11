@@ -22,7 +22,7 @@ const sharedSectionCopy: IndustryPageSections = {
   },
   opportunityEmail: {
     id: "opportunityEmail",
-    heading: "Get opportunities by email",
+    heading: "Receive opportunities by email",
     body: "Your team receives emails with actionable revenue opportunities right in their inbox. Nicely packaged up and with the right people CCed",
   },
 } as const;
