@@ -1,12 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import {
     homeIndustries,
     type HomeIndustryId
   } from '$lib/home/industryContent';
   import OpportunityIndustryTabs from './OpportunityIndustryTabs.svelte';
-
-  const AUTO_ADVANCE_INTERVAL_MS = 4_000;
 
   const opportunityEmailByIndustryId = {
     insurance: `Hi Stephen,
@@ -53,62 +50,25 @@ Topics to explore with Scott: Linamar’s new sources of revenue outside of Cana
 
   const opportunityExplanationByIndustryId = {
     insurance:
-      'Carrier data lets insurance brokerages give brokers the benchmarks they need to make sure clients are fully insured',
+      '**Carrier data lets insurance brokerages give brokers the benchmarks they need to make sure clients are fully insured',
     law:
-      'Minute-by-minute monitoring of your existing data sources lets your lawyers get hired for matters',
+      '**Minute-by-minute monitoring of your existing data sources lets your lawyers get hired for matters',
     'government-relations':
-      'Minute-by-minute monitoring of legislative data lets you turn policy change into engagements',
+      '**Minute-by-minute monitoring of legislative data lets you turn policy change into engagements',
     consulting:
-      'The institutional knowledge from across your consulting firm and from your partners lets you win more pitches',
+      '**The institutional knowledge from across your consulting firm and from your partners lets you win more pitches',
     accounting:
-      'Securely analyzing client documents lets accounting firms spot opportunities to offer a broader range of services to existing clients'
+      '**Securely analyzing client documents lets accounting firms spot opportunities to offer a broader range of services to existing clients'
   } as const satisfies Record<HomeIndustryId, string>;
 
   let selectedIndustryId = $state<HomeIndustryId>('insurance');
-  let autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
-  let autoAdvanceStopped = false;
 
   const selectedEmail = $derived(opportunityEmailByIndustryId[selectedIndustryId]);
   const selectedExplanation = $derived(opportunityExplanationByIndustryId[selectedIndustryId]);
 
-  const clearAutoAdvanceTimer = () => {
-    if (autoAdvanceTimer === null) {
-      return;
-    }
-
-    clearTimeout(autoAdvanceTimer);
-    autoAdvanceTimer = null;
-  };
-
-  const scheduleNextIndustry = (currentIndex: number) => {
-    clearAutoAdvanceTimer();
-
-    if (autoAdvanceStopped || currentIndex >= homeIndustries.length - 1) {
-      return;
-    }
-
-    autoAdvanceTimer = setTimeout(() => {
-      if (autoAdvanceStopped) {
-        return;
-      }
-
-      const nextIndex = currentIndex + 1;
-      selectedIndustryId = homeIndustries[nextIndex].id;
-      scheduleNextIndustry(nextIndex);
-    }, AUTO_ADVANCE_INTERVAL_MS);
-  };
-
   const selectIndustry = (industryId: HomeIndustryId) => {
-    autoAdvanceStopped = true;
-    clearAutoAdvanceTimer();
     selectedIndustryId = industryId;
   };
-
-  onMount(() => {
-    scheduleNextIndustry(0);
-
-    return clearAutoAdvanceTimer;
-  });
 </script>
 
 <div

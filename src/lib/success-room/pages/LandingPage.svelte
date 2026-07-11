@@ -5,6 +5,7 @@
   import PageFrame from '$lib/page/PageFrame.svelte';
   import PillTabs from '$lib/ui/PillTabs.svelte';
   import type { PillTab } from '$lib/ui/PillTabs.svelte';
+  import DocumentRequestCard from '../documents/DocumentRequestCard.svelte';
   import ResourceCard from '../documents/ResourceCard.svelte';
   import Header from '../shell/Header.svelte';
   import BenefitsPanel from '../plan/BenefitsPanel.svelte';
@@ -117,6 +118,8 @@
               {#each room.resources as resource (resource.slug)}
                 <ResourceCard {room} {resource} />
               {/each}
+
+              <DocumentRequestCard {room} />
             </nav>
           </div>
         {:else if section.key === 'benefits'}

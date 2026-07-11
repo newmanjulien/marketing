@@ -23,6 +23,12 @@ export const getProtectedSuccessRoomLandingPage = async (roomSlug: string, acces
     accessToken,
   });
 
+export const getProtectedSuccessRoomBasePage = async (roomSlug: string, accessToken: string) =>
+  convex.query(api.successRooms.getBasePage, {
+    slug: roomSlug,
+    accessToken,
+  });
+
 export const getProtectedSuccessRoomResourcePage = async (
   roomSlug: string,
   accessToken: string,

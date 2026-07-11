@@ -4,6 +4,7 @@ import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { parseSuccessRoomSlug } from "../shared/successRoomSlugs";
 import { maxCustomBenefitLength } from "../shared/successRoomBenefits";
+import { maxSuccessRoomDocumentRequestDescriptionLength } from "../shared/successRoomDocumentRequests";
 import { applySuccessRoomPlanAction } from "../shared/successRoomPlan";
 import {
   audioResourceDefinition,
@@ -120,6 +121,11 @@ const kickoffScheduleSnapshot = v.object({
     }),
   ),
 });
+
+const documentRequestNotificationStatus = v.union(
+  v.literal("sent"),
+  v.literal("failed"),
+);
 
 const benefitsPatch = v.object({
   selectedCardKeys: v.optional(v.array(v.string())),
@@ -354,6 +360,22 @@ const sanitizeBenefitsState = (room: SuccessRoom, state: BenefitsState): Benefit
       .filter(Boolean)
       .slice(0, maxPainPoints),
   };
+};
+
+const sanitizeDocumentRequestDescription = (value: string) => {
+  const description = value.trim();
+
+  if (!description) {
+    throw new ConvexError("Document request description is required");
+  }
+
+  if (description.length > maxSuccessRoomDocumentRequestDescriptionLength) {
+    throw new ConvexError(
+      `Document request description must include ${maxSuccessRoomDocumentRequestDescriptionLength} characters or fewer`,
+    );
+  }
+
+  return description;
 };
 
 const sanitizePlanState = (
@@ -834,6 +856,21 @@ export const getLandingPage = query({
   },
 });
 
+export const getBasePage = query({
+  args: {
+    slug: v.string(),
+    accessToken: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const room = await requireAuthorizedRoom(ctx, args.slug, args.accessToken);
+
+    return {
+      locked: false as const,
+      room: baseRoom(room),
+    };
+  },
+});
+
 export const getRoutedResourcePage = query({
   args: {
     slug: v.string(),
@@ -844,6 +881,83 @@ export const getRoutedResourcePage = query({
     const room = await requireAuthorizedRoom(ctx, args.slug, args.accessToken);
 
     return await publicResourcePayload(ctx, room, args.resourceSlug);
+  },
+});
+
+export const createDocumentRequest = mutation({
+  args: {
+    slug: v.string(),
+    accessToken: v.string(),
+    description: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const room = await requireAuthorizedRoom(ctx, args.slug, args.accessToken);
+    const description = sanitizeDocumentRequestDescription(args.description);
+    const now = Date.now();
+    const requestId = await ctx.db.insert("successRoomDocumentRequests", {
+      roomId: room._id,
+      description,
+      notificationStatus: "pending",
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    return {
+      requestId,
+      description,
+      room: {
+        roomId: room._id,
+        slug: room.slug,
+        prospectName: room.prospectName,
+      },
+      createdAt: now,
+    };
+  },
+});
+
+export const markDocumentRequestNotification = mutation({
+  args: {
+    slug: v.string(),
+    accessToken: v.string(),
+    requestId: v.id("successRoomDocumentRequests"),
+    notificationStatus: documentRequestNotificationStatus,
+  },
+  handler: async (ctx, args) => {
+    const room = await requireAuthorizedRoom(ctx, args.slug, args.accessToken);
+    const documentRequest = await ctx.db.get(args.requestId);
+
+    if (!documentRequest || documentRequest.roomId !== room._id) {
+      throw new ConvexError("Document request not found");
+    }
+
+    if (
+      documentRequest.notificationStatus !== "pending" &&
+      documentRequest.notificationStatus !== args.notificationStatus
+    ) {
+      throw new ConvexError("Document request notification status is already final");
+    }
+
+    if (
+      documentRequest.notificationStatus === args.notificationStatus &&
+      documentRequest.notificationAttemptedAt !== undefined
+    ) {
+      return {
+        notificationStatus: documentRequest.notificationStatus,
+        notificationAttemptedAt: documentRequest.notificationAttemptedAt,
+      };
+    }
+
+    const now = Date.now();
+    await ctx.db.patch(documentRequest._id, {
+      notificationStatus: args.notificationStatus,
+      notificationAttemptedAt: now,
+      updatedAt: now,
+    });
+
+    return {
+      notificationStatus: args.notificationStatus,
+      notificationAttemptedAt: now,
+    };
   },
 });
 
@@ -1151,6 +1265,14 @@ export const nukeSuccessRoomData = mutation({
       await ctx.db.delete(file._id);
     }
 
+    const successRoomDocumentRequests = await ctx.db
+      .query("successRoomDocumentRequests")
+      .collect();
+
+    for (const documentRequest of successRoomDocumentRequests) {
+      await ctx.db.delete(documentRequest._id);
+    }
+
     const rooms = await ctx.db.query("successRooms").collect();
 
     for (const room of rooms) {
@@ -1160,6 +1282,7 @@ export const nukeSuccessRoomData = mutation({
     return {
       deletedStorageFiles: storageFiles.length,
       deletedRows: {
+        successRoomDocumentRequests: successRoomDocumentRequests.length,
         successRoomFiles: successRoomFiles.length,
         successRooms: rooms.length,
       },
