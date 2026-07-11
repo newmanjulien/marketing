@@ -16,7 +16,7 @@
 
 <DocumentLinkCard
   href={link.href}
-  target={link.isRouted ? undefined : link.target}
-  rel={link.isRouted ? undefined : link.rel}
+  target={link.target}
+  rel={link.rel}
   label={resource.actionLabel}
 />

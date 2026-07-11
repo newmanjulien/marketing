@@ -56,6 +56,7 @@ const optionalResourceKey = v.union(
   v.literal(kickoffScheduleResourceKey),
 );
 type OptionalSuccessRoomResourceKey = Infer<typeof optionalResourceKey>;
+const assetResourceKey = v.union(v.literal(deckResourceKey), v.literal(audioResourceKey));
 const editableTextResourceKey = v.literal(initialFormatResourceKey);
 const kickoffScheduleResourceSlug = v.literal(kickoffScheduleResourceKey);
 
@@ -603,7 +604,7 @@ const activeTeamSummaries = async (ctx: QueryCtx | MutationCtx, room: SuccessRoo
     sortActiveTeamMembers(room.teamMembers).map((member) => teamMemberSummary(ctx, room, member)),
   );
 
-const assetResource = async (
+const assetResourceSummary = async (
   ctx: QueryCtx,
   room: SuccessRoom,
   resourceKey: AssetSuccessRoomResourceKey,
@@ -614,16 +615,39 @@ const assetResource = async (
     return null;
   }
 
-  const summary = await linkedFileSummary(ctx, file);
   const definition =
     resourceKey === deckResourceKey ? deckResourceDefinition : audioResourceDefinition;
 
   return {
     ...definition,
-    delivery: {
-      type: "asset" as const,
-      href: summary.url,
-    },
+    delivery: { type: "asset" as const },
+  };
+};
+
+const assetResourceResolution = async (
+  ctx: QueryCtx,
+  room: SuccessRoom,
+  resourceKey: AssetSuccessRoomResourceKey,
+) => {
+  if (!hasResource(room, resourceKey)) {
+    return { status: "missing" as const };
+  }
+
+  const file = await activeFileByKind(ctx, room._id, resourceKey);
+
+  if (!file) {
+    return { status: "missing" as const };
+  }
+
+  const href = await ctx.storage.getUrl(file.storageId);
+
+  if (!href) {
+    return { status: "missing" as const };
+  }
+
+  return {
+    status: "available" as const,
+    href,
   };
 };
 
@@ -658,7 +682,7 @@ const landingResource = async (
   }
 
   if (resourceKey === deckResourceKey || resourceKey === audioResourceKey) {
-    return await assetResource(ctx, room, resourceKey);
+    return await assetResourceSummary(ctx, room, resourceKey);
   }
 
   return routedResourceSummary(resourceKey);
@@ -868,6 +892,19 @@ export const getBasePage = query({
       locked: false as const,
       room: baseRoom(room),
     };
+  },
+});
+
+export const resolveAssetResource = query({
+  args: {
+    slug: v.string(),
+    accessToken: v.string(),
+    resourceSlug: assetResourceKey,
+  },
+  handler: async (ctx, args) => {
+    const room = await requireAuthorizedRoom(ctx, args.slug, args.accessToken);
+
+    return await assetResourceResolution(ctx, room, args.resourceSlug);
   },
 });
 

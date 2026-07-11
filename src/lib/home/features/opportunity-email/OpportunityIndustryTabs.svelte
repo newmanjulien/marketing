@@ -18,7 +18,7 @@
   } = $props();
 </script>
 
-<div class="flex min-w-max flex-1 flex-nowrap items-center gap-[7px] sm:justify-center sm:gap-[9px]">
+<div class="flex min-w-max flex-1 flex-nowrap items-center gap-[9px] sm:justify-center sm:gap-[11px]">
   {#each industries as industry (industry.id)}
     {@const IndustryIcon = industry.icon}
     <button

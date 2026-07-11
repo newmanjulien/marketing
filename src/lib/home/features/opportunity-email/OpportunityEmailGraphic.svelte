@@ -50,9 +50,9 @@ Topics to explore with Scott: Linamar’s new sources of revenue outside of Cana
 
   const opportunityExplanationByIndustryId = {
     insurance:
-      '**Carrier data lets insurance brokerages give brokers the benchmarks they need to make sure clients are fully insured',
+      '**Carrier data lets insurance brokers get the benchmarks they need to make sure your clients are fully insured',
     law:
-      '**Minute-by-minute monitoring of your existing data sources lets your lawyers get hired for matters',
+      '**Minute-by-minute monitoring of your data sources lets your lawyers reach out to clients at just the right time',
     'government-relations':
       '**Minute-by-minute monitoring of legislative data lets you turn policy change into engagements',
     consulting:

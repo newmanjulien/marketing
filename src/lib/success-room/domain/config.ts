@@ -8,7 +8,7 @@ import { successRoomResourceDefinitions } from '../../../../shared/successRoomRe
 type SuccessRoomResourceDefinition = (typeof successRoomResourceDefinitions)[number];
 const assetResourceKinds = new Set(['pdf', 'audio']);
 
-type SuccessRoomAssetResourceSlug = Extract<
+export type SuccessRoomAssetResourceSlug = Extract<
   SuccessRoomResourceDefinition,
   { kind: 'pdf' | 'audio' }
 >['slug'];
@@ -30,6 +30,14 @@ export type SuccessRoomRoutedResourceSlug = Exclude<
 
 const getSuccessRoomResourceDefinition = (resourceSlug: string) =>
   successRoomResourceDefinitions.find((resource) => resource.slug === resourceSlug);
+
+export const isSuccessRoomAssetResourceSlug = (
+  resourceSlug: string,
+): resourceSlug is SuccessRoomAssetResourceSlug => {
+  const resource = getSuccessRoomResourceDefinition(resourceSlug);
+
+  return Boolean(resource && assetResourceKinds.has(resource.kind));
+};
 
 export const isSuccessRoomRoutedResourceSlug = (
   resourceSlug: string,

@@ -1,6 +1,7 @@
 import { api } from '../../../../convex/_generated/api';
 import {
   successRoomDescription,
+  type SuccessRoomAssetResourceSlug,
   type SuccessRoomRoutedResourceSlug
 } from '$lib/success-room/domain/config';
 import { convex } from './convexClient.server';
@@ -27,6 +28,17 @@ export const getProtectedSuccessRoomBasePage = async (roomSlug: string, accessTo
   convex.query(api.successRooms.getBasePage, {
     slug: roomSlug,
     accessToken,
+  });
+
+export const resolveProtectedSuccessRoomAsset = async (
+  roomSlug: string,
+  accessToken: string,
+  resourceSlug: SuccessRoomAssetResourceSlug,
+) =>
+  convex.query(api.successRooms.resolveAssetResource, {
+    slug: roomSlug,
+    accessToken,
+    resourceSlug,
   });
 
 export const getProtectedSuccessRoomResourcePage = async (

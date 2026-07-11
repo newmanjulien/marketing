@@ -1,7 +1,7 @@
 <script lang="ts">
   const testimonials = [
     {
-      quote: 'Our team immediately started using Overbase',
+      quote: 'Our team rarely adopts new tech, but they adopted Overbase immediately',
       name: "Alex L'Heureux",
       role: 'CEO',
       company: 'WSP'

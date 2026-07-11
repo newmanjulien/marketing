@@ -45,7 +45,7 @@
       aria-labelledby={titleId}
       tabindex="-1"
       class={[
-        'relative flex max-h-[calc(100vh-3rem)] w-full max-w-[440px] flex-col overflow-hidden rounded-[8px] border border-stone-200/80 bg-white text-stone-950 shadow-[0_12px_34px_rgba(68,64,60,0.14)] outline-none',
+        'relative flex max-h-[calc(100vh-3rem)] w-full max-w-[440px] flex-col overflow-hidden rounded-[16px] border border-stone-200/80 bg-white text-stone-950 shadow-[0_12px_34px_rgba(68,64,60,0.14)] outline-none',
         className
       ]}
     >

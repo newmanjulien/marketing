@@ -45,7 +45,7 @@
       spellcheck="true"
       aria-describedby={form?.message ? 'success-room-document-request-feedback' : undefined}
       aria-invalid={form?.status === 'validation-error' ? 'true' : undefined}
-      class="min-h-[132px] w-full resize-y rounded-[12px] border border-stone-200 bg-stone-50/70 px-[14px] py-[12px] text-[14px] font-book leading-[1.45] text-stone-800 outline-none transition-[background-color,border-color,box-shadow] duration-150 placeholder:text-stone-400 focus:border-stone-300 focus:bg-white focus:ring-2 focus:ring-stone-900/10 sm:px-[16px] sm:py-[14px] sm:text-[15px]"
+      class="min-h-[132px] w-full resize-none rounded-[12px] border border-stone-200 bg-stone-50/70 px-[14px] py-[12px] text-[14px] font-book leading-[1.45] text-stone-800 outline-none transition-[background-color,border-color,box-shadow] duration-150 placeholder:text-stone-400 focus:border-stone-300 focus:bg-white focus:ring-2 focus:ring-stone-900/10 sm:px-[16px] sm:py-[14px] sm:text-[15px]"
       placeholder="Ideally, explain what pushback you'd like to preempt so we can prepare the right doc"
     ></textarea>
 
@@ -63,7 +63,7 @@
       type="submit"
       disabled={isSubmitting}
       aria-busy={isSubmitting}
-      class="inline-flex h-[42px] w-fit items-center justify-center gap-[8px] rounded-[10px] bg-stone-750 px-[18px] text-[13px] font-book leading-none tracking-normal text-white shadow-[0_1px_2px_rgba(28,25,23,0.12)] transition-[background-color,box-shadow,transform] duration-150 hover:-translate-y-px hover:bg-stone-700 hover:shadow-[0_4px_10px_rgba(28,25,23,0.14)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 disabled:cursor-not-allowed disabled:bg-stone-500 disabled:shadow-none disabled:hover:translate-y-0"
+      class="inline-flex h-[42px] w-fit items-center justify-center gap-[8px] rounded-[7px] bg-stone-750 px-[18px] text-[13px] font-book leading-none tracking-normal text-white shadow-[0_1px_2px_rgba(28,25,23,0.12)] transition-[background-color,box-shadow,transform] duration-150 hover:-translate-y-px hover:bg-stone-700 hover:shadow-[0_4px_10px_rgba(28,25,23,0.14)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 disabled:cursor-not-allowed disabled:bg-stone-500 disabled:shadow-none disabled:hover:translate-y-0"
     >
       {#if isSubmitting}
         <span

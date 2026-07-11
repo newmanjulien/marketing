@@ -10,7 +10,6 @@ import type {
 
 export type SuccessRoomAssetDelivery = {
   type: 'asset';
-  href: string;
 };
 
 export type SuccessRoomRouteDelivery = {

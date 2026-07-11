@@ -11,9 +11,13 @@ import {
   getProtectedSuccessRoomLandingPage,
   getProtectedSuccessRoomResourcePage,
   getPublicSuccessRoom,
+  resolveProtectedSuccessRoomAsset,
   verifySuccessRoomPassword
 } from './convexQueries.server';
-import type { SuccessRoomRoutedResourceSlug } from '$lib/success-room/domain/config';
+import type {
+  SuccessRoomAssetResourceSlug,
+  SuccessRoomRoutedResourceSlug
+} from '$lib/success-room/domain/config';
 
 const getUnlockedSuccessRoomPayload = async <Payload>(
   cookies: Cookies,
@@ -46,6 +50,15 @@ export const getUnlockedSuccessRoomLandingPage = async (cookies: Cookies, roomSl
 export const getUnlockedSuccessRoomBasePage = async (cookies: Cookies, roomSlug: string) =>
   getUnlockedSuccessRoomPayload(cookies, roomSlug, (accessToken) =>
     getProtectedSuccessRoomBasePage(roomSlug, accessToken)
+  );
+
+export const resolveUnlockedSuccessRoomAsset = async (
+  cookies: Cookies,
+  roomSlug: string,
+  resourceSlug: SuccessRoomAssetResourceSlug
+) =>
+  getUnlockedSuccessRoomPayload(cookies, roomSlug, (accessToken) =>
+    resolveProtectedSuccessRoomAsset(roomSlug, accessToken, resourceSlug)
   );
 
 export const getUnlockedSuccessRoomResourcePage = async (

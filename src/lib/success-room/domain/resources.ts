@@ -12,18 +12,8 @@ export const getSuccessRoomHref = (
 export const getSuccessRoomResourceLink = (
   room: Pick<SuccessRoomBaseRoom, 'slug'>,
   resource: SuccessRoomResourceSummary,
-) => {
-  if (resource.delivery.type === 'asset') {
-    return {
-      href: resource.delivery.href,
-      target: '_blank',
-      rel: 'noopener noreferrer',
-      isRouted: false,
-    };
-  }
-
-  return {
-    href: getSuccessRoomResourcePath(room.slug, resource.slug),
-    isRouted: true,
-  };
-};
+) => ({
+  href: getSuccessRoomResourcePath(room.slug, resource.slug),
+  target: resource.delivery.type === 'asset' ? '_blank' : undefined,
+  rel: resource.delivery.type === 'asset' ? 'noopener noreferrer' : undefined
+});

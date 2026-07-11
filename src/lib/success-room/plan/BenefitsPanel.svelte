@@ -19,19 +19,19 @@
   const canSelectCustomBenefit = $derived(customBenefitInput.trim().length > 0);
 
   const cardClasses =
-    'group flex h-[132px] flex-col rounded-[10px] border border-stone-200/70 bg-white px-[18px] py-[14px] text-stone-900 shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] focus-within:border-stone-300 sm:px-[20px] sm:py-[16px]';
+    'group flex h-[132px] flex-col rounded-[14px] border border-stone-200/70 bg-white px-[18px] py-[14px] text-stone-900 shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] focus-within:border-stone-300 sm:px-[20px] sm:py-[16px]';
   const selectableCardClasses = 'cursor-pointer';
   const checkedCardClasses = 'border-stone-300 bg-stone-50/60';
   const titleClasses =
     'min-w-0 text-[15px] font-normal leading-[1.2] tracking-normal text-stone-750 transition-colors duration-200 group-hover:text-stone-900 sm:text-[16px]';
   const checkboxClasses =
-    'mt-[1px] h-[13px] w-[13px] shrink-0 cursor-pointer';
+    'mt-[1px] h-[15px] w-[15px] shrink-0 cursor-pointer';
   const panelDescriptionClasses =
     'max-w-[42rem] text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]';
   const descriptionClasses =
     'mt-[10px] block max-w-[26rem] text-[13px] font-book leading-[1.4] tracking-normal text-stone-500 sm:text-[14px]';
   const customBenefitInputClasses =
-    'mt-[10px] block min-h-0 w-full flex-1 resize-none rounded-[6px] border border-stone-200 bg-white px-[10px] py-[7px] font-body text-[13px] font-book leading-[1.35] tracking-normal text-stone-800 outline-none transition-[background-color,border-color,color] duration-150 placeholder:text-stone-400 focus:border-stone-300 focus:bg-stone-50/70 focus:text-stone-900 sm:text-[14px]';
+    'mt-[10px] block min-h-0 w-full flex-1 resize-none rounded-[10px] border border-stone-200 bg-white px-[10px] py-[7px] font-body text-[13px] font-book leading-[1.35] tracking-normal text-stone-800 outline-none transition-[background-color,border-color,color] duration-150 placeholder:text-stone-400 focus:border-stone-300 focus:bg-stone-50/70 focus:text-stone-900 sm:text-[14px]';
 
   const setBenefitChecked = (benefitKey: string, checked: boolean) => {
     const nextSelectedBenefitKeys = new Set(checkedBenefitKeys);
