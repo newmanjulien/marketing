@@ -1,9 +1,13 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import {
     homeIndustries,
     type HomeIndustryId
   } from '$lib/home/industryContent';
   import OpportunityIndustryTabs from './OpportunityIndustryTabs.svelte';
+
+  const AUTO_ADVANCE_START_DELAY_MS = 3_660;
+  const AUTO_ADVANCE_INTERVAL_MS = 4_000;
 
   const opportunityEmailByIndustryId = {
     insurance: `Hi Stephen,
@@ -64,13 +68,55 @@ Topics to explore with Scott: Linamar’s new sources of revenue outside of Cana
   } as const satisfies Record<HomeIndustryId, string>;
 
   let selectedIndustryId = $state<HomeIndustryId>('insurance');
+  let autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
+  let autoAdvanceStopped = false;
 
   const selectedEmail = $derived(opportunityEmailByIndustryId[selectedIndustryId]);
   const selectedExplanation = $derived(opportunityExplanationByIndustryId[selectedIndustryId]);
 
+  const clearAutoAdvanceTimer = () => {
+    if (autoAdvanceTimer === null) {
+      return;
+    }
+
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = null;
+  };
+
+  const scheduleNextIndustry = (currentIndex: number) => {
+    clearAutoAdvanceTimer();
+
+    if (autoAdvanceStopped || currentIndex >= homeIndustries.length - 1) {
+      return;
+    }
+
+    autoAdvanceTimer = setTimeout(() => {
+      if (autoAdvanceStopped) {
+        return;
+      }
+
+      const nextIndex = currentIndex + 1;
+      selectedIndustryId = homeIndustries[nextIndex].id;
+      scheduleNextIndustry(nextIndex);
+    }, AUTO_ADVANCE_INTERVAL_MS);
+  };
+
   const selectIndustry = (industryId: HomeIndustryId) => {
+    autoAdvanceStopped = true;
+    clearAutoAdvanceTimer();
     selectedIndustryId = industryId;
   };
+
+  onMount(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    autoAdvanceTimer = setTimeout(
+      () => scheduleNextIndustry(0),
+      prefersReducedMotion ? 0 : AUTO_ADVANCE_START_DELAY_MS
+    );
+
+    return clearAutoAdvanceTimer;
+  });
 </script>
 
 <div

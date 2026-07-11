@@ -31,6 +31,8 @@
       ]}
       aria-pressed={selectedIndustryId === industry.id}
       onclick={() => onselect(industry.id)}
+      onfocus={() => onselect(industry.id)}
+      onmouseenter={() => onselect(industry.id)}
     >
       <IndustryIcon size={16} weight="bold" />
       <span>{industry.label}</span>
