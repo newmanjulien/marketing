@@ -1,0 +1,1 @@
+export const maxSuccessRoomDocumentRequestDescriptionLength = 2_000;

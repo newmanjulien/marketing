@@ -7,6 +7,7 @@ import {
   setSuccessRoomAccessToken
 } from './access.server';
 import {
+  getProtectedSuccessRoomBasePage,
   getProtectedSuccessRoomLandingPage,
   getProtectedSuccessRoomResourcePage,
   getPublicSuccessRoom,
@@ -40,6 +41,11 @@ const getUnlockedSuccessRoomPayload = async <Payload>(
 export const getUnlockedSuccessRoomLandingPage = async (cookies: Cookies, roomSlug: string) =>
   getUnlockedSuccessRoomPayload(cookies, roomSlug, (accessToken) =>
     getProtectedSuccessRoomLandingPage(roomSlug, accessToken)
+  );
+
+export const getUnlockedSuccessRoomBasePage = async (cookies: Cookies, roomSlug: string) =>
+  getUnlockedSuccessRoomPayload(cookies, roomSlug, (accessToken) =>
+    getProtectedSuccessRoomBasePage(roomSlug, accessToken)
   );
 
 export const getUnlockedSuccessRoomResourcePage = async (

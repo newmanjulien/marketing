@@ -117,4 +117,17 @@ export default defineSchema({
     .index("by_room_key", ["roomId", "key"])
     .index("by_room_kind_active", ["roomId", "kind", "active"])
     .index("by_storage_id", ["storageId"]),
+
+  successRoomDocumentRequests: defineTable({
+    roomId: v.id("successRooms"),
+    description: v.string(),
+    notificationStatus: v.union(
+      v.literal("pending"),
+      v.literal("sent"),
+      v.literal("failed"),
+    ),
+    notificationAttemptedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_room_created_at", ["roomId", "createdAt"]),
 });

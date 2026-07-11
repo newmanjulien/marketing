@@ -1,10 +1,6 @@
 import { env } from '$env/dynamic/private';
+import { createPrivateEmailSender } from '$lib/email/server/privateEmail.server';
 import { fail } from '@sveltejs/kit';
-import nodemailer from 'nodemailer';
-
-const SMTP_HOST = 'mail.privateemail.com';
-const SMTP_PORT = 465;
-const FROM_EMAIL = 'julien@overbase.app';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -21,18 +17,6 @@ const getEmail = (value: FormDataEntryValue | null) => {
   return value.trim();
 };
 
-const getSmtpConfig = () => {
-  const user = env.PRIVATE_EMAIL_USER?.trim();
-  const password = env.PRIVATE_EMAIL_PASSWORD;
-  const bcc = env.SURVEY_CONFIRMATION_BCC?.trim();
-
-  if (!user || !password || !bcc) {
-    return null;
-  }
-
-  return { user, password, bcc };
-};
-
 export const submitSurveyResultsSignup = async (formData: FormData) => {
   const email = getEmail(formData.get('email'));
 
@@ -43,33 +27,20 @@ export const submitSurveyResultsSignup = async (formData: FormData) => {
     } satisfies SurveyResultsFailure);
   }
 
-  const smtpConfig = getSmtpConfig();
+  const emailSender = createPrivateEmailSender();
+  const bcc = env.SURVEY_CONFIRMATION_BCC?.trim();
 
-  if (!smtpConfig) {
+  if (!emailSender || !bcc) {
     return fail(500, {
       email,
       message: 'Email confirmation is not configured yet.'
     } satisfies SurveyResultsFailure);
   }
 
-  const transport = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: SMTP_PORT,
-    secure: true,
-    auth: {
-      user: smtpConfig.user,
-      pass: smtpConfig.password
-    }
-  });
-
   try {
-    await transport.sendMail({
-      from: {
-        name: 'Julien Newman',
-        address: FROM_EMAIL
-      },
+    await emailSender.send({
       to: email,
-      bcc: smtpConfig.bcc,
+      bcc,
       subject: 'Survey results confirmation',
       text: [
         'Thank you for your interest in our CMO survey.',
