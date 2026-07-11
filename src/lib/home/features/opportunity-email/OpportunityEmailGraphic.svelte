@@ -17,15 +17,13 @@ We identified new policies worth $400,000 which you might propose at your renewa
 
 Each proposed policy has a benchmark. Those were calculated with data from Allianz and Chubb. The right people from both carriers are CCed.`,
 
-    law: `Hi Shayne,
-Hi Laura,
+    law: `Hi Laura,
 
-An activist hedge fund bought a 5% stake in ADP.
+An activist hedge fund bought a 5% stake in ADP. 
 
-You might want to see if this could be relevant to one of your attorneys, Shayne. And to one of your bankers, Laura.
+Here's the discussion in a Bloomberg forum: https://blinks.bloomberg.com/rooms/IB_ROOM_ID_98725
 
-Discussion in a Bloomberg forum:
-https://blinks.bloomberg.com/rooms/IB_ROOM_ID_98725`,
+ADP is one of our 20 target accounts and it's Rob Rosenberg who is responsible for building the relationship. Rob is in touch with Joel Tennenberg at ADP.`,
 
     'government-relations': `Hi Ray,
 
@@ -59,7 +57,7 @@ Topics to explore with Scott: Linamar’s new sources of revenue outside of Cana
     law:
       'Minute-by-minute monitoring of your existing data sources lets your lawyers get hired for matters',
     'government-relations':
-      'Minute-by-minute monitoring of your legislative data lets you turn policy change into engagements',
+      'Minute-by-minute monitoring of legislative data lets you turn policy change into engagements',
     consulting:
       'The institutional knowledge from across your consulting firm and from your partners lets you win more pitches',
     accounting:
