@@ -1,7 +1,9 @@
+import { createHmac } from 'node:crypto';
 import { env } from '$env/dynamic/private';
 import { createPrivateEmailSender } from '$lib/email/server/privateEmail.server';
+import { createConvexClient } from '$lib/server/convexClient.server';
 import { fail } from '@sveltejs/kit';
-import { registerSurveyResultsSignup } from './resultsSignupPersistence.server';
+import { api } from '../../../../convex/_generated/api';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -16,6 +18,29 @@ const getEmail = (value: FormDataEntryValue | null) => {
   }
 
   return value.trim();
+};
+
+const getSignupSecret = () => {
+  const signupSecret = env.SURVEY_SIGNUP_SECRET;
+
+  if (!signupSecret) {
+    throw new Error('SURVEY_SIGNUP_SECRET is not configured');
+  }
+
+  return signupSecret;
+};
+
+const createClientKey = (clientAddress: string, signupSecret: string) =>
+  createHmac('sha256', signupSecret).update(clientAddress).digest('hex');
+
+const registerSurveyResultsSignup = async (email: string, clientAddress: string) => {
+  const signupSecret = getSignupSecret();
+
+  return await createConvexClient().mutation(api.surveyResultsSignups.register, {
+    email,
+    clientKey: createClientKey(clientAddress, signupSecret),
+    signupSecret
+  });
 };
 
 export const submitSurveyResultsSignup = async (formData: FormData, clientAddress: string) => {

@@ -38,12 +38,11 @@
 
 <div class="grid grid-cols-2 gap-[12px] sm:grid-cols-3">
   {#each dataSourceItems as dataSource (dataSource.label)}
-    {@const Icon = dataSource.icon}
     <div
       class="flex h-[45px] items-center rounded-[8px] border border-stone-200/70 bg-white px-[13px] text-stone-700"
     >
       <span class="flex h-[25px] w-[25px] shrink-0 items-center justify-center text-stone-300">
-        <Icon size={24} weight="regular" />
+        <dataSource.icon size={24} weight="regular" />
       </span>
       <span class="ml-[16px] text-[14px] font-book leading-none tracking-normal">
         {dataSource.label}

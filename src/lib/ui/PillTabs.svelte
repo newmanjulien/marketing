@@ -24,16 +24,16 @@
     idBase: string;
     tabs: readonly Tab[];
     ariaLabel: string;
-    activeTabKey?: string;
-    onActiveTabKeyChange?: (tabKey: string) => void;
-    animatedTabKeys?: readonly string[];
+    activeTabKey?: Tab['key'];
+    onActiveTabKeyChange?: (tabKey: Tab['key']) => void;
+    animatedTabKeys?: readonly Tab['key'][];
     listClass?: string;
     panelClass?: string;
     children: Snippet<[Tab]>;
   } = $props();
 
-  let selectedTabKey = $state<string | undefined>();
-  const resolveTab = (tabKey: string | undefined) =>
+  let selectedTabKey = $state<Tab['key'] | undefined>();
+  const resolveTab = (tabKey: Tab['key'] | undefined) =>
     tabs.find(({ key }) => key === tabKey) ?? tabs[0];
 
   let activeTab = $derived(resolveTab(controlledActiveTabKey ?? selectedTabKey));
@@ -56,12 +56,12 @@
     'min-h-[34px] rounded-full border border-stone-200/70 bg-stone-100 px-[18px] text-[14px] font-medium leading-none text-stone-600 transition-colors duration-150 hover:border-stone-200/70 hover:bg-stone-50 hover:text-stone-800';
   const activeTabClasses = 'border-stone-200/70 bg-white text-stone-800';
 
-  const getTabId = (tabKey: string) => `${idBase}-${tabKey}-tab`;
-  const getPanelId = (tabKey: string) => `${idBase}-${tabKey}-panel`;
+  const getTabId = (tabKey: Tab['key']) => `${idBase}-${tabKey}-tab`;
+  const getPanelId = (tabKey: Tab['key']) => `${idBase}-${tabKey}-panel`;
   const prefersReducedMotion = () =>
     globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
   const getPillTabReflowDuration = () => (prefersReducedMotion() ? 0 : 160);
-  const pillTabEntry = (_node: Element, tabKey: string) => {
+  const pillTabEntry = (_node: Element, tabKey: Tab['key']) => {
     if (!animatedTabKeys.includes(tabKey)) {
       return { duration: 0 };
     }
@@ -80,7 +80,7 @@
       `
     };
   };
-  const pillTabExit = (_node: Element, tabKey: string) => {
+  const pillTabExit = (_node: Element, tabKey: Tab['key']) => {
     if (!animatedTabKeys.includes(tabKey)) {
       return { duration: 0 };
     }
@@ -99,10 +99,10 @@
       `
     };
   };
-  const focusTab = (tabKey: string) => {
+  const focusTab = (tabKey: Tab['key']) => {
     document.getElementById(getTabId(tabKey))?.focus();
   };
-  const selectTab = (tabKey: string) => {
+  const selectTab = (tabKey: Tab['key']) => {
     if (controlledActiveTabKey === undefined) {
       selectedTabKey = tabKey;
     }

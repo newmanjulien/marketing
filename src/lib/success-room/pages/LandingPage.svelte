@@ -34,6 +34,13 @@
     }
   ] as const satisfies readonly PillTab[];
 
+  type SuccessRoomSection = (typeof baseSuccessRoomSections)[number];
+
+  const resolveActiveSectionKey = (
+    sections: readonly SuccessRoomSection[],
+    requestedSectionKey: string | null
+  ) => sections.find((section) => section.key === requestedSectionKey)?.key ?? 'benefits';
+
   let {
     room,
     state: successRoomState
@@ -57,12 +64,10 @@
   );
   const requestedSectionKey = $derived(page.url.searchParams.get('section'));
   const activeSectionKey = $derived(
-    requestedSectionKey && successRoomSections.some((section) => section.key === requestedSectionKey)
-      ? requestedSectionKey
-      : 'benefits'
+    resolveActiveSectionKey(successRoomSections, requestedSectionKey)
   );
 
-  const updateSectionUrl = async (sectionKey: string, replace = false) => {
+  const updateSectionUrl = async (sectionKey: SuccessRoomSection['key'], replace = false) => {
     const url = new URL(page.url);
 
     if (sectionKey === 'benefits') {

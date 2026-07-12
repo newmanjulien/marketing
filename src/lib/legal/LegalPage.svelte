@@ -4,7 +4,6 @@
   import type { LegalPage } from './legalTypes';
 
   let { page }: { page: LegalPage } = $props();
-  let BodyComponent = $derived(page.bodyComponent);
 </script>
 
 <PageFrame>
@@ -26,7 +25,7 @@
     </header>
 
     <div class="legal-rich-text mt-[32px] font-book text-[16px] leading-[1.55] tracking-normal text-stone-700">
-      <BodyComponent />
+      <page.bodyComponent />
     </div>
   </ContentMeasure>
 </PageFrame>

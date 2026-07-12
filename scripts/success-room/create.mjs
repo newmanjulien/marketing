@@ -7,11 +7,7 @@
 
 import { api } from "../../convex/_generated/api.js";
 import { readBenefitCards } from "./helpers/benefit-cards.mjs";
-import {
-  createSeedClient,
-  uploadSeedFile,
-  validateNewSuccessRoomSlug,
-} from "./helpers/seed-common.mjs";
+import { createSeedClient, uploadSeedFile } from "./helpers/seed-common.mjs";
 
 // Add a new base room here. This script creates deck, audio, and benefits.
 // It never adds extra sections and never overwrites an existing room.
@@ -31,8 +27,7 @@ const room = {
 
 const { client, seedSecret } = await createSeedClient();
 const benefitCards = await readBenefitCards(import.meta.dirname);
-const slug = await validateNewSuccessRoomSlug({
-  client,
+const { slug } = await client.query(api.successRooms.validateNewSuccessRoomSlug, {
   seedSecret,
   slug: room.slug,
 });

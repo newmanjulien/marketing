@@ -6,18 +6,13 @@ import {
   isSuccessRoomAccessError,
   setSuccessRoomAccessToken
 } from './access.server';
-import {
-  getProtectedSuccessRoomBasePage,
-  getProtectedSuccessRoomLandingPage,
-  getProtectedSuccessRoomResourcePage,
-  getPublicSuccessRoom,
-  resolveProtectedSuccessRoomAsset,
-  verifySuccessRoomPassword
-} from './convexQueries.server';
+import { api } from '../../../../convex/_generated/api';
 import type {
   SuccessRoomAssetResourceSlug,
   SuccessRoomRoutedResourceSlug
 } from '$lib/success-room/domain/config';
+import { successRoomDescription } from '$lib/success-room/domain/config';
+import { createConvexClient } from '$lib/server/convexClient.server';
 
 const getUnlockedSuccessRoomPayload = async <Payload>(
   cookies: Cookies,
@@ -44,12 +39,18 @@ const getUnlockedSuccessRoomPayload = async <Payload>(
 
 export const getUnlockedSuccessRoomLandingPage = async (cookies: Cookies, roomSlug: string) =>
   getUnlockedSuccessRoomPayload(cookies, roomSlug, (accessToken) =>
-    getProtectedSuccessRoomLandingPage(roomSlug, accessToken)
+    createConvexClient().query(api.successRooms.getLandingPage, {
+      slug: roomSlug,
+      accessToken
+    })
   );
 
 export const getUnlockedSuccessRoomBasePage = async (cookies: Cookies, roomSlug: string) =>
   getUnlockedSuccessRoomPayload(cookies, roomSlug, (accessToken) =>
-    getProtectedSuccessRoomBasePage(roomSlug, accessToken)
+    createConvexClient().query(api.successRooms.getBasePage, {
+      slug: roomSlug,
+      accessToken
+    })
   );
 
 export const resolveUnlockedSuccessRoomAsset = async (
@@ -58,7 +59,11 @@ export const resolveUnlockedSuccessRoomAsset = async (
   resourceSlug: SuccessRoomAssetResourceSlug
 ) =>
   getUnlockedSuccessRoomPayload(cookies, roomSlug, (accessToken) =>
-    resolveProtectedSuccessRoomAsset(roomSlug, accessToken, resourceSlug)
+    createConvexClient().query(api.successRooms.resolveAssetResource, {
+      slug: roomSlug,
+      accessToken,
+      resourceSlug
+    })
   );
 
 export const getUnlockedSuccessRoomResourcePage = async (
@@ -67,11 +72,17 @@ export const getUnlockedSuccessRoomResourcePage = async (
   resourceSlug: SuccessRoomRoutedResourceSlug
 ) =>
   getUnlockedSuccessRoomPayload(cookies, roomSlug, (accessToken) =>
-    getProtectedSuccessRoomResourcePage(roomSlug, accessToken, resourceSlug)
+    createConvexClient().query(api.successRooms.getRoutedResourcePage, {
+      slug: roomSlug,
+      accessToken,
+      resourceSlug
+    })
   );
 
 export const getLockedSuccessRoomPayload = async (roomSlug: string) => {
-  const room = await getPublicSuccessRoom(roomSlug);
+  const room = await createConvexClient().query(api.successRooms.getPublicRoom, {
+    slug: roomSlug
+  });
 
   if (!room) {
     error(404, 'Success room not found');
@@ -82,7 +93,7 @@ export const getLockedSuccessRoomPayload = async (roomSlug: string) => {
     room: {
       slug: room.slug,
       prospectName: room.prospectName,
-      description: room.description
+      description: successRoomDescription
     }
   };
 };
@@ -107,7 +118,10 @@ export const unlockSuccessRoom = async ({
     });
   }
 
-  const accessToken = await verifySuccessRoomPassword(roomSlug, password);
+  const accessToken = await createConvexClient().mutation(api.successRooms.verifyPassword, {
+    slug: roomSlug,
+    password
+  });
 
   if (!accessToken) {
     return fail(401, {

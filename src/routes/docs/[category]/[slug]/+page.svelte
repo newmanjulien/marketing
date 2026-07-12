@@ -1,8 +1,8 @@
 <script lang="ts">
   import DocsPage from '$lib/docs/DocsPage.svelte';
-  import type { PageData } from './$types';
+  import type { PageProps } from './$types';
 
-  let { data }: { data: PageData } = $props();
+  let { data }: PageProps = $props();
 </script>
 
 {#key `${data.docsPage.category}/${data.docsPage.slug}`}

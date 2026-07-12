@@ -2,6 +2,7 @@ import { env } from '$env/dynamic/private';
 import { fail } from '@sveltejs/kit';
 import type { Cookies } from '@sveltejs/kit';
 import { createPrivateEmailSender } from '$lib/email/server/privateEmail.server';
+import { createConvexClient } from '$lib/server/convexClient.server';
 import {
   maxSuccessRoomDocumentRequestDescriptionLength,
   type DocumentRequestFormFailure,
@@ -12,10 +13,41 @@ import {
   isSuccessRoomAccessError,
   requireSuccessRoomAccessToken
 } from './access.server';
-import {
-  createSuccessRoomDocumentRequest,
-  markSuccessRoomDocumentRequestNotification
-} from './documentRequestPersistence.server';
+import { api } from '../../../../convex/_generated/api';
+import type { Id } from '../../../../convex/_generated/dataModel';
+
+const createSuccessRoomDocumentRequest = async ({
+  roomSlug,
+  accessToken,
+  description
+}: {
+  roomSlug: string;
+  accessToken: string;
+  description: string;
+}) =>
+  await createConvexClient().mutation(api.successRooms.createDocumentRequest, {
+    slug: roomSlug,
+    accessToken,
+    description
+  });
+
+const markSuccessRoomDocumentRequestNotification = async ({
+  roomSlug,
+  accessToken,
+  requestId,
+  notificationStatus
+}: {
+  roomSlug: string;
+  accessToken: string;
+  requestId: Id<'successRoomDocumentRequests'>;
+  notificationStatus: 'sent' | 'failed';
+}) =>
+  await createConvexClient().mutation(api.successRooms.markDocumentRequestNotification, {
+    slug: roomSlug,
+    accessToken,
+    requestId,
+    notificationStatus
+  });
 
 type PersistedDocumentRequest = Awaited<ReturnType<typeof createSuccessRoomDocumentRequest>>;
 type NotificationStatus = 'sent' | 'failed';

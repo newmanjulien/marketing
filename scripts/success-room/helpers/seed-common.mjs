@@ -2,7 +2,7 @@
 // Do not run this file directly; run one of the scripts in scripts/success-room/.
 
 import { readFile } from "node:fs/promises";
-import { existsSync, statSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { basename, isAbsolute, resolve } from "node:path";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../convex/_generated/api.js";
@@ -81,23 +81,12 @@ export const uploadSeedFile = async ({ client, seedSecret, slug, path, contentTy
   }
 
   const { storageId } = await response.json();
-  const stats = statSync(absolutePath);
-
   return {
     storageId,
     filename: basename(absolutePath),
     contentType,
-    byteSize: stats.size,
+    byteSize: bytes.byteLength,
   };
-};
-
-export const validateNewSuccessRoomSlug = async ({ client, seedSecret, slug }) => {
-  const result = await client.query(api.successRooms.validateNewSuccessRoomSlug, {
-    seedSecret,
-    slug,
-  });
-
-  return result.slug;
 };
 
 export const enableSuccessRoomSection = async ({

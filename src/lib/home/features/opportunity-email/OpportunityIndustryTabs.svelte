@@ -20,7 +20,6 @@
 
 <div class="flex min-w-max flex-1 flex-nowrap items-center gap-[9px] sm:justify-center sm:gap-[11px]">
   {#each industries as industry (industry.id)}
-    {@const IndustryIcon = industry.icon}
     <button
       type="button"
       class={[
@@ -34,7 +33,7 @@
       onfocus={() => onselect(industry.id)}
       onmouseenter={() => onselect(industry.id)}
     >
-      <IndustryIcon size={16} weight="bold" />
+      <industry.icon size={16} weight="bold" />
       <span>{industry.label}</span>
     </button>
   {/each}

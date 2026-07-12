@@ -38,7 +38,7 @@ const industryPages = {
 type IndustryPageId = keyof typeof industryPages;
 
 const isIndustryPageId = (industryId: string): industryId is IndustryPageId =>
-  industryId in industryPages;
+  Object.hasOwn(industryPages, industryId);
 
 export const getIndustryPageContent = (
   industryId: string,

@@ -2,9 +2,9 @@
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import PageFrame from '$lib/page/PageFrame.svelte';
   import { ArrowUpRightIcon } from 'phosphor-svelte';
-  import type { PageData } from './$types';
+  import type { PageProps } from './$types';
 
-  let { data }: { data: PageData } = $props();
+  let { data }: PageProps = $props();
 </script>
 
 <PageFrame>

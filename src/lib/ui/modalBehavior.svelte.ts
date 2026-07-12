@@ -63,16 +63,18 @@ export function createModalBehavior({ isOpen, onClose }: ModalBehaviorOptions) {
   }
 
   function trapFocus(event: KeyboardEvent) {
-    const focusableElements = getFocusableElements();
-    const firstElement = focusableElements[0] ?? dialogElement;
-    const lastElement = focusableElements.at(-1) ?? dialogElement;
-    const activeElement = document.activeElement;
+    const dialog = dialogElement;
 
-    if (!dialogElement || !firstElement || !lastElement) {
+    if (!dialog) {
       return;
     }
 
-    if (!dialogElement.contains(activeElement)) {
+    const focusableElements = getFocusableElements();
+    const firstElement = focusableElements[0] ?? dialog;
+    const lastElement = focusableElements.at(-1) ?? dialog;
+    const activeElement = document.activeElement;
+
+    if (!dialog.contains(activeElement)) {
       event.preventDefault();
       firstElement.focus();
       return;
