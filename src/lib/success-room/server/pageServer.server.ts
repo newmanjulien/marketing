@@ -119,7 +119,7 @@ export const unlockSuccessRoom = async ({
     });
   }
 
-  const accessToken = await createConvexClient().mutation(api.successRooms.verifyPassword, {
+  const accessToken = await createConvexClient().query(api.successRooms.verifyPassword, {
     slug: roomSlug,
     password
   });

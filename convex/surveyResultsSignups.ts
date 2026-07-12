@@ -6,6 +6,7 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const rateLimitWindowMs = 60 * 60 * 1000;
 const maximumRequestsPerWindow = 5;
 const cleanupBatchSize = 100;
+const confirmationLeaseDurationMs = 5 * 60 * 1000;
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
@@ -80,20 +81,74 @@ export const register = mutation({
       .unique();
 
     if (existingSignup) {
-      await ctx.db.patch(existingSignup._id, { lastSubmittedAt: submittedAt });
+      const canClaimConfirmation =
+        existingSignup.confirmationSentAt === undefined &&
+        (existingSignup.confirmationLeaseExpiresAt ?? 0) <= submittedAt;
+      const leaseExpiresAt = submittedAt + confirmationLeaseDurationMs;
+
+      await ctx.db.patch(existingSignup._id, {
+        lastSubmittedAt: submittedAt,
+        ...(canClaimConfirmation ? { confirmationLeaseExpiresAt: leaseExpiresAt } : {}),
+      });
+
       return {
         status: "registered" as const,
-        created: false,
+        confirmationClaim: canClaimConfirmation
+          ? {
+              signupId: existingSignup._id,
+              leaseExpiresAt,
+            }
+          : null,
       };
     }
 
-    await ctx.db.insert("surveyResultsSignups", {
+    const leaseExpiresAt = submittedAt + confirmationLeaseDurationMs;
+    const signupId = await ctx.db.insert("surveyResultsSignups", {
       email,
       createdAt: submittedAt,
       lastSubmittedAt: submittedAt,
+      confirmationLeaseExpiresAt: leaseExpiresAt,
     });
 
-    return { status: "registered" as const, created: true };
+    return {
+      status: "registered" as const,
+      confirmationClaim: {
+        signupId,
+        leaseExpiresAt,
+      },
+    };
+  },
+});
+
+export const completeConfirmation = mutation({
+  args: {
+    signupId: v.id("surveyResultsSignups"),
+    leaseExpiresAt: v.number(),
+    delivered: v.boolean(),
+    signupSecret: v.string(),
+  },
+  handler: async (ctx, args) => {
+    assertSignupAccess(args.signupSecret);
+
+    const signup = await ctx.db.get(args.signupId);
+
+    if (!signup) {
+      throw new Error("Survey results signup not found");
+    }
+
+    if (args.delivered) {
+      await ctx.db.patch(args.signupId, {
+        confirmationSentAt: Date.now(),
+        confirmationLeaseExpiresAt: undefined,
+      });
+      return;
+    }
+
+    if (signup.confirmationLeaseExpiresAt === args.leaseExpiresAt) {
+      await ctx.db.patch(args.signupId, {
+        confirmationLeaseExpiresAt: undefined,
+      });
+    }
   },
 });
 

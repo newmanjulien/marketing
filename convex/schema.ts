@@ -20,6 +20,8 @@ export default defineSchema({
     email: v.string(),
     createdAt: v.number(),
     lastSubmittedAt: v.number(),
+    confirmationSentAt: v.optional(v.number()),
+    confirmationLeaseExpiresAt: v.optional(v.number()),
   }).index("by_email", ["email"]),
 
   surveyResultsSignupRateLimits: defineTable({

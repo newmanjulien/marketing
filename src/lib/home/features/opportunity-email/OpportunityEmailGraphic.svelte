@@ -41,11 +41,11 @@ There's also a proposal our partner Thoughtworks submitted to them last month.`,
 
     accounting: `Hi Shlok,
 
-Our review of Linamar’s tax return suggests the client is expanding into Europe. This may be an opportunity to help them assess cyber considerations related to data protection.
+Our review of Linamar’s tax return suggests the client is expanding into Europe.
 
-Tax Partner Scott Duarte would be the best person to connect with for additional context.
+This may be an opportunity to help assess cyber considerations and Tax Partner Scott Duarte is the right person to connect with for details. 
 
-Topics to explore with Scott: Linamar’s new sources of revenue outside of the US, increased travel activity in Europe, and new professional services engagements related to European real estate.`
+Topics to explore with Scott: new sources of revenue outside of the US, increased travel activities in Europe, new professional services engagements in Europe.`
   } as const satisfies Record<HomeIndustryId, string>;
 
   const opportunityExplanationByIndustryId = {
@@ -68,10 +68,6 @@ Topics to explore with Scott: Linamar’s new sources of revenue outside of the 
   );
   const selectedEmail = $derived(opportunityEmailByIndustryId[selectedIndustryId]);
   const selectedExplanation = $derived(opportunityExplanationByIndustryId[selectedIndustryId]);
-
-  const selectIndustry = (industryId: HomeIndustryId) => {
-    selectedIndustryId = industryId;
-  };
 </script>
 
 <div
@@ -80,11 +76,7 @@ Topics to explore with Scott: Linamar’s new sources of revenue outside of the 
   <div
     class="flex min-h-[56px] items-center overflow-x-auto border-b border-stone-200/70 bg-stone-50/50 px-[10px] py-[10px] sm:px-[14px]"
   >
-    <OpportunityIndustryTabs
-      industries={homeIndustries}
-      {selectedIndustryId}
-      onselect={selectIndustry}
-    />
+    <OpportunityIndustryTabs industries={homeIndustries} bind:selectedIndustryId />
   </div>
 
   <div class="min-h-0 flex-1 overflow-auto bg-white">

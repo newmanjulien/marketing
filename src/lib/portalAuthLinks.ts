@@ -25,7 +25,7 @@ export function createPortalAuthUrlForMarketingPath(route: PortalAuthRoute, mark
   return createPortalAuthUrl(route, createMarketingReturnUrl(marketingPath));
 }
 
-export function createPortalAuthUrlForCurrentPage(route: PortalAuthRoute, pageUrl: URL, hash = '') {
-  const returnPath = `${pageUrl.pathname}${pageUrl.search}${hash}`;
+export function createPortalAuthUrlForCurrentPage(route: PortalAuthRoute, pageUrl: URL) {
+  const returnPath = `${pageUrl.pathname}${pageUrl.search}${pageUrl.hash}`;
   return createPortalAuthUrl(route, createMarketingReturnUrl(returnPath));
 }

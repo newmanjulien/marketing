@@ -4,12 +4,18 @@ import { createPrivateEmailSender } from '$lib/email/server/privateEmail.server'
 import { createConvexClient } from '$lib/server/convexClient.server';
 import { fail } from '@sveltejs/kit';
 import { api } from '../../../../convex/_generated/api';
+import type { Id } from '../../../../convex/_generated/dataModel';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type SurveyResultsFailure = {
   email?: string;
   message: string;
+};
+
+type SurveyResultsConfirmationClaim = {
+  signupId: Id<'surveyResultsSignups'>;
+  leaseExpiresAt: number;
 };
 
 const getEmail = (value: FormDataEntryValue | null) => {
@@ -43,6 +49,19 @@ const registerSurveyResultsSignup = async (email: string, clientAddress: string)
   });
 };
 
+const completeSurveyResultsConfirmation = async ({
+  confirmationClaim,
+  delivered
+}: {
+  confirmationClaim: SurveyResultsConfirmationClaim;
+  delivered: boolean;
+}) =>
+  await createConvexClient().mutation(api.surveyResultsSignups.completeConfirmation, {
+    ...confirmationClaim,
+    delivered,
+    signupSecret: getSignupSecret()
+  });
+
 export const submitSurveyResultsSignup = async (formData: FormData, clientAddress: string) => {
   const email = getEmail(formData.get('email'));
 
@@ -73,7 +92,9 @@ export const submitSurveyResultsSignup = async (formData: FormData, clientAddres
     } satisfies SurveyResultsFailure);
   }
 
-  if (signup.created) {
+  if (signup.confirmationClaim) {
+    let confirmationDelivered = false;
+
     try {
       const emailSender = createPrivateEmailSender();
 
@@ -103,9 +124,19 @@ export const submitSurveyResultsSignup = async (formData: FormData, clientAddres
       if (delivery.rejected.length > 0) {
         throw new Error(`SMTP rejected ${delivery.rejected.length} intended recipient(s)`);
       }
+
+      confirmationDelivered = true;
     } catch (confirmationError) {
       console.error('Unable to send survey results confirmation', confirmationError);
     }
-  }
 
+    try {
+      await completeSurveyResultsConfirmation({
+        confirmationClaim: signup.confirmationClaim,
+        delivered: confirmationDelivered
+      });
+    } catch (completionError) {
+      console.error('Unable to complete survey results confirmation attempt', completionError);
+    }
+  }
 };

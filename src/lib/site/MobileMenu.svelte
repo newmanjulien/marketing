@@ -52,7 +52,7 @@
 
     <div class="mt-[30px] flex flex-col gap-[12px] border-t border-stone-200/70 px-[20px] pt-[24px]">
       {#each authNavItems as link (link.authRoute)}
-        {@const href = createPortalAuthUrlForCurrentPage(link.authRoute, page.url, page.url.hash)}
+        {@const href = createPortalAuthUrlForCurrentPage(link.authRoute, page.url)}
         <ButtonLink
           {href}
           target="_blank"

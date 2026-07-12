@@ -1057,7 +1057,7 @@ export const validateNewSuccessRoomSlug = query({
   },
 });
 
-export const verifyPassword = mutation({
+export const verifyPassword = query({
   args: {
     slug: v.string(),
     password: v.string(),

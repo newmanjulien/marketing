@@ -9,12 +9,10 @@
 
   let {
     industries,
-    selectedIndustryId,
-    onselect
+    selectedIndustryId = $bindable<IndustryId>()
   }: {
     industries: readonly IndustryTabItem<IndustryId>[];
     selectedIndustryId: IndustryId;
-    onselect: (industryId: IndustryId) => void;
   } = $props();
 </script>
 
@@ -29,9 +27,9 @@
           : 'border border-transparent text-stone-400 hover:text-stone-600'
       ]}
       aria-pressed={selectedIndustryId === industry.id}
-      onclick={() => onselect(industry.id)}
-      onfocus={() => onselect(industry.id)}
-      onmouseenter={() => onselect(industry.id)}
+      onclick={() => (selectedIndustryId = industry.id)}
+      onfocus={() => (selectedIndustryId = industry.id)}
+      onmouseenter={() => (selectedIndustryId = industry.id)}
     >
       <industry.icon size={16} weight="bold" />
       <span>{industry.label}</span>
