@@ -43,7 +43,7 @@ There's also a proposal our partner Thoughtworks submitted to them last month.`,
 
 Our review of Linamar’s tax return suggests the client is expanding into Europe.
 
-This may be an opportunity to help assess cyber considerations and Tax Partner Scott Duarte is the right person to connect with for details. 
+This may be an opportunity to help them assess Privacy & Data Protection considerations. Tax Partner Scott Duarte is the right person to connect with for details. 
 
 Topics to explore with Scott: new sources of revenue outside of the US, increased travel activities in Europe, new professional services engagements in Europe.`
   } as const satisfies Record<HomeIndustryId, string>;
