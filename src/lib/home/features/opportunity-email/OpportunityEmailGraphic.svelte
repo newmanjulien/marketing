@@ -50,15 +50,15 @@ Topics to explore with Scott: new sources of revenue outside of the US, increase
 
   const opportunityExplanationByIndustryId = {
     insurance:
-      '**Carrier data lets insurance brokers get the benchmarks they need to make sure your clients are fully insured',
+      'Overbase uses carrier data to let insurance brokers get the benchmarks you need to make sure your clients are fully insured',
     law:
-      '**Minute-by-minute monitoring of your data sources lets your lawyers reach out to clients at just the right time',
+      'Overbase monitors your Bloomberg to help your most connected lawyers reach out to clients at just the right time',
     'government-relations':
-      '**Minute-by-minute monitoring of legislative data lets you turn policy change into engagements',
+      'Overbase monitors your FiscalNote to let GR firms turn policy change data into client engagements',
     consulting:
-      '**The institutional knowledge from across your consulting firm and from your partners lets you win more pitches',
+      'Overbase brings together the institutional knowledge from across your consulting firm and from your ecosystem partners to help you win pitches',
     accounting:
-      '**Securely analyzing client documents lets accounting firms spot opportunities to offer a broader range of services to existing clients'
+      'Overbase securely analyzes client documents to let accounting firms spot opportunities to offer a broader range of services to your existing clients'
   } as const satisfies Record<HomeIndustryId, string>;
 
   let selectedIndustryId = $state<HomeIndustryId>('insurance');
