@@ -4,7 +4,6 @@
 
   let {
     task,
-    taskKey,
     checked = $bindable(false),
     assignedTeamMember,
     displayDateLabel,
@@ -14,7 +13,6 @@
     onOpenDatePicker
   }: {
     task: SuccessRoomPlanTask;
-    taskKey: string;
     checked: boolean;
     assignedTeamMember?: SuccessRoomTeamMember;
     displayDateLabel: string;
@@ -40,7 +38,7 @@
   const taskAssigneeButtonClasses =
     'flex h-[20px] w-[20px] shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-stone-900/20';
   const checkboxClasses = 'h-[14px] w-[14px] flex-none opacity-100';
-  const checkboxId = $derived(`plan-task-${taskKey}`);
+  const checkboxId = $derived(`plan-task-${task.key}`);
 </script>
 
 <li class={taskItemClasses}>

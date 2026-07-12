@@ -1,20 +1,29 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import { page } from '$app/state';
+  import { getNamedFormAction } from '$lib/forms/formActionUrls';
   import type { SubmitFunction } from '@sveltejs/kit';
 
-  export type ResultsSignupForm =
-    | {
-        email?: string;
-        message: string;
-      }
-    | {
-        email?: never;
-        success: true;
-        message: string;
-      };
+  export type ResultsSignupForm = {
+    email?: string;
+    message: string;
+  };
 
-  let { form }: { form?: ResultsSignupForm } = $props();
+  let { form, submitted }: { form?: ResultsSignupForm; submitted: boolean } = $props();
   let isSubmitting = $state(false);
+  const surveyResultsAction = $derived(
+    getNamedFormAction(page.url, 'surveyResults', { 'results-signup': null })
+  );
+  const feedback = $derived(
+    form ??
+      (submitted
+        ? {
+            email: undefined,
+            success: true as const,
+            message: "You're on the list. We'll send the results when they're published"
+          }
+        : undefined)
+  );
 
   const handleSurveySubmit: SubmitFunction = () => {
     isSubmitting = true;
@@ -31,7 +40,7 @@
 
 <form
   method="POST"
-  action="?/surveyResults"
+  action={surveyResultsAction}
   use:enhance={handleSurveySubmit}
   class="mt-[33px] rounded-[8px] border border-stone-200 bg-stone-50 p-[18px] sm:p-[20px]"
 >
@@ -54,19 +63,19 @@
         name="email"
         autocomplete="email"
         placeholder="you@company.com"
-        value={form?.email ?? ''}
-        aria-describedby={form?.message ? 'survey-results-message' : undefined}
-        aria-invalid={form?.message && !('success' in form) ? 'true' : undefined}
+        value={feedback?.email ?? ''}
+        aria-describedby={feedback?.message ? 'survey-results-message' : undefined}
+        aria-invalid={feedback?.message && !('success' in feedback) ? 'true' : undefined}
         class="h-[40px] w-full rounded-[7px] border border-stone-300 bg-white px-[14px] text-[13px] font-book tracking-normal text-stone-900 placeholder:text-stone-400 focus:border-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-200"
       />
-      {#if form?.message}
+      {#if feedback?.message}
         <p
           id="survey-results-message"
           class={`mt-[10px] text-[13px] font-book leading-[1.45] tracking-normal ${
-            'success' in form ? 'text-emerald-600' : 'text-red-600'
+            'success' in feedback ? 'text-emerald-600' : 'text-red-600'
           }`}
         >
-          {form.message}
+          {feedback.message}
         </p>
       {/if}
     </div>

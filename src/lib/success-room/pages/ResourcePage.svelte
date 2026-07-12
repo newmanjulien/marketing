@@ -7,7 +7,7 @@
   import MutualSuccessPlanResourcePanel from '../plan/MutualSuccessPlanResourcePanel.svelte';
   import { kickoffScheduleColumns } from '../domain/config';
   import { createSuccessRoomResourceDraft } from '../persistence/resourceDraft.svelte';
-  import { getSuccessRoomHref } from '../domain/resources';
+  import { getSuccessRoomPath } from '../domain/urls';
   import type {
     SuccessRoomResourceRoom,
     SuccessRoomRoutedResource,
@@ -34,7 +34,7 @@
 <PageFrame>
   <ContentMeasure as="article" width="narrow">
     <Header
-      backHref={getSuccessRoomHref(room, 'documents')}
+      backHref={getSuccessRoomPath(room.slug, 'documents')}
       backLabel="Success room"
       title={resource.title}
       description={resource.description}

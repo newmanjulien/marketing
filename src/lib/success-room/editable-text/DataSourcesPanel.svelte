@@ -23,9 +23,11 @@
       editableState.dataSources.length,
       editableTextDataSourceFields.length
     );
-    const dataSources = Array.from({ length: dataSourceCount }, (_, dataSourceIndex) =>
-      dataSourceIndex === index ? value : (editableState.dataSources[dataSourceIndex] ?? '')
+    const dataSources = Array.from(
+      { length: dataSourceCount },
+      (_, dataSourceIndex) => editableState.dataSources[dataSourceIndex] ?? ''
     );
+    dataSources[index] = value;
 
     editableState = {
       ...editableState,

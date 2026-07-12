@@ -4,9 +4,9 @@
   import {
     successRoomDocumentRequestDescription,
     successRoomDocumentRequestTitle,
-    type DocumentRequestFormResult
+    type DocumentRequestFormFailure
   } from '../domain/documentRequests';
-  import { getSuccessRoomHref } from '../domain/resources';
+  import { getSuccessRoomPath } from '../domain/urls';
   import type { SuccessRoomBaseRoom } from '../domain/types';
   import DocumentRequestConfirmation from '../documents/DocumentRequestConfirmation.svelte';
   import DocumentRequestForm from '../documents/DocumentRequestForm.svelte';
@@ -14,20 +14,19 @@
 
   let {
     room,
-    form
+    form,
+    submitted
   }: {
     room: SuccessRoomBaseRoom;
-    form?: DocumentRequestFormResult;
+    form?: DocumentRequestFormFailure;
+    submitted: boolean;
   } = $props();
-
-  const submitted = $derived(form?.status === 'success');
-  const formFailure = $derived(form?.status === 'success' ? undefined : form);
 </script>
 
 <PageFrame>
   <ContentMeasure as="article" width="narrow">
     <Header
-      backHref={getSuccessRoomHref(room, 'documents')}
+      backHref={getSuccessRoomPath(room.slug, 'documents')}
       backLabel="Success room"
       title={successRoomDocumentRequestTitle}
       description={submitted ? undefined : successRoomDocumentRequestDescription}
@@ -36,7 +35,7 @@
     {#if submitted}
       <DocumentRequestConfirmation />
     {:else}
-      <DocumentRequestForm form={formFailure} />
+      <DocumentRequestForm {form} />
     {/if}
   </ContentMeasure>
 </PageFrame>

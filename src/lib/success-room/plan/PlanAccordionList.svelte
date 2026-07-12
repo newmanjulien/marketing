@@ -33,8 +33,6 @@
   } = $props();
 
   let checkedTaskKeys = $derived(new Set(plan.checkedTaskKeys));
-  let dateOverridesByTaskKey = $derived(plan.dateOverridesByTaskKey);
-  let assigneeKeyByTaskKey = $derived(plan.assigneeKeyByTaskKey);
 
   const accordionListClasses = 'grid w-full gap-[14px]';
   const accordionItemClasses =
@@ -69,7 +67,7 @@
   } as const;
 
   const getAssignedTeamMember = (taskKey: string) => {
-    const memberKey = assigneeKeyByTaskKey[taskKey];
+    const memberKey = plan.assigneeKeyByTaskKey[taskKey];
 
     return memberKey ? team.find((member) => member.key === memberKey) : undefined;
   };
@@ -112,14 +110,13 @@
           {#each item.tasks as task (task.key)}
             {@const taskKey = task.key}
             {@const displayDate = resolveTaskDisplayDate({
-              dateOverridesByTaskKey,
+              dateOverridesByTaskKey: plan.dateOverridesByTaskKey,
               taskKey,
               fallbackDateLabel: task.date
             })}
             {@const assignedTeamMember = getAssignedTeamMember(taskKey)}
             <PlanTaskRow
               {task}
-              taskKey={taskKey}
               bind:checked={
                 () => checkedTaskKeys.has(taskKey),
                 (checked) => onTaskCheckedChange(taskKey, checked)

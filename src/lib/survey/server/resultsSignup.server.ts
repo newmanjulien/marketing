@@ -108,8 +108,4 @@ export const submitSurveyResultsSignup = async (formData: FormData, clientAddres
     }
   }
 
-  return {
-    success: true,
-    message: "You're on the list. We'll send the results when they're published"
-  };
 };

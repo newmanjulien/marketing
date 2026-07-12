@@ -836,7 +836,7 @@ const landingResource = async (
 const landingResources = async (ctx: QueryCtx, room: SuccessRoom) => {
   const resources = await Promise.all(
     successRoomResourceDefinitions.map((resource) =>
-      landingResource(ctx, room, resource.slug as SuccessRoomResourceKey),
+      landingResource(ctx, room, resource.slug),
     ),
   );
 

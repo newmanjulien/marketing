@@ -3,6 +3,7 @@ import { consultingContent } from "./content/consulting";
 import { governmentRelationsContent } from "./content/governmentRelations";
 import { insuranceContent } from "./content/insurance";
 import { lawContent } from "./content/law";
+import type { IndustryId } from "./industryNavigation";
 import type {
   IndustryContentDefinition,
   IndustryPageContent,
@@ -33,17 +34,15 @@ const industryPages = {
   "government-relations": governmentRelationsContent,
   consulting: consultingContent,
   accounting: accountingContent,
-} as const satisfies Record<string, IndustryContentDefinition>;
+} as const satisfies Record<IndustryId, IndustryContentDefinition>;
 
-type IndustryPageId = keyof typeof industryPages;
-
-const isIndustryPageId = (industryId: string): industryId is IndustryPageId =>
+const isIndustryId = (industryId: string): industryId is IndustryId =>
   Object.hasOwn(industryPages, industryId);
 
 export const getIndustryPageContent = (
   industryId: string,
 ): IndustryPageContent | null => {
-  if (!isIndustryPageId(industryId)) {
+  if (!isIndustryId(industryId)) {
     return null;
   }
 

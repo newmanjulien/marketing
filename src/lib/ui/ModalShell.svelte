@@ -1,7 +1,7 @@
 <script lang="ts">
   import { XIcon } from 'phosphor-svelte';
   import type { Snippet } from 'svelte';
-  import { createModalBehavior } from './modalBehavior.svelte';
+  import { createModalBehavior } from './modalBehavior';
 
   type ModalShellProps = {
     open: boolean;
@@ -20,10 +20,7 @@
   }: ModalShellProps = $props();
 
   const titleId = $props.id();
-  const modalBehavior = createModalBehavior({
-    isOpen: () => open,
-    onClose: () => onClose()
-  });
+  const modal = createModalBehavior({ onClose: () => onClose() });
 </script>
 
 {#if open}
@@ -37,7 +34,7 @@
     ></button>
 
     <div
-      bind:this={modalBehavior.dialogElement}
+      use:modal
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
@@ -68,5 +65,3 @@
     </div>
   </div>
 {/if}
-
-<svelte:document onkeydown={modalBehavior.handleKeydown} />

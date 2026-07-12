@@ -5,6 +5,4 @@
   let { data }: PageProps = $props();
 </script>
 
-{#key `${data.docsPage.category}/${data.docsPage.slug}`}
-  <DocsPage page={data.docsPage} />
-{/key}
+<DocsPage page={data.docsPage} />

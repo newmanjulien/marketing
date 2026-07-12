@@ -33,12 +33,10 @@
           href={legalPage.href}
           class="group flex items-center justify-between gap-8 border-b border-stone-200/70 py-[22px] text-stone-700 transition-colors hover:text-stone-900"
         >
-          <span class="min-w-0 flex-1">
-            <span
-              class="block font-book text-[17px] leading-[1.08] tracking-normal text-stone-750 transition-colors group-hover:text-stone-900"
-            >
-              {legalPage.title}
-            </span>
+          <span
+            class="min-w-0 flex-1 font-book text-[17px] leading-[1.08] tracking-normal text-stone-750 transition-colors group-hover:text-stone-900"
+          >
+            {legalPage.title}
           </span>
 
           <ArrowUpRightIcon

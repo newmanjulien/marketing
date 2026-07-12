@@ -1,5 +1,7 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import { page } from '$app/state';
+  import { getNamedFormAction } from '$lib/forms/formActionUrls';
   import type { SubmitFunction } from '@sveltejs/kit';
   import {
     maxSuccessRoomDocumentRequestDescriptionLength,
@@ -8,6 +10,9 @@
 
   let { form }: { form?: DocumentRequestFormFailure } = $props();
   let isSubmitting = $state(false);
+  const requestDocumentAction = $derived(
+    getNamedFormAction(page.url, 'requestDocument', { 'document-request': null })
+  );
 
   const handleSubmit: SubmitFunction = () => {
     isSubmitting = true;
@@ -26,7 +31,12 @@
   class="mt-[34px] rounded-[16px] border border-stone-200/70 bg-white px-[18px] py-[18px] shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 focus-within:border-stone-300 focus-within:shadow-[0_6px_14px_rgba(28,25,23,0.06)] sm:px-[20px] sm:py-[20px]"
   aria-label="Request an additional document"
 >
-  <form method="POST" action="?/requestDocument" use:enhance={handleSubmit} class="grid gap-[16px]">
+  <form
+    method="POST"
+    action={requestDocumentAction}
+    use:enhance={handleSubmit}
+    class="grid gap-[16px]"
+  >
     <label
       for="success-room-document-request"
       class="text-[15px] font-normal leading-[1.2] tracking-normal text-stone-750 sm:text-[16px]"

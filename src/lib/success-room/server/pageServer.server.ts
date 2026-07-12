@@ -1,5 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { Cookies } from '@sveltejs/kit';
+import { getFormActionRedirectPath } from '$lib/forms/formActionUrls';
 import {
   clearSuccessRoomAccessToken,
   getSuccessRoomAccessToken,
@@ -102,12 +103,12 @@ export const unlockSuccessRoom = async ({
   cookies,
   roomSlug,
   request,
-  pathname
+  url
 }: {
   cookies: Cookies;
   roomSlug: string;
   request: Request;
-  pathname: string;
+  url: URL;
 }) => {
   const formData = await request.formData();
   const password = formData.get('password');
@@ -130,5 +131,5 @@ export const unlockSuccessRoom = async ({
   }
 
   setSuccessRoomAccessToken(cookies, roomSlug, accessToken);
-  redirect(303, pathname);
+  redirect(303, getFormActionRedirectPath(url));
 };

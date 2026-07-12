@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { page } from '$app/state';
+  import { getNamedFormAction } from '$lib/forms/formActionUrls';
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import PageFrame from '$lib/page/PageFrame.svelte';
+  import Header from '../shell/Header.svelte';
 
   let {
     prospectName,
@@ -11,22 +14,16 @@
     description: string;
     message?: string;
   } = $props();
+
+  const unlockAction = $derived(getNamedFormAction(page.url, 'unlock'));
 </script>
 
 <PageFrame>
   <ContentMeasure as="section" width="narrow">
     <div class="max-w-[440px]">
-      <p class="m-0 text-[14px] font-medium leading-none tracking-normal text-stone-500">
-        Success room
-      </p>
-      <h1 class="mt-[28px] font-heading text-[32px] font-normal leading-[1.05] tracking-normal text-stone-750">
-        {prospectName}
-      </h1>
-      <p class="mt-[20px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]">
-        {description}
-      </p>
+      <Header eyebrow="Success room" title={prospectName} {description} />
 
-      <form method="POST" action="?/unlock" class="mt-[34px] grid gap-[12px]">
+      <form method="POST" action={unlockAction} class="mt-[34px] grid gap-[12px]">
         <label class="grid gap-[8px] text-[13px] font-book leading-none tracking-normal text-stone-700">
           Password
           <input

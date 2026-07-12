@@ -16,10 +16,6 @@
     selectedDate: Date;
   };
 
-  type AssigneePickerContext = {
-    taskKey: string;
-  };
-
   let {
     resource,
     team,
@@ -34,9 +30,8 @@
     onPlanAction: (action: SuccessRoomPlanAction) => void;
   } = $props();
 
-  let assigneePickerContext = $state<AssigneePickerContext | null>(null);
+  let assigneePickerTaskKey = $state<string | null>(null);
   let datePickerContext = $state<DatePickerContext | null>(null);
-  let assigneeKeyByTaskKey = $derived(plan.assigneeKeyByTaskKey);
   let openAccordionKey = $derived(
     plan.lastOpenedAccordionKey &&
       planAccordions.some((accordion) => accordion.key === plan.lastOpenedAccordionKey)
@@ -59,23 +54,21 @@
   };
 
   const openAssigneePickerModal = (taskKey: string) => {
-    assigneePickerContext = {
-      taskKey
-    };
+    assigneePickerTaskKey = taskKey;
   };
 
   const closeAssigneePickerModal = () => {
-    assigneePickerContext = null;
+    assigneePickerTaskKey = null;
   };
 
   const selectTaskAssignee = (memberKey: string | null) => {
-    if (!assigneePickerContext) {
+    if (assigneePickerTaskKey === null) {
       return;
     }
 
     onPlanAction({
       type: 'set-task-assignee',
-      taskKey: assigneePickerContext.taskKey,
+      taskKey: assigneePickerTaskKey,
       memberKey
     });
   };
@@ -109,9 +102,9 @@
 
   const selectedDatePickerDate = $derived(datePickerContext?.selectedDate ?? fallbackDatePickerDate);
   const selectedAssigneeMemberKey = $derived(
-    assigneePickerContext
-      ? assigneeKeyByTaskKey[assigneePickerContext.taskKey]
-      : undefined
+    assigneePickerTaskKey === null
+      ? undefined
+      : plan.assigneeKeyByTaskKey[assigneePickerTaskKey]
   );
 </script>
 
@@ -128,7 +121,7 @@
 />
 
 <TaskAssigneeModal
-  open={assigneePickerContext !== null}
+  open={assigneePickerTaskKey !== null}
   {team}
   selectedMemberKey={selectedAssigneeMemberKey}
   onSelectMemberKey={selectTaskAssignee}

@@ -26,13 +26,12 @@ export const getSurveyPost = async (slug: string): Promise<SurveyPost | undefine
     return undefined;
   }
 
-  const postModule = await loadPost();
-  const { post } = postModule;
+  const { default: bodyComponent, post } = await loadPost();
 
   return {
     slug,
     ...post,
     publishedAtLabel: formatSurveyDate(post.publishedAt),
-    bodyComponent: postModule.default
+    bodyComponent
   };
 };

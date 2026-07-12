@@ -3,7 +3,7 @@
   import OpportunityEmailGraphic from '$lib/home/features/opportunity-email/OpportunityEmailGraphic.svelte';
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import { createPortalAuthUrlForMarketingPath } from '$lib/portalAuthLinks';
-  import HeroCtaButton from './HeroCtaButton.svelte';
+  import ButtonLink from '$lib/ui/ButtonLink.svelte';
 
   const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
 </script>
@@ -37,13 +37,19 @@
     </p>
 
     <div class="hero-actions mt-[44px] flex translate-y-[4px] items-center justify-center gap-[9px] opacity-0 will-change-[transform,opacity]">
-      <HeroCtaButton
+      <ButtonLink
         href={joinHref}
         target="_blank"
         rel="noopener noreferrer"
+        variant="primary"
+        size="xlarge"
+        textSize="compact"
+        shape="pill"
+        highlightSweep
+        class="shadow-[0_5px_12px_rgba(41,37,36,0.2)] hover:-translate-y-[2px] hover:shadow-[0_8px_16px_rgba(41,37,36,0.28)]"
       >
         Join now
-      </HeroCtaButton>
+      </ButtonLink>
     </div>
 
   </ContentMeasure>

@@ -5,8 +5,7 @@ import { createPrivateEmailSender } from '$lib/email/server/privateEmail.server'
 import { createConvexClient } from '$lib/server/convexClient.server';
 import {
   maxSuccessRoomDocumentRequestDescriptionLength,
-  type DocumentRequestFormFailure,
-  type DocumentRequestFormResult
+  type DocumentRequestFormFailure
 } from '$lib/success-room/domain/documentRequests';
 import {
   clearSuccessRoomAccessToken,
@@ -221,10 +220,4 @@ export const submitSuccessRoomDocumentRequest = async ({
   }
 
   await sendDocumentRequestNotification(documentRequest, accessToken);
-
-  return {
-    documentRequest: {
-      status: 'success'
-    } satisfies DocumentRequestFormResult
-  };
 };

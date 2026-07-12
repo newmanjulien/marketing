@@ -34,17 +34,6 @@ const normalizeBenefitsForEditor = (
 
 const getBenefitsVersion = (benefits: SuccessRoomBenefitsState) => JSON.stringify(benefits);
 
-const getTeamVersion = (team: SuccessRoomTeamMember[]) =>
-  JSON.stringify(
-    team.map((member) => ({
-      key: member.key,
-      name: member.name,
-      role: member.role,
-      imageHref: member.imageHref,
-      photoId: member.photo?.photoId
-    }))
-  );
-
 const appendMissingTeamMembers = (
   baseTeam: SuccessRoomTeamMember[],
   additionalTeam: SuccessRoomTeamMember[],
@@ -67,12 +56,6 @@ type SuccessRoomBenefitsDraftSnapshot = {
   customBenefitInput: string;
 };
 
-type SuccessRoomTeamDraftSnapshot = {
-  roomSlug: string;
-  serverTeamVersion: string;
-  serverTeam: SuccessRoomTeamMember[];
-};
-
 const createBenefitsDraftSnapshot = (
   room: SuccessRoomLandingRoom,
   state: SuccessRoomLandingState,
@@ -84,12 +67,6 @@ const createBenefitsDraftSnapshot = (
   customBenefitInput: state.benefits.selectedCustomBenefit ?? ''
 });
 
-const createTeamDraftSnapshot = (room: SuccessRoomLandingRoom): SuccessRoomTeamDraftSnapshot => ({
-  roomSlug: room.slug,
-  serverTeamVersion: getTeamVersion(room.team),
-  serverTeam: [...room.team]
-});
-
 export const createSuccessRoomLandingDraft = (
   getRoom: () => SuccessRoomLandingRoom,
   getState: () => SuccessRoomLandingState,
@@ -97,7 +74,6 @@ export const createSuccessRoomLandingDraft = (
   const saveQueue = createSuccessRoomSaveQueue();
   const initialRoom = getRoom();
   const initialBenefitsSnapshot = createBenefitsDraftSnapshot(initialRoom, getState());
-  const initialTeamSnapshot = createTeamDraftSnapshot(initialRoom);
   const benefitsDraft = createSyncedSnapshot({
     initial: initialBenefitsSnapshot,
     getSnapshot: () => {
@@ -112,11 +88,9 @@ export const createSuccessRoomLandingDraft = (
       current.roomSlug !== next.roomSlug || current.benefitsVersion !== next.benefitsVersion
   });
 
-  let teamRoomSlug = $state(initialTeamSnapshot.roomSlug);
-  let serverTeamVersion = $state(initialTeamSnapshot.serverTeamVersion);
-  let serverTeam = $state<SuccessRoomTeamMember[]>(initialTeamSnapshot.serverTeam);
+  let teamRoomSlug = $state(initialRoom.slug);
   let locallyAddedTeamMembers = $state<SuccessRoomTeamMember[]>([]);
-  const team = $derived(appendMissingTeamMembers(serverTeam, locallyAddedTeamMembers));
+  const team = $derived(appendMissingTeamMembers(getRoom().team, locallyAddedTeamMembers));
 
   attachSuccessRoomSaveQueueLifecycle(saveQueue);
 
@@ -136,29 +110,14 @@ export const createSuccessRoomLandingDraft = (
   };
 
   $effect(() => {
-    const room = getRoom();
-    const currentServerTeamVersion = getTeamVersion(room.team);
+    const roomSlug = getRoom().slug;
 
-    if (teamRoomSlug !== room.slug) {
-      const nextSnapshot = createTeamDraftSnapshot(room);
-
-      teamRoomSlug = nextSnapshot.roomSlug;
-      serverTeamVersion = nextSnapshot.serverTeamVersion;
-      serverTeam = nextSnapshot.serverTeam;
-      locallyAddedTeamMembers = [];
+    if (teamRoomSlug === roomSlug) {
       return;
     }
 
-    if (serverTeamVersion !== currentServerTeamVersion) {
-      const nextServerTeam = [...room.team];
-      const nextServerTeamMemberKeys = new Set(nextServerTeam.map((member) => member.key));
-
-      serverTeamVersion = currentServerTeamVersion;
-      serverTeam = nextServerTeam;
-      locallyAddedTeamMembers = locallyAddedTeamMembers.filter(
-        (member) => !nextServerTeamMemberKeys.has(member.key)
-      );
-    }
+    teamRoomSlug = roomSlug;
+    locallyAddedTeamMembers = [];
   });
 
   const setSelectedBenefitKeys = (nextSelectedBenefitKeys: string[]) => {
