@@ -2,11 +2,7 @@
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import PageFrame from '$lib/page/PageFrame.svelte';
   import ResearchTeam from '$lib/survey/components/ResearchTeam.svelte';
-  import ResultsSignup from '$lib/survey/components/ResultsSignup.svelte';
   import { firmCriteria, previousListLinks } from '$lib/survey/domain/landingContent';
-  import type { PageProps } from './$types';
-
-  let { data, form }: PageProps = $props();
 </script>
 
 <svelte:head>
@@ -41,8 +37,6 @@
         decoding="async"
       />
     </header>
-
-    <ResultsSignup form={form ?? undefined} submitted={data.resultsSignupSubmitted} />
 
     <div
       class="mt-[20px] flex flex-col gap-[20px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700"

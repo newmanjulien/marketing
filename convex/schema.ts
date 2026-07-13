@@ -16,23 +16,6 @@ const timestampedEditableItem = {
 };
 
 export default defineSchema({
-  surveyResultsSignups: defineTable({
-    email: v.string(),
-    createdAt: v.number(),
-    lastSubmittedAt: v.number(),
-    confirmationSentAt: v.optional(v.number()),
-    confirmationLeaseExpiresAt: v.optional(v.number()),
-  }).index("by_email", ["email"]),
-
-  surveyResultsSignupRateLimits: defineTable({
-    clientKey: v.string(),
-    windowStartedAt: v.number(),
-    requestCount: v.number(),
-    expiresAt: v.number(),
-  })
-    .index("by_client_key", ["clientKey"])
-    .index("by_expires_at", ["expiresAt"]),
-
   successRooms: defineTable({
     slug: v.string(),
     prospectName: v.string(),

@@ -3,25 +3,19 @@ import { internal } from "./_generated/api";
 
 const crons = cronJobs();
 
-crons.interval(
-  "delete expired survey signup rate limits",
-  { hours: 1 },
-  internal.surveyResultsSignups.deleteExpiredRateLimits,
-  {},
-);
+const hourlyStorageCleanups = [
+  {
+    name: "delete expired Success Room upload intents",
+    handler: internal.storageCleanup.deleteExpiredUploadIntents,
+  },
+  {
+    name: "delete orphaned storage",
+    handler: internal.storageCleanup.deleteOrphanedStorage,
+  },
+];
 
-crons.interval(
-  "delete expired Success Room upload intents",
-  { hours: 1 },
-  internal.storageCleanup.deleteExpiredUploadIntents,
-  {},
-);
-
-crons.interval(
-  "delete orphaned storage",
-  { hours: 1 },
-  internal.storageCleanup.deleteOrphanedStorage,
-  {},
-);
+for (const { name, handler } of hourlyStorageCleanups) {
+  crons.interval(name, { hours: 1 }, handler, {});
+}
 
 export default crons;

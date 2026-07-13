@@ -13,7 +13,6 @@ import type * as http from "../http.js";
 import type * as storageCleanup from "../storageCleanup.js";
 import type * as successRoomUploads from "../successRoomUploads.js";
 import type * as successRooms from "../successRooms.js";
-import type * as surveyResultsSignups from "../surveyResultsSignups.js";
 
 import type {
   ApiFromModules,
@@ -27,7 +26,6 @@ declare const fullApi: ApiFromModules<{
   storageCleanup: typeof storageCleanup;
   successRoomUploads: typeof successRoomUploads;
   successRooms: typeof successRooms;
-  surveyResultsSignups: typeof surveyResultsSignups;
 }>;
 
 /**
