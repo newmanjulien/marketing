@@ -71,7 +71,7 @@ Topics to explore to understand the tax return: new sources of revenue outside o
 </script>
 
 <div
-  class="flex h-[390px] flex-col overflow-hidden rounded-[9px] border border-stone-200/70 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)] sm:h-[410px]"
+  class="flex h-[390px] flex-col overflow-hidden rounded-[16px] border border-stone-200/70 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)] sm:h-[410px]"
 >
   <div
     class="flex min-h-[56px] items-center overflow-x-auto border-b border-stone-200/70 bg-stone-50/50 px-[10px] py-[10px] sm:px-[14px]"

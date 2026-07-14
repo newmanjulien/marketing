@@ -16,7 +16,7 @@
   <div class="mt-[22px] grid grid-cols-1 gap-[12px] sm:grid-cols-2">
     {#each researchTeamProfiles as profile}
       <article
-        class="flex min-h-[132px] items-center gap-[16px] rounded-[8px] border border-stone-200 bg-stone-50/70 p-[16px]"
+        class="flex min-h-[132px] items-center gap-[16px] rounded-[11px] border border-stone-200 bg-stone-50/70 p-[16px]"
       >
         <img
           src={profile.imageSrc}

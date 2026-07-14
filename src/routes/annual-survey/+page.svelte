@@ -32,7 +32,7 @@
       <img
         src="/cmos/group.avif"
         alt="Innovative CMO survey"
-        class="mt-[34px] block w-full rounded-[8px] object-cover"
+        class="mt-[34px] block w-full rounded-[11px] object-cover"
         loading="eager"
         decoding="async"
       />

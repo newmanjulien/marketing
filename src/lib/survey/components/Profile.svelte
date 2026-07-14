@@ -27,7 +27,7 @@
   </h2>
 
   <figure class="mt-[6px] flex flex-col gap-[8px]">
-    <img class="block h-auto w-full rounded-[4px]" src={imageSrc} alt={imageAlt} loading="lazy" decoding="async" />
+    <img class="block h-auto w-full rounded-[6px]" src={imageSrc} alt={imageAlt} loading="lazy" decoding="async" />
     <figcaption class="text-[13px] font-book leading-[1.35] text-stone-500">{caption}</figcaption>
   </figure>
 

@@ -20,7 +20,7 @@
   } = $props();
 </script>
 
-<article class="mt-[43px] rounded-[15px] border border-stone-200/70 bg-white px-[25px] py-[34px]">
+<article class="mt-[43px] rounded-[18px] border border-stone-200/70 bg-white px-[25px] py-[34px]">
   <div>
     <div class="font-heading text-[38px] font-book leading-none tracking-normal text-stone-900">
       {plan.price}
@@ -46,6 +46,7 @@
         variant="primary"
         size="small"
         textSize="compact"
+        class="!h-[42px]"
         fullWidth
       >
         {plan.ctaLabel}

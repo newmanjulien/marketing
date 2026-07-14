@@ -24,18 +24,18 @@
   ] as const satisfies readonly PartnerDataShare[];
 </script>
 
-<div class="rounded-[8px] border border-stone-200/70 bg-white px-[18px] py-[22px] shadow-[0_1px_0_rgba(48,47,45,0.03)] sm:px-[21px] sm:py-[24px]">
+<div class="rounded-[16px] border border-stone-200/70 bg-white px-[18px] py-[22px] shadow-[0_1px_0_rgba(48,47,45,0.03)] sm:px-[21px] sm:py-[24px]">
   <div class="flex items-center justify-between gap-4">
     <h3 class="text-[14px] font-book leading-none tracking-normal text-stone-700 sm:text-[15px]">
       Control what data you share
     </h3>
 
-    <span class="rounded-[8px] bg-stone-50 px-[8px] py-[5px] text-[12px] leading-none text-stone-400 sm:text-[13px]">
+    <span class="rounded-[10px] bg-stone-50 px-[8px] py-[5px] text-[12px] leading-none text-stone-400 sm:text-[13px]">
       {partnerDataShares.length} partners
     </span>
   </div>
 
-  <div class="mt-[20px] overflow-hidden rounded-[6px] border border-stone-200/70 bg-white">
+  <div class="mt-[20px] overflow-hidden rounded-[12px] border border-stone-200/70 bg-white">
     {#each partnerDataShares as partnerDataShare (partnerDataShare.partnerName)}
       <article class="border-b border-stone-200/70 px-[12px] py-[18px] last:border-b-0 sm:py-[19px]">
         <div class="flex items-start justify-between gap-4">

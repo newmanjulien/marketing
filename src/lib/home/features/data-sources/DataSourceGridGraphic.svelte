@@ -39,7 +39,7 @@
 <div class="grid grid-cols-2 gap-[12px] sm:grid-cols-3">
   {#each dataSourceItems as dataSource (dataSource.label)}
     <div
-      class="flex h-[45px] items-center rounded-[8px] border border-stone-200/70 bg-white px-[13px] text-stone-700"
+      class="flex h-[45px] items-center rounded-[11px] border border-stone-200/70 bg-white px-[13px] text-stone-700"
     >
       <span class="flex h-[25px] w-[25px] shrink-0 items-center justify-center text-stone-300">
         <dataSource.icon size={24} weight="regular" />
