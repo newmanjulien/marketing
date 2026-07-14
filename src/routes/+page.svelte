@@ -14,7 +14,7 @@
   />
 </svelte:head>
 
-<main>
+<main class="bg-stone-50/80">
   <Hero />
 
   <div class="flex flex-col gap-[150px] pt-[150px] sm:gap-[190px] sm:pt-[190px]">

@@ -6,18 +6,18 @@
   const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
 </script>
 
-<section class="border-t border-stone-200/70 bg-stone-50/70 px-[18px] py-[72px] sm:px-8 sm:py-[90px]">
-  <ContentMeasure class="flex !max-w-[620px] flex-col items-center text-center">
+<section class="border-t border-stone-200/70 bg-white px-[18px] py-[72px] sm:px-8 sm:py-[90px]">
+  <ContentMeasure class="flex flex-col items-center text-center">
     <h2
       class="font-heading text-[30px] font-semibold leading-[1.08] tracking-normal text-stone-750 sm:text-[36px] sm:leading-[1.06]"
     >
-      Accelerate revenue growth
+      Built for professional services
     </h2>
 
     <p
-      class="mt-[18px] max-w-[400px] text-[16px] font-book leading-[1.6] tracking-normal text-stone-500 sm:mt-[20px] sm:text-[17px]"
+      class="mt-[18px] max-w-[440px] text-[16px] font-book leading-[1.6] tracking-normal text-stone-500 sm:mt-[20px] sm:text-[17px]"
     >
-      You're leaving easy revenue on the table every day your data is siloed from your partners
+      The easiest and fastest way for professional services firms to accelerate revenue
     </p>
 
     <div class="mt-[24px] flex items-center justify-center">
