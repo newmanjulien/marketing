@@ -50,15 +50,15 @@ Topics to explore to understand the tax return: new sources of revenue outside o
 
   const opportunityExplanationByIndustryId = {
     insurance:
-      'Overbase uses carrier data to let insurance brokers get the benchmarks you need to make sure your clients are fully insured',
+      'Overbase used carrier data to let an insurance broker get the benchmarks they needed help a client be fully insured while increasing premiums',
     law:
-      'Overbase monitors your Bloomberg to help your most connected lawyers reach out to clients at just the right time',
+      "Overbase monitored a law firm's Bloomberg to help one of their most connected lawyers reach out to a client at just the right time",
     'government-relations':
-      'Overbase monitors your FiscalNote to let GR firms turn policy change data into client engagements',
+      "Overbase monitored a GR firm's FiscalNote to spot a policy change that turned into a client engagement",
     consulting:
-      'Overbase brings together the institutional knowledge from across your consulting firm and from your ecosystem partners to help you win pitches',
+      'Overbase helped a consulting firm win a pitch by bringing together institutional knowledge from across their firm and their ecosystem partners',
     accounting:
-      'Overbase securely analyzes client documents to let accounting firms spot opportunities to offer a broader range of services to your existing clients'
+      "Overbase securely analyzed a client's tax return to help an accounting firm spot a hidden opportunity to offer cyber services to an existing client"
   } as const satisfies Record<HomeIndustryId, string>;
 
   let selectedIndustryId = $state<HomeIndustryId>('insurance');
@@ -90,7 +90,7 @@ Topics to explore to understand the tax return: new sources of revenue outside o
 </div>
 
 <p
-  class="mt-[18px] max-w-[650px] px-[2px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-500 sm:mt-[20px] sm:text-[16px]"
+  class="mt-[18px] max-w-[720px] px-[2px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-500 sm:mt-[20px] sm:text-[16px]"
 >
   {selectedExplanation}{' '}
   <a
