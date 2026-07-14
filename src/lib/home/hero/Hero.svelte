@@ -11,7 +11,7 @@
 <section
   class="px-[18px] pt-[calc(95px-var(--site-mobile-header-height))] sm:px-8 sm:pt-[calc(133px-var(--site-mobile-header-height))] lg:pt-[133px]"
 >
-  <ContentMeasure class="flex !max-w-[780px] flex-col items-center text-center">
+  <ContentMeasure class="flex flex-col items-center text-center">
     <a
       href={joinHref}
       target="_blank"
@@ -24,7 +24,7 @@
     </a>
 
     <h1
-      class="hero-title max-w-[540px] font-heading text-[86px] font-semibold leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
+      class="hero-title max-w-[540px] font-heading text-[80px] font-semibold leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
     >
       <span class="hero-title-lead inline-block will-change-[transform,opacity]">Share</span>
       <span class="hero-title-growth inline-block will-change-[transform,opacity]">sales data</span>

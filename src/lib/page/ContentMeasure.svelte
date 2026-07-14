@@ -17,10 +17,10 @@
   } = $props();
 
   const widthClasses = {
-    standard: 'max-w-[740px]',
-    narrow: 'max-w-[680px]',
-    wide: 'max-w-[820px]',
-    copy: 'max-w-[600px]'
+    standard: 'max-w-[780px]',
+    narrow: 'max-w-[720px]',
+    wide: 'max-w-[860px]',
+    copy: 'max-w-[640px]'
   };
 </script>
 
