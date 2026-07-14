@@ -34,7 +34,7 @@
     {
       question: 'How does success-based pricing work?',
       answer:
-        'You pay 5% of the net new revenue we generate together, and you only pay after you get paid. Revenue is attributed by your team in a self-reported way. Typically, companies need to be referred by one of their partners and share their CRM data with us to qualify'
+        'You pay 5% of the net new revenue we generate together, and you only pay after you get paid. Revenue is attributed by your team in a self-reported way'
     },
     {
       question: 'Are there any upfront costs at all?',
