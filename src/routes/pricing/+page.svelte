@@ -39,7 +39,7 @@
     {
       question: 'Are there any upfront costs at all?',
       answer:
-        "Not necessarily. But most companies pay $15,000 for a proof of concept before signing an annual contract. And in the first year, some companies purchase a one-week onsite deployment kickoff for $10,000, which includes an Overbase engineer on-site, travel expenses, deployment assistance, knowledge transfer, and hands-on training"
+        "Most companies pay $15,000 for a proof of concept before signing an annual contract. Some companies purchase a one-week onsite deployment kickoff for $5,000, which includes an Overbase engineer on-site, travel expenses, deployment assistance, knowledge transfer, and hands-on training"
     }
   ] as const;
 </script>

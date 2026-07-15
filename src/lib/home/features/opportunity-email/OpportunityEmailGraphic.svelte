@@ -45,20 +45,28 @@ Our review of Linamar’s tax return suggests the client is expanding into Europ
 
 This may be an opportunity to help them assess Privacy & Data Protection considerations. Tax Partner Scott Duarte is the right person to connect with for details. 
 
-Topics to explore to understand the tax return: new sources of revenue outside of the US, increased travel activities in Europe, new professional services engagements in Europe.`
+Topics to explore with Scott to understand the tax return: new sources of revenue outside of the US, increased travel activities in Europe, new professional services engagements in Europe.`
   } as const satisfies Record<HomeIndustryId, string>;
 
   const opportunityExplanationByIndustryId = {
     insurance:
-      'Overbase used carrier data to let an insurance broker get the benchmarks they needed help a client be fully insured while increasing premiums',
+      'Overbase used carrier data to let an *insurance broker* get the benchmarks they needed to help a client be fully insured',
     law:
-      "Overbase monitored a law firm's Bloomberg to help one of their most connected lawyers reach out to a client at just the right time",
+      "Overbase monitored a *law firm's* Bloomberg to help one of their most connected lawyers reach out to a client at just the right time",
     'government-relations':
-      "Overbase monitored a government relations firm's FiscalNote to spot a policy change that turned into a client engagement",
+      "Overbase monitored a *government relations firm's* FiscalNote to spot a policy change that turned into a client engagement",
     consulting:
-      'Overbase helped a consulting firm win a pitch by bringing together institutional knowledge from across their firm and their ecosystem partners',
+      'Overbase helped a *consulting firm* win a pitch by bringing together institutional knowledge from across their firm and their ecosystem partners',
     accounting:
-      "Overbase securely analyzed a client's tax return to help an accounting firm spot a hidden opportunity to offer cyber services"
+      "Overbase securely analyzed a client's tax return to help an *accounting firm* spot a hidden opportunity to offer cyber services"
+  } as const satisfies Record<HomeIndustryId, string>;
+
+  const opportunityLinkLabelByIndustryId = {
+    insurance: 'see how we help insurance brokers',
+    law: 'see how we help law firms',
+    'government-relations': 'see how we help government relations firms',
+    consulting: 'see how we help consulting firms',
+    accounting: 'see how we help accounting firms'
   } as const satisfies Record<HomeIndustryId, string>;
 
   let selectedIndustryId = $state<HomeIndustryId>('insurance');
@@ -68,6 +76,7 @@ Topics to explore to understand the tax return: new sources of revenue outside o
   );
   const selectedEmail = $derived(opportunityEmailByIndustryId[selectedIndustryId]);
   const selectedExplanation = $derived(opportunityExplanationByIndustryId[selectedIndustryId]);
+  const selectedLinkLabel = $derived(opportunityLinkLabelByIndustryId[selectedIndustryId]);
 </script>
 
 <div
@@ -95,6 +104,6 @@ Topics to explore to understand the tax return: new sources of revenue outside o
   {selectedExplanation}{' '}
   <a
     href={selectedIndustry.href}
-    class="text-stone-500 underline decoration-current underline-offset-[3px] transition-colors hover:text-stone-750"
-  >(learn more)</a>
+    class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500"
+  >({selectedLinkLabel})</a>
 </p>
