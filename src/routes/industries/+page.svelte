@@ -23,7 +23,7 @@
     <p
       class="mt-[24px] max-w-[620px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]"
     >
-      Overbase works exclusively with professional services firms. We understand that your team is focused on serving clients. Getting them to help with growth means adapting to how they already work
+      Overbase works exclusively with 5 types of professional services firms. Our tech is built for how your firm works
     </p>
 
     <nav class="mt-[56px]" aria-label="Industries">
