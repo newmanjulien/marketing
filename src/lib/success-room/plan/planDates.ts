@@ -103,9 +103,13 @@ export const resolveTaskDisplayDate = ({
 }: {
   dateOverridesByTaskKey: Record<string, string>;
   taskKey: string;
-  fallbackDateLabel: string;
-}) => {
+  fallbackDateLabel?: string;
+}): Date | null => {
   const overrideDate = dateOverridesByTaskKey[taskKey];
 
-  return overrideDate ? parseIsoDate(overrideDate) : parseTaskDateLabel(fallbackDateLabel);
+  if (overrideDate) {
+    return parseIsoDate(overrideDate);
+  }
+
+  return fallbackDateLabel ? parseTaskDateLabel(fallbackDateLabel) : null;
 };

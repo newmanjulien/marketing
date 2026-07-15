@@ -44,7 +44,7 @@ export default defineSchema({
           v.object({
             key: v.string(),
             title: v.string(),
-            dateLabel: v.string(),
+            dateLabel: v.optional(v.string()),
           }),
         ),
         ...timestampedEditableItem,
@@ -66,7 +66,7 @@ export default defineSchema({
         painPoints: v.array(v.string()),
       }),
       plan: v.object({
-        lastOpenedAccordionKey: v.union(v.string(), v.null()),
+        openAccordionKey: v.union(v.string(), v.null()),
         checkedTaskKeys: v.array(v.string()),
         dateOverridesByTaskKey: v.record(v.string(), v.string()),
         assigneeKeyByTaskKey: v.record(v.string(), v.string()),

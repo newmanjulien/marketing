@@ -13,7 +13,7 @@
 
   type DatePickerContext = {
     taskKey: string;
-    selectedDate: Date;
+    selectedDate: Date | null;
   };
 
   let {
@@ -32,21 +32,16 @@
 
   let assigneePickerTaskKey = $state<string | null>(null);
   let datePickerContext = $state<DatePickerContext | null>(null);
-  let openAccordionKey = $derived(
-    plan.lastOpenedAccordionKey &&
-      planAccordions.some((accordion) => accordion.key === plan.lastOpenedAccordionKey)
-      ? plan.lastOpenedAccordionKey
-      : (planAccordions[0]?.key ?? null)
-  );
+  let openAccordionKey = $derived(plan.openAccordionKey);
 
   const fallbackDatePickerDate = new Date();
 
   const openAccordion = (accordionKey: string) => {
-    if (accordionKey === openAccordionKey) {
-      return;
-    }
-
-    onPlanAction({ type: 'open-accordion', accordionKey });
+    // Toggle: clicking the open accordion closes it (null = all closed).
+    onPlanAction({
+      type: 'set-open-accordion',
+      accordionKey: accordionKey === openAccordionKey ? null : accordionKey
+    });
   };
 
   const setTaskChecked = (taskKey: string, checked: boolean) => {
@@ -73,7 +68,7 @@
     });
   };
 
-  const openDatePickerModal = (taskKey: string, dateLabel: string) => {
+  const openDatePickerModal = (taskKey: string, dateLabel?: string) => {
     datePickerContext = {
       taskKey,
       selectedDate: resolveTaskDisplayDate({

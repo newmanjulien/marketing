@@ -14,23 +14,24 @@ import { createSeedClient, uploadSeedFile } from "./helpers/seed-common.mjs";
 // To add extra sections, run the matching script in scripts/success-room/add-sections/.
 // If this slug already exists, Convex throws and no room rows are replaced.
 const room = {
-  slug: "overbase",
-  title: "Overbase",
-  password: "newman",
+  slug: "tabitha",
+  title: "Navacord success room",
+  password: "dunn",
 
   // Absolute paths outside the project are allowed. Relative paths resolve from the project root.
-  deckPath:
-    "/Users/juliennewman/Documents/marketing/Overbase with Joseph's questions - deck.pdf",
-  audioPath:
-    "/Users/juliennewman/Documents/marketing/Navacord and Overbase.mp3",
+  deckPath: "/Users/juliennewman/Downloads/Navacord and Overbase - deck.pdf",
+  audioPath: "/Users/juliennewman/Downloads/Navacord and Overbase - audio.mp3",
 };
 
 const { client, seedSecret } = await createSeedClient();
 const benefitCards = await readBenefitCards(import.meta.dirname);
-const { slug } = await client.query(api.successRooms.validateNewSuccessRoomSlug, {
-  seedSecret,
-  slug: room.slug,
-});
+const { slug } = await client.query(
+  api.successRooms.validateNewSuccessRoomSlug,
+  {
+    seedSecret,
+    slug: room.slug,
+  },
+);
 
 const deck = await uploadSeedFile({
   client,

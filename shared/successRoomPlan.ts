@@ -1,5 +1,6 @@
 export type SuccessRoomPlanState = {
-  lastOpenedAccordionKey: string | null;
+  // The one open accordion, or null when they are all closed.
+  openAccordionKey: string | null;
   checkedTaskKeys: string[];
   dateOverridesByTaskKey: Record<string, string>;
   assigneeKeyByTaskKey: Record<string, string>;
@@ -7,8 +8,8 @@ export type SuccessRoomPlanState = {
 
 export type SuccessRoomPlanAction =
   | {
-      type: 'open-accordion';
-      accordionKey: string;
+      type: 'set-open-accordion';
+      accordionKey: string | null;
     }
   | {
       type: 'set-task-checked';
@@ -31,10 +32,10 @@ export const applySuccessRoomPlanAction = (
   action: SuccessRoomPlanAction,
 ): SuccessRoomPlanState => {
   switch (action.type) {
-    case 'open-accordion':
+    case 'set-open-accordion':
       return {
         ...plan,
-        lastOpenedAccordionKey: action.accordionKey,
+        openAccordionKey: action.accordionKey,
       };
     case 'set-task-checked': {
       const checkedTaskKeys = new Set(plan.checkedTaskKeys);

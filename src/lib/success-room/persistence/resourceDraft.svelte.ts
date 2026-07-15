@@ -101,7 +101,7 @@ export const createSuccessRoomResourceDraft = (
   };
 
   const getPlanActionSaveKey = (action: SuccessRoomPlanAction) =>
-    action.type === 'open-accordion'
+    action.type === 'set-open-accordion'
       ? 'plan:open-accordion'
       : `plan:${action.taskKey}:${action.type}`;
 

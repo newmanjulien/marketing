@@ -1,10 +1,30 @@
-accordionKey,accordionTitle,accordionDescription,accordionVariant,accordionSortOrder,taskKey,taskTitle,taskDateLabel,taskSortOrder
-setup-proof-of-concept,Set up the proof of concept,"Confirm goals, data access, stakeholders, and success criteria",default,0,confirm-sponsor,Confirm the proof of concept sponsor and day-to-day owner,Jul 12,0
-setup-proof-of-concept,Set up the proof of concept,"Confirm goals, data access, stakeholders, and success criteria",default,0,document-workflow,Document the target workflow and sample output expectations,Jul 15,1
-setup-proof-of-concept,Set up the proof of concept,"Confirm goals, data access, stakeholders, and success criteria",default,0,share-access-requirements,Share access requirements for source systems and stakeholder calendars,Jul 18,2
-start-proof-of-concept,Start the 6-week proof of concept,"Launch the workflow, review early outputs, and tune the process",default,1,kickoff-review,Kick off the first workflow review with the core project team,Jul 22,0
-start-proof-of-concept,Start the 6-week proof of concept,"Launch the workflow, review early outputs, and tune the process",default,1,review-initial-records,"Review initial records for completeness, accuracy, and formatting",Jul 29,1
-start-proof-of-concept,Start the 6-week proof of concept,"Launch the workflow, review early outputs, and tune the process",default,1,agree-feedback-cadence,Agree on the weekly feedback cadence and decision log,Aug 2,2
-evaluate-proof-of-concept,Evaluate the proof of concept,"Assess results, document learnings, and decide whether to move forward",muted,2,compare-outcomes,Compare proof of concept outcomes against the agreed success criteria,Aug 26,0
-evaluate-proof-of-concept,Evaluate the proof of concept,"Assess results, document learnings, and decide whether to move forward",muted,2,summarize-learnings,"Summarize operational learnings, risks, and recommended next steps",Aug 29,1
-evaluate-proof-of-concept,Evaluate the proof of concept,"Assess results, document learnings, and decide whether to move forward",muted,2,confirm-go-forward,Confirm the go-forward decision and implementation owners,Sep 3,2
+accordionKey,accordionTitle,accordionDescription,accordionVariant,accordionSortOrder,taskKey,taskTitle,taskSortOrder
+set-up-proof-of-concept,Set up proof of concept,"Align on goals, data access, stakeholders, and success criteria before launch",default,0,understand-benefits-goals,"Understand benefits, goals, pain points and KPIs",0
+set-up-proof-of-concept,Set up proof of concept,"Align on goals, data access, stakeholders, and success criteria before launch",default,0,identify-team-members,Identify team members who we can learn from,1
+set-up-proof-of-concept,Set up proof of concept,"Align on goals, data access, stakeholders, and success criteria before launch",default,0,agree-success-factors,Agree on success factors for POC,2
+set-up-proof-of-concept,Set up proof of concept,"Align on goals, data access, stakeholders, and success criteria before launch",default,0,design-email-format,Design email format for POC,3
+set-up-proof-of-concept,Set up proof of concept,"Align on goals, data access, stakeholders, and success criteria before launch",default,0,get-buy-in-team,Get buy-in from 1 team to use the product for 6 weeks,4
+set-up-proof-of-concept,Set up proof of concept,"Align on goals, data access, stakeholders, and success criteria before launch",default,0,agree-minimal-data,Agree on the minimal internal data needed,5
+set-up-proof-of-concept,Set up proof of concept,"Align on goals, data access, stakeholders, and success criteria before launch",default,0,get-buy-in-it,Get buy-in from IT to share that minimal data,6
+set-up-proof-of-concept,Set up proof of concept,"Align on goals, data access, stakeholders, and success criteria before launch",default,0,get-legal-it-approval,Get legal and IT approval,7
+set-up-proof-of-concept,Set up proof of concept,"Align on goals, data access, stakeholders, and success criteria before launch",default,0,sign-agreement,Sign agreement,8
+set-up-proof-of-concept,Set up proof of concept,"Align on goals, data access, stakeholders, and success criteria before launch",default,0,complete-payment,Complete payment for POC,9
+start-proof-of-concept,Start 6-week proof of concept,"Onboard the team, connect data, and send the first opportunities",default,1,onboard-1-team,Onboard 1 team,0
+start-proof-of-concept,Start 6-week proof of concept,"Onboard the team, connect data, and send the first opportunities",default,1,access-data,Access data needed for POC format,1
+start-proof-of-concept,Start 6-week proof of concept,"Onboard the team, connect data, and send the first opportunities",default,1,send-first-opportunity,Send the first opportunity,2
+start-proof-of-concept,Start 6-week proof of concept,"Onboard the team, connect data, and send the first opportunities",default,1,initial-adjustments,Initial adjustments based on first opportunity,3
+mid-point-evaluation,Mid-proof of concept evaluation,"Check in mid-way, gather feedback, and tune the process",default,2,send-mid-poc-survey,Send mid-POC survey,0
+mid-point-evaluation,Mid-proof of concept evaluation,"Check in mid-way, gather feedback, and tune the process",default,2,adjustments-mid-poc,Adjustments based on mid-POC survey,1
+final-evaluation,Proof of concept evaluation,"Assess results against success factors and decide whether to move forward",default,3,send-end-poc-survey,Send end-of-POC survey,0
+final-evaluation,Proof of concept evaluation,"Assess results against success factors and decide whether to move forward",default,3,create-final-report,Create final POC success factor report,1
+final-evaluation,Proof of concept evaluation,"Assess results against success factors and decide whether to move forward",default,3,poc-evaluation-meeting,POC evaluation meeting (continue/not),2
+start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,design-updated-emails,Design updated email formats,0
+start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,create-onboarding-schedule,Create onboarding schedule,1
+start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,agree-additional-data,Agree on the additional internal data needed,2
+start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,agree-partner-data,Agree on partner data needed,3
+start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,integrate-additional-data,Integrate additional internal data,4
+start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,onboard-first-team,Onboard first team,5
+first-integration-partner,First integration with an ecosystem partner,"Rank potential partners and integrate data from the first one",muted,5,create-ranked-list,Create ranked list of partners to approach,0
+first-integration-partner,First integration with an ecosystem partner,"Rank potential partners and integrate data from the first one",muted,5,integrate-data-1-partner,Integrate data from 1 partner,1
+first-dollar-of-revenue,First dollar of revenue,"Attribute and track the first revenue generated through the partnership",muted,6,track-revenue-brokers,Track revenue attribution with brokers,0
+first-dollar-of-revenue,First dollar of revenue,"Attribute and track the first revenue generated through the partnership",muted,6,track-revenue-bookkeeping,Track revenue attribution with bookkeeping,1

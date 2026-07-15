@@ -6,7 +6,7 @@ import type {
 import { kickoffScheduleColumns } from '../../../../shared/successRoomResources';
 
 export const clonePlan = (plan: SuccessRoomPlanState): SuccessRoomPlanState => ({
-  lastOpenedAccordionKey: plan.lastOpenedAccordionKey,
+  openAccordionKey: plan.openAccordionKey,
   checkedTaskKeys: [...plan.checkedTaskKeys],
   dateOverridesByTaskKey: {
     ...plan.dateOverridesByTaskKey

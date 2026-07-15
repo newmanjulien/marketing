@@ -15,7 +15,7 @@ import { enableSuccessRoomSection } from "../helpers/seed-common.mjs";
 
 // Replaces the mutual success plan for an existing room with the CSV content.
 // If this slug does not exist, Convex throws and nothing is created.
-const slug = "overbase";
+const slug = "tabitha";
 
 const planCsvFilename = "mutual-success-plan-plan.csv";
 
@@ -29,7 +29,6 @@ const planHeaders = [
   "accordionSortOrder",
   "taskKey",
   "taskTitle",
-  "taskDateLabel",
   "taskSortOrder",
 ];
 const planVariants = new Set(["default", "muted"]);
@@ -73,7 +72,7 @@ const readPlanAccordions = async () => {
 
     if (!planVariants.has(accordionVariant)) {
       throw new Error(
-        `${planCsvFilename} row ${rowNumber} accordionVariant must be default or muted.`,
+        `${planCsvFilename} row ${rowNumber} accordionVariant must be one of: ${[...planVariants].join(", ")}.`,
       );
     }
 
@@ -111,12 +110,6 @@ const readPlanAccordions = async () => {
     accordionsByKey.get(accordion.key).tasks.push({
       key: taskKey,
       title: requireValue(record, "taskTitle", planCsvFilename, rowNumber),
-      dateLabel: requireValue(
-        record,
-        "taskDateLabel",
-        planCsvFilename,
-        rowNumber,
-      ),
       sortOrder: parseSortOrder(
         record,
         "taskSortOrder",

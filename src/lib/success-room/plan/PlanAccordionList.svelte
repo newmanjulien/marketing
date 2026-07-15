@@ -29,7 +29,7 @@
     onOpenAccordion: (accordionKey: string) => void;
     onTaskCheckedChange: (taskKey: string, checked: boolean) => void;
     onOpenAssigneePicker: (taskKey: string) => void;
-    onOpenDatePicker: (taskKey: string, dateLabel: string) => void;
+    onOpenDatePicker: (taskKey: string, dateLabel?: string) => void;
   } = $props();
 
   let checkedTaskKeys = $derived(new Set(plan.checkedTaskKeys));
@@ -122,7 +122,7 @@
                 (checked) => onTaskCheckedChange(taskKey, checked)
               }
               {assignedTeamMember}
-              displayDateLabel={formatTaskDateLabel(displayDate)}
+              displayDateLabel={displayDate ? formatTaskDateLabel(displayDate) : undefined}
               textClass={cardVariant.taskText}
               dateClass={cardVariant.taskDate}
               onOpenAssignee={() => onOpenAssigneePicker(taskKey)}

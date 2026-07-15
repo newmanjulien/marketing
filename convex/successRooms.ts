@@ -5,7 +5,11 @@ import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { parseSuccessRoomSlug } from "../shared/successRoomSlugs";
 import { maxCustomBenefitLength } from "../shared/successRoomBenefits";
 import { maxSuccessRoomDocumentRequestDescriptionLength } from "../shared/successRoomDocumentRequests";
-import { applySuccessRoomPlanAction } from "../shared/successRoomPlan";
+import {
+  applySuccessRoomPlanAction,
+  type SuccessRoomPlanAction,
+  type SuccessRoomPlanState,
+} from "../shared/successRoomPlan";
 import {
   createDefaultEditableTextState,
   createDefaultKickoffScheduleState,
@@ -75,7 +79,7 @@ const seedBenefitCard = v.object({
 const seedPlanTask = v.object({
   key: v.string(),
   title: v.string(),
-  dateLabel: v.string(),
+  dateLabel: v.optional(v.string()),
 });
 
 const seedPlanAccordion = v.object({
@@ -110,8 +114,8 @@ const uploadPurpose = v.union(
 
 const planAction = v.union(
   v.object({
-    type: v.literal("open-accordion"),
-    accordionKey: v.string(),
+    type: v.literal("set-open-accordion"),
+    accordionKey: v.union(v.string(), v.null()),
   }),
   v.object({
     type: v.literal("set-task-checked"),
@@ -129,6 +133,20 @@ const planAction = v.union(
     date: v.string(),
   }),
 );
+
+// These Convex validators mirror the TypeScript sources of truth in
+// shared/successRoomPlan.ts by hand. The assertions below turn any drift into a
+// build error (via `npm run check`) instead of a runtime validation rejection.
+// `[A] extends [B]` in both directions asserts exact structural equality.
+type AssertEqual<A, B> = [A] extends [B]
+  ? [B] extends [A]
+    ? true
+    : never
+  : never;
+const _planActionInSync: AssertEqual<Infer<typeof planAction>, SuccessRoomPlanAction> = true;
+const _planStateInSync: AssertEqual<PlanState, SuccessRoomPlanState> = true;
+void _planActionInSync;
+void _planStateInSync;
 
 const kickoffScheduleSnapshot = v.object({
   rows: v.array(
@@ -383,13 +401,11 @@ const sanitizePlanState = (
   const validAccordionKeys = activePlanAccordionKeys(room);
   const validTaskKeys = activePlanTaskKeys(room);
   const validMemberKeys = activeTeamMemberKeys(room);
-  const lastOpenedAccordionKey = state.lastOpenedAccordionKey;
+  const openAccordionKey = state.openAccordionKey;
 
   return {
-    lastOpenedAccordionKey:
-      lastOpenedAccordionKey && validAccordionKeys.has(lastOpenedAccordionKey)
-        ? lastOpenedAccordionKey
-        : null,
+    openAccordionKey:
+      openAccordionKey && validAccordionKeys.has(openAccordionKey) ? openAccordionKey : null,
     checkedTaskKeys: uniqueItems(state.checkedTaskKeys).filter((key) => validTaskKeys.has(key)),
     dateOverridesByTaskKey: Object.fromEntries(
       Object.entries(state.dateOverridesByTaskKey).filter(([taskKey]) => validTaskKeys.has(taskKey)),
@@ -884,7 +900,7 @@ const publicResourcePayload = async (
       state: {
         kind: mutualSuccessPlanResourceKey as typeof mutualSuccessPlanResourceKey,
         plan: {
-          lastOpenedAccordionKey: plan.lastOpenedAccordionKey,
+          openAccordionKey: plan.openAccordionKey,
           checkedTaskKeys: plan.checkedTaskKeys,
           dateOverridesByTaskKey: plan.dateOverridesByTaskKey,
           assigneeKeyByTaskKey: plan.assigneeKeyByTaskKey,
@@ -1477,7 +1493,8 @@ export const enableSuccessRoomSections = mutation({
 
     if (requestedResourceKeys.includes(mutualSuccessPlanResourceKey)) {
       planAccordions = sanitizeSeedPlanAccordions(args.planAccordions ?? [], now);
-      nextState.plan = createDefaultPlanState();
+      // Open the first accordion by default; null would mean all closed.
+      nextState.plan = createDefaultPlanState(planAccordions[0]?.key ?? null);
     }
 
     if (requestedResourceKeys.includes(kickoffScheduleResourceKey)) {

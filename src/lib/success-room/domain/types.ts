@@ -109,7 +109,7 @@ export type SuccessRoomBenefitCard = {
 export type SuccessRoomPlanTask = {
   key: string;
   title: string;
-  date: string;
+  date?: string;
 };
 
 export type SuccessRoomPlanAccordion = {

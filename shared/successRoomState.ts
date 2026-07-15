@@ -14,8 +14,10 @@ type DefaultKickoffScheduleState = {
   }>;
 };
 
-export const createDefaultPlanState = (): SuccessRoomPlanState => ({
-  lastOpenedAccordionKey: null,
+export const createDefaultPlanState = (
+  openAccordionKey: string | null = null,
+): SuccessRoomPlanState => ({
+  openAccordionKey,
   checkedTaskKeys: [],
   dateOverridesByTaskKey: {},
   assigneeKeyByTaskKey: {},
