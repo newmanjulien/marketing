@@ -1,8 +1,52 @@
 <script lang="ts">
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import PageFrame from '$lib/page/PageFrame.svelte';
-  import ResearchTeam from '$lib/survey/components/ResearchTeam.svelte';
-  import { firmCriteria, previousListLinks } from '$lib/survey/domain/landingContent';
+
+  const firmCriteria = [
+    'Business Insurance Top 100 insurance brokerages',
+    'AmLaw 100 law firms',
+    'Top 50 government relations firms by lobbying revenue',
+    'Tier 1 and Tier 2 strategy consulting firms',
+    'Accounting Today Top 100 accounting firms'
+  ];
+
+  const previousListLinks = [
+    {
+      label: "Last year's insurance brokerage CMOs ->",
+      href: '/annual-survey/2026-insurance-cmos'
+    },
+    {
+      label: "Last year's law firm CMOs ->",
+      href: '/annual-survey/2026-law-firm-cmos'
+    },
+    {
+      label: "Last year's government relations firm CMOs ->",
+      href: '/annual-survey/2026-gov-cmos'
+    },
+    {
+      label: "Last year's consulting firm CMOs ->",
+      href: '/annual-survey/2026-consulting-cmos'
+    },
+    {
+      label: "Last year's accounting firm CMOs ->",
+      href: '/annual-survey/2026-accounting-cmos'
+    }
+  ];
+
+  const researchTeamProfiles = [
+    {
+      name: 'Julien Newman',
+      title: 'CEO at Overbase',
+      imageSrc: '/julien.png',
+      imageAlt: 'Julien Newman'
+    },
+    {
+      name: 'Caden Pun',
+      title: 'Research Analyst',
+      imageSrc: '/caden.png',
+      imageAlt: 'Caden Pun'
+    }
+  ];
 </script>
 
 <svelte:head>
@@ -50,7 +94,7 @@
     </div>
 
     <h2
-      class="mt-[50px] font-heading text-[22px] font-medium leading-[1.05] tracking-normal text-stone-900"
+      class="mt-[50px] font-heading text-[22px] font-book leading-[1.05] tracking-normal text-stone-900"
     >
       Criteria and methodology
     </h2>
@@ -72,7 +116,7 @@
     </div>
 
     <h2
-      class="mt-[50px] font-heading text-[22px] font-medium leading-[1.05] tracking-normal text-stone-900"
+      class="mt-[50px] font-heading text-[22px] font-book leading-[1.05] tracking-normal text-stone-900"
     >
       Last year's lists
     </h2>
@@ -90,6 +134,42 @@
       {/each}
     </div>
 
-    <ResearchTeam />
+    <section
+      class="mt-[58px] border-t border-stone-200 pt-[34px]"
+      aria-labelledby="research-team-heading"
+    >
+      <h2
+        id="research-team-heading"
+        class="font-heading text-[22px] font-book leading-[1.05] tracking-normal text-stone-900"
+      >
+        Meet the research team
+      </h2>
+
+      <div class="mt-[22px] grid grid-cols-1 gap-[12px] sm:grid-cols-2">
+        {#each researchTeamProfiles as profile}
+          <article
+            class="flex min-h-[132px] items-center gap-[16px] rounded-[11px] border border-stone-200 bg-stone-50/70 p-[16px]"
+          >
+            <img
+              src={profile.imageSrc}
+              alt={profile.imageAlt}
+              class="h-[82px] w-[82px] shrink-0 rounded-full border border-stone-200 bg-white object-cover object-center shadow-sm"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="min-w-0">
+              <h3
+                class="font-heading text-[18px] font-book leading-[1.15] tracking-normal text-stone-900"
+              >
+                {profile.name}
+              </h3>
+              <p class="mt-[6px] text-[14px] font-book leading-[1.35] tracking-normal text-stone-600">
+                {profile.title}
+              </p>
+            </div>
+          </article>
+        {/each}
+      </div>
+    </section>
   </ContentMeasure>
 </PageFrame>

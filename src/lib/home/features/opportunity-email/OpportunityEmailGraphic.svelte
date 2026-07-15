@@ -50,15 +50,15 @@ Topics to explore with Scott to understand the tax return: new sources of revenu
 
   const opportunityExplanationByIndustryId = {
     insurance:
-      'Overbase used carrier data to let an *insurance broker* get the benchmarks they needed to help a client be fully insured',
+      'Overbase used carrier data to let an insurance broker get the benchmarks they needed to help a client be fully insured',
     law:
-      "Overbase monitored a *law firm's* Bloomberg to help one of their most connected lawyers reach out to a client at just the right time",
+      "Overbase monitored a law firm's Bloomberg to help one of their most connected lawyers reach out to a client at just the right time",
     'government-relations':
-      "Overbase monitored a *government relations firm's* FiscalNote to spot a policy change that turned into a client engagement",
+      "Overbase monitored a government relations firm's FiscalNote to spot a policy change that turned into a client engagement",
     consulting:
-      'Overbase helped a *consulting firm* win a pitch by bringing together institutional knowledge from across their firm and their ecosystem partners',
+      'Overbase helped a consulting firm win a pitch by bringing together institutional knowledge from across their firm and their ecosystem partners',
     accounting:
-      "Overbase securely analyzed a client's tax return to help an *accounting firm* spot a hidden opportunity to offer cyber services"
+      "Overbase securely analyzed a client's tax return to help an accounting firm spot a hidden opportunity to offer cyber services"
   } as const satisfies Record<HomeIndustryId, string>;
 
   const opportunityLinkLabelByIndustryId = {

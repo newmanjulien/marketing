@@ -24,7 +24,7 @@
     </a>
 
     <h1
-      class="hero-title max-w-[540px] font-heading text-[72px] font-semibold leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
+      class="hero-title max-w-[540px] font-heading text-[72px] font-medium leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
     >
       <span class="hero-title-lead inline-block will-change-[transform,opacity]">Share</span>
       <span class="hero-title-growth inline-block will-change-[transform,opacity]">sales data</span>

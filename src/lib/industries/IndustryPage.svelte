@@ -61,7 +61,7 @@
     <div class="mt-[88px] flex flex-col gap-[96px]">
       {#each renderedSections as section (section.id)}
         <section>
-          <h2 class="font-heading text-[24px] font-medium leading-[1.15] tracking-normal text-stone-900">
+          <h2 class="font-heading text-[24px] font-book leading-[1.15] tracking-normal text-stone-900">
             {section.heading}
           </h2>
 

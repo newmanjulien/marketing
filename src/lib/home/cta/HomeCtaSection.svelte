@@ -9,7 +9,7 @@
 <section class="border-t border-stone-200/70 bg-white px-[18px] py-[72px] sm:px-8 sm:py-[90px]">
   <ContentMeasure class="flex flex-col items-center text-center">
     <h2
-      class="font-heading text-[24px] font-semibold leading-[1.08] tracking-normal text-stone-750 sm:text-[31px] sm:leading-[1.06]"
+      class="font-heading text-[24px] font-medium leading-[1.08] tracking-normal text-stone-750 sm:text-[31px] sm:leading-[1.06]"
     >
       Built for professional services
     </h2>
