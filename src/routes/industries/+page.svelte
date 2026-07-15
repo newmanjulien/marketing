@@ -5,12 +5,12 @@
   import { ArrowUpRightIcon } from 'phosphor-svelte';
 
   const industrySummaries = {
-    insurance: 'See how commercial insurance brokers use Overbase to better leverage relationships with their ecosystem partners',
-    law: 'See how law firms use Overbase to better leverage relationships with their ecosystem partners',
+    insurance: 'Learn more about how the best insurance brokers use Overbase to accelerate revenue',
+    law: 'Learn more about how the best law firms use Overbase to accelerate revenue',
     'government-relations':
-      'See how GR firms use Overbase to better leverage relationships with their ecosystem partners',
-    consulting: 'See how consulting firms use Overbase to better leverage relationships with their ecosystem partners',
-    accounting: 'See how accounting firms use Overbase to better leverage relationships with their ecosystem partners'
+      'Learn more about how the best government relations firms use Overbase to accelerate revenue',
+    consulting: 'Learn more about how the best consulting firms use Overbase to accelerate revenue',
+    accounting: 'Learn more about how the best accounting firms use Overbase to accelerate revenue'
   } satisfies Record<IndustryId, string>;
 </script>
 

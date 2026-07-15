@@ -65,7 +65,7 @@
             {section.heading}
           </h2>
 
-          <p class="mt-[18px] max-w-[620px] text-[15px] font-book leading-[1.6] tracking-normal text-stone-700 sm:text-[16px]">
+          <p class="mt-[10px] max-w-[620px] text-[16px] font-book leading-[1.6] tracking-normal text-stone-700 sm:text-[17px]">
             {section.body}
           </p>
 
