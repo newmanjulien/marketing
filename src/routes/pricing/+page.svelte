@@ -24,10 +24,10 @@
     {
       question: "Wait, what's your price again?",
       answer:
-        'We charge 5% of the net new revenue we help generate. You only pay after you get paid and everything else is free'
+        'We charge 5% of the net new revenue we help you generate. You only pay after you get paid'
     },
     {
-      question: 'Do my partners pay anything?',
+      question: 'Do my ecosystem partners pay anything?',
       answer:
         'No. Your ecosystem partners can share any data with you for free through Overbase. They would only pay if they selected to receive revenue opportunities'
     },
@@ -39,7 +39,7 @@
     {
       question: 'Are there any upfront costs at all?',
       answer:
-        "Not necessarily. But most companies pay $15,000 for a proof of concept before signing an annual contract. And in the first year, some companies pay $10,000 to have an Overbase engineer come to their office in person for 1 week to kick off the deployment (includes travel). In both cases, these fees do not fully cover Overbase's costs so these are co-investments"
+        "Not necessarily. But most companies pay $15,000 for a proof of concept before signing an annual contract. And in the first year, some companies purchase a one-week onsite deployment kickoff for $10,000, which includes an Overbase engineer on-site, travel expenses, deployment assistance, knowledge transfer, and hands-on training"
     }
   ] as const;
 </script>
