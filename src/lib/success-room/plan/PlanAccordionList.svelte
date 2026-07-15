@@ -34,13 +34,32 @@
 
   let checkedTaskKeys = $derived(new Set(plan.checkedTaskKeys));
 
+  const startOfTodayMs = (() => {
+    const now = new Date();
+
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  })();
+
+  const isAccordionOffTrack = (accordion: SuccessRoomPlanAccordion) =>
+    accordion.tasks.some((task) => {
+      if (checkedTaskKeys.has(task.key)) return false;
+
+      const date = resolveTaskDisplayDate({
+        dateOverridesByTaskKey: plan.dateOverridesByTaskKey,
+        taskKey: task.key,
+        fallbackDateLabel: task.date
+      });
+
+      return date !== null && date.getTime() < startOfTodayMs;
+    });
+
   const accordionListClasses = 'grid w-full gap-[14px]';
   const accordionItemClasses =
     'box-border rounded-[16px] border px-[18px] py-[12px] shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] sm:px-[20px] sm:py-[14px]';
   const accordionTriggerClasses =
     'grid w-full min-w-0 cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-x-[18px] border-0 bg-transparent p-0 text-left text-inherit focus-visible:rounded-[5px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-stone-900/20 sm:gap-x-[22px]';
   const accordionTitleClasses =
-    'col-start-1 row-start-1 block min-w-0 text-[15px] font-normal leading-[1.2] tracking-normal sm:text-[16px]';
+    'col-start-1 row-start-1 flex min-w-0 items-center gap-[8px] text-[15px] font-normal leading-[1.2] tracking-normal sm:text-[16px]';
   const accordionDescriptionClasses =
     'col-start-1 row-start-2 mt-[8px] block min-w-0 cursor-pointer text-[13px] leading-[1.4] tracking-normal sm:text-[14px]';
   const accordionToggleIconClasses =
@@ -86,6 +105,7 @@
     {@const isOpen = openAccordionKey === item.key}
     {@const ToggleIcon = isOpen ? MinusIcon : PlusIcon}
     {@const cardVariant = accordionCardVariants[item.variant]}
+    {@const offTrack = isAccordionOffTrack(item)}
     <li class={[accordionItemClasses, cardVariant.item]}>
       <button
         type="button"
@@ -95,6 +115,13 @@
         onclick={() => onOpenAccordion(item.key)}
       >
         <span class={[accordionTitleClasses, cardVariant.title]}>
+          {#if offTrack}
+            <span
+              class="h-[7px] w-[7px] shrink-0 rounded-full bg-red-500"
+              role="img"
+              aria-label="Off track"
+            ></span>
+          {/if}
           {item.title}
         </span>
         <span class={[accordionToggleIconClasses, cardVariant.toggleIcon]} aria-hidden="true">

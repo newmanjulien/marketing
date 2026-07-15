@@ -164,12 +164,14 @@ const benefitsPatch = v.object({
   selectedCardKeys: v.optional(v.array(v.string())),
   selectedCustomBenefit: v.optional(v.union(v.string(), v.null())),
   painPointsByBenefitKey: v.optional(v.record(v.string(), v.string())),
+  goalsByBenefitKey: v.optional(v.record(v.string(), v.string())),
 });
 
 const emptyBenefitsState = (): BenefitsState => ({
   selectedCardKeys: [],
   selectedCustomBenefit: null,
   painPointsByBenefitKey: {},
+  goalsByBenefitKey: {},
 });
 
 const emptyRoomState = (): RoomState => ({
@@ -355,6 +357,17 @@ const activePlanAccordionKeys = (room: SuccessRoom) =>
 const activeTeamMemberKeys = (room: SuccessRoom) =>
   new Set(sortActiveTeamMembers(room.teamMembers).map((member) => member.key));
 
+const sanitizeTextByBenefitKey = (
+  textByBenefitKey: Record<string, string> | undefined,
+  allowedBenefitKeys: Set<string>,
+): Record<string, string> =>
+  Object.fromEntries(
+    Object.entries(textByBenefitKey ?? {})
+      .filter(([benefitKey]) => allowedBenefitKeys.has(benefitKey))
+      .map(([benefitKey, text]) => [benefitKey, text.trim()])
+      .filter(([, text]) => text.length > 0),
+  );
+
 const sanitizeBenefitsState = (room: SuccessRoom, state: BenefitsState): BenefitsState => {
   const validCardKeys = activeBenefitKeys(room);
   const selectedCustomBenefit = state.selectedCustomBenefit?.trim() || null;
@@ -368,23 +381,20 @@ const sanitizeBenefitsState = (room: SuccessRoom, state: BenefitsState): Benefit
   const selectedCardKeys = uniqueItems(state.selectedCardKeys).filter((id) =>
     validCardKeys.has(id),
   );
-  const allowedPainPointKeys = new Set(selectedCardKeys);
+  const allowedBenefitKeys = new Set(selectedCardKeys);
 
   if (selectedCustomBenefit) {
-    allowedPainPointKeys.add(customBenefitPainPointKey);
+    allowedBenefitKeys.add(customBenefitPainPointKey);
   }
-
-  const painPointsByBenefitKey = Object.fromEntries(
-    Object.entries(state.painPointsByBenefitKey)
-      .filter(([benefitKey]) => allowedPainPointKeys.has(benefitKey))
-      .map(([benefitKey, painPoint]) => [benefitKey, painPoint.trim()])
-      .filter(([, painPoint]) => painPoint.length > 0),
-  );
 
   return {
     selectedCardKeys,
     selectedCustomBenefit,
-    painPointsByBenefitKey,
+    painPointsByBenefitKey: sanitizeTextByBenefitKey(
+      state.painPointsByBenefitKey,
+      allowedBenefitKeys,
+    ),
+    goalsByBenefitKey: sanitizeTextByBenefitKey(state.goalsByBenefitKey, allowedBenefitKeys),
   };
 };
 
@@ -1258,6 +1268,8 @@ export const patchBenefits = mutation({
       selectedCustomBenefit,
       painPointsByBenefitKey:
         args.benefits.painPointsByBenefitKey ?? room.state.benefits.painPointsByBenefitKey,
+      goalsByBenefitKey:
+        args.benefits.goalsByBenefitKey ?? room.state.benefits.goalsByBenefitKey,
     });
 
     await patchRoomState(ctx, room, {

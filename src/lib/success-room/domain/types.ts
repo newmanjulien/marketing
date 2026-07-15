@@ -129,12 +129,14 @@ export type SuccessRoomBenefitsState = {
   selectedCardKeys: string[];
   selectedCustomBenefit: string | null;
   painPointsByBenefitKey: Record<string, string>;
+  goalsByBenefitKey?: Record<string, string>;
 };
 
 export type SuccessRoomBenefitsPatch = {
   selectedCardKeys?: string[];
   selectedCustomBenefit?: string | null;
   painPointsByBenefitKey?: Record<string, string>;
+  goalsByBenefitKey?: Record<string, string>;
 };
 
 export type SuccessRoomPlanState = SharedSuccessRoomPlanState;

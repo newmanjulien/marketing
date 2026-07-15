@@ -17,7 +17,8 @@ const normalizeBenefitsForEditor = (
 ): SuccessRoomBenefitsState => ({
   selectedCardKeys: [...benefits.selectedCardKeys],
   selectedCustomBenefit: benefits.selectedCustomBenefit,
-  painPointsByBenefitKey: { ...benefits.painPointsByBenefitKey }
+  painPointsByBenefitKey: { ...benefits.painPointsByBenefitKey },
+  goalsByBenefitKey: { ...(benefits.goalsByBenefitKey ?? {}) }
 });
 
 const getBenefitsVersion = (benefits: SuccessRoomBenefitsState) => JSON.stringify(benefits);
@@ -165,6 +166,23 @@ export const createSuccessRoomLandingDraft = (
     });
   };
 
+  const setBenefitGoal = (benefitKey: string, value: string) => {
+    const benefits = {
+      ...benefitsDraft.current.benefits,
+      goalsByBenefitKey: {
+        ...(benefitsDraft.current.benefits.goalsByBenefitKey ?? {}),
+        [benefitKey]: value
+      }
+    };
+    benefitsDraft.replace({
+      ...benefitsDraft.current,
+      benefits
+    });
+    saveBenefits('goals', {
+      goalsByBenefitKey: benefits.goalsByBenefitKey
+    });
+  };
+
   return {
     get selectedBenefitKeys() {
       return benefitsDraft.current.benefits.selectedCardKeys;
@@ -197,6 +215,10 @@ export const createSuccessRoomLandingDraft = (
       return benefitsDraft.current.benefits.painPointsByBenefitKey;
     },
     setBenefitPainPoint,
+    get goalsByBenefitKey() {
+      return benefitsDraft.current.benefits.goalsByBenefitKey ?? {};
+    },
+    setBenefitGoal,
     get team() {
       return team;
     },

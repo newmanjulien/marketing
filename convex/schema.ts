@@ -64,6 +64,7 @@ export default defineSchema({
         selectedCardKeys: v.array(v.string()),
         selectedCustomBenefit: v.union(v.string(), v.null()),
         painPointsByBenefitKey: v.record(v.string(), v.string()),
+        goalsByBenefitKey: v.optional(v.record(v.string(), v.string())),
       }),
       plan: v.object({
         openAccordionKey: v.union(v.string(), v.null()),

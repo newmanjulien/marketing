@@ -9,6 +9,7 @@
   import Header from '../shell/Header.svelte';
   import BenefitsPanel from '../plan/BenefitsPanel.svelte';
   import PainPointsPanel from './PainPointsPanel.svelte';
+  import GoalsPanel from './GoalsPanel.svelte';
   import TeamImagePreloader from '../team/TeamImagePreloader.svelte';
   import TeamPanel from '../team/TeamPanel.svelte';
   import { createSuccessRoomLandingDraft } from '../persistence/landingDraft.svelte';
@@ -23,6 +24,10 @@
     {
       key: 'pain-points',
       label: 'Pain points'
+    },
+    {
+      key: 'goals',
+      label: 'Goals'
     },
     {
       key: 'team',
@@ -61,7 +66,7 @@
   ]);
   const successRoomSections = $derived(
     baseSuccessRoomSections.filter((section) => {
-      if (section.key === 'pain-points') {
+      if (section.key === 'pain-points' || section.key === 'goals') {
         return hasSelectedBenefits;
       }
 
@@ -110,7 +115,7 @@
       ariaLabel={`${room.prospectName} success room sections`}
       activeTabKey={activeSectionKey}
       onActiveTabKeyChange={(sectionKey) => updateSectionUrl(sectionKey)}
-      animatedTabKeys={['pain-points']}
+      animatedTabKeys={['pain-points', 'goals']}
       listClass="mt-[34px]"
       panelClass="mt-[38px]"
     >
@@ -131,6 +136,12 @@
             {selectedBenefits}
             painPointsByBenefitKey={draft.painPointsByBenefitKey}
             onPainPointChange={draft.setBenefitPainPoint}
+          />
+        {:else if section.key === 'goals'}
+          <GoalsPanel
+            {selectedBenefits}
+            goalsByBenefitKey={draft.goalsByBenefitKey}
+            onGoalChange={draft.setBenefitGoal}
           />
         {/if}
       {/snippet}
