@@ -1,7 +1,7 @@
 <script lang="ts">
   import { MinusIcon, PlusIcon } from 'phosphor-svelte';
   import PlanTaskRow from './PlanTaskRow.svelte';
-  import { formatTaskDateLabel, resolveTaskDisplayDate } from './planDates';
+  import { resolveTaskDisplayDate } from './planDates';
   import { mutualSuccessPlanClose, mutualSuccessPlanOpen } from './planTransitions';
   import type {
     SuccessRoomMutualSuccessPlanResource,
@@ -29,14 +29,14 @@
     onOpenAccordion: (accordionKey: string) => void;
     onTaskCheckedChange: (taskKey: string, checked: boolean) => void;
     onOpenAssigneePicker: (taskKey: string) => void;
-    onOpenDatePicker: (taskKey: string, dateLabel?: string) => void;
+    onOpenDatePicker: (taskKey: string, selectedDate: Date | null) => void;
   } = $props();
 
   let checkedTaskKeys = $derived(new Set(plan.checkedTaskKeys));
 
   const accordionListClasses = 'grid w-full gap-[14px]';
   const accordionItemClasses =
-    'box-border rounded-[14px] border px-[18px] py-[12px] shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] sm:px-[20px] sm:py-[14px]';
+    'box-border rounded-[16px] border px-[18px] py-[12px] shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] sm:px-[20px] sm:py-[14px]';
   const accordionTriggerClasses =
     'grid w-full min-w-0 cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-x-[18px] border-0 bg-transparent p-0 text-left text-inherit focus-visible:rounded-[5px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-stone-900/20 sm:gap-x-[22px]';
   const accordionTitleClasses =
@@ -122,11 +122,11 @@
                 (checked) => onTaskCheckedChange(taskKey, checked)
               }
               {assignedTeamMember}
-              displayDateLabel={displayDate ? formatTaskDateLabel(displayDate) : undefined}
+              {displayDate}
               textClass={cardVariant.taskText}
               dateClass={cardVariant.taskDate}
               onOpenAssignee={() => onOpenAssigneePicker(taskKey)}
-              onOpenDatePicker={() => onOpenDatePicker(taskKey, task.date)}
+              onOpenDatePicker={() => onOpenDatePicker(taskKey, displayDate)}
             />
           {/each}
         </ul>

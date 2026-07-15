@@ -1,12 +1,13 @@
 <script lang="ts">
   import Checkbox from './Checkbox.svelte';
+  import { formatTaskDateLabel } from './planDates';
   import type { SuccessRoomPlanTask, SuccessRoomTeamMember } from '../domain/types';
 
   let {
     task,
     checked = $bindable(false),
     assignedTeamMember,
-    displayDateLabel,
+    displayDate,
     textClass,
     dateClass,
     onOpenAssignee,
@@ -15,7 +16,7 @@
     task: SuccessRoomPlanTask;
     checked: boolean;
     assignedTeamMember?: SuccessRoomTeamMember;
-    displayDateLabel?: string;
+    displayDate: Date | null;
     textClass: string;
     dateClass: string;
     onOpenAssignee: () => void;
@@ -40,7 +41,8 @@
     'flex h-[20px] w-[20px] shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-stone-900/20';
   const checkboxClasses = 'h-[14px] w-[14px] flex-none opacity-100';
   const checkboxId = $derived(`plan-task-${task.key}`);
-  const hasDate = $derived(displayDateLabel !== undefined);
+  const hasDate = $derived(displayDate !== null);
+  const displayDateLabel = $derived(displayDate ? formatTaskDateLabel(displayDate) : 'Set date');
 </script>
 
 <li class={taskItemClasses}>
@@ -90,7 +92,7 @@
         aria-label={`${hasDate ? 'Change' : 'Set'} date for ${task.title}`}
         onclick={onOpenDatePicker}
       >
-        {displayDateLabel ?? 'Set date'}
+        {displayDateLabel}
       </button>
     </span>
   </div>

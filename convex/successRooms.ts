@@ -143,10 +143,8 @@ type AssertEqual<A, B> = [A] extends [B]
     ? true
     : never
   : never;
-const _planActionInSync: AssertEqual<Infer<typeof planAction>, SuccessRoomPlanAction> = true;
-const _planStateInSync: AssertEqual<PlanState, SuccessRoomPlanState> = true;
-void _planActionInSync;
-void _planStateInSync;
+true satisfies AssertEqual<Infer<typeof planAction>, SuccessRoomPlanAction>;
+true satisfies AssertEqual<PlanState, SuccessRoomPlanState>;
 
 const kickoffScheduleSnapshot = v.object({
   rows: v.array(

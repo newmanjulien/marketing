@@ -11,6 +11,15 @@ export const projectRoot = resolve(import.meta.dirname, "../../..");
 
 const envPath = resolve(projectRoot, ".env.local");
 
+// Seed target toggle. Flip this to "prod" to seed the production deployment,
+// or override per-run with `SEED_TARGET=prod npm run ...` without editing this file.
+// "dev" uses whatever PUBLIC_CONVEX_URL is in .env.local / the shell.
+const SEED_TARGET = process.env.SEED_TARGET ?? "dev";
+
+const TARGET_URLS = {
+  prod: "https://fearless-lemur-211.convex.cloud",
+};
+
 const parseEnvFile = async (path) => {
   if (!existsSync(path)) {
     return {};
@@ -37,8 +46,15 @@ const parseEnvFile = async (path) => {
 
 export const createSeedClient = async () => {
   const env = await parseEnvFile(envPath);
-  const convexUrl = process.env.PUBLIC_CONVEX_URL ?? env.PUBLIC_CONVEX_URL;
+  const convexUrl =
+    TARGET_URLS[SEED_TARGET] ??
+    process.env.PUBLIC_CONVEX_URL ??
+    env.PUBLIC_CONVEX_URL;
   const seedSecret = process.env.SUCCESS_ROOM_SEED_SECRET ?? env.SUCCESS_ROOM_SEED_SECRET;
+
+  console.log(
+    `Seeding target: ${SEED_TARGET.toUpperCase()} (${convexUrl ?? "no URL"})`,
+  );
 
   if (!convexUrl) {
     throw new Error("PUBLIC_CONVEX_URL is not configured. Run `npx convex dev --once` first.");

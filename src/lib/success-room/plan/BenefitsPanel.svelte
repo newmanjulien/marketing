@@ -19,7 +19,7 @@
   const canSelectCustomBenefit = $derived(customBenefitInput.trim().length > 0);
 
   const cardClasses =
-    'group flex h-[132px] flex-col rounded-[14px] border border-stone-200/70 bg-white px-[18px] py-[14px] text-stone-900 shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] focus-within:border-stone-300 sm:px-[20px] sm:py-[16px]';
+    'group flex h-[132px] flex-col rounded-[16px] border border-stone-200/70 bg-white px-[18px] py-[14px] text-stone-900 shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] focus-within:border-stone-300 sm:px-[20px] sm:py-[16px]';
   const selectableCardClasses = 'cursor-pointer';
   const checkedCardClasses = 'border-stone-300 bg-stone-50/60';
   const titleClasses =

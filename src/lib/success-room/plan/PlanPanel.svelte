@@ -2,7 +2,7 @@
   import DatePickerModal from './DatePickerModal.svelte';
   import PlanAccordionList from './PlanAccordionList.svelte';
   import TaskAssigneeModal from './TaskAssigneeModal.svelte';
-  import { formatIsoDate, resolveTaskDisplayDate } from './planDates';
+  import { formatIsoDate } from './planDates';
   import type {
     SuccessRoomMutualSuccessPlanResource,
     SuccessRoomPlanAccordion,
@@ -32,7 +32,6 @@
 
   let assigneePickerTaskKey = $state<string | null>(null);
   let datePickerContext = $state<DatePickerContext | null>(null);
-  let openAccordionKey = $derived(plan.openAccordionKey);
 
   const fallbackDatePickerDate = new Date();
 
@@ -40,7 +39,7 @@
     // Toggle: clicking the open accordion closes it (null = all closed).
     onPlanAction({
       type: 'set-open-accordion',
-      accordionKey: accordionKey === openAccordionKey ? null : accordionKey
+      accordionKey: accordionKey === plan.openAccordionKey ? null : accordionKey
     });
   };
 
@@ -68,15 +67,8 @@
     });
   };
 
-  const openDatePickerModal = (taskKey: string, dateLabel?: string) => {
-    datePickerContext = {
-      taskKey,
-      selectedDate: resolveTaskDisplayDate({
-        dateOverridesByTaskKey: plan.dateOverridesByTaskKey,
-        taskKey,
-        fallbackDateLabel: dateLabel
-      })
-    };
+  const openDatePickerModal = (taskKey: string, selectedDate: Date | null) => {
+    datePickerContext = { taskKey, selectedDate };
   };
 
   const closeDatePickerModal = () => {
@@ -108,7 +100,7 @@
   {team}
   {planAccordions}
   {plan}
-  {openAccordionKey}
+  openAccordionKey={plan.openAccordionKey}
   onOpenAccordion={openAccordion}
   onTaskCheckedChange={setTaskChecked}
   onOpenAssigneePicker={openAssigneePickerModal}

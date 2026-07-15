@@ -71,13 +71,13 @@
             <img
               src={item.member.imageHref}
               alt=""
-              class="aspect-square w-full rounded-[14px] object-cover grayscale transition duration-200 group-hover:grayscale-0"
+              class="aspect-square w-full rounded-[16px] object-cover grayscale transition duration-200 group-hover:grayscale-0"
               loading="lazy"
               decoding="async"
             />
           {:else}
             <span
-              class="flex aspect-square w-full items-center justify-center rounded-[14px] bg-stone-200/70 text-[24px] font-normal text-stone-600"
+              class="flex aspect-square w-full items-center justify-center rounded-[16px] bg-stone-200/70 text-[24px] font-normal text-stone-600"
               aria-hidden="true"
             >
               {item.member.name.slice(0, 1)}
@@ -101,11 +101,11 @@
         <button
           type="button"
           aria-label="Add team member"
-          class="group grid w-full min-w-0 cursor-pointer border-0 bg-transparent p-0 text-left text-inherit focus-visible:rounded-[14px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-stone-900/20"
+          class="group grid w-full min-w-0 cursor-pointer border-0 bg-transparent p-0 text-left text-inherit focus-visible:rounded-[16px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-stone-900/20"
           onclick={onAddTeamMember}
         >
           <span
-            class="flex aspect-square w-full items-center justify-center rounded-[14px] bg-stone-200/70 text-stone-700 transition-[background-color,color] duration-200 group-hover:bg-stone-300/70 group-hover:text-stone-900"
+            class="flex aspect-square w-full items-center justify-center rounded-[16px] bg-stone-200/70 text-stone-700 transition-[background-color,color] duration-200 group-hover:bg-stone-300/70 group-hover:text-stone-900"
             aria-hidden="true"
           >
             <PlusIcon size={26} weight="regular" />
