@@ -3,7 +3,7 @@ import { internalMutation, internalQuery, mutation, query } from "./_generated/s
 import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { parseSuccessRoomSlug } from "../shared/successRoomSlugs";
-import { maxCustomBenefitLength } from "../shared/successRoomBenefits";
+import { customBenefitPainPointKey, maxCustomBenefitLength } from "../shared/successRoomBenefits";
 import { maxSuccessRoomDocumentRequestDescriptionLength } from "../shared/successRoomDocumentRequests";
 import {
   applySuccessRoomPlanAction,
@@ -47,7 +47,6 @@ type KickoffScheduleState = RoomState["kickoffSchedule"];
 type TeamMember = SuccessRoom["teamMembers"][number];
 
 const maxBenefitCards = 10;
-const maxPainPoints = 3;
 const maxPlanAccordions = 10;
 const maxPlanTasksPerAccordion = 10;
 const kickoffScheduleColumnKeys = new Set<string>(
@@ -86,7 +85,7 @@ const seedPlanAccordion = v.object({
   key: v.string(),
   title: v.string(),
   description: v.string(),
-  variant: v.union(v.literal("default"), v.literal("muted")),
+  variant: v.union(v.literal("default"), v.literal("muted"), v.literal("highlighted")),
   sortOrder: v.number(),
   tasks: v.array(seedPlanTask),
 });
@@ -164,13 +163,13 @@ const documentRequestNotificationStatus = v.union(
 const benefitsPatch = v.object({
   selectedCardKeys: v.optional(v.array(v.string())),
   selectedCustomBenefit: v.optional(v.union(v.string(), v.null())),
-  painPoints: v.optional(v.array(v.string())),
+  painPointsByBenefitKey: v.optional(v.record(v.string(), v.string())),
 });
 
 const emptyBenefitsState = (): BenefitsState => ({
   selectedCardKeys: [],
   selectedCustomBenefit: null,
-  painPoints: [],
+  painPointsByBenefitKey: {},
 });
 
 const emptyRoomState = (): RoomState => ({
@@ -366,13 +365,26 @@ const sanitizeBenefitsState = (room: SuccessRoom, state: BenefitsState): Benefit
     );
   }
 
+  const selectedCardKeys = uniqueItems(state.selectedCardKeys).filter((id) =>
+    validCardKeys.has(id),
+  );
+  const allowedPainPointKeys = new Set(selectedCardKeys);
+
+  if (selectedCustomBenefit) {
+    allowedPainPointKeys.add(customBenefitPainPointKey);
+  }
+
+  const painPointsByBenefitKey = Object.fromEntries(
+    Object.entries(state.painPointsByBenefitKey)
+      .filter(([benefitKey]) => allowedPainPointKeys.has(benefitKey))
+      .map(([benefitKey, painPoint]) => [benefitKey, painPoint.trim()])
+      .filter(([, painPoint]) => painPoint.length > 0),
+  );
+
   return {
-    selectedCardKeys: uniqueItems(state.selectedCardKeys).filter((id) => validCardKeys.has(id)),
+    selectedCardKeys,
     selectedCustomBenefit,
-    painPoints: state.painPoints
-      .map((painPoint) => painPoint.trim())
-      .filter(Boolean)
-      .slice(0, maxPainPoints),
+    painPointsByBenefitKey,
   };
 };
 
@@ -1244,7 +1256,8 @@ export const patchBenefits = mutation({
     const nextBenefits = sanitizeBenefitsState(room, {
       selectedCardKeys: args.benefits.selectedCardKeys ?? room.state.benefits.selectedCardKeys,
       selectedCustomBenefit,
-      painPoints: args.benefits.painPoints ?? room.state.benefits.painPoints,
+      painPointsByBenefitKey:
+        args.benefits.painPointsByBenefitKey ?? room.state.benefits.painPointsByBenefitKey,
     });
 
     await patchRoomState(ctx, room, {

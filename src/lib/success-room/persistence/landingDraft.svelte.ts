@@ -12,24 +12,12 @@ import type {
   SuccessRoomTeamMember
 } from '../domain/types';
 
-const minimumPainPointCount = 3;
-
-const normalizePainPointsForEditor = (painPoints: string[]) => {
-  const normalizedPainPoints = [...painPoints];
-
-  while (normalizedPainPoints.length < minimumPainPointCount) {
-    normalizedPainPoints.push('');
-  }
-
-  return normalizedPainPoints;
-};
-
 const normalizeBenefitsForEditor = (
   benefits: SuccessRoomBenefitsState
 ): SuccessRoomBenefitsState => ({
   selectedCardKeys: [...benefits.selectedCardKeys],
   selectedCustomBenefit: benefits.selectedCustomBenefit,
-  painPoints: normalizePainPointsForEditor(benefits.painPoints)
+  painPointsByBenefitKey: { ...benefits.painPointsByBenefitKey }
 });
 
 const getBenefitsVersion = (benefits: SuccessRoomBenefitsState) => JSON.stringify(benefits);
@@ -160,17 +148,20 @@ export const createSuccessRoomLandingDraft = (
     }
   };
 
-  const setPainPoints = (nextPainPoints: string[]) => {
+  const setBenefitPainPoint = (benefitKey: string, value: string) => {
     const benefits = {
       ...benefitsDraft.current.benefits,
-      painPoints: normalizePainPointsForEditor(nextPainPoints)
+      painPointsByBenefitKey: {
+        ...benefitsDraft.current.benefits.painPointsByBenefitKey,
+        [benefitKey]: value
+      }
     };
     benefitsDraft.replace({
       ...benefitsDraft.current,
       benefits
     });
     saveBenefits('painPoints', {
-      painPoints: benefits.painPoints
+      painPointsByBenefitKey: benefits.painPointsByBenefitKey
     });
   };
 
@@ -202,12 +193,10 @@ export const createSuccessRoomLandingDraft = (
         (benefitsDraft.current.benefits.selectedCustomBenefit !== null ? 1 : 0)
       );
     },
-    get painPoints() {
-      return benefitsDraft.current.benefits.painPoints;
+    get painPointsByBenefitKey() {
+      return benefitsDraft.current.benefits.painPointsByBenefitKey;
     },
-    set painPoints(nextPainPoints: string[]) {
-      setPainPoints(nextPainPoints);
-    },
+    setBenefitPainPoint,
     get team() {
       return team;
     },

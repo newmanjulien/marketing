@@ -116,7 +116,7 @@ export type SuccessRoomPlanAccordion = {
   key: string;
   title: string;
   description: string;
-  variant: 'default' | 'muted';
+  variant: 'default' | 'muted' | 'highlighted';
   tasks: SuccessRoomPlanTask[];
 };
 
@@ -128,13 +128,13 @@ export type SuccessRoomMutualSuccessPlanCatalog = {
 export type SuccessRoomBenefitsState = {
   selectedCardKeys: string[];
   selectedCustomBenefit: string | null;
-  painPoints: string[];
+  painPointsByBenefitKey: Record<string, string>;
 };
 
 export type SuccessRoomBenefitsPatch = {
   selectedCardKeys?: string[];
   selectedCustomBenefit?: string | null;
-  painPoints?: string[];
+  painPointsByBenefitKey?: Record<string, string>;
 };
 
 export type SuccessRoomPlanState = SharedSuccessRoomPlanState;

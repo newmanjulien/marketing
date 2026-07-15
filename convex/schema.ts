@@ -38,7 +38,7 @@ export default defineSchema({
         key: v.string(),
         title: v.string(),
         description: v.string(),
-        variant: v.union(v.literal("default"), v.literal("muted")),
+        variant: v.union(v.literal("default"), v.literal("muted"), v.literal("highlighted")),
         sortOrder: v.number(),
         tasks: v.array(
           v.object({
@@ -63,7 +63,7 @@ export default defineSchema({
       benefits: v.object({
         selectedCardKeys: v.array(v.string()),
         selectedCustomBenefit: v.union(v.string(), v.null()),
-        painPoints: v.array(v.string()),
+        painPointsByBenefitKey: v.record(v.string(), v.string()),
       }),
       plan: v.object({
         openAccordionKey: v.union(v.string(), v.null()),

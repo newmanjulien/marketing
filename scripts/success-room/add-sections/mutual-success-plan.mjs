@@ -31,7 +31,7 @@ const planHeaders = [
   "taskTitle",
   "taskSortOrder",
 ];
-const planVariants = new Set(["default", "muted"]);
+const planVariants = new Set(["default", "muted", "highlighted"]);
 
 const assertMatchingAccordionMetadata = (
   existingAccordion,

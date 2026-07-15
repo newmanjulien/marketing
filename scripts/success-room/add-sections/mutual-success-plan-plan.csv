@@ -18,13 +18,15 @@ mid-point-evaluation,Mid-proof of concept evaluation,"Check in mid-way, gather f
 final-evaluation,Proof of concept evaluation,"Assess results against success factors and decide whether to move forward",default,3,send-end-poc-survey,Send end-of-POC survey,0
 final-evaluation,Proof of concept evaluation,"Assess results against success factors and decide whether to move forward",default,3,create-final-report,Create final POC success factor report,1
 final-evaluation,Proof of concept evaluation,"Assess results against success factors and decide whether to move forward",default,3,poc-evaluation-meeting,POC evaluation meeting (continue/not),2
-start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,design-updated-emails,Design updated email formats,0
-start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,create-onboarding-schedule,Create onboarding schedule,1
-start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,agree-additional-data,Agree on the additional internal data needed,2
-start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,agree-partner-data,Agree on partner data needed,3
-start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,integrate-additional-data,Integrate additional internal data,4
-start-1-year-collaboration,Start 1-year collaboration,"Scale the rollout across teams with expanded data and updated formats",muted,4,onboard-first-team,Onboard first team,5
-first-integration-partner,First integration with an ecosystem partner,"Rank potential partners and integrate data from the first one",muted,5,create-ranked-list,Create ranked list of partners to approach,0
-first-integration-partner,First integration with an ecosystem partner,"Rank potential partners and integrate data from the first one",muted,5,integrate-data-1-partner,Integrate data from 1 partner,1
-first-dollar-of-revenue,First dollar of revenue,"Attribute and track the first revenue generated through the partnership",muted,6,track-revenue-brokers,Track revenue attribution with brokers,0
-first-dollar-of-revenue,First dollar of revenue,"Attribute and track the first revenue generated through the partnership",muted,6,track-revenue-bookkeeping,Track revenue attribution with bookkeeping,1
+start-1-year-collaboration,Start 1-year collaboration,"Update formats, plan onboarding, and align on the additional data needed",muted,4,design-updated-emails,Design updated email formats,0
+start-1-year-collaboration,Start 1-year collaboration,"Update formats, plan onboarding, and align on the additional data needed",muted,4,create-onboarding-schedule,Create onboarding schedule,1
+start-1-year-collaboration,Start 1-year collaboration,"Update formats, plan onboarding, and align on the additional data needed",muted,4,agree-additional-data,Agree on the additional internal data needed,2
+start-1-year-collaboration,Start 1-year collaboration,"Update formats, plan onboarding, and align on the additional data needed",muted,4,agree-partner-data,Agree on partner data needed,3
+kick-off-collaboration,Kick off collaboration,"Launch the rollout, integrate data, and start sending to the first team",muted,5,decide-kickoff-format,Decide on whether to kick off in person or remote,0
+kick-off-collaboration,Kick off collaboration,"Launch the rollout, integrate data, and start sending to the first team",muted,5,create-kickoff-schedule,Create kickoff schedule,1
+kick-off-collaboration,Kick off collaboration,"Launch the rollout, integrate data, and start sending to the first team",muted,5,integrate-additional-data,Integrate additional internal data,2
+kick-off-collaboration,Kick off collaboration,"Launch the rollout, integrate data, and start sending to the first team",muted,5,start-sending-emails,Start sending emails to first team,3
+first-integration-partner,First integration with an ecosystem partner,"Rank potential partners and integrate data from the first one",muted,6,create-ranked-list,Create ranked list of partners to approach,0
+first-integration-partner,First integration with an ecosystem partner,"Rank potential partners and integrate data from the first one",muted,6,integrate-data-1-partner,Integrate data from 1 partner,1
+kick-off-revenue-achievement,Kick off revenue achievement,"Set up attribution to track revenue generated through the partnership",highlighted,7,setup-revenue-brokers,Set up revenue attribution with brokers,0
+kick-off-revenue-achievement,Kick off revenue achievement,"Set up attribution to track revenue generated through the partnership",highlighted,7,setup-revenue-bookkeeping,Set up revenue attribution with bookkeeping,1

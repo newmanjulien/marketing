@@ -12,6 +12,7 @@
   import TeamImagePreloader from '../team/TeamImagePreloader.svelte';
   import TeamPanel from '../team/TeamPanel.svelte';
   import { createSuccessRoomLandingDraft } from '../persistence/landingDraft.svelte';
+  import { customBenefitPainPointKey } from '../../../../shared/successRoomBenefits';
   import type { SuccessRoomLandingRoom, SuccessRoomLandingState } from '../domain/types';
 
   const baseSuccessRoomSections = [
@@ -50,6 +51,14 @@
     () => successRoomState
   );
   const hasSelectedBenefits = $derived(draft.selectedBenefitCount > 0);
+  const selectedBenefits = $derived([
+    ...room.benefitCards
+      .filter((card) => draft.selectedBenefitKeys.includes(card.key))
+      .map((card) => ({ key: card.key, label: card.title })),
+    ...(draft.customBenefitSelected
+      ? [{ key: customBenefitPainPointKey, label: draft.customBenefitInput }]
+      : [])
+  ]);
   const successRoomSections = $derived(
     baseSuccessRoomSections.filter((section) => {
       if (section.key === 'pain-points') {
@@ -119,8 +128,9 @@
           <TeamPanel team={draft.team} onAddTeamMember={draft.addTeamMember} />
         {:else if section.key === 'pain-points'}
           <PainPointsPanel
-            selectedBenefitCount={draft.selectedBenefitCount}
-            bind:painPoints={draft.painPoints}
+            {selectedBenefits}
+            painPointsByBenefitKey={draft.painPointsByBenefitKey}
+            onPainPointChange={draft.setBenefitPainPoint}
           />
         {/if}
       {/snippet}

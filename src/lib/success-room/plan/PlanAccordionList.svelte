@@ -36,7 +36,7 @@
 
   const accordionListClasses = 'grid w-full gap-[14px]';
   const accordionItemClasses =
-    'box-border rounded-[16px] border px-[18px] py-[12px] shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] sm:px-[20px] sm:py-[14px]';
+    'box-border rounded-[16px] border px-[18px] py-[12px] shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] sm:px-[20px] sm:py-[14px]';
   const accordionTriggerClasses =
     'grid w-full min-w-0 cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-x-[18px] border-0 bg-transparent p-0 text-left text-inherit focus-visible:rounded-[5px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-stone-900/20 sm:gap-x-[22px]';
   const accordionTitleClasses =
@@ -49,7 +49,7 @@
 
   const accordionCardVariants = {
     default: {
-      item: 'border-stone-200/70 bg-white text-stone-900',
+      item: 'border-stone-200/70 bg-white text-stone-900 hover:border-stone-300',
       title: 'text-stone-900',
       description: 'text-stone-500',
       toggleIcon: 'text-stone-400',
@@ -57,12 +57,20 @@
       taskDate: 'text-stone-400'
     },
     muted: {
-      item: 'border-stone-200/70 bg-stone-50 text-stone-500',
+      item: 'border-stone-200/70 bg-stone-50 text-stone-500 hover:border-stone-300',
       title: 'text-stone-600',
       description: 'text-stone-400',
       toggleIcon: 'text-stone-300',
       taskText: 'text-stone-400',
       taskDate: 'text-stone-300'
+    },
+    highlighted: {
+      item: 'border-yellow-200/70 bg-yellow-50/80 text-yellow-900 hover:border-yellow-300/50',
+      title: 'text-stone-900',
+      description: 'text-stone-500',
+      toggleIcon: 'text-stone-400',
+      taskText: 'text-stone-500',
+      taskDate: 'text-stone-400'
     }
   } as const;
 
