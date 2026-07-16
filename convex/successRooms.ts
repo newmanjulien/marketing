@@ -948,6 +948,7 @@ const publicResourcePayload = async (
         editableText: {
           content: room.state.editableText.content,
           dataSources: room.state.editableText.dataSources,
+          success: room.state.editableText.success,
           ...(linkedAttachment
             ? {
                 attachment: {
@@ -1305,6 +1306,11 @@ export const patchEditableText = mutation({
     editableText: v.object({
       content: v.string(),
       dataSources: v.array(v.string()),
+      success: v.object({
+        revenueGrowth: v.string(),
+        audience: v.string(),
+        workflow: v.string(),
+      }),
     }),
   },
   handler: async (ctx, args) => {
@@ -1316,6 +1322,7 @@ export const patchEditableText = mutation({
       editableText: {
         content: args.editableText.content,
         dataSources: args.editableText.dataSources,
+        success: args.editableText.success,
         attachmentFileKey: room.state.editableText.attachmentFileKey,
       },
     });

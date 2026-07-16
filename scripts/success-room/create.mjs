@@ -7,23 +7,23 @@
 
 import { api } from "../../convex/_generated/api.js";
 import { readBenefitCards } from "./helpers/benefit-cards.mjs";
-import { createSeedClient, uploadSeedFile } from "./helpers/seed-common.mjs";
+import { connectToTarget, uploadSeedFile } from "./helpers/convex-client.mjs";
 
 // Add a new base room here. This script creates deck, audio, and benefits.
 // It never adds extra sections and never overwrites an existing room.
 // To add extra sections, run the matching script in scripts/success-room/add-sections/.
 // If this slug already exists, Convex throws and no room rows are replaced.
 const room = {
-  slug: "tabitha",
+  slug: "navacord",
   title: "Navacord success room",
-  password: "dunn",
+  password: "newman",
 
   // Absolute paths outside the project are allowed. Relative paths resolve from the project root.
   deckPath: "/Users/juliennewman/Downloads/Navacord and Overbase - deck.pdf",
   audioPath: "/Users/juliennewman/Downloads/Navacord and Overbase - audio.mp3",
 };
 
-const { client, seedSecret } = await createSeedClient();
+const { client, seedSecret } = await connectToTarget();
 const benefitCards = await readBenefitCards(import.meta.dirname);
 const { slug } = await client.query(
   api.successRooms.validateNewSuccessRoomSlug,

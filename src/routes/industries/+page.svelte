@@ -23,7 +23,7 @@
     <p
       class="mt-[24px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[17px]"
     >
-      Overbase works exclusively with 5 types of professional services firms. Our tech is built for how your firm works
+      Overbase works with 5 types of professional services firms. Our tech is built for how your firm works
     </p>
 
     <nav class="mt-[56px]" aria-label="Industries">

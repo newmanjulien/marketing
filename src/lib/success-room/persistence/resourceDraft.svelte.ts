@@ -131,7 +131,8 @@ export const createSuccessRoomResourceDraft = (
         resourceSlug,
         editableText: {
           content: stateToSave.content,
-          dataSources: stateToSave.dataSources
+          dataSources: stateToSave.dataSources,
+          success: stateToSave.success
         }
       },
       errorMessage: 'Success room editable text could not be saved.',

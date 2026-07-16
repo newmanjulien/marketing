@@ -21,6 +21,7 @@ export const cloneEditableTextState = (
 ): SuccessRoomEditableTextState => ({
   content: editableState.content,
   dataSources: [...editableState.dataSources],
+  success: { ...editableState.success },
   ...(editableState.attachment ? { attachment: editableState.attachment } : {})
 });
 

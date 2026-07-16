@@ -24,15 +24,14 @@
       <Header eyebrow="Success room" title={prospectName} {description} />
 
       <form method="POST" action={unlockAction} class="mt-[34px] grid gap-[12px]">
-        <label class="grid gap-[8px] text-[13px] font-book leading-none tracking-normal text-stone-700">
-          Password
-          <input
-            class="h-[42px] w-full rounded-[8px] border border-stone-200/70 bg-white px-[14px] font-body text-[14px] font-book tracking-normal text-stone-700 outline-none shadow-[0_1px_0_rgba(48,47,45,0.03)] placeholder:text-stone-400 focus:border-stone-300 focus:text-stone-900"
-            type="password"
-            name="password"
-            autocomplete="current-password"
-          />
-        </label>
+        <input
+          class="h-[42px] w-full rounded-[8px] border border-stone-200/70 bg-white px-[14px] font-body text-[14px] font-book tracking-normal text-stone-700 outline-none shadow-[0_1px_0_rgba(48,47,45,0.03)] placeholder:text-stone-400 focus:border-stone-300 focus:text-stone-900"
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          placeholder="Enter your password"
+          aria-label="Password"
+        />
 
         {#if message}
           <p class="m-0 text-[13px] font-book leading-[1.35] tracking-normal text-red-700">

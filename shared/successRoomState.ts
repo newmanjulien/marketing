@@ -4,6 +4,11 @@ import { kickoffScheduleRowKeys } from "./successRoomResources";
 type DefaultEditableTextState = {
   content: string;
   dataSources: string[];
+  success: {
+    revenueGrowth: string;
+    audience: string;
+    workflow: string;
+  };
 };
 
 type DefaultKickoffScheduleState = {
@@ -26,6 +31,11 @@ export const createDefaultPlanState = (
 export const createDefaultEditableTextState = (): DefaultEditableTextState => ({
   content: "",
   dataSources: [],
+  success: {
+    revenueGrowth: "",
+    audience: "",
+    workflow: "",
+  },
 });
 
 export const createDefaultKickoffScheduleState = (): DefaultKickoffScheduleState => ({

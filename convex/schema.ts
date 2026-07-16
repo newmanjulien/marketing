@@ -75,6 +75,11 @@ export default defineSchema({
       editableText: v.object({
         content: v.string(),
         dataSources: v.array(v.string()),
+        success: v.object({
+          revenueGrowth: v.string(),
+          audience: v.string(),
+          workflow: v.string(),
+        }),
         attachmentFileKey: v.optional(v.string()),
       }),
       kickoffSchedule: v.object({

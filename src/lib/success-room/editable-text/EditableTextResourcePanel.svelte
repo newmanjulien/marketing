@@ -3,6 +3,7 @@
   import type { PillTab } from '$lib/ui/PillTabs.svelte';
   import DataSourcesPanel from './DataSourcesPanel.svelte';
   import EditableTextPanel from './EditableTextPanel.svelte';
+  import SuccessPanel from './SuccessPanel.svelte';
   import type {
     SuccessRoomEditableTextAttachmentUpdate,
     SuccessRoomEditableTextResource,
@@ -16,16 +17,22 @@
 
   const editableTextSections = [
     {
+      key: 'success',
+      label: 'Success',
+      description:
+        'What does success look like for this email format?'
+    },
+    {
       key: 'format',
       label: 'Format',
       description:
-        'Review the sample email your team will receive, with an optional attachment'
+        'Review the sample email your team will receive'
     },
     {
       key: 'data-sources',
       label: 'Data sources',
       description:
-        'List the data sources we will need to connect for this initial email format'
+        'What data do we need to test this format?'
     }
   ] as const satisfies readonly EditableTextSection[];
 
@@ -66,6 +73,10 @@
         />
       {:else if section.key === 'data-sources'}
         <DataSourcesPanel
+          bind:editableState
+        />
+      {:else if section.key === 'success'}
+        <SuccessPanel
           bind:editableState
         />
       {/if}

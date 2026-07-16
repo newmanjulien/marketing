@@ -7,7 +7,7 @@
     "dev": "vite --host 127.0.0.1",
     "convex:dev": "convex dev",
     "convex:codegen": "convex codegen",
-    "generate:reserved-slugs": "node scripts/success-room/generate-reserved-slugs.mjs",
+    "generate:reserved-slugs": "node scripts/generate-reserved-slugs.mjs",
     "create:success-room": "node scripts/success-room/create.mjs",
     "refresh:success-room:benefits": "node scripts/success-room/refresh-benefits.mjs",
     "add:success-room:mutual-success-plan": "node scripts/success-room/add-sections/mutual-success-plan.mjs",

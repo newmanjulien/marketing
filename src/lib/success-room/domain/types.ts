@@ -146,6 +146,11 @@ export type SuccessRoomPlanAction = SharedSuccessRoomPlanAction;
 export type SuccessRoomEditableTextState = {
   content: string;
   dataSources: string[];
+  success: {
+    revenueGrowth: string;
+    audience: string;
+    workflow: string;
+  };
   attachment?: SuccessRoomLinkedFileMetadata;
 };
 

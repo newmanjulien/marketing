@@ -5,9 +5,9 @@
 // This deletes all success-room rows and all Convex file-storage objects.
 
 import { api } from "../../convex/_generated/api.js";
-import { createSeedClient } from "./helpers/seed-common.mjs";
+import { connectToTarget } from "./helpers/convex-client.mjs";
 
-const { client, seedSecret } = await createSeedClient();
+const { client, seedSecret } = await connectToTarget();
 
 const result = await client.mutation(api.successRooms.nukeSuccessRoomData, {
   seedSecret,
