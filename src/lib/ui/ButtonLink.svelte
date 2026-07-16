@@ -43,16 +43,16 @@
 
   const textSizeClasses = {
     default: {
-      small: 'text-[14px]',
-      large: 'text-[17px]',
-      hero: 'text-[17px]',
-      xlarge: 'text-[18px]'
+      small: 'text-[15px]',
+      large: 'text-[18px]',
+      hero: 'text-[18px]',
+      xlarge: 'text-[19px]'
     },
     compact: {
-      small: 'text-[13px]',
-      large: 'text-[15px]',
-      hero: 'text-[16px]',
-      xlarge: 'text-[16px]'
+      small: 'text-[14px]',
+      large: 'text-[16px]',
+      hero: 'text-[17px]',
+      xlarge: 'text-[17px]'
     }
   };
 
