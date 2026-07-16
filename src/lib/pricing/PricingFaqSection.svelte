@@ -26,7 +26,7 @@
         <h3 class="font-heading text-[17px] font-book leading-[1.25] tracking-normal text-stone-750 sm:text-[18px]">
           {item.question}
         </h3>
-        <p class="mt-[12px] max-w-[620px] text-[14px] font-book leading-[1.55] tracking-normal text-stone-500 sm:text-[15px]">
+        <p class="mt-[12px] text-[14px] font-book leading-[1.55] tracking-normal text-stone-500 sm:text-[15px]">
           {item.answer}
         </p>
       </article>

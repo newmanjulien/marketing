@@ -45,13 +45,13 @@
 <PageFrame>
   <ContentMeasure as="article" width="narrow">
     <header>
-      <h1 class="font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-900">
+      <h1 class="font-heading text-[42px] font-medium leading-[1.05] tracking-normal text-stone-900">
         {content.heading}
       </h1>
 
-      <div class="mt-[24px] flex max-w-[620px] flex-col gap-[22px]">
+      <div class="mt-[24px] flex flex-col gap-[22px]">
         {#each content.introParagraphs as paragraph}
-          <p class="text-[15px] font-book leading-[1.6] tracking-normal text-stone-700 sm:text-[16px]">
+          <p class="text-[16px] font-book leading-[1.6] tracking-normal text-stone-700 sm:text-[17px]">
             {paragraph}
           </p>
         {/each}
@@ -65,7 +65,7 @@
             {section.heading}
           </h2>
 
-          <p class="mt-[10px] max-w-[620px] text-[16px] font-book leading-[1.6] tracking-normal text-stone-700 sm:text-[17px]">
+          <p class="mt-[10px] text-[16px] font-book leading-[1.6] tracking-normal text-stone-700 sm:text-[17px]">
             {section.body}
           </p>
 

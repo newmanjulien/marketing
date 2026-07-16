@@ -15,13 +15,13 @@
       </p>
 
       <h1
-        class="mt-[28px] font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-750"
+        class="mt-[28px] font-heading text-[42px] font-medium leading-[1.05] tracking-normal text-stone-750"
       >
         Policies, terms and security
       </h1>
 
       <p
-        class="mt-[20px] max-w-[620px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]"
+        class="mt-[20px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[17px]"
       >
         Review the policies, terms and security materials that govern Overbase products and services
       </p>

@@ -8,7 +8,7 @@
 
   const panelContentClasses = 'grid gap-[22px]';
   const panelDescriptionClasses =
-    'max-w-[42rem] text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]';
+    'text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]';
 
   let {
     resource,

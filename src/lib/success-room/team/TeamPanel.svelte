@@ -17,7 +17,7 @@
 
 <div class="grid gap-[24px]">
   <p
-    class="max-w-[42rem] text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]"
+    class="text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]"
   >
     Meet the people supporting this evaluation, including team members from Overbase and your team
   </p>

@@ -27,7 +27,7 @@
   const checkboxClasses =
     'mt-[1px] h-[15px] w-[15px] shrink-0 cursor-pointer';
   const panelDescriptionClasses =
-    'max-w-[42rem] text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]';
+    'text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]';
   const descriptionClasses =
     'mt-[10px] block max-w-[26rem] text-[13px] font-book leading-[1.4] tracking-normal text-stone-500 sm:text-[14px]';
   const customBenefitInputClasses =

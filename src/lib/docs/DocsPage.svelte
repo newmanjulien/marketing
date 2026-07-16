@@ -19,7 +19,7 @@
       </h1>
 
       {#if page.description}
-        <p class="mt-[16px] max-w-[620px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-600">
+        <p class="mt-[16px] text-[17px] font-book leading-[1.55] tracking-normal text-stone-600">
           {page.description}
         </p>
       {/if}

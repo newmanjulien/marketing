@@ -46,12 +46,12 @@
 
 <PageFrame>
   <ContentMeasure as="section" width="narrow">
-    <h1 class="font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-900">
+    <h1 class="font-heading text-[42px] font-medium leading-[1.05] tracking-normal text-stone-900">
       Pricing
     </h1>
 
-    <p class="mt-[24px] max-w-[620px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700">
-      Our pricing is success based. Pay 5% of the net new revenue we help you generate. And only
+    <p class="mt-[24px] text-[17px] font-book leading-[1.55] tracking-normal text-stone-700">
+      How much does Overbase cost? Our pricing is success based. We only get paid after you get paid. You pay 5% of the net new revenue we help you generate and only
       pay after you get paid
     </p>
 

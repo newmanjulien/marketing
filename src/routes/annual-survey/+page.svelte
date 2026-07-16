@@ -59,16 +59,16 @@
 <PageFrame>
   <ContentMeasure as="section" width="copy">
     <header>
-      <p class="text-[14px] font-medium leading-none tracking-normal text-stone-500">
+      <p class="text-[15px] font-medium leading-none tracking-normal text-stone-500">
         Survey
       </p>
       <h1
-        class="mt-[28px] font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-900"
+        class="mt-[28px] font-heading text-[42px] font-medium leading-[1.05] tracking-normal text-stone-900"
       >
         Survey has started for the most innovative CMOs of 2027
       </h1>
 
-      <p class="mt-[20px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700">
+      <p class="mt-[20px] text-[17px] font-book leading-[1.55] tracking-normal text-stone-700">
         Every year, Overbase surveys the marketing teams in the best professional services firms to
         find out who you believe are the most innovative CMOs in your industry
       </p>
@@ -83,7 +83,7 @@
     </header>
 
     <div
-      class="mt-[20px] flex flex-col gap-[20px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700"
+      class="mt-[20px] flex flex-col gap-[20px] text-[17px] font-book leading-[1.55] tracking-normal text-stone-700"
     >
       <p>
         Overbase surveys marketing teams from the best insurance brokerages, law firms, government
@@ -94,12 +94,12 @@
     </div>
 
     <h2
-      class="mt-[50px] font-heading text-[22px] font-book leading-[1.05] tracking-normal text-stone-900"
+      class="mt-[50px] font-heading text-[23px] font-book leading-[1.05] tracking-normal text-stone-900"
     >
       Criteria and methodology
     </h2>
     <div
-      class="mt-[20px] flex flex-col gap-[20px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700"
+      class="mt-[20px] flex flex-col gap-[20px] text-[17px] font-book leading-[1.55] tracking-normal text-stone-700"
     >
       <p>
         We send our survey to each firm's marketing team. Our results are entirely based on your
@@ -116,16 +116,16 @@
     </div>
 
     <h2
-      class="mt-[50px] font-heading text-[22px] font-book leading-[1.05] tracking-normal text-stone-900"
+      class="mt-[50px] font-heading text-[23px] font-book leading-[1.05] tracking-normal text-stone-900"
     >
       Last year's lists
     </h2>
-    <p class="mt-[20px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700">
+    <p class="mt-[20px] text-[17px] font-book leading-[1.55] tracking-normal text-stone-700">
       +900 marketers from the best professional services firms answered our survey last year. Check
       out last year's lists for each industry
     </p>
     <div
-      class="mt-[20px] flex flex-col gap-[20px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700 [&_a]:text-stone-500 [&_a]:underline [&_a]:decoration-current [&_a]:underline-offset-[3px] [&_a]:transition-colors [&_a:hover]:text-stone-750"
+      class="mt-[20px] flex flex-col gap-[20px] text-[17px] font-book leading-[1.55] tracking-normal text-stone-700 [&_a]:text-stone-500 [&_a]:underline [&_a]:decoration-current [&_a]:underline-offset-[3px] [&_a]:transition-colors [&_a:hover]:text-stone-750"
     >
       {#each previousListLinks as link}
         <p>
@@ -140,7 +140,7 @@
     >
       <h2
         id="research-team-heading"
-        class="font-heading text-[22px] font-book leading-[1.05] tracking-normal text-stone-900"
+        class="font-heading text-[23px] font-book leading-[1.05] tracking-normal text-stone-900"
       >
         Meet the research team
       </h2>
@@ -159,11 +159,11 @@
             />
             <div class="min-w-0">
               <h3
-                class="font-heading text-[18px] font-book leading-[1.15] tracking-normal text-stone-900"
+                class="font-heading text-[19px] font-book leading-[1.15] tracking-normal text-stone-900"
               >
                 {profile.name}
               </h3>
-              <p class="mt-[6px] text-[14px] font-book leading-[1.35] tracking-normal text-stone-600">
+              <p class="mt-[6px] text-[15px] font-book leading-[1.35] tracking-normal text-stone-600">
                 {profile.title}
               </p>
             </div>

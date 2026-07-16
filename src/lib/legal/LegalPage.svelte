@@ -16,7 +16,7 @@
     </a>
 
     <header class="mt-[28px]">
-      <h1 class="font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-900">
+      <h1 class="font-heading text-[42px] font-medium leading-[1.05] tracking-normal text-stone-900">
         {page.title}
       </h1>
       <p class="mt-[16px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-500">

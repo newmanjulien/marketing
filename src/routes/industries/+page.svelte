@@ -16,12 +16,12 @@
 
 <PageFrame>
   <ContentMeasure as="section" width="narrow">
-    <h1 class="font-heading text-[32px] font-medium leading-[1.05] tracking-normal text-stone-750">
+    <h1 class="font-heading text-[42px] font-medium leading-[1.05] tracking-normal text-stone-750">
       Our 5 industries
     </h1>
 
     <p
-      class="mt-[24px] max-w-[620px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]"
+      class="mt-[24px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[17px]"
     >
       Overbase works exclusively with 5 types of professional services firms. Our tech is built for how your firm works
     </p>
@@ -39,7 +39,7 @@
               {industry.label}
             </span>
             <span
-              class="mt-[14px] block max-w-[500px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]"
+              class="mt-[14px] block text-[15px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]"
             >
               {industrySummaries[industry.id]}
             </span>
