@@ -17,7 +17,7 @@
 <ProfileSeries>
   <Profile
     label="Best Use Of AI"
-    title="Melanie Pickett, Head of Asset Servicing for the Americas at Northern Trust"
+    title="Melanie Pickett, Chief Transformation Officer, at Northern Trust"
     imageSrc="/cmos/melaniepickett.png"
     imageAlt="Black-and-white portrait of Melanie over a blue patterned frame"
     caption="Melanie Pickett was picked for Best use of AI"
