@@ -13,13 +13,13 @@ import type {
 const sharedSectionCopy: IndustryPageSections = {
   setup: {
     id: "setup",
-    heading: "Share data",
-    body: "Both you and your partners securely share sales data from wherever it lives. You stay in full control of who accesses what data",
+    heading: "Connect sales data",
+    body: "Both you and your partners securely connect sales data from wherever it lives. You stay in full control of who accesses what data",
   },
   emailFormat: {
     id: "emailFormat",
-    heading: "Design email formats",
-    body: "Design custom email formats that perfectly match how your team already operates. Your team keeps working how they currently work",
+    heading: "Design a custom email format",
+    body: "Design a custom email format that perfectly matches your unique business. Your team keeps working how they currently work",
   },
   opportunityEmail: {
     id: "opportunityEmail",
