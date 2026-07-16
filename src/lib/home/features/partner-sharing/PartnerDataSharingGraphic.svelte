@@ -7,7 +7,7 @@
 
   const partnerDataShares = [
     {
-      partnerName: 'Kensington, Blake & Thorne',
+      partnerName: 'CWC',
       dataSourceSummary: 'all data sources',
       dataSourceCoverage: 1
     },
