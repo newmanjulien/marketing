@@ -31,9 +31,9 @@
     </h1>
 
     <p
-      class="hero-support mt-[18px] max-w-[430px] translate-y-[4px] font-light text-[23px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity] sm:max-w-[500px]"
+      class="hero-support mt-[18px] max-w-[430px] translate-y-[4px] font-light text-[23px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity] sm:max-w-[480px]"
     >
-      Overbase helps <a href="/industries" class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500">professional services firms</a> easily and quickly accelerate revenue by sharing sales data with your ecosystem partners
+      Overbase helps <a href="/industries" class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500">professional services firms</a> easily grow revenue by sharing sales data with your ecosystem partners
     </p>
 
     <div class="hero-actions mt-[44px] flex translate-y-[4px] items-center justify-center gap-[9px] opacity-0 will-change-[transform,opacity]">

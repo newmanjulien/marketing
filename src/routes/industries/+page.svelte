@@ -5,12 +5,12 @@
   import { ArrowUpRightIcon } from 'phosphor-svelte';
 
   const industrySummaries = {
-    insurance: 'Learn more about how the best insurance brokers use Overbase to accelerate revenue',
-    law: 'Learn more about how the best law firms use Overbase to accelerate revenue',
+    insurance: 'See how insurance brokers grow revenue by sharing sales data with carriers, law and accounting firms or with industry associations',
+    law: 'See how law firms grow revenue by sharing data with other lawers, headhunters and with data providers',
     'government-relations':
-      'Learn more about how the best government relations firms use Overbase to accelerate revenue',
-    consulting: 'Learn more about how the best consulting firms use Overbase to accelerate revenue',
-    accounting: 'Learn more about how the best accounting firms use Overbase to accelerate revenue'
+      'See how GR firms grow revenue by sharing data with law firms, headhunters and with data providers',
+    consulting: 'See how consulting firms grow revenue by sharing sales data with tech vendors, private equity firms or with other practice areas within their own firm',
+    accounting: 'See how accounting firms grow revenue by sharing sales data with advisory firms they form strategic alliances with, law firms and wealth managers'
   } satisfies Record<IndustryId, string>;
 </script>
 

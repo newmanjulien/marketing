@@ -3,7 +3,7 @@ import type { IndustryContentDefinition } from "../types";
 export const accountingContent = {
   heading: "Overbase for accounting",
   introParagraphs: [
-    "Accountants have a large network of natural partners—consulting teams within your own firms, lawyers who refer potential clients, and boutique accounting firms that refer clients once they outgrow them",
+    "Accountants have a large network of natural partners—advisory firms they form strategic alliances with, lawyers who refer potential clients, and boutique accounting firms that refer clients once they outgrow them",
     "These partnerships drive growth, but many opportunities never surface. Because everyone's data is trapped in separate systems",
   ],
   screenshots: {
