@@ -1,171 +1,88 @@
-import type { HomeIndustryId } from "$lib/home/industryContent";
+import { homeIndustries, type HomeIndustryId } from "$lib/home/industryContent";
 
 export type OpportunityScenario = {
   id: string;
   label: string; // dropdown label
   email: string; // email body (whitespace preserved)
-  description: string; // sentence before the link, no trailing period
+  description: string; // caption sentence, no trailing period
 };
 
 export type OpportunityIndustryContent = {
-  linkTerm: string; // e.g. 'See how insurance brokers'
   scenarios: readonly [OpportunityScenario, ...OpportunityScenario[]]; // non-empty
 };
 
-// Placeholder copy for scenarios that don't have real content yet.
-const loremEmail = `Hi there,
+// Content lives as one Markdown file per scenario under
+// src/content/home/opportunity-email/<industry>/<order>-<id>.md
+// so anyone can edit the copy as plain text. Each file has a small frontmatter
+// block (label, description) followed by the email body.
+const files = import.meta.glob(
+  "/src/content/home/opportunity-email/*/*.md",
+  { query: "?raw", import: "default", eager: true },
+) as Record<string, string>;
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+type ParsedScenario = OpportunityScenario & { industry: string; order: number };
 
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+function parseFrontmatter(raw: string): { label: string; description: string; body: string } {
+  const match = /^---\n([\s\S]*?)\n---\n?/.exec(raw);
+  if (!match) {
+    throw new Error("opportunity-email content file is missing its frontmatter block");
+  }
 
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.`;
+  const fields: Record<string, string> = {};
+  for (const line of match[1].split("\n")) {
+    if (!line.trim()) continue;
+    const separator = line.indexOf(":");
+    if (separator === -1) continue;
+    fields[line.slice(0, separator).trim()] = line.slice(separator + 1).trim();
+  }
 
-const loremDescription =
-  "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua";
+  const { label, description } = fields;
+  if (!label || !description) {
+    throw new Error("opportunity-email content file must define both `label` and `description`");
+  }
 
-export const opportunityContentByIndustryId = {
-  insurance: {
-    linkTerm: "See how insurance brokers",
-    scenarios: [
-      {
-        id: "upsell",
-        label: "Upsell existing clients",
-        email: `Hi Stephen,
+  return { label, description, body: raw.slice(match[0].length).trim() };
+}
 
-A whitespace analysis for the Exterra renewal is attached.
+function parseFile(path: string, raw: string): ParsedScenario {
+  const match = /\/([^/]+)\/(\d+)-(.+)\.md$/.exec(path);
+  if (!match) {
+    throw new Error(`opportunity-email file must be named "<industry>/<order>-<id>.md": ${path}`);
+  }
+  const [, industry, order, id] = match;
 
-We identified new policies worth $400,000 which you might propose at your renewal meeting next month.
+  const { label, description, body } = parseFrontmatter(raw);
+  return { industry, order: Number(order), id, label, description, email: body };
+}
 
-Each proposed policy has a benchmark. Those were calculated with data from Allianz and Chubb. The right people from both carriers are CCed.`,
-        description:
-          "Overbase used carrier data to let an insurance broker get the benchmarks they needed to help a client be fully insured",
-      },
-      {
-        id: "new-business",
-        label: "Win new clients",
-        email: loremEmail,
-        description: loremDescription,
-      },
-      {
-        id: "retain",
-        label: "Retain clients",
-        email: loremEmail,
-        description: loremDescription,
-      },
-    ],
-  },
+const scenariosByIndustry = new Map<string, ParsedScenario[]>();
+for (const [path, raw] of Object.entries(files)) {
+  const scenario = parseFile(path, raw);
+  const list = scenariosByIndustry.get(scenario.industry) ?? [];
+  list.push(scenario);
+  scenariosByIndustry.set(scenario.industry, list);
+}
 
-  law: {
-    linkTerm: "See how law firms",
-    scenarios: [
-      {
-        id: "upsell",
-        label: "Upsell existing clients",
-        email: `Hi Laura,
+// Order industries by the canonical home list, and scenarios by their filename
+// prefix, so the tabs and dropdown match the source layout.
+export const opportunityContentByIndustryId = {} as Record<
+  HomeIndustryId,
+  OpportunityIndustryContent
+>;
+for (const industry of homeIndustries) {
+  const scenarios = scenariosByIndustry.get(industry.id);
+  if (!scenarios || scenarios.length === 0) {
+    throw new Error(
+      `No opportunity-email content found for industry "${industry.id}". ` +
+        `Add at least one file under src/content/home/opportunity-email/${industry.id}/`,
+    );
+  }
 
-An activist hedge fund bought a 5% stake in ADP.
+  const sorted = scenarios
+    .sort((a, b) => a.order - b.order)
+    .map(({ id, label, email, description }) => ({ id, label, email, description }));
 
-Here's the discussion in a Bloomberg forum: https://blinks.bloomberg.com/rooms/IB_ROOM_ID_98725
-
-ADP is one of our 20 target accounts and it's Rob Rosenberg who is responsible for building the relationship. Rob is in touch with Joel Tennenberg at ADP.`,
-        description:
-          "Overbase monitored a law firm's Bloomberg to help one of their most connected lawyers reach out to a client at just the right time",
-      },
-      {
-        id: "new-business",
-        label: "Win new clients",
-        email: loremEmail,
-        description: loremDescription,
-      },
-    ],
-  },
-
-  "government-relations": {
-    linkTerm: "See how GR firms",
-    scenarios: [
-      {
-        id: "upsell",
-        label: "Upsell existing clients",
-        email: `Hi Ray,
-
-Check out this new proposed tax credit program in Arizona:
-https://azleg.gov/active-bills/5858hggj
-
-The bill will be voted on in two weeks and there might be an opportunity to help Plug Power submit comments during rulemaking. Plug Power has 2 factories in Arizona.
-
-Jackson Reinstein knows Plug Power's VP Strategy. And Sagar Agrawal knows their COO.`,
-        description:
-          "Overbase monitored a government relations firm's FiscalNote to spot a policy change that turned into a client engagement",
-      },
-      {
-        id: "new-business",
-        label: "Win new clients",
-        email: loremEmail,
-        description: loremDescription,
-      },
-    ],
-  },
-
-  consulting: {
-    linkTerm: "See how consulting firms",
-    scenarios: [
-      {
-        id: "upsell",
-        label: "Upsell existing clients",
-        email: `Hey Alex,
-
-You're working on the JPMC pitch, and Jack London (CCed) in our NYC office has pitched them before.
-
-I attached the PDF of the final proposal Jack submitted to them. As well as other docs which might give useful context for your pitch.
-
-There's also a proposal our partner Thoughtworks submitted to them last month.`,
-        description:
-          "Overbase helped a consulting firm win pitches by bringing together the institutional knowledge that used to be hidden",
-      },
-      {
-        id: "new-business",
-        label: "Win new clients",
-        email: loremEmail,
-        description: loremDescription,
-      },
-      {
-        id: "retain",
-        label: "Retain clients",
-        email: loremEmail,
-        description: loremDescription,
-      },
-    ],
-  },
-
-  accounting: {
-    linkTerm: "See how accounting firms",
-    scenarios: [
-      {
-        id: "upsell",
-        label: "Upsell existing clients",
-        email: `Hi Shlok,
-
-Our review of Linamar’s tax return suggests the client is expanding into Europe.
-
-This may be an opportunity to help them assess Privacy & Data Protection considerations. Tax Partner Scott Duarte is the right person to connect with for details.
-
-Topics to explore with Scott to understand the tax return: new sources of revenue outside of the US, increased travel activities in Europe, new professional services engagements in Europe.`,
-        description:
-          "Overbase securely analyzed a client's tax return to help an accounting firm spot a hidden opportunity to offer cyber services",
-      },
-      {
-        id: "new-business",
-        label: "Win new clients",
-        email: loremEmail,
-        description: loremDescription,
-      },
-      {
-        id: "retain",
-        label: "Retain clients",
-        email: loremEmail,
-        description: loremDescription,
-      },
-    ],
-  },
-} as const satisfies Record<HomeIndustryId, OpportunityIndustryContent>;
+  opportunityContentByIndustryId[industry.id] = {
+    scenarios: sorted as [OpportunityScenario, ...OpportunityScenario[]],
+  };
+}

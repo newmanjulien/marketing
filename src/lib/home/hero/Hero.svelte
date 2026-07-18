@@ -18,16 +18,16 @@
 >
   <ContentMeasure class="flex flex-col items-center text-center">
     <h1
-      class="hero-title max-w-[540px] font-heading text-[77px] font-medium leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
+      class="hero-title max-w-[540px] font-heading text-[60px] font-medium leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
     >
-      <span class="hero-title-lead inline-block will-change-[transform,opacity]">Share</span>
-      <span class="hero-title-growth inline-block will-change-[transform,opacity]">sales data</span>
+      <span class="hero-title-lead inline-block will-change-[transform,opacity]">Grow</span>
+      <span class="hero-title-growth inline-block will-change-[transform,opacity]">your practice</span>
     </h1>
 
     <p
-      class="hero-support mt-[10px] max-w-[490px] translate-y-[4px] font-light text-[23px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity]"
+      class="hero-support mt-[18px] max-w-[440px] translate-y-[4px] font-light text-[25px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity]"
     >
-      Overbase helps <a href="/industries" class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500">professional services firms</a> easily and quickly <button type="button" onclick={scrollToEmail} class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500">grow revenue</button> by sharing sales data with your ecosystem partners
+      Overbase helps you <button type="button" onclick={scrollToEmail} class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500">turn your network</button> into new clients and more work
     </p>
 
     <div class="hero-actions mt-[44px] flex translate-y-[4px] items-center justify-center gap-[9px] opacity-0 will-change-[transform,opacity]">
@@ -59,10 +59,6 @@
 </section>
 
 <style>
-  .hero-pill {
-    animation: hero-content-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 890ms both;
-  }
-
   .hero-title-lead {
     animation: hero-title-lead-settle 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
@@ -112,7 +108,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-pill,
     .hero-title-lead,
     .hero-title-growth,
     .hero-support,

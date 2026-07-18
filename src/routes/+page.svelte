@@ -19,22 +19,22 @@
 
   <div class="flex flex-col gap-[150px] pt-[150px] sm:gap-[190px] sm:pt-[190px]">
     <FeatureSection
-      title="Connect your sales data"
-      body="Share any structured data like CRM and share any unstructured data like email. Easily share even your most disconnected data"
+      title="Connect your calendar"
+      body="Easily, quickly and safely connect your Outlook calendar so Overbase can see your upcoming client meetings"
     >
       <DataSourceGridGraphic />
     </FeatureSection>
 
     <FeatureSection
-      title="Partners connect their data"
-      body="Your ecosystem partners can share data with you for free and securely. They stay in full control of what gets shared"
+      title="Your network connects their calendar"
+      body="Other professionals in your network connect their Outlook calendar so Overbase can find overlapping opportunities"
     >
       <PartnerDataSharingGraphic />
     </FeatureSection>
 
     <FeatureSection
       title="Receive opportunities by email"
-      body="There's no need to change how your team operates. Overbase simply sends revenue opportunities by email"
+      body="Overbase sends you opportunities by email. No dashboard and no need to change how you work"
     >
       <TestimonialsGraphic />
     </FeatureSection>

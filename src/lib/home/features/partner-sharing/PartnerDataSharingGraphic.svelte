@@ -7,17 +7,17 @@
 
   const partnerDataShares = [
     {
-      partnerName: 'CWC',
+      partnerName: 'Ray Velez at CWC',
       dataSourceSummary: 'all data sources',
       dataSourceCoverage: 1
     },
     {
-      partnerName: 'Caldwell, Cross & Keating',
+      partnerName: 'John Caldwell at Cross & Keating',
       dataSourceSummary: '5 data sources',
       dataSourceCoverage: 0.69
     },
     {
-      partnerName: 'Brightfield Partners',
+      partnerName: 'Sara Penny at Brightfield',
       dataSourceSummary: '2 data sources',
       dataSourceCoverage: 0.14
     }
