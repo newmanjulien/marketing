@@ -2,7 +2,7 @@
   import { footerNavItems } from './navigation';
 </script>
 
-<footer class="border-t border-stone-200/70 bg-stone-50/80">
+<footer class="border-t border-stone-200/70 bg-stone-50/30">
   <div class="flex w-full items-start justify-between px-8 py-8 lg:items-center">
     <div class="text-sm font-book text-stone-500/60">
       Overbase, Inc. 600 California St, San Francisco
