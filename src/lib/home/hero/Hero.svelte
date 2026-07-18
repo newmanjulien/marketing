@@ -6,34 +6,29 @@
   import ButtonLink from '$lib/ui/ButtonLink.svelte';
 
   const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
+
+  let emailEl: HTMLDivElement;
+
+  function scrollToEmail() {
+    emailEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 </script>
 
 <section
   class="px-[18px] pt-[calc(95px-var(--site-mobile-header-height))] sm:px-8 sm:pt-[calc(133px-var(--site-mobile-header-height))] lg:pt-[133px]"
 >
   <ContentMeasure class="flex flex-col items-center text-center">
-    <a
-      href={joinHref}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="hero-pill mb-[33px] inline-flex min-h-[26px] translate-y-[8px] items-center gap-[7px] rounded-full border border-stone-200/70 bg-white py-0 pl-[12px] pr-[11px] text-[14px] font-book leading-none text-stone-750 opacity-0 transition-colors hover:bg-stone-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 will-change-[transform,opacity]"
-      aria-label="Use your partner invite"
-    >
-      <span>Redeem partner invite</span>
-      <ArrowRightIcon size={12} weight="regular" class="text-stone-300" aria-hidden="true" />
-    </a>
-
     <h1
-      class="hero-title max-w-[540px] font-heading text-[72px] font-medium leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
+      class="hero-title max-w-[540px] font-heading text-[77px] font-book leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
     >
       <span class="hero-title-lead inline-block will-change-[transform,opacity]">Share</span>
       <span class="hero-title-growth inline-block will-change-[transform,opacity]">sales data</span>
     </h1>
 
     <p
-      class="hero-support mt-[8px] max-w-[430px] translate-y-[4px] font-light text-[23px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity]"
+      class="hero-support mt-[10px] max-w-[490px] translate-y-[4px] font-light text-[23px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity]"
     >
-      Overbase helps <a href="/industries" class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500">professional services firms</a> easily grow revenue by sharing sales data with your ecosystem partners
+      Overbase helps <a href="/industries" class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500">professional services firms</a> easily and quickly <button type="button" onclick={scrollToEmail} class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500">grow revenue</button> by sharing sales data with your ecosystem partners
     </p>
 
     <div class="hero-actions mt-[44px] flex translate-y-[4px] items-center justify-center gap-[9px] opacity-0 will-change-[transform,opacity]">
@@ -56,6 +51,7 @@
 
   <ContentMeasure>
     <div
+      bind:this={emailEl}
       class="hero-email mt-[79px] translate-y-[4px] opacity-0 will-change-[transform,opacity] sm:mt-[83px]"
     >
       <OpportunityEmailGraphic />

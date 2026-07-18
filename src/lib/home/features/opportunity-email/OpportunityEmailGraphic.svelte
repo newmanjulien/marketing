@@ -56,17 +56,17 @@ Topics to explore with Scott to understand the tax return: new sources of revenu
     'government-relations':
       "Overbase monitored a government relations firm's FiscalNote to spot a policy change that turned into a client engagement",
     consulting:
-      'Overbase helped a consulting firm win a pitch by bringing together institutional knowledge from across their firm and their ecosystem partners',
+      'Overbase helped a consulting firm win pitches by bringing together the institutional knowledge that used to be hidden',
     accounting:
       "Overbase securely analyzed a client's tax return to help an accounting firm spot a hidden opportunity to offer cyber services"
   } as const satisfies Record<HomeIndustryId, string>;
 
-  const opportunityLinkLabelByIndustryId = {
-    insurance: 'see how we help insurance brokers',
-    law: 'see how we help law firms',
-    'government-relations': 'see how we help government relations firms',
-    consulting: 'see how we help consulting firms',
-    accounting: 'see how we help accounting firms'
+  const opportunityLinkTermByIndustryId = {
+    insurance: 'See how insurance brokers',
+    law: 'See how law firms',
+    'government-relations': 'See how GR firms',
+    consulting: 'See how consulting firms',
+    accounting: 'See how accounting firms'
   } as const satisfies Record<HomeIndustryId, string>;
 
   let selectedIndustryId = $state<HomeIndustryId>('insurance');
@@ -76,7 +76,7 @@ Topics to explore with Scott to understand the tax return: new sources of revenu
   );
   const selectedEmail = $derived(opportunityEmailByIndustryId[selectedIndustryId]);
   const selectedExplanation = $derived(opportunityExplanationByIndustryId[selectedIndustryId]);
-  const selectedLinkLabel = $derived(opportunityLinkLabelByIndustryId[selectedIndustryId]);
+  const selectedLinkTerm = $derived(opportunityLinkTermByIndustryId[selectedIndustryId]);
 </script>
 
 <div
@@ -101,9 +101,9 @@ Topics to explore with Scott to understand the tax return: new sources of revenu
 <p
   class="mt-[18px] max-w-[720px] px-[2px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-500 sm:mt-[20px] sm:text-[16px]"
 >
-  {selectedExplanation}{' '}
+  {selectedExplanation}.
   <a
     href={selectedIndustry.href}
     class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500"
-  >({selectedLinkLabel})</a>
+  >{selectedLinkTerm}</a>{' '}grow revenue easily and quickly
 </p>
