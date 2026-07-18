@@ -8,19 +8,19 @@
     name: string;
     description: string;
     ctaLabel: string;
+    ctaHref: string;
+    external?: boolean;
     benefits: readonly string[];
   };
 
   let {
-    joinHref,
     plan
   }: {
-    joinHref: string;
     plan: PricingPlan;
   } = $props();
 </script>
 
-<article class="mt-[43px] rounded-[18px] border border-stone-200/70 bg-white px-[25px] py-[34px]">
+<article class="rounded-[18px] border border-stone-200/70 bg-white px-[25px] py-[34px]">
   <div>
     <div class="font-heading text-[38px] font-book leading-none tracking-normal text-stone-900">
       {plan.price}
@@ -31,7 +31,7 @@
   </div>
 
   <div class="mt-[28px] border-t border-stone-200/70 pt-[26px]">
-    <h2 class="text-[14px] font-book leading-none tracking-normal text-stone-900">
+    <h2 class="text-[14px] font-medium leading-none tracking-normal text-stone-900">
       {plan.name}
     </h2>
     <p class="mt-[12px] text-[14px] font-book leading-normal tracking-normal text-stone-500">
@@ -40,9 +40,9 @@
 
     <div class="mt-[22px]">
       <ButtonLink
-        href={joinHref}
-        target="_blank"
-        rel="noopener noreferrer"
+        href={plan.ctaHref}
+        target={plan.external ? '_blank' : undefined}
+        rel={plan.external ? 'noopener noreferrer' : undefined}
         variant="primary"
         size="small"
         textSize="compact"

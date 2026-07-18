@@ -17,7 +17,7 @@
     <p
       class="mt-[12px] max-w-[400px] text-[20px] font-book leading-[1.6] tracking-normal text-stone-700 sm:mt-[12px]"
     >
-      Easily and quickly grow revenue
+      Get new clients and more work
     </p>
 
     <div class="mt-[33px] flex items-center justify-center">
