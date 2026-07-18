@@ -1,6 +1,6 @@
 <script lang="ts">
-  import DataSourceGridGraphic from '$lib/home/features/data-sources/DataSourceGridGraphic.svelte';
-  import PartnerDataSharingGraphic from '$lib/home/features/partner-sharing/PartnerDataSharingGraphic.svelte';
+  import CalendarConnectGraphic from '$lib/home/features/calendar-connect/CalendarConnectGraphic.svelte';
+  import NetworkResultsGraphic from '$lib/home/features/network-results/NetworkResultsGraphic.svelte';
   import TestimonialsGraphic from '$lib/home/features/testimonials/TestimonialsGraphic.svelte';
   import HomeCtaSection from '$lib/home/cta/HomeCtaSection.svelte';
   import Hero from '$lib/home/hero/Hero.svelte';
@@ -20,16 +20,16 @@
   <div class="flex flex-col gap-[150px] pt-[150px] sm:gap-[190px] sm:pt-[190px]">
     <FeatureSection
       title="Connect your calendar"
-      body="Easily, quickly and safely connect your Outlook calendar so Overbase can see your upcoming client meetings"
+      body="Easily, quickly and safely connect your Outlook calendar. Overbase finds opportunities using data from your calendar"
     >
-      <DataSourceGridGraphic />
+      <CalendarConnectGraphic />
     </FeatureSection>
 
     <FeatureSection
       title="Your network connects their calendar"
-      body="Other professionals in your network connect their Outlook calendar so Overbase can find overlapping opportunities"
+      body="Professionals in your network connect their Outlook calendar so Overbase can find overlapping opportunities"
     >
-      <PartnerDataSharingGraphic />
+      <NetworkResultsGraphic />
     </FeatureSection>
 
     <FeatureSection

@@ -15,7 +15,7 @@
     </h2>
 
     <p
-      class="mt-[12px] max-w-[400px] text-[20px] font-book leading-[1.6] tracking-normal text-stone-700 sm:mt-[12px]"
+      class="mt-[12px] max-w-[400px] text-[21px] font-book leading-[1.6] tracking-normal text-stone-700 sm:mt-[12px]"
     >
       Get new clients and more work
     </p>

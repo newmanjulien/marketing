@@ -25,10 +25,10 @@
 </script>
 
 <div
-  class="flex h-[450px] flex-col overflow-hidden rounded-[16px] border border-stone-200/70 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)] sm:h-[470px]"
+  class="flex h-[455px] flex-col overflow-hidden rounded-[16px] border border-stone-200/70 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)] sm:h-[480px]"
 >
   <div
-    class="flex min-h-[56px] items-center overflow-x-auto border-b border-stone-200/70 bg-stone-50 px-[10px] py-[10px] sm:px-[14px]"
+    class="flex min-h-[60px] items-center overflow-x-auto border-b border-stone-200/70 bg-stone-50 px-[10px] py-[10px] sm:px-[14px]"
   >
     <OpportunityIndustryTabs
       industries={homeIndustries}
@@ -39,9 +39,9 @@
 
   <div class="min-h-0 flex-1 overflow-auto bg-white">
     <div
-      class="whitespace-pre-wrap px-[18px] pb-[4px] pt-[22px] font-body text-[14px] font-book leading-[1.68] tracking-normal text-stone-600 sm:px-[26px] sm:pt-[26px] sm:text-[15px]"
+      class="whitespace-pre-wrap px-[18px] pb-[4px] pt-[22px] font-body text-[15px] font-book leading-[1.68] tracking-normal text-stone-600 sm:px-[20px] sm:pt-[18px] sm:text-[16px]"
     >{scenario.email}</div>
-    <img class="ml-[18px] mt-[26px] block w-[126px] sm:ml-[26px]" src="/logo_full.png" alt="Overbase" />
+    <img class="ml-[18px] mt-[26px] block w-[139px] sm:ml-[26px]" src="/logo_full.png" alt="Overbase" />
   </div>
 
   <div
@@ -56,7 +56,7 @@
 </div>
 
 <p
-  class="mt-[18px] max-w-[720px] px-[2px] text-[15px] font-book leading-[1.55] tracking-normal text-stone-500 sm:mt-[20px] sm:text-[16px]"
+  class="mt-[18px] max-w-[720px] px-[2px] text-[17px] font-book leading-[1.55] tracking-normal text-stone-500 sm:mt-[20px] sm:text-[18px]"
 >
   {scenario.description}
 </p>

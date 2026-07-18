@@ -42,7 +42,7 @@
 <div bind:this={root} class="relative">
   <button
     type="button"
-    class="inline-flex h-[38px] w-[250px] items-center justify-between gap-[10px] rounded-[9px] border border-stone-200/70 bg-white px-[14px] text-[15px] font-medium leading-none tracking-normal text-stone-750 shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-colors hover:bg-stone-50 sm:text-[16px]"
+    class="inline-flex h-[38px] w-[250px] items-center justify-between gap-[10px] rounded-[9px] border border-stone-200/70 bg-white px-[14px] text-[16px] font-medium leading-none tracking-normal text-stone-750 shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-colors hover:bg-stone-50 sm:text-[16px]"
     aria-haspopup="listbox"
     aria-expanded={open}
     onclick={() => (open = !open)}

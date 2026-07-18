@@ -14,7 +14,7 @@
 </script>
 
 <section
-  class="px-[18px] pt-[calc(95px-var(--site-mobile-header-height))] sm:px-8 sm:pt-[calc(133px-var(--site-mobile-header-height))] lg:pt-[133px]"
+  class="px-[18px] pt-[calc(95px-var(--site-mobile-header-height))] sm:px-8 sm:pt-[calc(133px-var(--site-mobile-header-height))] lg:pt-[163px]"
 >
   <ContentMeasure class="flex flex-col items-center text-center">
     <h1
@@ -25,9 +25,9 @@
     </h1>
 
     <p
-      class="hero-support mt-[18px] max-w-[440px] translate-y-[4px] font-light text-[25px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity]"
+      class="hero-support mt-[18px] max-w-[440px] translate-y-[4px] font-light text-[26px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity]"
     >
-      Overbase helps you <button type="button" onclick={scrollToEmail} class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500">turn your network</button> into new clients and more work
+      Overbase helps <button type="button" onclick={scrollToEmail} class="text-blue-400 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500">turn your network</button> into new clients and more work
     </p>
 
     <div class="hero-actions mt-[44px] flex translate-y-[4px] items-center justify-center gap-[9px] opacity-0 will-change-[transform,opacity]">
@@ -51,7 +51,7 @@
   <ContentMeasure>
     <div
       bind:this={emailEl}
-      class="hero-email mt-[79px] translate-y-[4px] opacity-0 will-change-[transform,opacity] sm:mt-[83px]"
+      class="hero-email mt-[79px] translate-y-[4px] opacity-0 will-change-[transform,opacity] sm:mt-[113px]"
     >
       <OpportunityEmailGraphic />
     </div>

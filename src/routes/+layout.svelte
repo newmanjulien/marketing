@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-  <title>Overbase › Share sales data</title>
+  <title>Overbase › Grow your practice</title>
 </svelte:head>
 
 <SiteShell>

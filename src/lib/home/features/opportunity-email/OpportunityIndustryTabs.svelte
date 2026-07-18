@@ -18,12 +18,12 @@
   } = $props();
 </script>
 
-<div class="flex min-w-max flex-1 flex-nowrap items-center gap-[11px] sm:justify-center sm:gap-[13px]">
+<div class="flex min-w-max flex-1 flex-nowrap items-center gap-[17px] sm:justify-center sm:gap-[18px]">
   {#each industries as industry (industry.id)}
     <button
       type="button"
       class={[
-        'inline-flex h-[35px] items-center gap-[8px] rounded-[9px] px-[11px] text-[15px] font-medium leading-none tracking-normal transition-colors sm:text-[16px]',
+        'inline-flex h-[35px] items-center gap-[8px] rounded-[9px] px-[11px] text-[16px] font-medium leading-none tracking-normal transition-colors sm:text-[17px]',
         selectedIndustryId === industry.id
           ? 'border border-stone-200/70 bg-white text-stone-750 shadow-[0_1px_0_rgba(48,47,45,0.03)]'
           : 'border border-transparent text-stone-400 hover:text-stone-600'

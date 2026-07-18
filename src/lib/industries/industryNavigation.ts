@@ -3,7 +3,7 @@ export const industryNavigationItems = [
   { id: "law", label: "Law", href: "/industries/law" },
   {
     id: "government-relations",
-    label: "Government Relations",
+    label: "GR",
     href: "/industries/government-relations",
   },
   { id: "consulting", label: "Consulting", href: "/industries/consulting" },
