@@ -1,18 +1,5 @@
 <script lang="ts">
-  const testimonials = [
-    {
-      quote: "Our team adopted Overbase immediately because it's just text messages",
-      name: "Alex L'Heureux",
-      role: 'CEO',
-      company: 'WSP'
-    },
-    {
-      quote: 'Overbase is simple to learn, our team just receives text messages',
-      name: 'Karthik Rao',
-      role: 'CEO',
-      company: 'Nielsen'
-    }
-  ] as const;
+  import { testimonials } from './testimonialsContent';
 </script>
 
 <div class="flex flex-col gap-[34px] sm:gap-[40px]">
@@ -25,7 +12,7 @@
       </blockquote>
 
       <figcaption class="mt-[14px] text-[15px] font-book leading-none tracking-normal text-stone-400 sm:text-[16px]">
-        {testimonial.name}, {testimonial.role}, <span class="font-book text-stone-500">{testimonial.company}</span>
+        {testimonial.name}, {testimonial.role}, <span class="text-stone-500">{testimonial.company}</span>
       </figcaption>
     </figure>
   {/each}

@@ -1,19 +1,6 @@
 <script lang="ts">
   import { MicrosoftOutlookLogoIcon } from 'phosphor-svelte';
-
-  type ConnectionSetting = {
-    label: string;
-    value: string;
-  };
-
-  const connectionSettings = [
-    { label: 'provider', value: 'Outlook' },
-    { label: 'access', value: 'Read only' },
-    { label: 'retention', value: 'Zero' },
-    { label: 'shared', value: 'Never' },
-    { label: 'encryption', value: 'End-to-end' },
-    { label: 'revoke', value: 'Anytime' }
-  ] as const satisfies readonly ConnectionSetting[];
+  import { connectionSettings } from './calendarConnectContent';
 </script>
 
 <div class="overflow-hidden rounded-[16px] border border-stone-200/70 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)]">

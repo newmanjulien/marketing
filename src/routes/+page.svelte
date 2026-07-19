@@ -27,7 +27,7 @@
 
     <FeatureSection
       title="Your network connects their data"
-      body="Your network easily, quickly and safely connects their data for free then we find opportunies for both of you"
+      body="Your network easily, quickly and safely connects their data for free then we find opportunities for both of you"
     >
       <NetworkResultsGraphic />
     </FeatureSection>

@@ -1,34 +1,11 @@
 <script lang="ts">
-  type ConversionRow = {
-    label: string;
-    count: string;
-    rate: string;
-    curve: string;
-  };
+  import { conversions, type ConversionRow } from './networkResultsContent';
 
-  const conversions = [
-    {
-      label: 'Invite → Accepted',
-      count: '37',
-      rate: '74%',
-      curve: 'M0 64 C 55 60, 95 30, 150 22 C 205 14, 250 8, 300 3'
-    },
-    {
-      label: 'Calendar connected',
-      count: '31',
-      rate: '62%',
-      curve: 'M0 58 C 60 56, 100 48, 150 38 C 205 27, 255 20, 300 12'
-    },
-    {
-      label: 'New clients referred',
-      count: '28',
-      rate: '41%',
-      curve: 'M0 60 C 60 58, 90 44, 140 40 C 175 37, 190 46, 210 42 C 245 35, 270 12, 300 4'
-    }
-  ] as const satisfies readonly ConversionRow[];
+  // The row shown when nothing is hovered: the last row, the funnel's end result.
+  const defaultConversion = conversions[conversions.length - 1];
 
-  let activeIndex = $state(conversions.length - 1);
-  const active = $derived(conversions[activeIndex]);
+  // $state.raw so `active === row` reference comparison works against the array items.
+  let active = $state.raw<ConversionRow>(defaultConversion);
 </script>
 
 <div class="rounded-[16px] border border-stone-200/70 bg-white px-[18px] py-[18px] shadow-[0_1px_0_rgba(48,47,45,0.03)] sm:px-[22px] sm:py-[22px]">
@@ -62,16 +39,16 @@
   <div
     class="-mx-[8px] flex flex-col gap-[4px] sm:-mx-[10px]"
     role="presentation"
-    onmouseleave={() => (activeIndex = conversions.length - 1)}
+    onmouseleave={() => (active = defaultConversion)}
   >
-    {#each conversions as row, i (row.label)}
-      {@const isActive = activeIndex === i}
+    {#each conversions as row (row.label)}
+      {@const isActive = active === row}
       <div
         class="flex cursor-default items-center gap-[12px] rounded-[10px] px-[14px] py-[9px] transition-colors {isActive
           ? 'border border-stone-200/70'
           : 'border border-transparent'}"
         role="presentation"
-        onmouseenter={() => (activeIndex = i)}
+        onmouseenter={() => (active = row)}
       >
         <span
           class="h-[7px] w-[7px] shrink-0 rounded-full transition-colors {isActive ? 'bg-stone-700' : 'bg-stone-300'}"
