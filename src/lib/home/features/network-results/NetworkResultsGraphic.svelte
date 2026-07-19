@@ -61,6 +61,7 @@
 
   <div
     class="-mx-[8px] flex flex-col gap-[4px] sm:-mx-[10px]"
+    role="presentation"
     onmouseleave={() => (activeIndex = conversions.length - 1)}
   >
     {#each conversions as row, i (row.label)}
@@ -69,6 +70,7 @@
         class="flex cursor-default items-center gap-[12px] rounded-[10px] px-[14px] py-[9px] transition-colors {isActive
           ? 'border border-stone-200/70'
           : 'border border-transparent'}"
+        role="presentation"
         onmouseenter={() => (activeIndex = i)}
       >
         <span

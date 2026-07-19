@@ -14,27 +14,27 @@
   />
 </svelte:head>
 
-<main class="bg-stone-50/30">
+<main>
   <Hero />
 
   <div class="flex flex-col gap-[150px] pt-[150px] sm:gap-[190px] sm:pt-[190px]">
     <FeatureSection
-      title="Connect your calendar"
-      body="Easily, quickly and safely connect your Outlook calendar. Overbase finds opportunities using data from your calendar"
+      title="Connect your data"
+      body="Easily, quickly and safely connect any data source. Overbase can analyze any structured and unstructured data"
     >
       <CalendarConnectGraphic />
     </FeatureSection>
 
     <FeatureSection
-      title="Your network connects their calendar"
-      body="Professionals in your network connect their Outlook calendar so Overbase can find overlapping opportunities"
+      title="Your network connects their data"
+      body="Your network easily, quickly and safely connects their data for free then we find opportunies for both of you"
     >
       <NetworkResultsGraphic />
     </FeatureSection>
 
     <FeatureSection
-      title="Receive opportunities by email"
-      body="Overbase sends you opportunities by email. No dashboard and no need to change how you work"
+      title="Receive opportunities by text message"
+      body="Overbase sends opportunities by text message. No dashboard and no need to change how you work"
     >
       <TestimonialsGraphic />
     </FeatureSection>

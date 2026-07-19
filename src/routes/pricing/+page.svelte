@@ -12,14 +12,15 @@
       price: '$100',
       priceLabel: 'per month',
       name: 'Single user',
-      description: 'Monthly fee to help you grow your practice with new clients and more work',
+      description: 'Monthly fee to help you grow your practice with new clients and more business',
       ctaLabel: 'Join now',
       ctaHref: joinHref,
       external: true,
       benefits: [
         'One user',
-        'Outlook Calendar data',
-        'Your network joins for free'
+        'Any data source',
+        'Your network joins for free',
+        'Self-serve'
       ]
     },
     {
@@ -33,7 +34,8 @@
       benefits: [
         'Unlimited users',
         'Any data source',
-        "Your firm's network joins for free"
+        'Your network joins for free',
+        'White glove support'
       ]
     }
   ] as const;
