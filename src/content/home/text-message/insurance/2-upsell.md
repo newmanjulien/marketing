@@ -1,6 +1,6 @@
 ---
 label: Upsell existing clients
-description: Overbase turns carrier relationships into easy upselling. We use data from carriers to get the benchmarks that let you easily upsell clients (lean more)
+description: Overbase turns carrier relationships into easy upselling. We use data from carriers to get the benchmarks that let you easily upsell clients
 ---
 
 We did the whitespace analysis for your renewal meeting with Exterra

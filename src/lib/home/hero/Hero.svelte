@@ -12,14 +12,14 @@
 >
   <ContentMeasure class="flex flex-col items-center text-center">
     <h1
-      class="hero-title max-w-[540px] font-heading text-[64px] font-medium leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
+      class="hero-title max-w-[540px] font-heading text-[60px] font-semibold leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
     >
       <span class="hero-title-lead inline-block will-change-[transform,opacity]">Grow</span>
       <span class="hero-title-growth inline-block will-change-[transform,opacity]">your practice</span>
     </h1>
 
     <p
-      class="hero-support mt-[19px] max-w-[470px] translate-y-[4px] font-light text-[30px] leading-[1.70] tracking-normal text-stone-700 opacity-0 will-change-[transform,opacity]"
+      class="hero-support mt-[19px] max-w-[470px] translate-y-[4px] font-light text-[30px] leading-[1.70] tracking-normal text-stone-500 opacity-0 will-change-[transform,opacity]"
     >
       Overbase turns your network into new clients and more business
     </p>
