@@ -23,10 +23,10 @@
     <button
       type="button"
       class={[
-        'flex items-center gap-[11px] rounded-[8px] px-[14px] py-[9px] text-[17px] font-book leading-none tracking-normal transition-colors',
+        'flex items-center gap-[11px] rounded-[8px] px-[14px] py-[9px] text-[17px] leading-none tracking-normal transition-colors',
         selectedIndustryId === industry.id
           ? 'border border-stone-200/70 bg-white font-medium text-stone-750 shadow-[0_1px_0_rgba(48,47,45,0.03)]'
-          : 'border border-transparent text-stone-500 hover:text-stone-600'
+          : 'border border-transparent font-book text-stone-500 hover:text-stone-600'
       ]}
       aria-pressed={selectedIndustryId === industry.id}
       onclick={() => onSelect(industry.id)}

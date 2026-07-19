@@ -1,16 +1,10 @@
 <script lang="ts">
-  import OpportunityEmailGraphic from '$lib/home/features/opportunity-email/OpportunityEmailGraphic.svelte';
+  import TextMessageGraphic from '$lib/home/features/text-message/TextMessageGraphic.svelte';
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import { createPortalAuthUrlForMarketingPath } from '$lib/portalAuthLinks';
   import ButtonLink from '$lib/ui/ButtonLink.svelte';
 
   const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
-
-  let emailEl: HTMLDivElement;
-
-  function scrollToEmail() {
-    emailEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
 </script>
 
 <section
@@ -50,10 +44,9 @@
 
   <ContentMeasure>
     <div
-      bind:this={emailEl}
-      class="hero-email mt-[89px] translate-y-[4px] opacity-0 will-change-[transform,opacity] sm:mt-[143px]"
+      class="hero-graphic mt-[89px] translate-y-[4px] opacity-0 will-change-[transform,opacity] sm:mt-[143px]"
     >
-      <OpportunityEmailGraphic />
+      <TextMessageGraphic />
     </div>
   </ContentMeasure>
 </section>
@@ -72,7 +65,7 @@
   }
 
   .hero-actions,
-  .hero-email {
+  .hero-graphic {
     animation: hero-content-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 990ms both;
   }
 
@@ -112,7 +105,7 @@
     .hero-title-growth,
     .hero-support,
     .hero-actions,
-    .hero-email {
+    .hero-graphic {
       animation: none;
       opacity: 1;
       transform: none;

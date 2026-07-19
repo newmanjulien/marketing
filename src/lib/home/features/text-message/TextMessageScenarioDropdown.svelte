@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CaretDown } from 'phosphor-svelte';
+  import { CaretDownIcon } from 'phosphor-svelte';
 
   let {
     scenarios,
@@ -15,8 +15,7 @@
   let root = $state<HTMLDivElement>();
 
   const selectedLabel = $derived(
-    scenarios.find((scenario) => scenario.id === selectedScenarioId)?.label ??
-      scenarios[0].label
+    scenarios.find((scenario) => scenario.id === selectedScenarioId)!.label
   );
 
   function select(id: string) {
@@ -42,13 +41,13 @@
 <div bind:this={root} class="relative">
   <button
     type="button"
-    class="inline-flex h-[38px] w-full items-center justify-between gap-[10px] rounded-[9px] border border-stone-200/70 bg-white px-[14px] text-[17px] font-medium leading-none tracking-normal text-stone-750 shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-colors hover:bg-stone-50 sm:text-[17px]"
+    class="inline-flex h-[38px] w-full items-center justify-between gap-[10px] rounded-[9px] border border-stone-200/70 bg-white px-[14px] text-[17px] font-medium leading-none tracking-normal text-stone-750 shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-colors hover:bg-stone-50"
     aria-haspopup="listbox"
     aria-expanded={open}
     onclick={() => (open = !open)}
   >
     <span>{selectedLabel}</span>
-    <CaretDown
+    <CaretDownIcon
       size={14}
       weight="bold"
       class="text-stone-400 transition-transform {open ? 'rotate-180' : ''}"
