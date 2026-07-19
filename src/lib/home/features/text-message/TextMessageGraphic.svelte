@@ -9,7 +9,7 @@
   import TextMessageScenarioDropdown from './TextMessageScenarioDropdown.svelte';
 
   // How long each industry stays on screen while auto-cycling.
-  const CYCLE_INTERVAL_MS = 5000;
+  const CYCLE_INTERVAL_MS = 7000;
   // How much of the graphic must be visible before the cycle starts.
   const CYCLE_START_VISIBILITY = 0.4;
 
