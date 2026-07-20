@@ -7,4 +7,4 @@ You're working on the JPMC pitch, and Jack London (CCed) in our NYC office has p
 
 I attached the PDF of the final proposal Jack submitted to them, plus the meeting notes from that engagement.
 
-There's also a proposal our partner Thoughtworks submitted to them last month.
+There's also a proposal our alliance partner Thoughtworks submitted to them last month.

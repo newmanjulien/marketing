@@ -4,7 +4,7 @@
     type HomeIndustryId
   } from '$lib/home/industryContent';
   import { textMessageScenariosByIndustryId } from './textMessageContent';
-  import { ArrowUpIcon } from 'phosphor-svelte';
+  import { ArrowUpIcon, ArrowsClockwiseIcon } from 'phosphor-svelte';
   import TextMessageIndustryTabs from './TextMessageIndustryTabs.svelte';
   import TextMessageScenarioDropdown from './TextMessageScenarioDropdown.svelte';
 
@@ -30,6 +30,11 @@
 
   function selectScenario(id: string) {
     scenarioChoice = { industryId, scenarioId: id };
+  }
+
+  function selectNextScenario() {
+    const index = scenarios.findIndex((item) => item.id === scenario.id);
+    selectScenario(scenarios[(index + 1) % scenarios.length].id);
   }
 
   // Each blank-line-separated paragraph becomes its own chat bubble.
@@ -62,7 +67,20 @@
     </div>
   </div>
 
-  <div class="flex min-h-0 flex-1 flex-col bg-white">
+  <!-- min-w-0 lets the pane shrink below its content's intrinsic width, so an
+       unbreakable word (like a long URL) wraps instead of widening the pane
+       past the card edge. -->
+  <div class="relative flex min-h-0 min-w-0 flex-1 flex-col bg-white">
+    <button
+      type="button"
+      class="absolute right-[12px] top-[12px] z-10 flex h-[30px] w-[30px] items-center justify-center rounded-full border border-stone-200 bg-white text-stone-400 transition-colors hover:bg-stone-50 hover:text-stone-600"
+      aria-label="Show next example"
+      title="Show next example"
+      onclick={selectNextScenario}
+    >
+      <ArrowsClockwiseIcon size={15} weight="bold" />
+    </button>
+
     <div class="min-h-0 flex-1 overflow-auto px-[18px] py-[16px] sm:px-[22px]">
       <div class="flex flex-col items-start gap-[3px]">
         {#each messages as message, index}

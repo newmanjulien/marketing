@@ -7,4 +7,4 @@ We did the whitespace analysis for your renewal meeting with Exterra
 
 Check it out: ob.link/75758
 
-We identified potential new policies worth $400,000. Each policy has a benchmark that was calculated with data from Allianz
+We found potential new policies worth $400,000. Each policy has a benchmark that was calculated with data from Allianz
