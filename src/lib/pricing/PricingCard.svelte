@@ -18,7 +18,7 @@
 
 <article class="rounded-[18px] border border-stone-200 bg-white px-[25px] py-[34px]">
   <div>
-    <div class="font-heading text-[38px] font-book leading-none tracking-normal text-stone-900">
+    <div class="font-heading text-[38px] font-medium leading-none tracking-normal text-stone-900">
       {plan.price}
     </div>
     <div class="mt-[6px] text-[14px] leading-none tracking-normal text-stone-500">

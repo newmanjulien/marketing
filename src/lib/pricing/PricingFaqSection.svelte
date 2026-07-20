@@ -16,7 +16,7 @@
 </script>
 
 <ContentMeasure as="section" width="narrow" class="mt-[128px]">
-  <h2 class="font-heading text-[22px] font-medium leading-[1.18] tracking-normal text-stone-750 sm:text-[24px]">
+  <h2 class="font-heading text-[35px] font-book leading-[1.18] tracking-normal text-stone-750">
     {heading}
   </h2>
 

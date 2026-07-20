@@ -9,10 +9,10 @@
 
   const pricingPlans = [
     {
-      price: '$100',
+      price: '$90',
       priceLabel: 'per month',
       name: 'Single user',
-      description: 'Monthly fee to help professionals grow their practice',
+      description: 'Simple fee for professionals who want to quickly grow their practice',
       ctaLabel: 'Join now',
       ctaHref: joinHref,
       external: true,
@@ -27,7 +27,7 @@
       price: '5%',
       priceLabel: 'of revenue',
       name: 'Whole firm',
-      description: 'Professional services firms pay 5% of the revenue we help generate',
+      description: 'Professional services firms only pay as a percentage of the revenue you get',
       ctaLabel: 'Schedule demo',
       ctaHref: 'https://cal.com/juliennewman',
       external: true,
@@ -44,7 +44,7 @@
      {
       question: 'Can I join on my own?',
       answer:
-        'Yes, easily. Quickly sign up for a simple $100 per month'
+        'Yes, easily. Quickly sign up for a simple $90 per month'
     },
       {
       question: 'Can my whole firm join?',
