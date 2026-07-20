@@ -12,54 +12,54 @@
       price: '$100',
       priceLabel: 'per month',
       name: 'Single user',
-      description: 'Monthly fee to help you grow your practice with new clients and more business',
+      description: 'Monthly fee to help professionals grow their practice',
       ctaLabel: 'Join now',
       ctaHref: joinHref,
       external: true,
       benefits: [
         'One user',
-        'Any data source',
+        'Use pre-existing formats',
         'Your network joins for free',
-        'Self-serve'
+        'Zero retention data processing'
       ]
     },
     {
       price: '5%',
       priceLabel: 'of revenue',
       name: 'Whole firm',
-      description: 'Pay 5% of the revenue we help you generate and only pay after you get paid',
+      description: 'Professional services firms pay 5% of the revenue we help generate',
       ctaLabel: 'Schedule demo',
       ctaHref: 'https://cal.com/juliennewman',
       external: true,
       benefits: [
         'Unlimited users',
-        'Any data source',
+        'Use custom formats',
         'Your network joins for free',
-        'White glove support'
+        'Zero retention data processing'
       ]
     }
   ] as const;
 
   const faqItems = [
-    {
-      question: "Wait, what's your price again?",
-      answer:
-        "It's easy for you to join on your own and we charge a simple $100 per month. If your whole firm joins, we charge 5% of the revenue we help you generate and we get paid after you get paid"
-    },
      {
       question: 'Can I join on my own?',
       answer:
         'Yes, easily. Quickly sign up for a simple $100 per month'
     },
       {
-      question: 'Can my firm join?',
+      question: 'Can my whole firm join?',
       answer:
         'Yes, and on favorable terms. If your whole firm joins, we use success based pricing where we charge 5% of the revenue we help you generate and we get paid after you get paid'
+    },
+     {
+      question: "What's different about custom formats?",
+      answer:
+        'Overbase packages up the most popular formats so single users can easily access them. When we partner with a whole firm, we create custom formats together that perfectly match how that firm works'
     },
     {
       question: 'Does my network pay anything?',
       answer:
-        'Not necessarily. Your network can join Overbase and share data with you for free. They would only pay if they selected to receive opportunities'
+        'No. Your network can join Overbase and share data with you for free. They would only pay if they selected to receive opportunities'
     },
     {
       question: 'How does success-based pricing work?',
