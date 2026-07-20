@@ -1,14 +1,23 @@
 <script lang="ts">
   import TextMessageGraphic from '$lib/home/features/text-message/TextMessageGraphic.svelte';
+  import HeroLogos from '$lib/home/hero/HeroLogos.svelte';
+  import { homeIndustries, type HomeIndustryId } from '$lib/home/industryContent';
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import { createPortalAuthUrlForMarketingPath } from '$lib/portalAuthLinks';
   import ButtonLink from '$lib/ui/ButtonLink.svelte';
 
   const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
+
+  // Hovering a logo and clicking a tab in the graphic both drive the same selection.
+  let industryId = $state<HomeIndustryId>(homeIndustries[0].id);
+
+  function selectIndustry(id: HomeIndustryId) {
+    industryId = id;
+  }
 </script>
 
 <section
-  class="px-[18px] pt-[calc(95px-var(--site-mobile-header-height))] sm:px-8 sm:pt-[calc(133px-var(--site-mobile-header-height))] lg:pt-[163px]"
+  class="px-[18px] pt-[calc(95px-var(--site-mobile-header-height))] sm:px-8 sm:pt-[calc(133px-var(--site-mobile-header-height))] lg:pt-[150px]"
 >
   <ContentMeasure class="flex flex-col items-center text-center">
     <h1
@@ -24,7 +33,11 @@
       Overbase turns your network into new clients and more business
     </p>
 
-    <div class="hero-actions mt-[36px] flex translate-y-[4px] items-center justify-center gap-[9px] opacity-0 will-change-[transform,opacity]">
+    <div class="hero-logos mt-[39px] translate-y-[4px] opacity-0 will-change-[transform,opacity]">
+      <HeroLogos onIndustryHover={selectIndustry} />
+    </div>
+
+    <div class="hero-actions mt-[39px] flex translate-y-[4px] items-center justify-center gap-[9px] opacity-0 will-change-[transform,opacity]">
       <ButtonLink
         href={joinHref}
         target="_blank"
@@ -44,9 +57,9 @@
 
   <ContentMeasure>
     <div
-      class="hero-graphic mt-[89px] translate-y-[4px] opacity-0 will-change-[transform,opacity] sm:mt-[143px]"
+      class="hero-graphic mt-[77px] translate-y-[4px] opacity-0 will-change-[transform,opacity]"
     >
-      <TextMessageGraphic />
+      <TextMessageGraphic {industryId} onIndustrySelect={selectIndustry} />
     </div>
   </ContentMeasure>
 </section>
@@ -62,6 +75,10 @@
 
   .hero-support {
     animation: hero-content-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 890ms both;
+  }
+
+  .hero-logos {
+    animation: hero-content-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 940ms both;
   }
 
   .hero-actions,
@@ -104,6 +121,7 @@
     .hero-title-lead,
     .hero-title-growth,
     .hero-support,
+    .hero-logos,
     .hero-actions,
     .hero-graphic {
       animation: none;

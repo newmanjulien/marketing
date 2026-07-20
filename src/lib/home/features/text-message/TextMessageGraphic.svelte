@@ -8,74 +8,29 @@
   import TextMessageIndustryTabs from './TextMessageIndustryTabs.svelte';
   import TextMessageScenarioDropdown from './TextMessageScenarioDropdown.svelte';
 
-  // How long each industry stays on screen while auto-cycling.
-  const CYCLE_INTERVAL_MS = 7000;
-  // How much of the graphic must be visible before the cycle starts.
-  const CYCLE_START_VISIBILITY = 0.4;
+  let {
+    industryId,
+    onIndustrySelect
+  }: {
+    industryId: HomeIndustryId;
+    onIndustrySelect: (id: HomeIndustryId) => void;
+  } = $props();
 
-  const initialIndustryId: HomeIndustryId = homeIndustries[0].id;
-  let selectedIndustryId = $state<HomeIndustryId>(initialIndustryId);
-  let selectedScenarioId = $state<string>(
-    textMessageContentByIndustryId[initialIndustryId].scenarios[0].id
+  const content = $derived(textMessageContentByIndustryId[industryId]);
+
+  // The scenario choice is remembered together with the industry it was made for,
+  // so switching industries always falls back to that industry's first scenario —
+  // no invalid state exists.
+  let scenarioChoice = $state<{ industryId: HomeIndustryId; scenarioId: string } | null>(null);
+  const scenario = $derived(
+    (scenarioChoice?.industryId === industryId
+      ? content.scenarios.find((item) => item.id === scenarioChoice?.scenarioId)
+      : undefined) ?? content.scenarios[0]
   );
 
-  // Set the industry and reset the scenario to that industry's first option, so
-  // selectedScenarioId always belongs to the current industry — no invalid state exists.
-  function showIndustry(id: HomeIndustryId) {
-    selectedIndustryId = id;
-    selectedScenarioId = textMessageContentByIndustryId[id].scenarios[0].id;
-  }
-
-  // Auto-cycle: once the graphic scrolls into view, step through the industries
-  // in order and stop for good on the last one. Any interaction also stops it.
-  let root = $state<HTMLElement | null>(null);
-  let inView = $state(false);
-  let stopped = $state(false);
-
-  function advanceIndustry() {
-    const index = homeIndustries.findIndex((industry) => industry.id === selectedIndustryId);
-    const next = homeIndustries[index + 1];
-    if (!next) {
-      stopped = true;
-      return;
-    }
-    showIndustry(next.id);
-  }
-
-  // Watch for the graphic scrolling into view (until it does, or the user takes over).
-  $effect(() => {
-    if (!root || inView || stopped) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) inView = true;
-      },
-      { threshold: CYCLE_START_VISIBILITY }
-    );
-    observer.observe(root);
-    return () => observer.disconnect();
-  });
-
-  // While in view and not stopped, advance to the next industry every interval.
-  $effect(() => {
-    if (!inView || stopped) return;
-
-    const timer = setInterval(advanceIndustry, CYCLE_INTERVAL_MS);
-    return () => clearInterval(timer);
-  });
-
-  function selectIndustry(id: HomeIndustryId) {
-    stopped = true;
-    showIndustry(id);
-  }
-
   function selectScenario(id: string) {
-    stopped = true;
-    selectedScenarioId = id;
+    scenarioChoice = { industryId, scenarioId: id };
   }
-
-  const content = $derived(textMessageContentByIndustryId[selectedIndustryId]);
-  const scenario = $derived(content.scenarios.find((item) => item.id === selectedScenarioId)!);
 
   // Each blank-line-separated paragraph becomes its own chat bubble.
   const messages = $derived(
@@ -86,25 +41,22 @@
   );
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -- mouse-only convenience; the cycle also stops on any click -->
 <div
-  bind:this={root}
-  onmouseenter={() => (stopped = true)}
-  class="flex h-[510px] overflow-hidden rounded-[14px] border border-stone-200/70 bg-white shadow-[0_8px_28px_-12px_rgba(48,47,45,0.12)]"
+  class="flex h-[480px] overflow-hidden rounded-[14px] border border-stone-200/70 bg-white shadow-[0_8px_28px_-12px_rgba(48,47,45,0.12)]"
 >
   <div
     class="flex w-[244px] shrink-0 flex-col border-r border-stone-200/70 bg-stone-50 px-[10px] py-[12px] sm:px-[12px] sm:w-[294px]"
   >
     <TextMessageIndustryTabs
       industries={homeIndustries}
-      {selectedIndustryId}
-      onSelect={selectIndustry}
+      selectedIndustryId={industryId}
+      onSelect={onIndustrySelect}
     />
 
     <div class="mt-auto pt-[14px]">
       <TextMessageScenarioDropdown
         scenarios={content.scenarios}
-        {selectedScenarioId}
+        selectedScenarioId={scenario.id}
         onSelect={selectScenario}
       />
     </div>
