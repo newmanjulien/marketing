@@ -93,7 +93,7 @@
   class="flex h-[455px] overflow-hidden rounded-[14px] border border-stone-200/70 bg-white shadow-[0_8px_28px_-12px_rgba(48,47,45,0.12)] sm:h-[480px]"
 >
   <div
-    class="flex w-[288px] shrink-0 flex-col border-r border-stone-200/70 bg-stone-50/70 px-[10px] py-[14px] sm:px-[14px]"
+    class="flex w-[288px] shrink-0 flex-col border-r border-stone-200/70 bg-stone-50 px-[10px] py-[14px] sm:px-[14px]"
   >
     <TextMessageIndustryTabs
       industries={homeIndustries}

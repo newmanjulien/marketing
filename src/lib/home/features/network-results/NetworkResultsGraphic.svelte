@@ -25,9 +25,15 @@
       preserveAspectRatio="none"
       aria-hidden="true"
     >
+      <defs>
+        <linearGradient id="network-results-line-fade" x1="0" y1="0" x2="300" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="currentColor" stop-opacity="0" />
+          <stop offset="0.4" stop-color="currentColor" stop-opacity="1" />
+        </linearGradient>
+      </defs>
       <path
         d={active.curve}
-        stroke="currentColor"
+        stroke="url(#network-results-line-fade)"
         stroke-width="2"
         stroke-linecap="round"
       />
