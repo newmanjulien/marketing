@@ -1,10 +1,11 @@
-import type { IndustryContentDefinition } from "../types";
+import type { IndustryPageContent } from "../types";
+import { partnershipsIntroParagraph } from "./shared";
 
 export const accountingContent = {
   heading: "Overbase for accounting",
   introParagraphs: [
     "Accountants have a large network of natural partners—advisory firms they form strategic alliances with, lawyers who refer potential clients, and boutique accounting firms that refer clients once they outgrow them",
-    "These partnerships drive growth, but many opportunities never surface. Because everyone's data is trapped in separate systems",
+    partnershipsIntroParagraph,
   ],
   screenshots: {
     setup: {
@@ -23,7 +24,7 @@ export const accountingContent = {
         },
         opportunityEmail: {
           src: "/screenshots/accounting3_1.png",
-          alt: "Gmail opportunity email showing an attached insurance renewal report from Overbase.",
+          alt: "Gmail opportunity email showing an attached report from Overbase.",
           width: 1408,
           height: 655,
         },
@@ -37,11 +38,11 @@ export const accountingContent = {
         },
         opportunityEmail: {
           src: "/screenshots/accounting3_2.png",
-          alt: "Gmail opportunity email showing an attached insurance renewal report from Overbase.",
+          alt: "Gmail opportunity email showing an attached report from Overbase.",
           width: 1408,
           height: 699,
         },
       },
     ],
   },
-} satisfies IndustryContentDefinition;
+} satisfies IndustryPageContent;

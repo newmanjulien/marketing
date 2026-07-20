@@ -17,7 +17,7 @@
   </a>
 
   <nav class="flex flex-col gap-[15px] text-[15px] font-book leading-none text-stone-700">
-    <DesktopSideMenuFlyout label="Industries" href="/industries" links={industryNavigationItems} {activePath} />
+    <DesktopSideMenuFlyout label="Industries" href="/industries" links={industryNavigationItems} />
 
     {#each productNavItems as item (item.label)}
       <a

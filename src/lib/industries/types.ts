@@ -5,18 +5,6 @@ export type IndustryScreenshot = {
   height: number;
 };
 
-export type IndustrySectionId = "setup" | "emailFormat" | "opportunityEmail";
-
-export type IndustryPageSection<SectionId extends IndustrySectionId = IndustrySectionId> = {
-  id: SectionId;
-  heading: string;
-  body: string;
-};
-
-export type IndustryPageSections = {
-  readonly [SectionId in IndustrySectionId]: IndustryPageSection<SectionId>;
-};
-
 export type IndustryScreenshotGroup = {
   emailFormat: IndustryScreenshot;
   opportunityEmail: IndustryScreenshot;
@@ -24,21 +12,11 @@ export type IndustryScreenshotGroup = {
 
 export type IndustryScreenshots = {
   setup: IndustryScreenshot;
-  opportunityGroups: readonly [
-    IndustryScreenshotGroup,
-    ...IndustryScreenshotGroup[],
-  ];
-};
-
-export type IndustryContentDefinition = {
-  heading: string;
-  introParagraphs: readonly [string, string];
-  screenshots: IndustryScreenshots;
+  opportunityGroups: readonly IndustryScreenshotGroup[];
 };
 
 export type IndustryPageContent = {
   heading: string;
   introParagraphs: readonly string[];
-  sections: IndustryPageSections;
   screenshots: IndustryScreenshots;
 };

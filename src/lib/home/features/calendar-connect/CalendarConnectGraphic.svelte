@@ -3,9 +3,9 @@
   import { connectionSettings } from './calendarConnectContent';
 </script>
 
-<div class="overflow-hidden rounded-[16px] border border-stone-200/70 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)]">
+<div class="overflow-hidden rounded-[16px] border border-stone-200 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)]">
   <div class="grid grid-cols-1 sm:grid-cols-[1fr_minmax(0,0.9fr)]">
-    <div class="order-2 hidden flex-col gap-[16px] border-t border-stone-200/70 px-[14px] py-[14px] sm:order-1 sm:flex sm:border-t-0 sm:px-[16px] sm:py-[16px]">
+    <div class="order-2 hidden flex-col gap-[16px] border-t border-stone-200 px-[14px] py-[14px] sm:order-1 sm:flex sm:border-t-0 sm:px-[16px] sm:py-[16px]">
       {#each connectionSettings as setting (setting.label)}
         <div class="flex items-center justify-between gap-4">
           <span class="text-[15px] font-book leading-none tracking-normal text-stone-500 sm:text-[16px]">
@@ -13,7 +13,7 @@
           </span>
 
           <span
-            class="min-w-[112px] rounded-[6px] border border-stone-200/70 bg-stone-50 px-[14px] py-[9px] text-center font-mono text-[14px] leading-none tracking-normal text-stone-600"
+            class="min-w-[112px] rounded-[6px] border border-stone-200 bg-stone-50 px-[14px] py-[9px] text-center font-mono text-[14px] leading-none tracking-normal text-stone-600"
           >
             {setting.value}
           </span>
@@ -21,8 +21,8 @@
       {/each}
     </div>
 
-    <div class="order-1 flex items-center justify-center bg-stone-50/60 px-[18px] py-[18px] sm:order-2 sm:border-l sm:border-stone-200/70 sm:px-[22px] sm:py-[22px]">
-      <div class="w-full max-w-[360px] rounded-[10px] border border-stone-200/70 bg-white p-[18px] shadow-[0_1px_2px_rgba(48,47,45,0.04)]">
+    <div class="order-1 flex items-center justify-center bg-stone-50/60 px-[18px] py-[18px] sm:order-2 sm:border-l sm:border-stone-200 sm:px-[22px] sm:py-[22px]">
+      <div class="w-full max-w-[360px] rounded-[10px] border-[1.5px] border-stone-500 bg-white p-[18px] shadow-[0_1px_2px_rgba(48,47,45,0.04)]">
         <div class="flex items-center gap-[10px]">
           <span class="flex h-[22px] w-[22px] shrink-0 items-center justify-center text-stone-400">
             <MicrosoftOutlookLogoIcon size={22} weight="regular" />

@@ -5,44 +5,21 @@ import {
   ScalesIcon,
   UmbrellaIcon,
 } from "phosphor-svelte";
-import {
-  industryNavigationItems,
-  type IndustryId,
-  type IndustryNavigationItem,
-} from "$lib/industries/industryNavigation";
+import { industryNavigationItems, type IndustryId } from "$lib/industries/industryNavigation";
 import type { Component } from "svelte";
 
 const homeIndustryIcons = {
-  insurance: {
-    icon: UmbrellaIcon,
-  },
-  law: {
-    icon: ScalesIcon,
-  },
-  "government-relations": {
-    icon: BankIcon,
-  },
-  consulting: {
-    icon: HandshakeIcon,
-  },
-  accounting: {
-    icon: CalculatorIcon,
-  },
-} as const satisfies Record<
-  IndustryId,
-  {
-    icon: Component;
-  }
->;
+  insurance: UmbrellaIcon,
+  law: ScalesIcon,
+  "government-relations": BankIcon,
+  consulting: HandshakeIcon,
+  accounting: CalculatorIcon,
+} as const satisfies Record<IndustryId, Component>;
 
 export const homeIndustries = industryNavigationItems.map((industry) => ({
   ...industry,
-  ...homeIndustryIcons[industry.id],
-})) satisfies ReadonlyArray<
-  IndustryNavigationItem & {
-    icon: Component;
-  }
->;
+  icon: homeIndustryIcons[industry.id],
+}));
 
 export type HomeIndustry = (typeof homeIndustries)[number];
 export type HomeIndustryId = HomeIndustry["id"];

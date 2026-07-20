@@ -10,8 +10,9 @@ export type DocsPageMetadata = {
   description?: string;
 };
 
-export type DocsPageRegistryEntry = DocsPageMetadata & {
+export type DocsPageEntry = DocsPageMetadata & {
   category: string;
+  categoryLabel: string;
   slug: string;
 };
 
@@ -19,9 +20,6 @@ export type DocsSectionModule = {
   default: Component;
 };
 
-export type DocsPage = DocsPageMetadata & {
-  category: string;
-  categoryLabel: string;
-  slug: string;
+export type DocsPage = DocsPageEntry & {
   sections: DocsPageSection[];
 };

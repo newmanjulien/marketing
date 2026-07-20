@@ -70,25 +70,10 @@ export type SuccessRoomResourceSummary =
   | SuccessRoomAudioResource
   | SuccessRoomRoutedResourceSummary;
 
-export type SuccessRoomFileMetadata = {
-  fileId: string;
+export type SuccessRoomLinkedFileMetadata = {
   filename: string;
   contentType: string;
   byteSize: number;
-};
-
-export type SuccessRoomLinkedFileMetadata = SuccessRoomFileMetadata & {
-  href: string;
-};
-
-export type SuccessRoomTeamMemberPhotoMetadata = {
-  photoId: string;
-  filename: string;
-  contentType: string;
-  byteSize: number;
-};
-
-export type SuccessRoomLinkedTeamMemberPhotoMetadata = SuccessRoomTeamMemberPhotoMetadata & {
   href: string;
 };
 
@@ -97,7 +82,6 @@ export type SuccessRoomTeamMember = {
   name: string;
   role: string;
   imageHref: string;
-  photo?: SuccessRoomLinkedTeamMemberPhotoMetadata;
 };
 
 export type SuccessRoomBenefitCard = {
@@ -129,15 +113,10 @@ export type SuccessRoomBenefitsState = {
   selectedCardKeys: string[];
   selectedCustomBenefit: string | null;
   painPointsByBenefitKey: Record<string, string>;
-  goalsByBenefitKey?: Record<string, string>;
+  goalsByBenefitKey: Record<string, string>;
 };
 
-export type SuccessRoomBenefitsPatch = {
-  selectedCardKeys?: string[];
-  selectedCustomBenefit?: string | null;
-  painPointsByBenefitKey?: Record<string, string>;
-  goalsByBenefitKey?: Record<string, string>;
-};
+export type SuccessRoomBenefitsPatch = Partial<SuccessRoomBenefitsState>;
 
 export type SuccessRoomPlanState = SharedSuccessRoomPlanState;
 

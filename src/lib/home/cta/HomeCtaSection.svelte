@@ -6,7 +6,7 @@
   const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
 </script>
 
-<section class="border-t border-stone-200/70 bg-stone-50/60 px-[18px] py-[72px] sm:px-8 sm:py-[90px]">
+<section class="border-t border-stone-200 bg-stone-50/60 px-[18px] py-[72px] sm:px-8 sm:py-[90px]">
   <ContentMeasure class="flex flex-col items-center text-center">
     <h2
       class="font-heading text-[26px] font-medium leading-[1.08] tracking-normal text-stone-750 sm:text-[31px] sm:leading-[1.06]"
@@ -15,7 +15,7 @@
     </h2>
 
     <p
-      class="mt-[12px] max-w-[400px] text-[18px] font-light leading-[1.6] tracking-normal text-stone-700 sm:mt-[12px]"
+      class="mt-[12px] max-w-[400px] text-[18px] font-book leading-[1.6] tracking-normal text-stone-700"
     >
       Overbase is made for how you work
     </p>
@@ -27,7 +27,6 @@
         rel="noopener noreferrer"
         variant="primary"
         size="hero"
-        textSize="compact"
         shape="pill"
       >
         Join now

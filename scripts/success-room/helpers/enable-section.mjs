@@ -1,24 +1,14 @@
 // Enables a section on an existing success room.
 // Used by the scripts in scripts/success-room/add-sections/.
 
-import { api } from "../../../convex/_generated/api.js";
+import { runConvex } from "./convex.mjs";
 
-export const enableSuccessRoomSection = async ({
-  client,
-  seedSecret,
-  slug,
-  resourceKey,
-  planAccordions = [],
-}) => {
-  const result = await client.mutation(
-    api.successRooms.enableSuccessRoomSections,
-    {
-      seedSecret,
-      slug,
-      resourceKeys: [resourceKey],
-      planAccordions,
-    },
-  );
+export const enableSuccessRoomSection = async ({ slug, resourceKey, planAccordions }) => {
+  const result = await runConvex("admin:enableSuccessRoomSections", {
+    slug,
+    resourceKeys: [resourceKey],
+    ...(planAccordions ? { planAccordions } : {}),
+  });
 
   console.log(
     `Enabled ${resourceKey} for ${slug}: ${result.enabledResourceKeys.join(", ")}.`,

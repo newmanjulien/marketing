@@ -1,12 +1,16 @@
 <script lang="ts">
   let {
+    description,
+    promptFor,
     selectedBenefits,
-    goalsByBenefitKey,
-    onGoalChange
+    valuesByBenefitKey,
+    onValueChange
   }: {
+    description: string;
+    promptFor: (benefitLabel: string) => string;
     selectedBenefits: { key: string; label: string }[];
-    goalsByBenefitKey: Record<string, string>;
-    onGoalChange: (benefitKey: string, value: string) => void;
+    valuesByBenefitKey: Record<string, string>;
+    onValueChange: (benefitKey: string, value: string) => void;
   } = $props();
 
   const promptListClasses = 'grid gap-[18px]';
@@ -20,11 +24,11 @@
 
 <div class={promptListClasses}>
   <p class={descriptionClasses}>
-    For each benefit you selected, tell us the goals and how you measure them.
+    {description}
   </p>
 
   {#each selectedBenefits as benefit (benefit.key)}
-    {@const prompt = `What KPIs do you currently use to track “${benefit.label}”? Are there existing projects to achieve this?`}
+    {@const prompt = promptFor(benefit.label)}
     <div class="grid gap-[8px]">
       <span class={benefitLabelClasses}>{benefit.label}</span>
       <textarea
@@ -32,8 +36,8 @@
         aria-label={prompt}
         placeholder={prompt}
         bind:value={
-          () => goalsByBenefitKey[benefit.key] ?? '',
-          (value) => onGoalChange(benefit.key, value)
+          () => valuesByBenefitKey[benefit.key] ?? '',
+          (value) => onValueChange(benefit.key, value)
         }
       ></textarea>
     </div>

@@ -8,11 +8,19 @@
  * @module
  */
 
+import type * as admin from "../admin.js";
+import type * as auth from "../auth.js";
+import type * as cleanup from "../cleanup.js";
 import type * as crons from "../crons.js";
-import type * as http from "../http.js";
-import type * as storageCleanup from "../storageCleanup.js";
-import type * as successRoomUploads from "../successRoomUploads.js";
-import type * as successRooms from "../successRooms.js";
+import type * as email from "../email.js";
+import type * as functions from "../functions.js";
+import type * as model_auth from "../model/auth.js";
+import type * as model_files from "../model/files.js";
+import type * as model_passwords from "../model/passwords.js";
+import type * as model_payloads from "../model/payloads.js";
+import type * as model_rooms from "../model/rooms.js";
+import type * as rooms from "../rooms.js";
+import type * as sessions from "../sessions.js";
 
 import type {
   ApiFromModules,
@@ -21,11 +29,19 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  admin: typeof admin;
+  auth: typeof auth;
+  cleanup: typeof cleanup;
   crons: typeof crons;
-  http: typeof http;
-  storageCleanup: typeof storageCleanup;
-  successRoomUploads: typeof successRoomUploads;
-  successRooms: typeof successRooms;
+  email: typeof email;
+  functions: typeof functions;
+  "model/auth": typeof model_auth;
+  "model/files": typeof model_files;
+  "model/passwords": typeof model_passwords;
+  "model/payloads": typeof model_payloads;
+  "model/rooms": typeof model_rooms;
+  rooms: typeof rooms;
+  sessions: typeof sessions;
 }>;
 
 /**

@@ -1,40 +1,26 @@
+import type { Id } from '../../../../convex/_generated/dataModel';
 import { postSuccessRoomApi } from './client';
-import type {
-  SuccessRoomUploadCapability,
-  SuccessRoomUploadPurpose,
-  SuccessRoomUploadResult
-} from '../domain/api';
+import type { SuccessRoomUploadPurpose, SuccessRoomUploadResult } from '../domain/api';
 import {
   maxSuccessRoomUploadByteSize,
-  maxSuccessRoomUploadSizeLabel,
-  successRoomUploadIntentHeader
+  maxSuccessRoomUploadSizeLabel
 } from '../../../../shared/successRoomUploads';
 
-const createUploadIntent = async (
-  roomSlug: string,
-  filename: string,
-  purpose: SuccessRoomUploadPurpose
-): Promise<SuccessRoomUploadCapability> => {
-  const response = await postSuccessRoomApi(roomSlug, 'upload-intent', {
-    filename,
-    purpose
-  });
+const createUploadUrl = async (roomSlug: string) => {
+  const response = await postSuccessRoomApi(roomSlug, 'upload-url', {});
 
   if (!response.ok) {
     throw new Error('Upload could not be prepared.');
   }
 
-  return (await response.json()) as SuccessRoomUploadCapability;
+  const { uploadUrl } = (await response.json()) as { uploadUrl: string };
+  return uploadUrl;
 };
 
-const uploadFile = async (capability: SuccessRoomUploadCapability, file: File) => {
-  const response = await fetch(capability.uploadUrl, {
+const uploadToStorage = async (uploadUrl: string, file: File) => {
+  const response = await fetch(uploadUrl, {
     method: 'POST',
-    headers: {
-      authorization: `Bearer ${capability.uploadToken}`,
-      'content-type': file.type || 'application/octet-stream',
-      [successRoomUploadIntentHeader]: capability.uploadIntentId
-    },
+    headers: { 'content-type': file.type || 'application/octet-stream' },
     body: file
   });
 
@@ -42,7 +28,8 @@ const uploadFile = async (capability: SuccessRoomUploadCapability, file: File) =
     throw new Error('File could not be uploaded.');
   }
 
-  return (await response.json()) as SuccessRoomUploadResult;
+  const { storageId } = (await response.json()) as { storageId: Id<'_storage'> };
+  return storageId;
 };
 
 export const uploadSuccessRoomFile = async ({
@@ -62,8 +49,19 @@ export const uploadSuccessRoomFile = async ({
     throw new Error(`Files must be ${maxSuccessRoomUploadSizeLabel} or smaller.`);
   }
 
-  const capability = await createUploadIntent(roomSlug, file.name, purpose);
-  const result = await uploadFile(capability, file);
+  const uploadUrl = await createUploadUrl(roomSlug);
+  const storageId = await uploadToStorage(uploadUrl, file);
+  const claimResponse = await postSuccessRoomApi(roomSlug, 'claim-upload', {
+    storageId,
+    filename: file.name,
+    purpose
+  });
+
+  if (!claimResponse.ok) {
+    throw new Error('File could not be uploaded.');
+  }
+
+  const result = (await claimResponse.json()) as SuccessRoomUploadResult;
 
   if (result.type !== purpose.type) {
     throw new Error('Upload returned an unexpected result.');

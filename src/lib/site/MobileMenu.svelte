@@ -1,16 +1,19 @@
 <script lang="ts">
   import { page } from '$app/state';
   import { industryNavigationItems } from '$lib/industries/industryNavigation';
-  import { createPortalAuthUrlForCurrentPage } from '$lib/portalAuthLinks';
+  import { createPortalAuthUrlForMarketingPath } from '$lib/portalAuthLinks';
   import ButtonLink from '$lib/ui/ButtonLink.svelte';
   import { cubicOut } from 'svelte/easing';
   import { slide } from 'svelte/transition';
-  import { authNavItems, mobilePrimaryNavItems } from './navigation';
+  import { authNavItems, productNavItems } from './navigation';
 
   const navSections = [
     { id: 'mobile-industries-heading', label: 'Industries', links: industryNavigationItems },
-    { id: 'mobile-site-heading', label: 'Overbase', links: mobilePrimaryNavItems }
+    { id: 'mobile-site-heading', label: 'Overbase', links: productNavItems }
   ] as const;
+
+  // The mobile menu renders secondary auth links in the soft style.
+  const authLinkVariants = { primary: 'primary', secondary: 'soft' } as const;
 
   const activePath = $derived(page.url.pathname);
 </script>
@@ -50,14 +53,13 @@
       {/each}
     </div>
 
-    <div class="mt-[30px] flex flex-col gap-[12px] border-t border-stone-200/70 px-[20px] pt-[24px]">
+    <div class="mt-[30px] flex flex-col gap-[12px] border-t border-stone-200 px-[20px] pt-[24px]">
       {#each authNavItems as link (link.authRoute)}
-        {@const href = createPortalAuthUrlForCurrentPage(link.authRoute, page.url)}
         <ButtonLink
-          {href}
+          href={createPortalAuthUrlForMarketingPath(link.authRoute, activePath)}
           target="_blank"
           rel="noopener noreferrer"
-          variant={link.variant === 'primary' ? 'primary' : 'soft'}
+          variant={authLinkVariants[link.variant]}
           size="large"
           fullWidth
         >

@@ -20,3 +20,8 @@ export const industryNavigationItems = [
 
 export type IndustryNavigationItem = (typeof industryNavigationItems)[number];
 export type IndustryId = IndustryNavigationItem["id"];
+
+export const industryIds = industryNavigationItems.map((item) => item.id);
+
+export const isIndustryId = (value: string): value is IndustryId =>
+  industryIds.includes(value as IndustryId);

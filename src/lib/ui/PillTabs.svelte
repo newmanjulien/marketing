@@ -9,105 +9,61 @@
   import type { Snippet } from 'svelte';
   import { flip } from 'svelte/animate';
   import { cubicOut } from 'svelte/easing';
+  import { prefersReducedMotion } from 'svelte/motion';
 
   let {
-    idBase,
     tabs,
     ariaLabel,
-    activeTabKey: controlledActiveTabKey,
-    onActiveTabKeyChange,
+    activeTabKey = $bindable(),
     animatedTabKeys = [],
     listClass,
     panelClass,
     children
   }: {
-    idBase: string;
     tabs: readonly Tab[];
     ariaLabel: string;
     activeTabKey?: Tab['key'];
-    onActiveTabKeyChange?: (tabKey: Tab['key']) => void;
     animatedTabKeys?: readonly Tab['key'][];
     listClass?: string;
     panelClass?: string;
     children: Snippet<[Tab]>;
   } = $props();
 
-  let selectedTabKey = $state<Tab['key'] | undefined>();
-  const resolveTab = (tabKey: Tab['key'] | undefined) =>
-    tabs.find(({ key }) => key === tabKey) ?? tabs[0];
+  const idBase = $props.id();
 
-  let activeTab = $derived(resolveTab(controlledActiveTabKey ?? selectedTabKey));
-  let activeTabKey = $derived(activeTab?.key);
-
-  $effect(() => {
-    if (controlledActiveTabKey !== undefined) {
-      return;
-    }
-
-    const resolvedTabKey = resolveTab(selectedTabKey)?.key;
-
-    if (selectedTabKey !== resolvedTabKey) {
-      selectedTabKey = resolvedTabKey;
-    }
-  });
+  let activeTab = $derived(tabs.find(({ key }) => key === activeTabKey) ?? tabs[0]);
 
   const baseListClasses = 'flex flex-wrap items-center gap-[7px]';
   const tabClasses =
-    'min-h-[34px] rounded-full border border-stone-200/70 bg-stone-100 px-[18px] text-[14px] font-medium leading-none text-stone-600 transition-colors duration-150 hover:border-stone-200/70 hover:bg-stone-50 hover:text-stone-800';
-  const activeTabClasses = 'border-stone-200/70 bg-white text-stone-800';
+    'min-h-[34px] rounded-full border border-stone-200 bg-stone-100 px-[18px] text-[14px] font-medium leading-none text-stone-600 transition-colors duration-150 hover:border-stone-200 hover:bg-stone-50 hover:text-stone-800';
+  const activeTabClasses = 'border-stone-200 bg-white text-stone-800';
 
   const getTabId = (tabKey: Tab['key']) => `${idBase}-${tabKey}-tab`;
   const getPanelId = (tabKey: Tab['key']) => `${idBase}-${tabKey}-panel`;
-  const prefersReducedMotion = () =>
-    globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-  const getPillTabReflowDuration = () => (prefersReducedMotion() ? 0 : 160);
-  const pillTabEntry = (_node: Element, tabKey: Tab['key']) => {
-    if (!animatedTabKeys.includes(tabKey)) {
-      return { duration: 0 };
-    }
+  const getPillTabReflowDuration = () => (prefersReducedMotion.current ? 0 : 160);
+  const pillTabTransition =
+    (duration: number, offsetPx: number) => (_node: Element, tabKey: Tab['key']) => {
+      if (!animatedTabKeys.includes(tabKey) || prefersReducedMotion.current) {
+        return { duration: 0 };
+      }
 
-    if (prefersReducedMotion()) {
-      return { duration: 0 };
-    }
-
-    return {
-      duration: 220,
-      easing: cubicOut,
-      css: (t: number) => `
-        opacity: ${t};
-        transform: translateY(${(1 - t) * 4}px) scale(${0.985 + t * 0.015});
-        transform-origin: center left;
-      `
+      return {
+        duration,
+        easing: cubicOut,
+        css: (t: number) => `
+          opacity: ${t};
+          transform: translateY(${(1 - t) * offsetPx}px) scale(${0.985 + t * 0.015});
+          transform-origin: center left;
+        `
+      };
     };
-  };
-  const pillTabExit = (_node: Element, tabKey: Tab['key']) => {
-    if (!animatedTabKeys.includes(tabKey)) {
-      return { duration: 0 };
-    }
-
-    if (prefersReducedMotion()) {
-      return { duration: 0 };
-    }
-
-    return {
-      duration: 160,
-      easing: cubicOut,
-      css: (t: number) => `
-        opacity: ${t};
-        transform: translateY(${(1 - t) * 2}px) scale(${0.985 + t * 0.015});
-        transform-origin: center left;
-      `
-    };
-  };
+  const pillTabEntry = pillTabTransition(220, 4);
+  const pillTabExit = pillTabTransition(160, 2);
   const focusTab = (tabKey: Tab['key']) => {
     document.getElementById(getTabId(tabKey))?.focus();
   };
   const selectTab = (tabKey: Tab['key']) => {
-    if (controlledActiveTabKey === undefined) {
-      selectedTabKey = tabKey;
-    }
-
-    onActiveTabKeyChange?.(tabKey);
+    activeTabKey = tabKey;
   };
   const selectTabAt = (index: number) => {
     const tab = tabs[index];
@@ -118,7 +74,7 @@
     }
   };
   const handleTabKeydown = (event: KeyboardEvent) => {
-    const currentIndex = tabs.findIndex(({ key }) => key === activeTabKey);
+    const currentIndex = tabs.findIndex(({ key }) => key === activeTab?.key);
 
     switch (event.key) {
       case 'ArrowLeft':
@@ -152,10 +108,10 @@
           id={getTabId(tab.key)}
           type="button"
           role="tab"
-          aria-selected={activeTabKey === tab.key}
-          aria-controls={activeTabKey === tab.key ? getPanelId(tab.key) : undefined}
-          tabindex={activeTabKey === tab.key ? 0 : -1}
-          class={[tabClasses, activeTabKey === tab.key && activeTabClasses]}
+          aria-selected={activeTab.key === tab.key}
+          aria-controls={activeTab.key === tab.key ? getPanelId(tab.key) : undefined}
+          tabindex={activeTab.key === tab.key ? 0 : -1}
+          class={[tabClasses, activeTab.key === tab.key && activeTabClasses]}
           in:pillTabEntry={tab.key}
           out:pillTabExit={tab.key}
           onclick={() => {

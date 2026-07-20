@@ -3,7 +3,7 @@
     homeIndustries,
     type HomeIndustryId
   } from '$lib/home/industryContent';
-  import { textMessageContentByIndustryId } from './textMessageContent';
+  import { textMessageScenariosByIndustryId } from './textMessageContent';
   import { ArrowUpIcon } from 'phosphor-svelte';
   import TextMessageIndustryTabs from './TextMessageIndustryTabs.svelte';
   import TextMessageScenarioDropdown from './TextMessageScenarioDropdown.svelte';
@@ -16,7 +16,7 @@
     onIndustrySelect: (id: HomeIndustryId) => void;
   } = $props();
 
-  const content = $derived(textMessageContentByIndustryId[industryId]);
+  const scenarios = $derived(textMessageScenariosByIndustryId[industryId]);
 
   // The scenario choice is remembered together with the industry it was made for,
   // so switching industries always falls back to that industry's first scenario —
@@ -24,8 +24,8 @@
   let scenarioChoice = $state<{ industryId: HomeIndustryId; scenarioId: string } | null>(null);
   const scenario = $derived(
     (scenarioChoice?.industryId === industryId
-      ? content.scenarios.find((item) => item.id === scenarioChoice?.scenarioId)
-      : undefined) ?? content.scenarios[0]
+      ? scenarios.find((item) => item.id === scenarioChoice?.scenarioId)
+      : undefined) ?? scenarios[0]
   );
 
   function selectScenario(id: string) {
@@ -42,10 +42,10 @@
 </script>
 
 <div
-  class="flex h-[480px] overflow-hidden rounded-[14px] border border-stone-200/70 bg-white shadow-[0_8px_28px_-12px_rgba(48,47,45,0.12)]"
+  class="flex h-[480px] overflow-hidden rounded-[14px] border border-stone-200 bg-white shadow-[0_8px_28px_-12px_rgba(48,47,45,0.12)]"
 >
   <div
-    class="flex w-[244px] shrink-0 flex-col border-r border-stone-200/70 bg-stone-50 px-[10px] py-[12px] sm:px-[12px] sm:w-[294px]"
+    class="flex w-[244px] shrink-0 flex-col border-r border-stone-200 bg-stone-50/90 px-[10px] py-[12px] sm:px-[12px] sm:w-[294px]"
   >
     <TextMessageIndustryTabs
       industries={homeIndustries}
@@ -55,8 +55,8 @@
 
     <div class="mt-auto pt-[14px]">
       <TextMessageScenarioDropdown
-        scenarios={content.scenarios}
-        selectedScenarioId={scenario.id}
+        {scenarios}
+        selectedScenario={scenario}
         onSelect={selectScenario}
       />
     </div>
@@ -67,13 +67,14 @@
       <div class="flex flex-col items-start gap-[3px]">
         {#each messages as message, index}
           <div
-            class="bubble {index === messages.length - 1 ? 'bubble-tail' : ''} max-w-[82%] whitespace-pre-wrap break-words px-[14px] py-[8px] text-left font-body text-[14.5px] font-book leading-[1.35] tracking-normal text-white sm:text-[15.5px]"
+            class="bubble max-w-[82%] whitespace-pre-wrap break-words px-[14px] py-[8px] text-left font-body text-[14.5px] font-book leading-[1.35] tracking-normal text-white sm:text-[15.5px]"
+            class:bubble-tail={index === messages.length - 1}
           >{message}</div>
         {/each}
       </div>
     </div>
 
-    <div class="flex items-center gap-[8px] border-t border-stone-200/70 px-[14px] py-[11px]">
+    <div class="flex items-center gap-[8px] border-t border-stone-200 px-[14px] py-[11px]">
       <div
         class="flex h-[38px] flex-1 items-center rounded-full border border-stone-200/60 px-[16px] text-[14.5px] font-book leading-none tracking-normal text-stone-300 sm:text-[15.5px]"
       >

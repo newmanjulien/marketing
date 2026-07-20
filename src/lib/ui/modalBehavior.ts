@@ -25,12 +25,17 @@ export function createModalBehavior({ onClose }: ModalBehaviorOptions): Action<H
     function getFocusableElements() {
       return Array.from(
         dialogElement.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]'
         )
       ).filter((element) => element.tabIndex >= 0);
     }
 
     function handleKeydown(event: KeyboardEvent) {
+      // Escape during IME composition cancels the composition, not the modal.
+      if (event.isComposing) {
+        return;
+      }
+
       if (event.key === 'Escape') {
         event.preventDefault();
         onClose();

@@ -1,6 +1,8 @@
 import { error } from '@sveltejs/kit';
-import { getLegalPage } from '$lib/legal/legalPages';
-import type { PageLoad } from './$types';
+import { getLegalPage, getLegalPageSlugs } from '$lib/legal/legalPages';
+import type { EntryGenerator, PageLoad } from './$types';
+
+export const entries: EntryGenerator = () => getLegalPageSlugs().map((slug) => ({ slug }));
 
 export const load: PageLoad = async ({ params }) => {
   const legalPage = await getLegalPage(params.slug);

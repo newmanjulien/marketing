@@ -1,16 +1,11 @@
 // Run from the project root:
 //   node scripts/success-room/nuke.mjs
 //
-// Requires PUBLIC_CONVEX_URL and SUCCESS_ROOM_SEED_SECRET in the shell or .env.local.
+// Uses the Convex CLI's deploy credentials (SCRIPT_TARGET=prod for production).
 // This deletes all success-room rows and all Convex file-storage objects.
 
-import { api } from "../../convex/_generated/api.js";
-import { connectToTarget } from "./helpers/convex-client.mjs";
+import { runConvex } from "./helpers/convex.mjs";
 
-const { client, seedSecret } = await connectToTarget();
-
-const result = await client.mutation(api.successRooms.nukeSuccessRoomData, {
-  seedSecret,
-});
+const result = await runConvex("admin:nukeSuccessRoomData");
 
 console.log(JSON.stringify(result, null, 2));

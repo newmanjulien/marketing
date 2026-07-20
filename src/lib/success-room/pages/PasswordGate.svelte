@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { enhance } from '$app/forms';
   import { page } from '$app/state';
   import { getNamedFormAction } from '$lib/forms/formActionUrls';
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
@@ -23,9 +24,9 @@
     <div class="max-w-[440px]">
       <Header eyebrow="Success room" title={prospectName} {description} />
 
-      <form method="POST" action={unlockAction} class="mt-[34px] grid gap-[12px]">
+      <form method="POST" action={unlockAction} use:enhance class="mt-[34px] grid gap-[12px]">
         <input
-          class="h-[42px] w-full rounded-[8px] border border-stone-200/70 bg-white px-[14px] font-body text-[14px] font-book tracking-normal text-stone-700 outline-none shadow-[0_1px_0_rgba(48,47,45,0.03)] placeholder:text-stone-400 focus:border-stone-300 focus:text-stone-900"
+          class="h-[42px] w-full rounded-[8px] border border-stone-200 bg-white px-[14px] font-body text-[14px] font-book tracking-normal text-stone-700 outline-none shadow-[0_1px_0_rgba(48,47,45,0.03)] placeholder:text-stone-400 focus:border-stone-300 focus:text-stone-900"
           type="password"
           name="password"
           autocomplete="current-password"

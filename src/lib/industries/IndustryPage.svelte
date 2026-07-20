@@ -2,6 +2,7 @@
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import PageFrame from '$lib/page/PageFrame.svelte';
   import IndustryScreenshotPager from './IndustryScreenshotPager.svelte';
+  import { industrySectionCopy } from './industryPageContent';
   import type { IndustryPageContent } from './types';
 
   let { content }: { content: IndustryPageContent } = $props();
@@ -14,32 +15,22 @@
   );
   const renderedSections = $derived([
     {
-      ...content.sections.setup,
+      ...industrySectionCopy.setup,
       screenshot: content.screenshots.setup,
       showPager: false,
     },
     {
-      ...content.sections.emailFormat,
+      ...industrySectionCopy.emailFormat,
       screenshot: activeOpportunityGroup.emailFormat,
       showPager: opportunityGroupCount > 1,
     },
     {
-      ...content.sections.opportunityEmail,
+      ...industrySectionCopy.opportunityEmail,
       screenshot: activeOpportunityGroup.opportunityEmail,
       showPager: false,
     },
   ]);
 
-  const previousGroup = () => {
-    activeOpportunityGroupIndex = Math.max(0, activeOpportunityGroupIndex - 1);
-  };
-
-  const nextGroup = () => {
-    activeOpportunityGroupIndex = Math.min(
-      opportunityGroupCount - 1,
-      activeOpportunityGroupIndex + 1,
-    );
-  };
 </script>
 
 <PageFrame>
@@ -59,7 +50,7 @@
     </header>
 
     <div class="mt-[88px] flex flex-col gap-[96px]">
-      {#each renderedSections as section (section.id)}
+      {#each renderedSections as section}
         <section>
           <h2 class="font-heading text-[24px] font-book leading-[1.15] tracking-normal text-stone-900">
             {section.heading}
@@ -86,10 +77,8 @@
 
             {#if section.showPager}
               <IndustryScreenshotPager
-                currentIndex={activeOpportunityGroupIndex}
+                bind:currentIndex={activeOpportunityGroupIndex}
                 itemCount={opportunityGroupCount}
-                onprevious={previousGroup}
-                onnext={nextGroup}
               />
             {/if}
           </div>

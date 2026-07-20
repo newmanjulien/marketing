@@ -54,7 +54,6 @@
 </script>
 
 <PillTabs
-  idBase={`success-room-${room.slug}-${resource.slug}`}
   tabs={editableTextSections}
   ariaLabel={`${resource.title} sections`}
   listClass="mt-[34px]"

@@ -2,6 +2,7 @@
   import { PlusIcon } from 'phosphor-svelte';
   import { flip } from 'svelte/animate';
   import { cubicOut } from 'svelte/easing';
+  import { prefersReducedMotion } from 'svelte/motion';
   import type { SuccessRoomTeamMember } from '../domain/types';
 
   type TeamGalleryItem =
@@ -23,14 +24,9 @@
     onAddTeamMember: () => void;
   } = $props();
 
-  const prefersReducedMotion = (node: Element) =>
-    node.ownerDocument.defaultView?.matchMedia('(prefers-reduced-motion: reduce)').matches ??
-    false;
-  const prefersReducedMotionGlobally = () =>
-    globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-  const getGalleryReflowDuration = () => (prefersReducedMotionGlobally() ? 0 : 180);
-  const teamMemberEntry = (node: Element) => {
-    if (prefersReducedMotion(node)) {
+  const getGalleryReflowDuration = () => (prefersReducedMotion.current ? 0 : 180);
+  const teamMemberEntry = (_node: Element) => {
+    if (prefersReducedMotion.current) {
       return { duration: 0 };
     }
 

@@ -36,7 +36,7 @@
   const taskDatePlaceholderClasses = 'italic text-stone-400';
   const taskAssigneeImageClasses = 'h-[20px] w-[20px] shrink-0 rounded-full object-cover';
   const taskEmptyAssigneeClasses =
-    'flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full border border-stone-200/70 bg-white text-[11px] font-medium leading-none text-stone-400';
+    'flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full border border-stone-200 bg-white text-[11px] font-medium leading-none text-stone-400';
   const taskAssigneeButtonClasses =
     'flex h-[20px] w-[20px] shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-stone-900/20';
   const checkboxClasses = 'h-[14px] w-[14px] flex-none opacity-100';

@@ -3,6 +3,7 @@ type SearchParamUpdates = Readonly<Record<string, string | null>>;
 const getPageSearchParams = (url: URL, updates: SearchParamUpdates = {}) => {
   const searchParams = new URLSearchParams();
 
+  // SvelteKit encodes named form actions as a "?/name" query key; drop any existing one.
   for (const [key, value] of url.searchParams) {
     if (!key.startsWith('/')) {
       searchParams.append(key, value);

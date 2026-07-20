@@ -11,6 +11,23 @@
   const industryLabelById = Object.fromEntries(
     homeIndustries.map((industry) => [industry.id, industry.label])
   ) as Record<HomeIndustryId, string>;
+
+  type Logo = {
+    mark: Snippet;
+    name: string;
+    industryId: HomeIndustryId;
+    brand: string;
+  };
+
+  // The marks (hk, gt, ...) are the snippets declared in the markup below.
+  const logos: Logo[] = [
+    { mark: hk, name: 'Holland & Knight', industryId: 'government-relations', brand: '#2c3c7c' },
+    { mark: gt, name: 'Greenberg Traurig', industryId: 'law', brand: '#171717' },
+    { mark: marsh, name: 'Marsh', industryId: 'insurance', brand: '#002c77' },
+    { mark: bain, name: 'Bain & Company', industryId: 'consulting', brand: '#cc0000' },
+    { mark: ey, name: 'Ernst & Young', industryId: 'accounting', brand: '#2e2e38' },
+    { mark: lw, name: 'Latham & Watkins', industryId: 'law', brand: '#a6192e' }
+  ];
 </script>
 
 {#snippet hk()}
@@ -101,28 +118,38 @@
   </svg>
 {/snippet}
 
-{#snippet logoItem(mark: Snippet, name: string, industryId: HomeIndustryId, brand: string)}
-  <!-- svelte-ignore a11y_no_static_element_interactions -- hover is a mouse-only flourish; the graphic's tabs remain the accessible control -->
-  <div
-    class="logo-item relative flex"
-    style="--brand: {brand}"
-    onmouseenter={() => onIndustryHover(industryId)}
-  >
-    <span class="logo flex h-[25px] w-[25px]" aria-hidden="true">{@render mark()}</span>
-    <span class="logo-label">{name}<span class="logo-label-industry">{industryLabelById[industryId]}</span></span>
-  </div>
-{/snippet}
-
 <div class="flex items-center justify-center gap-[40px] text-stone-400">
-  {@render logoItem(hk, 'Holland & Knight', 'government-relations', '#2c3c7c')}
-  {@render logoItem(gt, 'Greenberg Traurig', 'law', '#171717')}
-  {@render logoItem(marsh, 'Marsh', 'insurance', '#002c77')}
-  {@render logoItem(bain, 'Bain & Company', 'consulting', '#cc0000')}
-  {@render logoItem(ey, 'Ernst & Young', 'accounting', '#2e2e38')}
-  {@render logoItem(lw, 'Latham & Watkins', 'law', '#a6192e')}
+  {#each logos as logo, index (logo.name)}
+    <!-- svelte-ignore a11y_no_static_element_interactions -- hover is a mouse-only flourish; the graphic's tabs remain the accessible control -->
+    <div
+      class="logo-item relative flex will-change-[transform,opacity]"
+      style:--brand={logo.brand}
+      style:--logo-index={index}
+      onmouseenter={() => onIndustryHover(logo.industryId)}
+    >
+      <span class="logo flex h-[25px] w-[25px]" aria-hidden="true">{@render logo.mark()}</span>
+      <span class="logo-label">{logo.name}<span class="logo-label-industry">{industryLabelById[logo.industryId]}</span></span>
+    </div>
+  {/each}
 </div>
 
 <style>
+  /* Entrance: one by one, starting at --logos-enter-delay (set by the hero's
+     page-load choreography; defaults to 0 so the logos never stay hidden). */
+  .logo-item {
+    opacity: 0;
+    transform: translateY(4px);
+    animation: logo-enter 320ms cubic-bezier(0.22, 1, 0.36, 1)
+      calc(var(--logos-enter-delay, 0ms) + var(--logo-index) * 90ms) both;
+  }
+
+  @keyframes logo-enter {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .logo {
     transition: color 180ms ease;
   }
@@ -212,6 +239,13 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .logo-item {
+      animation: none;
+      opacity: 1;
+      transform: none;
+      will-change: auto;
+    }
+
     .logo-item:hover .logo {
       animation: none;
     }

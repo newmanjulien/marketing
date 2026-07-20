@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/newsreader.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Newsreader';
+  font-style: italic;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/newsreader-italic.woff2') format('woff2');
+}
+
 :root {
   --site-bg: #ffffff;
   --font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -42,4 +58,115 @@ html {
 body {
   min-width: 320px;
   background-color: var(--site-bg);
+}
+
+/* Long-form ("rich text") typography for rendered markdown bodies. Every
+   surface combines `rich-text` with one modifier class that sets its heading
+   scale (and any surface-specific elements). */
+.rich-text p {
+  margin-top: 16px;
+  max-width: 680px;
+}
+
+.rich-text p:first-child {
+  margin-top: 0;
+}
+
+.rich-text h2,
+.rich-text h3 {
+  max-width: 680px;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  color: rgb(41 37 36);
+}
+
+.rich-text h2:first-child,
+.rich-text h3:first-child {
+  margin-top: 0;
+}
+
+.rich-text strong {
+  font-weight: 500;
+  color: rgb(41 37 36);
+}
+
+.rich-text a {
+  color: rgb(68 64 60);
+  text-decoration: underline;
+  text-decoration-color: rgb(168 162 158);
+  text-underline-offset: 3px;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+
+.rich-text a:hover {
+  color: rgb(28 25 23);
+  text-decoration-color: rgb(28 25 23);
+}
+
+.rich-text ul,
+.rich-text ol {
+  margin-top: 12px;
+  max-width: 660px;
+  padding-left: 22px;
+}
+
+.rich-text ul {
+  list-style: disc;
+}
+
+.rich-text ol {
+  list-style: decimal;
+}
+
+.rich-text li {
+  margin-top: 8px;
+  padding-left: 4px;
+}
+
+.rich-text-docs h2 {
+  margin-top: 60px;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.rich-text-docs h3 {
+  margin-top: 38px;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.rich-text-docs blockquote {
+  margin-top: 16px;
+  max-width: 660px;
+  border-left: 2px solid rgb(214 211 209);
+  padding-left: 18px;
+  color: rgb(87 83 78);
+}
+
+.rich-text-docs pre {
+  margin-top: 16px;
+  max-width: 680px;
+  overflow-x: auto;
+  border: 1px solid rgb(231 229 228);
+  background: rgb(250 250 249);
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgb(41 37 36);
+}
+
+.rich-text-docs code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.rich-text-legal h2 {
+  margin-top: 34px;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.rich-text-legal h3 {
+  margin-top: 24px;
+  font-size: 18px;
+  line-height: 1.3;
 }

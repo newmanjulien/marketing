@@ -68,7 +68,7 @@
 
   const accordionCardVariants = {
     default: {
-      item: 'border-stone-200/70 bg-white text-stone-900 hover:border-stone-300',
+      item: 'border-stone-200 bg-white text-stone-900 hover:border-stone-300',
       title: 'text-stone-900',
       description: 'text-stone-500',
       toggleIcon: 'text-stone-400',
@@ -76,7 +76,7 @@
       taskDate: 'text-stone-400'
     },
     muted: {
-      item: 'border-stone-200/70 bg-stone-50 text-stone-500 hover:border-stone-300',
+      item: 'border-stone-200 bg-stone-50 text-stone-500 hover:border-stone-300',
       title: 'text-stone-600',
       description: 'text-stone-400',
       toggleIcon: 'text-stone-300',

@@ -10,12 +10,6 @@ export const productNavItems = [
   { label: "About", href: "/about" },
 ] satisfies NavLinkItem[];
 
-export const footerNavItems = [
-  { label: "Legal", href: "/legal" },
-] satisfies NavLinkItem[];
-
-export const mobilePrimaryNavItems = productNavItems satisfies NavLinkItem[];
-
 export const authNavItems = [
   { label: "Log in", authRoute: "login", variant: "secondary" },
   { label: "Join", authRoute: "join", variant: "primary" },

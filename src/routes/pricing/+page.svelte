@@ -64,7 +64,7 @@
     {
       question: 'How does success-based pricing work?',
       answer:
-        'Your firm pay 5% of the revenue we generate together, and you only pay after you get paid. Revenue is attributed by your team in a self-reported way'
+        'Your firm pays 5% of the revenue we generate together, and you only pay after you get paid. Revenue is attributed by your team in a self-reported way'
     }
   ] as const;
 </script>
@@ -76,7 +76,7 @@
     </h1>
 
     <p class="mt-[24px] text-[17px] font-book leading-[1.55] tracking-normal text-stone-700">
-      How much does Overbase cost? You can easily join on your own for a simple $100 per month. If your whole firm joins, we charge pay 5% of the revenue we help generate
+      How much does Overbase cost? You can easily join on your own for a simple $100 per month. If your whole firm joins, we charge 5% of the revenue we help generate
     </p>
 
     <div class="mt-[43px] grid gap-[20px] sm:grid-cols-2">

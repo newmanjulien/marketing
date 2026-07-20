@@ -4,8 +4,3 @@ export const docsSections = [
 ] as const;
 
 export type DocsSectionDefinition = (typeof docsSections)[number];
-export type DocsSection = DocsSectionDefinition['key'];
-
-const docsSectionKeys = new Set<string>(docsSections.map(({ key }) => key));
-
-export const isDocsSection = (section: string): section is DocsSection => docsSectionKeys.has(section);

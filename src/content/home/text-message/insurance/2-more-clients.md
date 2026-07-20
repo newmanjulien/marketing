@@ -1,5 +1,5 @@
 ---
-label: Get more clients
+label: 2. Get more clients
 description: Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
 ---
 

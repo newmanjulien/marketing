@@ -1,161 +1,103 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { successRoomResourceKeyValidator } from "../shared/successRoomResources";
+import { successRoomPlanStateValidator } from "../shared/successRoomPlan";
+import {
+  successRoomBenefitsStateValidator,
+  successRoomEditableTextContentValidator,
+  successRoomKickoffScheduleStateValidator,
+} from "../shared/successRoomState";
 
-const successRoomResourceKey = v.union(
+export const benefitCardValidator = v.object({
+  key: v.string(),
+  title: v.string(),
+  description: v.string(),
+  sortOrder: v.number(),
+});
+
+export const planAccordionValidator = v.object({
+  key: v.string(),
+  title: v.string(),
+  description: v.string(),
+  variant: v.union(v.literal("default"), v.literal("muted"), v.literal("highlighted")),
+  sortOrder: v.number(),
+  tasks: v.array(
+    v.object({
+      key: v.string(),
+      title: v.string(),
+      dateLabel: v.optional(v.string()),
+    }),
+  ),
+});
+
+export const teamMemberValidator = v.object({
+  key: v.string(),
+  name: v.string(),
+  role: v.string(),
+  photoFileId: v.optional(v.id("successRoomFiles")),
+});
+
+export const fileKindValidator = v.union(
   v.literal("deck"),
   v.literal("audio"),
-  v.literal("mutual-success-plan"),
-  v.literal("initial-format"),
-  v.literal("kickoff-schedule"),
+  v.literal("team-member-photo"),
+  v.literal("editable-attachment"),
 );
 
-const timestampedEditableItem = {
-  active: v.boolean(),
-  createdAt: v.number(),
-  updatedAt: v.number(),
-};
+export const storedFileValidator = v.object({
+  storageId: v.id("_storage"),
+  filename: v.string(),
+  contentType: v.string(),
+  byteSize: v.number(),
+});
 
 export default defineSchema({
   successRooms: defineTable({
     slug: v.string(),
     prospectName: v.string(),
-    enabledResourceKeys: v.array(successRoomResourceKey),
-
+    // scrypt output, "saltHex:hashHex"; hashed and verified in convex/auth.ts.
     passwordHash: v.string(),
-    passwordUpdatedAt: v.number(),
-
-    benefitCards: v.array(
+    loginThrottle: v.optional(
       v.object({
-        key: v.string(),
-        title: v.string(),
-        description: v.string(),
-        sortOrder: v.number(),
-        ...timestampedEditableItem,
+        failedCount: v.number(),
+        lastFailedAt: v.number(),
       }),
     ),
-    planAccordions: v.array(
-      v.object({
-        key: v.string(),
-        title: v.string(),
-        description: v.string(),
-        variant: v.union(v.literal("default"), v.literal("muted"), v.literal("highlighted")),
-        sortOrder: v.number(),
-        tasks: v.array(
-          v.object({
-            key: v.string(),
-            title: v.string(),
-            dateLabel: v.optional(v.string()),
-          }),
-        ),
-        ...timestampedEditableItem,
-      }),
-    ),
-    teamMembers: v.array(
-      v.object({
-        key: v.string(),
-        name: v.string(),
-        role: v.string(),
-        photoFileKey: v.optional(v.string()),
-        ...timestampedEditableItem,
-      }),
-    ),
+    enabledResourceKeys: v.array(successRoomResourceKeyValidator),
+    benefitCards: v.array(benefitCardValidator),
+    planAccordions: v.array(planAccordionValidator),
+    teamMembers: v.array(teamMemberValidator),
     state: v.object({
-      benefits: v.object({
-        selectedCardKeys: v.array(v.string()),
-        selectedCustomBenefit: v.union(v.string(), v.null()),
-        painPointsByBenefitKey: v.record(v.string(), v.string()),
-        goalsByBenefitKey: v.optional(v.record(v.string(), v.string())),
-      }),
-      plan: v.object({
-        openAccordionKey: v.union(v.string(), v.null()),
-        checkedTaskKeys: v.array(v.string()),
-        dateOverridesByTaskKey: v.record(v.string(), v.string()),
-        assigneeKeyByTaskKey: v.record(v.string(), v.string()),
-      }),
+      benefits: successRoomBenefitsStateValidator,
+      plan: successRoomPlanStateValidator,
       editableText: v.object({
-        content: v.string(),
-        dataSources: v.array(v.string()),
-        success: v.object({
-          revenueGrowth: v.string(),
-          audience: v.string(),
-          workflow: v.string(),
-        }),
-        attachmentFileKey: v.optional(v.string()),
+        ...successRoomEditableTextContentValidator.fields,
+        attachmentFileId: v.optional(v.id("successRoomFiles")),
       }),
-      kickoffSchedule: v.object({
-        rows: v.array(
-          v.object({
-            key: v.string(),
-            sortOrder: v.number(),
-            cells: v.record(v.string(), v.string()),
-          }),
-        ),
-      }),
+      kickoffSchedule: successRoomKickoffScheduleStateValidator,
     }),
-
-    archived: v.boolean(),
-    createdAt: v.number(),
-    updatedAt: v.number(),
   }).index("by_slug", ["slug"]),
 
   successRoomFiles: defineTable({
     roomId: v.id("successRooms"),
-    key: v.string(),
-    kind: v.union(
-      v.literal("deck"),
-      v.literal("audio"),
-      v.literal("team-member-photo"),
-      v.literal("editable-attachment"),
-    ),
-    resourceKey: v.optional(v.string()),
-    ownerKey: v.optional(v.string()),
-
-    storageId: v.id("_storage"),
-    filename: v.string(),
-    contentType: v.string(),
-    byteSize: v.number(),
-
-    active: v.boolean(),
-    createdAt: v.number(),
-    updatedAt: v.number(),
+    kind: fileKindValidator,
+    ...storedFileValidator.fields,
   })
     .index("by_room", ["roomId"])
-    .index("by_room_key", ["roomId", "key"])
-    .index("by_room_kind_active", ["roomId", "kind", "active"])
+    .index("by_room_kind", ["roomId", "kind"])
     .index("by_storage_id", ["storageId"]),
 
-  successRoomUploadIntents: defineTable({
+  successRoomSessions: defineTable({
     roomId: v.id("successRooms"),
-    filename: v.string(),
-    accessTokenHash: v.string(),
-    uploadTokenHash: v.string(),
-    purpose: v.union(
-      v.object({
-        type: v.literal("editable-attachment"),
-        resourceSlug: v.literal("initial-format"),
-      }),
-      v.object({
-        type: v.literal("team-member-photo"),
-        name: v.string(),
-        role: v.string(),
-      }),
-    ),
+    tokenHash: v.string(),
     expiresAt: v.number(),
-    createdAt: v.number(),
   })
-    .index("by_room", ["roomId"])
+    .index("by_token_hash", ["tokenHash"])
     .index("by_expires_at", ["expiresAt"]),
 
   successRoomDocumentRequests: defineTable({
     roomId: v.id("successRooms"),
     description: v.string(),
-    notificationStatus: v.union(
-      v.literal("pending"),
-      v.literal("sent"),
-      v.literal("failed"),
-    ),
-    notificationAttemptedAt: v.optional(v.number()),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  }).index("by_room_created_at", ["roomId", "createdAt"]),
+    notificationStatus: v.union(v.literal("pending"), v.literal("sent"), v.literal("failed")),
+  }).index("by_room", ["roomId"]),
 });

@@ -7,10 +7,6 @@ export type TextMessageScenario = {
   description: string; // caption sentence, no trailing period
 };
 
-export type TextMessageIndustryContent = {
-  scenarios: readonly [TextMessageScenario, ...TextMessageScenario[]]; // non-empty
-};
-
 // Content lives as one Markdown file per scenario under
 // src/content/home/text-message/<industry>/<order>-<id>.md
 // so anyone can edit the copy as plain text. Each file has a small frontmatter
@@ -30,7 +26,6 @@ function parseFrontmatter(raw: string): { label: string; description: string; bo
 
   const fields: Record<string, string> = {};
   for (const line of match[1].split("\n")) {
-    if (!line.trim()) continue;
     const separator = line.indexOf(":");
     if (separator === -1) continue;
     fields[line.slice(0, separator).trim()] = line.slice(separator + 1).trim();
@@ -65,24 +60,20 @@ for (const [path, raw] of Object.entries(files)) {
 
 // Order industries by the canonical home list, and scenarios by their filename
 // prefix, so the tabs and dropdown match the source layout.
-export const textMessageContentByIndustryId = {} as Record<
-  HomeIndustryId,
-  TextMessageIndustryContent
->;
-for (const industry of homeIndustries) {
-  const scenarios = scenariosByIndustry.get(industry.id);
-  if (!scenarios || scenarios.length === 0) {
-    throw new Error(
-      `No text-message content found for industry "${industry.id}". ` +
-        `Add at least one file under src/content/home/text-message/${industry.id}/`,
-    );
-  }
+export const textMessageScenariosByIndustryId = Object.fromEntries(
+  homeIndustries.map((industry): [HomeIndustryId, readonly TextMessageScenario[]] => {
+    const scenarios = scenariosByIndustry.get(industry.id);
+    if (!scenarios || scenarios.length === 0) {
+      throw new Error(
+        `No text-message content found for industry "${industry.id}". ` +
+          `Add at least one file under src/content/home/text-message/${industry.id}/`,
+      );
+    }
 
-  const sorted = scenarios
-    .sort((a, b) => a.order - b.order)
-    .map(({ id, label, message, description }) => ({ id, label, message, description }));
+    const sorted = scenarios
+      .sort((a, b) => a.order - b.order)
+      .map(({ id, label, message, description }) => ({ id, label, message, description }));
 
-  textMessageContentByIndustryId[industry.id] = {
-    scenarios: sorted as [TextMessageScenario, ...TextMessageScenario[]],
-  };
-}
+    return [industry.id, sorted];
+  }),
+) as Record<HomeIndustryId, readonly TextMessageScenario[]>;

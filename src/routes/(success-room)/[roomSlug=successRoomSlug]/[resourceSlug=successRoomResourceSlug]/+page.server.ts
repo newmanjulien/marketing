@@ -5,10 +5,8 @@ import {
   resolveUnlockedSuccessRoomAsset,
   unlockSuccessRoom
 } from '$lib/success-room/server/pageServer.server';
-import {
-  isSuccessRoomAssetResourceSlug,
-  isSuccessRoomRoutedResourceSlug
-} from '$lib/success-room/domain/config';
+import { isSuccessRoomResourceNotEnabledError } from '$lib/success-room/server/access.server';
+import { isSuccessRoomAssetResourceSlug } from '$lib/success-room/domain/config';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ cookies, params, setHeaders }) => {
@@ -31,17 +29,20 @@ export const load: PageServerLoad = async ({ cookies, params, setHeaders }) => {
     redirect(302, resolution.href);
   }
 
-  if (!isSuccessRoomRoutedResourceSlug(params.resourceSlug)) {
-    error(404, 'Success room resource not found');
-  }
+  try {
+    return (
+      (await getUnlockedSuccessRoomResourcePage(cookies, params.roomSlug, params.resourceSlug)) ??
+      getLockedSuccessRoomPayload(params.roomSlug)
+    );
+  } catch (loadError) {
+    if (isSuccessRoomResourceNotEnabledError(loadError)) {
+      error(404, 'Success room resource not found');
+    }
 
-  return (
-    (await getUnlockedSuccessRoomResourcePage(cookies, params.roomSlug, params.resourceSlug)) ??
-    getLockedSuccessRoomPayload(params.roomSlug)
-  );
+    throw loadError;
+  }
 };
 
 export const actions = {
-  unlock: async ({ cookies, params, request, url }) =>
-    unlockSuccessRoom({ cookies, roomSlug: params.roomSlug, request, url })
+  unlock: unlockSuccessRoom
 } satisfies Actions;

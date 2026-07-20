@@ -10,6 +10,5 @@ export const load: PageServerLoad = async ({ cookies, params }) =>
   getLockedSuccessRoomPayload(params.roomSlug);
 
 export const actions = {
-  unlock: async ({ cookies, params, request, url }) =>
-    unlockSuccessRoom({ cookies, roomSlug: params.roomSlug, request, url })
+  unlock: unlockSuccessRoom
 } satisfies Actions;

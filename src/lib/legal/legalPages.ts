@@ -11,13 +11,14 @@ const legalPageModules = import.meta.glob<LegalPageModule>('../../content/legal/
 
 const legalPageLoaders = new Map(
   Object.entries(legalPageModules).map(([path, load]) => [
-    path.slice(path.lastIndexOf('/') + 1, -4),
+    path.split('/').pop()!.replace(/\.svx$/, ''),
     load
   ])
 );
 
 const formatLegalDate = (updatedAt: string) => legalDateFormatter.format(new Date(updatedAt));
 
+// Presentation order for the legal index. Must list every page exactly once.
 const legalPageOrder = [
   'terms',
   'billing-and-payment-terms',
@@ -28,11 +29,23 @@ const legalPageOrder = [
   'subprocessors'
 ];
 
-const getLegalPageOrder = (slug: string) => {
-  const order = legalPageOrder.indexOf(slug);
+const orderedLegalPages = legalPageOrder.map((slug) => {
+  const loadLegalPage = legalPageLoaders.get(slug);
 
-  return order === -1 ? legalPageOrder.length : order;
-};
+  if (!loadLegalPage) {
+    throw new Error(`legalPageOrder lists "${slug}" but no page file matches it`);
+  }
+
+  return { slug, loadLegalPage };
+});
+
+if (orderedLegalPages.length !== legalPageLoaders.size) {
+  const unordered = [...legalPageLoaders.keys()].filter((slug) => !legalPageOrder.includes(slug));
+
+  throw new Error(`Legal pages missing from legalPageOrder: ${unordered.join(', ')}`);
+}
+
+export const getLegalPageSlugs = () => [...legalPageOrder];
 
 export const getLegalPage = async (slug: string): Promise<LegalPage | undefined> => {
   const loadLegalPage = legalPageLoaders.get(slug);
@@ -41,20 +54,19 @@ export const getLegalPage = async (slug: string): Promise<LegalPage | undefined>
     return undefined;
   }
 
-  const pageModule = await loadLegalPage();
-  const { page } = pageModule;
+  const { default: bodyComponent, page } = await loadLegalPage();
 
   return {
     slug,
     ...page,
     updatedAtLabel: formatLegalDate(page.updatedAt),
-    bodyComponent: pageModule.default
+    bodyComponent
   };
 };
 
-export const getLegalPageIndexItems = async (): Promise<LegalPageIndexItem[]> => {
-  const pages = await Promise.all(
-    Array.from(legalPageLoaders.entries()).map(async ([slug, loadLegalPage]) => {
+export const getLegalPageIndexItems = (): Promise<LegalPageIndexItem[]> =>
+  Promise.all(
+    orderedLegalPages.map(async ({ slug, loadLegalPage }) => {
       const { page } = await loadLegalPage();
 
       return {
@@ -65,10 +77,3 @@ export const getLegalPageIndexItems = async (): Promise<LegalPageIndexItem[]> =>
       };
     })
   );
-
-  return pages.sort((firstPage, secondPage) => {
-    const orderDifference = getLegalPageOrder(firstPage.slug) - getLegalPageOrder(secondPage.slug);
-
-    return orderDifference || firstPage.title.localeCompare(secondPage.title);
-  });
-};

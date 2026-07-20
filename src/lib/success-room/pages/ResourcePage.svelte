@@ -5,7 +5,6 @@
   import KickoffSchedulePanel from '../kickoff-schedule/KickoffSchedulePanel.svelte';
   import Header from '../shell/Header.svelte';
   import MutualSuccessPlanResourcePanel from '../plan/MutualSuccessPlanResourcePanel.svelte';
-  import { kickoffScheduleColumns } from '../domain/config';
   import { createSuccessRoomResourceDraft } from '../persistence/resourceDraft.svelte';
   import { getSuccessRoomPath } from '../domain/urls';
   import type {
@@ -40,23 +39,25 @@
       description={resource.description}
     />
 
-    {#if resource.kind === 'mutual-success-plan'}
+    {#if draft.current.kind === 'mutual-success-plan'}
+      {@const snapshot = draft.current}
       <MutualSuccessPlanResourcePanel
-        {resource}
-        plan={draft.plan}
+        resource={snapshot.resource}
+        plan={snapshot.plan}
         onPlanAction={draft.dispatchPlanAction}
       />
-    {:else if resource.kind === 'editable-text'}
+    {:else if draft.current.kind === 'editable-text'}
+      {@const snapshot = draft.current}
       <EditableTextResourcePanel
         {room}
-        {resource}
-        bind:editableState={draft.editableTextState}
+        resource={snapshot.resource}
+        bind:editableState={() => snapshot.editableText, draft.setEditableTextState}
         onAttachmentPersisted={draft.applyPersistedEditableTextAttachment}
       />
-    {:else if resource.kind === 'kickoff-schedule'}
+    {:else if draft.current.kind === 'kickoff-schedule'}
+      {@const snapshot = draft.current}
       <KickoffSchedulePanel
-        columns={kickoffScheduleColumns}
-        bind:schedule={draft.kickoffScheduleState}
+        bind:schedule={() => snapshot.kickoffSchedule, draft.setKickoffScheduleState}
       />
     {/if}
   </ContentMeasure>

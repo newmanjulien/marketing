@@ -1,59 +1,25 @@
 import type { Action } from 'svelte/action';
 
-const revealDelayMs = 45;
-const observerRootMargin = '-8% 0px -8% 0px';
-const observerThreshold = 0.04;
-
+// The section is visible by default (markup ships with `is-viewed`) so content
+// shows without JavaScript; the action removes the class and hands it to the
+// observer. Brief intersections are debounced by the 45ms transition delay on
+// `.is-viewed` in HomeSection — a class toggled off within that window never
+// produces a visible change.
 export const revealWhenViewed: Action<HTMLElement> = (node) => {
-  let observer: IntersectionObserver | undefined;
-  let revealTimer: ReturnType<typeof setTimeout> | undefined;
-
-  const clearRevealTimer = () => {
-    if (revealTimer) {
-      clearTimeout(revealTimer);
-      revealTimer = undefined;
-    }
-  };
-
-  const hideSection = () => {
-    clearRevealTimer();
-    node.classList.remove('is-viewed');
-  };
-
-  const showSection = () => {
-    clearRevealTimer();
-    revealTimer = setTimeout(() => {
-      node.classList.add('is-viewed');
-      revealTimer = undefined;
-    }, revealDelayMs);
-  };
-
   if (!('IntersectionObserver' in window)) {
-    node.classList.add('is-viewed');
-  } else {
-    hideSection();
-
-    observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          showSection();
-        } else {
-          hideSection();
-        }
-      },
-      {
-        rootMargin: observerRootMargin,
-        threshold: observerThreshold
-      }
-    );
-
-    observer.observe(node);
+    return;
   }
 
+  node.classList.remove('is-viewed');
+
+  const observer = new IntersectionObserver(
+    ([entry]) => node.classList.toggle('is-viewed', entry.isIntersecting),
+    { rootMargin: '-8% 0px -8% 0px', threshold: 0.04 }
+  );
+
+  observer.observe(node);
+
   return {
-    destroy() {
-      clearRevealTimer();
-      observer?.disconnect();
-    }
+    destroy: () => observer.disconnect()
   };
 };

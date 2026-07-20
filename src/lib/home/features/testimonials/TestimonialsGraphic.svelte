@@ -4,7 +4,7 @@
 
 <div class="flex flex-col gap-[34px] sm:gap-[40px]">
   {#each testimonials as testimonial (testimonial.quote)}
-    <figure class="border-l-[2px] border-stone-200/70 pl-[18px] sm:pl-[20px]">
+    <figure class="border-l-[2px] border-stone-200 pl-[18px] sm:pl-[20px]">
       <blockquote
         class="font-heading text-[18px] font-light italic leading-[1.42] tracking-normal text-stone-700 sm:text-[20px]"
       >

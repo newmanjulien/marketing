@@ -28,23 +28,22 @@
     </h1>
 
     <p
-      class="hero-support mt-[19px] max-w-[380px] translate-y-[4px] font-light text-[25px] leading-[1.60] tracking-normal text-stone-500 opacity-0 will-change-[transform,opacity]"
+      class="hero-support mt-[19px] max-w-[380px] font-light text-[25px] leading-[1.60] tracking-normal text-stone-500 will-change-[transform,opacity]"
     >
       Overbase turns your network into new clients and more business
     </p>
 
-    <div class="hero-logos mt-[39px] translate-y-[4px] opacity-0 will-change-[transform,opacity]">
+    <div class="hero-logos mt-[39px]">
       <HeroLogos onIndustryHover={selectIndustry} />
     </div>
 
-    <div class="hero-actions mt-[39px] flex translate-y-[4px] items-center justify-center gap-[9px] opacity-0 will-change-[transform,opacity]">
+    <div class="hero-actions mt-[44px] flex justify-center will-change-[transform,opacity]">
       <ButtonLink
         href={joinHref}
         target="_blank"
         rel="noopener noreferrer"
         variant="primary"
         size="xlarge"
-        textSize="compact"
         shape="pill"
         highlightSweep
         class="shadow-[0_5px_12px_rgba(41,37,36,0.2)] hover:-translate-y-[2px] hover:shadow-[0_8px_16px_rgba(41,37,36,0.28)]"
@@ -56,34 +55,45 @@
   </ContentMeasure>
 
   <ContentMeasure>
-    <div
-      class="hero-graphic mt-[77px] translate-y-[4px] opacity-0 will-change-[transform,opacity]"
-    >
+    <div class="hero-graphic mt-[77px] will-change-[transform,opacity]">
       <TextMessageGraphic {industryId} onIndustrySelect={selectIndustry} />
     </div>
   </ContentMeasure>
 </section>
 
 <style>
+  section {
+    --hero-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --hero-content-duration: 320ms;
+    --hero-content-delay: 990ms;
+  }
+
   .hero-title-lead {
-    animation: hero-title-lead-settle 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: hero-title-lead-settle 220ms var(--hero-ease) both;
   }
 
   .hero-title-growth {
-    animation: hero-title-growth-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) 350ms both;
+    animation: hero-title-growth-enter 420ms var(--hero-ease) 350ms both;
   }
 
-  .hero-support {
-    animation: hero-content-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 890ms both;
-  }
-
-  .hero-logos {
-    animation: hero-content-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 940ms both;
-  }
-
+  .hero-support,
   .hero-actions,
   .hero-graphic {
-    animation: hero-content-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) 990ms both;
+    opacity: 0;
+    transform: translateY(4px);
+    animation: hero-content-enter var(--hero-content-duration) var(--hero-ease)
+      var(--hero-content-delay) both;
+  }
+
+  /* The support copy leads the rest of the content by a short beat. */
+  .hero-support {
+    animation-delay: calc(var(--hero-content-delay) - 100ms);
+  }
+
+  /* Logos come in last: a short beat after the actions and graphic finish.
+     HeroLogos staggers its items relative to this base delay. */
+  .hero-logos {
+    --logos-enter-delay: calc(var(--hero-content-delay) + var(--hero-content-duration) + 40ms);
   }
 
   @keyframes hero-title-lead-settle {
@@ -121,7 +131,6 @@
     .hero-title-lead,
     .hero-title-growth,
     .hero-support,
-    .hero-logos,
     .hero-actions,
     .hero-graphic {
       animation: none;
