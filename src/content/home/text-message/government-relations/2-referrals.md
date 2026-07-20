@@ -1,10 +1,10 @@
 ---
-label: Get referrals
-description: Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+label: 2. Get more referrals
+description: Overbase turns your relationships with other professionals into easy referrals. We analyze both sides' client meetings and propose opportunities for referrals. All by text message
 ---
 
-Sophia at Caldwater has a client who has a regulatory issue
+Sophia at Caldwater has a client facing a regulatory issue under California's new tax rules
 
-It's relating to the new tax rules in California. Details here: ob.link/62921
+Details here: ob.link/62921
 
 Let me know if you want Sophia to propose an intro next time she talks to them
