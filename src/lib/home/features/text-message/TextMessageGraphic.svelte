@@ -90,10 +90,10 @@
 <div
   bind:this={root}
   onmouseenter={() => (stopped = true)}
-  class="flex h-[455px] overflow-hidden rounded-[14px] border border-stone-200/70 bg-white shadow-[0_8px_28px_-12px_rgba(48,47,45,0.12)] sm:h-[480px]"
+  class="flex h-[510px] overflow-hidden rounded-[14px] border border-stone-200/70 bg-white shadow-[0_8px_28px_-12px_rgba(48,47,45,0.12)]"
 >
   <div
-    class="flex w-[294px] shrink-0 flex-col border-r border-stone-200/70 bg-stone-50 px-[10px] py-[12px] sm:px-[12px]"
+    class="flex w-[244px] shrink-0 flex-col border-r border-stone-200/70 bg-stone-50 px-[10px] py-[12px] sm:px-[12px] sm:w-[294px]"
   >
     <TextMessageIndustryTabs
       industries={homeIndustries}

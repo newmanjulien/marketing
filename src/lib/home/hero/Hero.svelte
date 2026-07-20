@@ -12,7 +12,7 @@
 >
   <ContentMeasure class="flex flex-col items-center text-center">
     <h1
-      class="hero-title max-w-[540px] font-heading text-[49px] font-semibold leading-[1.04] tracking-normal text-stone-750 sm:max-w-none"
+      class="hero-title max-w-[540px] font-heading text-[45px] font-semibold leading-[1.04] tracking-normal text-stone-750 sm:max-w-none sm:text-[51px]"
     >
       <span class="hero-title-lead inline-block will-change-[transform,opacity]">Grow</span>
       <span class="hero-title-growth inline-block will-change-[transform,opacity]">your practice</span>

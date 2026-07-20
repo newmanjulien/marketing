@@ -17,7 +17,7 @@
     <p
       class="mt-[12px] max-w-[400px] text-[18px] font-light leading-[1.6] tracking-normal text-stone-700 sm:mt-[12px]"
     >
-      Get new clients and more business
+      Overbase is made for how you work
     </p>
 
     <div class="mt-[33px] flex items-center justify-center">
