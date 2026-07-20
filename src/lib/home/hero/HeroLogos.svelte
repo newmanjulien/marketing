@@ -113,7 +113,7 @@
   </div>
 {/snippet}
 
-<div class="flex items-center justify-center gap-[24px] text-stone-400 sm:gap-[40px]">
+<div class="flex items-center justify-center gap-[40px] text-stone-400">
   {@render logoItem(hk, 'Holland & Knight', 'government-relations', '#2c3c7c')}
   {@render logoItem(gt, 'Greenberg Traurig', 'law', '#171717')}
   {@render logoItem(marsh, 'Marsh', 'insurance', '#002c77')}

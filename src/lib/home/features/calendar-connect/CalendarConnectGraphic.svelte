@@ -40,7 +40,7 @@
         </div>
 
         <div
-          class="mt-[18px] flex h-[52px] w-full items-center justify-center rounded-[6px] bg-stone-800 text-[17px] font-book leading-none tracking-normal text-white"
+          class="mt-[18px] flex h-[44px] w-full items-center justify-center rounded-[6px] bg-stone-800 text-[17px] font-book leading-none tracking-normal text-white"
           aria-hidden="true"
         >
           Connect calendar data
