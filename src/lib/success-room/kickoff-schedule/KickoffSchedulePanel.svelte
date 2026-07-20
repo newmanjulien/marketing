@@ -1,20 +1,15 @@
 
 <script lang="ts">
-  import type {
-    SuccessRoomKickoffScheduleColumn,
-    SuccessRoomKickoffScheduleState
-  } from '../domain/types';
+  import { kickoffScheduleColumns as columns } from '../domain/config';
+  import type { SuccessRoomKickoffScheduleState } from '../domain/types';
 
   let {
-    columns,
     schedule = $bindable<SuccessRoomKickoffScheduleState>()
   }: {
-    columns: readonly SuccessRoomKickoffScheduleColumn[];
     schedule: SuccessRoomKickoffScheduleState;
   } = $props();
 
-  const tableShellClasses =
-    'mt-[34px] overflow-hidden rounded-[8px] border border-stone-200/70 bg-white';
+  const tableShellClasses = 'overflow-hidden rounded-[8px] border border-stone-200 bg-white';
   const headerCellClasses =
     'border-b border-stone-200/80 bg-stone-50 px-[14px] py-[13px] text-left text-[13px] font-medium leading-none tracking-normal text-stone-600';
   const bodyCellClasses =

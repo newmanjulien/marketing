@@ -1,7 +1,7 @@
 <script lang="ts">
   import ContentMeasure from '$lib/page/ContentMeasure.svelte';
   import PageFrame from '$lib/page/PageFrame.svelte';
-  import DocsSectionTabs from './DocsSectionTabs.svelte';
+  import PillTabs from '$lib/ui/PillTabs.svelte';
   import type { DocsPage } from './docsTypes';
 
   let { page }: { page: DocsPage } = $props();
@@ -25,6 +25,17 @@
       {/if}
     </header>
 
-    <DocsSectionTabs {page} />
+    {#key `${page.category}/${page.slug}`}
+      <PillTabs
+        tabs={page.sections}
+        ariaLabel="Documentation sections"
+        listClass="mt-[34px]"
+        panelClass="rich-text rich-text-docs mt-[28px] min-h-[160px] font-book text-[16px] leading-[1.55] tracking-normal text-stone-700"
+      >
+        {#snippet children(section)}
+          <section.component />
+        {/snippet}
+      </PillTabs>
+    {/key}
   </ContentMeasure>
 </PageFrame>

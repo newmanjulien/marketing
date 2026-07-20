@@ -3,11 +3,6 @@ import {
   createSuccessRoomSaveQueue
 } from './saveQueue';
 import { applySuccessRoomPlanAction } from '../../../../shared/successRoomPlan';
-import {
-  createDefaultEditableTextState,
-  createDefaultKickoffScheduleState,
-  createDefaultPlanState
-} from '../../../../shared/successRoomState';
 import { createSyncedSnapshot, scheduleJsonSave } from './autosave.svelte';
 import {
   cloneKickoffScheduleState,
@@ -15,50 +10,81 @@ import {
   clonePlan
 } from '../domain/state';
 import type {
-  SuccessRoomEditableTextResourceSlug,
-  SuccessRoomKickoffScheduleResourceSlug
-} from '../domain/config';
-import type {
   SuccessRoomEditableTextAttachmentUpdate,
+  SuccessRoomEditableTextResource,
   SuccessRoomEditableTextState,
+  SuccessRoomKickoffScheduleResource,
   SuccessRoomKickoffScheduleState,
+  SuccessRoomMutualSuccessPlanResource,
   SuccessRoomPlanAction,
   SuccessRoomPlanState,
   SuccessRoomResourceRoom,
-  SuccessRoomRoutedResource,
-  SuccessRoomResourceState
+  SuccessRoomResourceState,
+  SuccessRoomRoutedResource
 } from '../domain/types';
 
-type SuccessRoomResourceDraftSnapshot = {
-  roomSlug: string;
-  resourceSlug: string;
-  plan: SuccessRoomPlanState;
-  editableText: SuccessRoomEditableTextState;
-  kickoffSchedule: SuccessRoomKickoffScheduleState;
-};
+export type SuccessRoomResourceDraftSnapshot =
+  | {
+      kind: 'mutual-success-plan';
+      roomSlug: string;
+      resource: SuccessRoomMutualSuccessPlanResource;
+      plan: SuccessRoomPlanState;
+    }
+  | {
+      kind: 'editable-text';
+      roomSlug: string;
+      resource: SuccessRoomEditableTextResource;
+      editableText: SuccessRoomEditableTextState;
+    }
+  | {
+      kind: 'kickoff-schedule';
+      roomSlug: string;
+      resource: SuccessRoomKickoffScheduleResource;
+      kickoffSchedule: SuccessRoomKickoffScheduleState;
+    };
 
+// The server pairs every routed resource with state of the same kind, but the
+// two arrive as separate unions the compiler cannot co-narrow. This is the one
+// place that contract is checked; everything downstream works with the
+// combined discriminated union.
 const createResourceDraftSnapshot = (
   room: SuccessRoomResourceRoom,
   resource: SuccessRoomRoutedResource,
   state: SuccessRoomResourceState,
 ): SuccessRoomResourceDraftSnapshot => {
-  return {
-    roomSlug: room.slug,
-    resourceSlug: resource.slug,
-    plan:
-      state.kind === 'mutual-success-plan'
-        ? clonePlan(state.plan)
-        : createDefaultPlanState(),
-    editableText:
-      state.kind === 'editable-text'
-        ? cloneEditableTextState(state.editableText)
-        : createDefaultEditableTextState(),
-    kickoffSchedule:
-      state.kind === 'kickoff-schedule'
-        ? cloneKickoffScheduleState(state.kickoffSchedule)
-        : createDefaultKickoffScheduleState()
-  };
+  const roomSlug = room.slug;
+
+  if (resource.kind === 'mutual-success-plan' && state.kind === 'mutual-success-plan') {
+    return { kind: resource.kind, roomSlug, resource, plan: clonePlan(state.plan) };
+  }
+
+  if (resource.kind === 'editable-text' && state.kind === 'editable-text') {
+    return {
+      kind: resource.kind,
+      roomSlug,
+      resource,
+      editableText: cloneEditableTextState(state.editableText)
+    };
+  }
+
+  if (resource.kind === 'kickoff-schedule' && state.kind === 'kickoff-schedule') {
+    return {
+      kind: resource.kind,
+      roomSlug,
+      resource,
+      kickoffSchedule: cloneKickoffScheduleState(state.kickoffSchedule)
+    };
+  }
+
+  throw new Error(
+    `Success room resource "${resource.slug}" (${resource.kind}) received "${state.kind}" state.`
+  );
 };
+
+const getPlanActionSaveKey = (action: SuccessRoomPlanAction) =>
+  action.type === 'set-open-accordion'
+    ? 'plan:open-accordion'
+    : `plan:${action.taskKey}:${action.type}`;
 
 export const createSuccessRoomResourceDraft = (
   getRoom: () => SuccessRoomResourceRoom,
@@ -66,73 +92,53 @@ export const createSuccessRoomResourceDraft = (
   getState: () => SuccessRoomResourceState,
 ) => {
   const saveQueue = createSuccessRoomSaveQueue();
-  const initialSnapshot = createResourceDraftSnapshot(
-    getRoom(),
-    getResource(),
-    getState()
-  );
   const draft = createSyncedSnapshot({
-    initial: initialSnapshot,
+    initial: createResourceDraftSnapshot(getRoom(), getResource(), getState()),
     getSnapshot: () => createResourceDraftSnapshot(getRoom(), getResource(), getState()),
     shouldReplace: (current, next) =>
-      current.roomSlug !== next.roomSlug || current.resourceSlug !== next.resourceSlug
+      current.roomSlug !== next.roomSlug || current.resource.slug !== next.resource.slug
   });
 
   attachSuccessRoomSaveQueueLifecycle(saveQueue);
 
-  const requireEditableTextResourceSlug = (): SuccessRoomEditableTextResourceSlug => {
-    const resource = getResource();
+  const dispatchPlanAction = (action: SuccessRoomPlanAction) => {
+    const current = draft.current;
 
-    if (resource.kind !== 'editable-text') {
-      throw new Error('Current success-room resource is not editable text.');
+    if (current.kind !== 'mutual-success-plan') {
+      throw new Error('Current success-room resource is not a mutual success plan.');
     }
 
-    return resource.slug;
-  };
-
-  const requireKickoffScheduleResourceSlug = (): SuccessRoomKickoffScheduleResourceSlug => {
-    const resource = getResource();
-
-    if (resource.kind !== 'kickoff-schedule') {
-      throw new Error('Current success-room resource is not a kickoff schedule.');
-    }
-
-    return resource.slug;
-  };
-
-  const getPlanActionSaveKey = (action: SuccessRoomPlanAction) =>
-    action.type === 'set-open-accordion'
-      ? 'plan:open-accordion'
-      : `plan:${action.taskKey}:${action.type}`;
-
-  const savePlanAction = (action: SuccessRoomPlanAction) => {
+    draft.replace({ ...current, plan: applySuccessRoomPlanAction(current.plan, action) });
     scheduleJsonSave({
       saveQueue,
       key: getPlanActionSaveKey(action),
-      roomSlug: getRoom().slug,
+      roomSlug: current.roomSlug,
       endpoint: 'plan',
       body: { action },
       errorMessage: 'Success room plan could not be saved.'
     });
   };
 
-  const saveEditableTextState = (
-    resourceSlug: SuccessRoomEditableTextResourceSlug,
-    editableState: SuccessRoomEditableTextState,
-  ) => {
-    const stateToSave = cloneEditableTextState(editableState);
+  const setEditableTextState = (editableState: SuccessRoomEditableTextState) => {
+    const current = draft.current;
 
+    if (current.kind !== 'editable-text') {
+      throw new Error('Current success-room resource is not editable text.');
+    }
+
+    const editableText = cloneEditableTextState(editableState);
+
+    draft.replace({ ...current, editableText });
     scheduleJsonSave({
       saveQueue,
-      key: `editable-text:${resourceSlug}`,
-      roomSlug: getRoom().slug,
+      key: `editable-text:${current.resource.slug}`,
+      roomSlug: current.roomSlug,
       endpoint: 'editable-text',
       body: {
-        resourceSlug,
         editableText: {
-          content: stateToSave.content,
-          dataSources: stateToSave.dataSources,
-          success: stateToSave.success
+          content: editableText.content,
+          dataSources: editableText.dataSources,
+          success: editableText.success
         }
       },
       errorMessage: 'Success room editable text could not be saved.',
@@ -140,97 +146,57 @@ export const createSuccessRoomResourceDraft = (
     });
   };
 
-  const saveKickoffScheduleState = (
-    resourceSlug: SuccessRoomKickoffScheduleResourceSlug,
-    schedule: SuccessRoomKickoffScheduleState,
-  ) => {
-    const scheduleToSave = cloneKickoffScheduleState(schedule);
-
-    scheduleJsonSave({
-      saveQueue,
-      key: `kickoff-schedule:${resourceSlug}`,
-      roomSlug: getRoom().slug,
-      endpoint: 'kickoff-schedule',
-      body: {
-        resourceSlug,
-        kickoffSchedule: scheduleToSave
-      },
-      errorMessage: 'Success room kickoff schedule could not be saved.',
-      debounceMs: 500
-    });
-  };
-
-  const setEditableTextState = (
-    resourceSlug: SuccessRoomEditableTextResourceSlug,
-    editableState: SuccessRoomEditableTextState,
-  ) => {
-    const nextState = cloneEditableTextState(editableState);
-
-    draft.replace({
-      ...draft.current,
-      editableText: nextState
-    });
-    saveEditableTextState(resourceSlug, nextState);
-  };
-
   const applyPersistedEditableTextAttachment = ({
     roomSlug,
     resourceSlug,
     attachment
   }: SuccessRoomEditableTextAttachmentUpdate) => {
-    if (draft.current.roomSlug !== roomSlug || draft.current.resourceSlug !== resourceSlug) {
+    const current = draft.current;
+
+    if (
+      current.kind !== 'editable-text' ||
+      current.roomSlug !== roomSlug ||
+      current.resource.slug !== resourceSlug
+    ) {
       return;
     }
 
-    const { attachment: _currentAttachment, ...editableText } = draft.current.editableText;
+    const { attachment: _currentAttachment, ...editableText } = current.editableText;
 
     draft.replace({
-      ...draft.current,
-      editableText: {
-        ...editableText,
-        ...(attachment ? { attachment } : {})
-      }
+      ...current,
+      editableText: { ...editableText, ...(attachment ? { attachment } : {}) }
     });
   };
 
-  const setKickoffScheduleState = (
-    resourceSlug: SuccessRoomKickoffScheduleResourceSlug,
-    schedule: SuccessRoomKickoffScheduleState,
-  ) => {
-    const nextState = cloneKickoffScheduleState(schedule);
+  const setKickoffScheduleState = (schedule: SuccessRoomKickoffScheduleState) => {
+    const current = draft.current;
 
-    draft.replace({
-      ...draft.current,
-      kickoffSchedule: nextState
+    if (current.kind !== 'kickoff-schedule') {
+      throw new Error('Current success-room resource is not a kickoff schedule.');
+    }
+
+    const kickoffSchedule = cloneKickoffScheduleState(schedule);
+
+    draft.replace({ ...current, kickoffSchedule });
+    scheduleJsonSave({
+      saveQueue,
+      key: `kickoff-schedule:${current.resource.slug}`,
+      roomSlug: current.roomSlug,
+      endpoint: 'kickoff-schedule',
+      body: { kickoffSchedule },
+      errorMessage: 'Success room kickoff schedule could not be saved.',
+      debounceMs: 500
     });
-    saveKickoffScheduleState(resourceSlug, nextState);
   };
 
   return {
-    get plan() {
-      return draft.current.plan;
+    get current() {
+      return draft.current;
     },
-    dispatchPlanAction(action: SuccessRoomPlanAction) {
-      const nextPlan = applySuccessRoomPlanAction(draft.current.plan, action);
-
-      draft.replace({
-        ...draft.current,
-        plan: nextPlan
-      });
-      savePlanAction(action);
-    },
-    get editableTextState() {
-      return draft.current.editableText;
-    },
-    set editableTextState(editableState: SuccessRoomEditableTextState) {
-      setEditableTextState(requireEditableTextResourceSlug(), editableState);
-    },
+    dispatchPlanAction,
+    setEditableTextState,
     applyPersistedEditableTextAttachment,
-    get kickoffScheduleState() {
-      return draft.current.kickoffSchedule;
-    },
-    set kickoffScheduleState(schedule: SuccessRoomKickoffScheduleState) {
-      setKickoffScheduleState(requireKickoffScheduleResourceSlug(), schedule);
-    }
+    setKickoffScheduleState
   };
 };

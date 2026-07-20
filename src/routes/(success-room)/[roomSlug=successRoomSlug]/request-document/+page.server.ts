@@ -15,8 +15,7 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => ({
 });
 
 export const actions = {
-  unlock: async ({ cookies, params, request, url }) =>
-    unlockSuccessRoom({ cookies, roomSlug: params.roomSlug, request, url }),
+  unlock: unlockSuccessRoom,
   requestDocument: async ({ cookies, params, request, url }) => {
     const result = await submitSuccessRoomDocumentRequest({
       cookies,

@@ -7,19 +7,8 @@ export type NavLinkItem = {
 
 export const productNavItems = [
   { label: "Pricing", href: "/pricing" },
-  { label: "Survey", href: "/annual-survey" },
-] satisfies NavLinkItem[];
-
-export const companyNavItems = [
   { label: "About", href: "/about" },
 ] satisfies NavLinkItem[];
-
-export const footerNavItems = [
-  ...companyNavItems,
-  { label: "Legal", href: "/legal" },
-] satisfies NavLinkItem[];
-
-export const mobilePrimaryNavItems = [...productNavItems, ...companyNavItems] satisfies NavLinkItem[];
 
 export const authNavItems = [
   { label: "Log in", authRoute: "login", variant: "secondary" },

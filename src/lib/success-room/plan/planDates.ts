@@ -1,3 +1,5 @@
+import { isValidPlanTaskDate } from '../../../../shared/successRoomPlan';
+
 const monthLabels = [
   'Jan',
   'Feb',
@@ -11,11 +13,7 @@ const monthLabels = [
   'Oct',
   'Nov',
   'Dec'
-] as const;
-const monthIndexes: ReadonlyMap<string, number> = new Map(
-  monthLabels.map((month, index) => [month, index])
-);
-const isoDatePattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+];
 const taskDateLabelPattern = /^([A-Z][a-z]{2})\s+(\d{1,2})$/;
 
 const taskDateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -48,18 +46,13 @@ const createCalendarDate = ({
 };
 
 export const parseIsoDate = (value: string) => {
-  const match = isoDatePattern.exec(value);
-
-  if (!match) {
+  if (!isValidPlanTaskDate(value)) {
     throw new Error(`Invalid ISO date: ${value}`);
   }
 
-  return createCalendarDate({
-    year: Number(match[1]),
-    monthIndex: Number(match[2]) - 1,
-    day: Number(match[3]),
-    invalidMessage: `Invalid ISO date: ${value}`
-  });
+  const [year, month, day] = value.split('-').map(Number);
+
+  return new Date(year, month - 1, day);
 };
 
 export const formatIsoDate = (date: Date) => {
@@ -78,11 +71,11 @@ export const parseTaskDateLabel = (dateLabel: string) => {
   }
 
   const [, monthLabel, dayLabel] = match;
-  const monthIndex = monthIndexes.get(monthLabel);
+  const monthIndex = monthLabels.indexOf(monthLabel);
   const day = Number(dayLabel);
   const currentYear = new Date().getFullYear();
 
-  if (monthIndex === undefined || !Number.isInteger(day)) {
+  if (monthIndex === -1) {
     throw new Error(`Invalid task date label: ${dateLabel}`);
   }
 

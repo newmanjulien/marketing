@@ -18,7 +18,7 @@
       {title}
     </h2>
 
-    <p class="mt-[8px] max-w-[720px] text-[18px] font-book leading-[1.55] tracking-normal text-stone-500 sm:text-[17px]">
+    <p class="mt-[8px] max-w-[720px] text-[19px] font-book leading-[1.55] tracking-normal text-stone-500/80 sm:text-[18px]">
       {body}
     </p>
 

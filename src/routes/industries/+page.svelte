@@ -6,7 +6,7 @@
 
   const industrySummaries = {
     insurance: 'See how insurance brokers grow revenue by sharing sales data with carriers, law and accounting firms or with industry associations',
-    law: 'See how law firms grow revenue by sharing data with other lawers, headhunters and with data providers',
+    law: 'See how law firms grow revenue by sharing data with other lawyers, headhunters and with data providers',
     'government-relations':
       'See how GR firms grow revenue by sharing data with law firms, headhunters and with data providers',
     consulting: 'See how consulting firms grow revenue by sharing sales data with tech vendors, private equity firms or with other practice areas within their own firm',
@@ -30,7 +30,7 @@
       {#each industryNavigationItems as industry (industry.id)}
         <a
           href={industry.href}
-          class="group flex items-start justify-between gap-8 border-b border-stone-200/70 py-[24px] text-stone-700 transition-colors hover:text-stone-900"
+          class="group flex items-start justify-between gap-8 border-b border-stone-200 py-[24px] text-stone-700 transition-colors hover:text-stone-900"
         >
           <span class="min-w-0 flex-1">
             <span

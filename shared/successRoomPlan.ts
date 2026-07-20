@@ -1,31 +1,57 @@
-export type SuccessRoomPlanState = {
-  // The one open accordion, or null when they are all closed.
-  openAccordionKey: string | null;
-  checkedTaskKeys: string[];
-  dateOverridesByTaskKey: Record<string, string>;
-  assigneeKeyByTaskKey: Record<string, string>;
-};
+import { v, type Infer } from 'convex/values';
 
-export type SuccessRoomPlanAction =
-  | {
-      type: 'set-open-accordion';
-      accordionKey: string | null;
-    }
-  | {
-      type: 'set-task-checked';
-      taskKey: string;
-      checked: boolean;
-    }
-  | {
-      type: 'set-task-assignee';
-      taskKey: string;
-      memberKey: string | null;
-    }
-  | {
-      type: 'set-task-date';
-      taskKey: string;
-      date: string;
-    };
+export const successRoomPlanStateValidator = v.object({
+  // The one open accordion, or null when they are all closed.
+  openAccordionKey: v.union(v.string(), v.null()),
+  checkedTaskKeys: v.array(v.string()),
+  dateOverridesByTaskKey: v.record(v.string(), v.string()),
+  assigneeKeyByTaskKey: v.record(v.string(), v.string()),
+});
+
+export const successRoomPlanActionValidator = v.union(
+  v.object({
+    type: v.literal('set-open-accordion'),
+    accordionKey: v.union(v.string(), v.null()),
+  }),
+  v.object({
+    type: v.literal('set-task-checked'),
+    taskKey: v.string(),
+    checked: v.boolean(),
+  }),
+  v.object({
+    type: v.literal('set-task-assignee'),
+    taskKey: v.string(),
+    memberKey: v.union(v.string(), v.null()),
+  }),
+  v.object({
+    type: v.literal('set-task-date'),
+    taskKey: v.string(),
+    date: v.string(),
+  }),
+);
+
+export type SuccessRoomPlanState = Infer<typeof successRoomPlanStateValidator>;
+export type SuccessRoomPlanAction = Infer<typeof successRoomPlanActionValidator>;
+
+const planTaskDatePattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+// Task date overrides are stored as strict YYYY-MM-DD calendar dates. Writes
+// must be validated against this because readers parse stored overrides
+// unconditionally.
+export const isValidPlanTaskDate = (value: string) => {
+  const match = planTaskDatePattern.exec(value);
+
+  if (!match) {
+    return false;
+  }
+
+  const year = Number(match[1]);
+  const monthIndex = Number(match[2]) - 1;
+  const day = Number(match[3]);
+  const date = new Date(year, monthIndex, day);
+
+  return date.getFullYear() === year && date.getMonth() === monthIndex && date.getDate() === day;
+};
 
 export const applySuccessRoomPlanAction = (
   plan: SuccessRoomPlanState,

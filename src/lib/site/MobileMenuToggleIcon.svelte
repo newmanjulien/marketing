@@ -1,9 +1,5 @@
 <script lang="ts">
-  interface Props {
-    open: boolean;
-  }
-
-  let { open }: Props = $props();
+  let { open }: { open: boolean } = $props();
 </script>
 
 <span class="menu-toggle-icon" aria-hidden="true" data-open={open}>

@@ -2,15 +2,11 @@
   import { ArrowLeftIcon, ArrowRightIcon } from 'phosphor-svelte';
 
   let {
-    currentIndex,
+    currentIndex = $bindable(),
     itemCount,
-    onprevious,
-    onnext,
   }: {
     currentIndex: number;
     itemCount: number;
-    onprevious: () => void;
-    onnext: () => void;
   } = $props();
 </script>
 
@@ -19,7 +15,7 @@
     type="button"
     class="group inline-flex min-h-[38px] items-center gap-[9px] rounded-[8px] pr-[8px] text-[13px] font-book leading-none text-stone-700 transition-colors hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 disabled:cursor-not-allowed disabled:text-stone-300"
     disabled={currentIndex === 0}
-    onclick={onprevious}
+    onclick={() => (currentIndex -= 1)}
     aria-label="Show previous"
   >
     <span
@@ -35,7 +31,7 @@
     type="button"
     class="group inline-flex min-h-[38px] items-center gap-[9px] rounded-[8px] pl-[8px] text-[13px] font-book leading-none text-stone-700 transition-colors hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 disabled:cursor-not-allowed disabled:text-stone-300"
     disabled={currentIndex >= itemCount - 1}
-    onclick={onnext}
+    onclick={() => (currentIndex += 1)}
     aria-label="Show next"
   >
     <span>Next</span>

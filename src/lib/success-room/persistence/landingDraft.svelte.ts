@@ -18,7 +18,7 @@ const normalizeBenefitsForEditor = (
   selectedCardKeys: [...benefits.selectedCardKeys],
   selectedCustomBenefit: benefits.selectedCustomBenefit,
   painPointsByBenefitKey: { ...benefits.painPointsByBenefitKey },
-  goalsByBenefitKey: { ...(benefits.goalsByBenefitKey ?? {}) }
+  goalsByBenefitKey: { ...benefits.goalsByBenefitKey }
 });
 
 const getBenefitsVersion = (benefits: SuccessRoomBenefitsState) => JSON.stringify(benefits);
@@ -48,10 +48,9 @@ type SuccessRoomBenefitsDraftSnapshot = {
 const createBenefitsDraftSnapshot = (
   room: SuccessRoomLandingRoom,
   state: SuccessRoomLandingState,
-  benefitsVersion = getBenefitsVersion(state.benefits),
 ): SuccessRoomBenefitsDraftSnapshot => ({
   roomSlug: room.slug,
-  benefitsVersion,
+  benefitsVersion: getBenefitsVersion(state.benefits),
   benefits: normalizeBenefitsForEditor(state.benefits),
   customBenefitInput: state.benefits.selectedCustomBenefit ?? ''
 });
@@ -65,20 +64,20 @@ export const createSuccessRoomLandingDraft = (
   const initialBenefitsSnapshot = createBenefitsDraftSnapshot(initialRoom, getState());
   const benefitsDraft = createSyncedSnapshot({
     initial: initialBenefitsSnapshot,
-    getSnapshot: () => {
-      const state = getState();
-      return createBenefitsDraftSnapshot(
-        getRoom(),
-        state,
-        getBenefitsVersion(state.benefits)
-      );
-    },
+    getSnapshot: () => createBenefitsDraftSnapshot(getRoom(), getState()),
     shouldReplace: (current, next) =>
       current.roomSlug !== next.roomSlug || current.benefitsVersion !== next.benefitsVersion
   });
 
-  let teamRoomSlug = $state(initialRoom.slug);
-  let locallyAddedTeamMembers = $state<SuccessRoomTeamMember[]>([]);
+  // Locally added members are scoped to the room they were created in, so a room
+  // switch drops them without any state synchronization.
+  let locallyAddedTeam = $state<{ roomSlug: string; members: SuccessRoomTeamMember[] }>({
+    roomSlug: initialRoom.slug,
+    members: []
+  });
+  const locallyAddedTeamMembers = $derived(
+    locallyAddedTeam.roomSlug === getRoom().slug ? locallyAddedTeam.members : []
+  );
   const team = $derived(appendMissingTeamMembers(getRoom().team, locallyAddedTeamMembers));
 
   attachSuccessRoomSaveQueueLifecycle(saveQueue);
@@ -98,50 +97,35 @@ export const createSuccessRoomLandingDraft = (
     });
   };
 
-  $effect(() => {
-    const roomSlug = getRoom().slug;
-
-    if (teamRoomSlug === roomSlug) {
-      return;
-    }
-
-    teamRoomSlug = roomSlug;
-    locallyAddedTeamMembers = [];
-  });
-
-  const setSelectedBenefitKeys = (nextSelectedBenefitKeys: string[]) => {
-    const benefits = {
-      ...benefitsDraft.current.benefits,
-      selectedCardKeys: [...nextSelectedBenefitKeys]
-    };
+  const patchBenefits = (saveKey: string, patch: SuccessRoomBenefitsPatch) => {
     benefitsDraft.replace({
       ...benefitsDraft.current,
-      benefits
+      benefits: { ...benefitsDraft.current.benefits, ...patch }
     });
-    saveBenefits('selectedBenefits', {
-      selectedCardKeys: benefits.selectedCardKeys
-    });
+    saveBenefits(saveKey, patch);
+  };
+
+  const setSelectedBenefitKeys = (nextSelectedBenefitKeys: string[]) => {
+    patchBenefits('selectedBenefits', { selectedCardKeys: [...nextSelectedBenefitKeys] });
   };
 
   const updateCustomBenefit = (customBenefitInput: string, selected: boolean) => {
-    const currentBenefits = benefitsDraft.current.benefits;
-    const wasSelected = currentBenefits.selectedCustomBenefit !== null;
-    const normalizedInput = customBenefitInput.trim();
-    const isSelected = selected && normalizedInput.length > 0;
-    const nextCustomBenefitInput =
-      isSelected && !wasSelected ? normalizedInput : customBenefitInput;
-    const selectedCustomBenefit = isSelected ? nextCustomBenefitInput : null;
-    const benefits = {
-      ...currentBenefits,
-      selectedCustomBenefit
-    };
+    const wasSelected = benefitsDraft.current.benefits.selectedCustomBenefit !== null;
+    // A blank input can never be the selected benefit.
+    const isSelected = selected && customBenefitInput.trim().length > 0;
+    // The input is trimmed once, at the moment it becomes the selected benefit;
+    // afterwards it tracks the user's typing verbatim.
+    const input = isSelected && !wasSelected ? customBenefitInput.trim() : customBenefitInput;
+    const selectedCustomBenefit = isSelected ? input : null;
 
     benefitsDraft.replace({
       ...benefitsDraft.current,
-      benefits,
-      customBenefitInput: nextCustomBenefitInput
+      benefits: { ...benefitsDraft.current.benefits, selectedCustomBenefit },
+      customBenefitInput: input
     });
 
+    // While the benefit stays deselected only the local input text changed,
+    // so there is nothing to persist.
     if (wasSelected || isSelected) {
       saveBenefits('customBenefit', {
         selectedCustomBenefit
@@ -150,36 +134,20 @@ export const createSuccessRoomLandingDraft = (
   };
 
   const setBenefitPainPoint = (benefitKey: string, value: string) => {
-    const benefits = {
-      ...benefitsDraft.current.benefits,
+    patchBenefits('painPoints', {
       painPointsByBenefitKey: {
         ...benefitsDraft.current.benefits.painPointsByBenefitKey,
         [benefitKey]: value
       }
-    };
-    benefitsDraft.replace({
-      ...benefitsDraft.current,
-      benefits
-    });
-    saveBenefits('painPoints', {
-      painPointsByBenefitKey: benefits.painPointsByBenefitKey
     });
   };
 
   const setBenefitGoal = (benefitKey: string, value: string) => {
-    const benefits = {
-      ...benefitsDraft.current.benefits,
+    patchBenefits('goals', {
       goalsByBenefitKey: {
-        ...(benefitsDraft.current.benefits.goalsByBenefitKey ?? {}),
+        ...benefitsDraft.current.benefits.goalsByBenefitKey,
         [benefitKey]: value
       }
-    };
-    benefitsDraft.replace({
-      ...benefitsDraft.current,
-      benefits
-    });
-    saveBenefits('goals', {
-      goalsByBenefitKey: benefits.goalsByBenefitKey
     });
   };
 
@@ -216,21 +184,26 @@ export const createSuccessRoomLandingDraft = (
     },
     setBenefitPainPoint,
     get goalsByBenefitKey() {
-      return benefitsDraft.current.benefits.goalsByBenefitKey ?? {};
+      return benefitsDraft.current.benefits.goalsByBenefitKey;
     },
     setBenefitGoal,
     get team() {
       return team;
     },
     async addTeamMember(member: TeamMemberInput) {
+      const roomSlug = getRoom().slug;
       const createdMember = await createTeamMember({
-        roomSlug: getRoom().slug,
+        roomSlug,
         ...member
       });
 
-      locallyAddedTeamMembers = appendMissingTeamMembers(locallyAddedTeamMembers, [
-        createdMember
-      ]);
+      locallyAddedTeam = {
+        roomSlug,
+        members: appendMissingTeamMembers(
+          locallyAddedTeam.roomSlug === roomSlug ? locallyAddedTeam.members : [],
+          [createdMember]
+        )
+      };
     }
   };
 };

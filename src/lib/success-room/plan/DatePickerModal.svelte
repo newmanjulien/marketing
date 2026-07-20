@@ -91,7 +91,7 @@
   };
 </script>
 
-<ModalShell {open} title="Select date" onClose={onClose} class="max-w-[360px]">
+<ModalShell {open} title="Select date" {onClose} class="max-w-[360px]">
   <div class="font-body">
     <div class={calendarHeaderClasses}>
       <button

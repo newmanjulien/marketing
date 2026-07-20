@@ -1,11 +1,12 @@
 import type { api } from '../../../../convex/_generated/api';
-import type { Id } from '../../../../convex/_generated/dataModel';
 import type { FunctionArgs, FunctionReference } from 'convex/server';
 import type { SuccessRoomLinkedFileMetadata, SuccessRoomTeamMember } from './types';
 
+// The SvelteKit API routes add the session token from the cookie; the client
+// sends everything else the Convex mutation expects.
 type MutationBody<Mutation extends FunctionReference<'mutation', 'public'>> = Omit<
   FunctionArgs<Mutation>,
-  'slug' | 'accessToken'
+  'sessionToken'
 >;
 
 export type SuccessRoomUploadResult =
@@ -18,36 +19,25 @@ export type SuccessRoomUploadResult =
       member: SuccessRoomTeamMember;
     };
 
-export type SuccessRoomUploadCapability = {
-  uploadIntentId: Id<'successRoomUploadIntents'>;
-  uploadToken: string;
-  uploadUrl: string;
-};
-
 export type SuccessRoomAutosaveApiBodyByOperation = {
-  benefits: MutationBody<typeof api.successRooms.patchBenefits>;
-  plan: MutationBody<typeof api.successRooms.applyPlanAction>;
-  'editable-text': MutationBody<typeof api.successRooms.patchEditableText>;
-  'kickoff-schedule': MutationBody<typeof api.successRooms.replaceKickoffSchedule>;
+  benefits: MutationBody<typeof api.rooms.patchBenefits>;
+  plan: MutationBody<typeof api.rooms.applyPlanAction>;
+  'editable-text': MutationBody<typeof api.rooms.patchEditableText>;
+  'kickoff-schedule': MutationBody<typeof api.rooms.replaceKickoffSchedule>;
 };
 
 export type SuccessRoomPostApiBodyByOperation = SuccessRoomAutosaveApiBodyByOperation & {
-  'upload-intent': MutationBody<typeof api.successRooms.createUploadIntent>;
+  'upload-url': Record<string, never>;
+  'claim-upload': MutationBody<typeof api.rooms.claimUpload>;
 };
 
-export type SuccessRoomDeleteApiBodyByOperation = {
-  'editable-attachment': MutationBody<typeof api.successRooms.removeEditableAttachment>;
-};
+export type SuccessRoomDeleteApiOperation = 'editable-attachment';
 
 export type SuccessRoomUploadPurpose =
-  SuccessRoomPostApiBodyByOperation['upload-intent']['purpose'];
+  SuccessRoomPostApiBodyByOperation['claim-upload']['purpose'];
 
 export type SuccessRoomAutosaveApiOperation = keyof SuccessRoomAutosaveApiBodyByOperation;
 export type SuccessRoomPostApiOperation = keyof SuccessRoomPostApiBodyByOperation;
-export type SuccessRoomDeleteApiOperation = keyof SuccessRoomDeleteApiBodyByOperation;
 
 export type SuccessRoomPostApiBody<Operation extends SuccessRoomPostApiOperation> =
   SuccessRoomPostApiBodyByOperation[Operation];
-
-export type SuccessRoomDeleteApiBody<Operation extends SuccessRoomDeleteApiOperation> =
-  SuccessRoomDeleteApiBodyByOperation[Operation];

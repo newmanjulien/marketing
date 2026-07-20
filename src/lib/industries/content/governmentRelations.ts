@@ -1,10 +1,11 @@
-import type { IndustryContentDefinition } from "../types";
+import type { IndustryPageContent } from "../types";
+import { partnershipsIntroParagraph } from "./shared";
 
 export const governmentRelationsContent = {
   heading: "Overbase for GR firms",
   introParagraphs: [
     "Government relations firms have a large network of natural partners—data providers who track when clients need help, lawyers who pass along files, and headhunters who flag open roles where you can recommend your contacts",
-    "These partnerships drive growth, but many opportunities never surface. Because everyone's data is trapped in separate systems",
+    partnershipsIntroParagraph,
   ],
   screenshots: {
     setup: {
@@ -23,11 +24,11 @@ export const governmentRelationsContent = {
         },
         opportunityEmail: {
           src: "/screenshots/government-relations3.png",
-          alt: "Gmail opportunity email showing an attached insurance renewal report from Overbase.",
+          alt: "Gmail opportunity email showing an attached report from Overbase.",
           width: 1408,
           height: 670,
         },
       },
     ],
   },
-} satisfies IndustryContentDefinition;
+} satisfies IndustryPageContent;

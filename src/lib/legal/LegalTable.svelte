@@ -8,8 +8,6 @@
     columns: readonly LegalTableColumn[];
     rows: readonly LegalTableRow[];
   } = $props();
-
-  const getCell = (row: LegalTableRow, key: string) => row[key] ?? '';
 </script>
 
 <div class="mt-[20px] overflow-x-auto">
@@ -25,7 +23,7 @@
       {#each rows as row}
         <tr>
           {#each columns as column, index (column.key)}
-            {@const cell = getCell(row, column.key)}
+            {@const cell = row[column.key] ?? ''}
             {#if index === 0}
               <th class="w-[34%] border border-stone-200 px-[16px] py-[14px] text-left align-top font-medium text-stone-700" scope="row">{cell}</th>
             {:else}

@@ -93,9 +93,7 @@ export const createSuccessRoomSaveQueue = () => {
   };
 
   const flush = async () => {
-    await Promise.all(
-      Array.from(entries.entries()).map(([key, entry]) => runEntry(key, entry))
-    );
+    await Promise.all([...entries].map(([key, entry]) => runEntry(key, entry)));
   };
 
   const flushAndDispose = () => {

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import DataSourceGridGraphic from '$lib/home/features/data-sources/DataSourceGridGraphic.svelte';
-  import PartnerDataSharingGraphic from '$lib/home/features/partner-sharing/PartnerDataSharingGraphic.svelte';
+  import CalendarConnectGraphic from '$lib/home/features/calendar-connect/CalendarConnectGraphic.svelte';
+  import NetworkResultsGraphic from '$lib/home/features/network-results/NetworkResultsGraphic.svelte';
   import TestimonialsGraphic from '$lib/home/features/testimonials/TestimonialsGraphic.svelte';
   import HomeCtaSection from '$lib/home/cta/HomeCtaSection.svelte';
   import Hero from '$lib/home/hero/Hero.svelte';
@@ -14,27 +14,27 @@
   />
 </svelte:head>
 
-<main class="bg-stone-50/80">
+<main>
   <Hero />
 
   <div class="flex flex-col gap-[150px] pt-[150px] sm:gap-[190px] sm:pt-[190px]">
     <FeatureSection
-      title="Connect your sales data"
-      body="Share any structured data like CRM and share any unstructured data like email. Easily share even your most disconnected data"
+      title="You connect your data"
+      body="Easily, quickly and safely connect any data source. Overbase can analyze any structured and unstructured data"
     >
-      <DataSourceGridGraphic />
+      <CalendarConnectGraphic />
     </FeatureSection>
 
     <FeatureSection
-      title="Partners connect their data"
-      body="Your ecosystem partners can share data with you for free and securely. They stay in full control of what gets shared"
+      title="Your network connects their data"
+      body="Your network easily, quickly and safely connects their data for free then we find opportunities for both of you"
     >
-      <PartnerDataSharingGraphic />
+      <NetworkResultsGraphic />
     </FeatureSection>
 
     <FeatureSection
-      title="Receive opportunities by email"
-      body="There's no need to change how your team operates. Overbase simply sends revenue opportunities by email"
+      title="Receive opportunities by text message"
+      body="Overbase sends opportunities by text message. No dashboard and no need to change how you work"
     >
       <TestimonialsGraphic />
     </FeatureSection>

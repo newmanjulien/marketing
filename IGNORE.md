@@ -6,6 +6,42 @@ Create a plan for a fresh agent who has no context. Explain from first principle
 
 Compare this codebase vs head. What changes do you disagree with (if any)?
 
-Are there other similar or adjacent opportunities?
+---
 
-Should we do this?
+Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where the code could be written more tastefully
+
+Look for small things that would put off a senior dev. Style issues are fine
+
+Then you review the places they found with a critical eye
+
+Tell me which ones we should actually do
+
+---
+
+Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where the code could make better use of sveltekit's advantages
+
+Don't look for big strutural things. Look for syntax and other code-level changes. Style issues are fine. These don't need to be huge wins
+
+Then you review the places they found with a critical eye
+
+Tell me which ones we should actually do
+
+---
+
+Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where the code could be shorter
+
+Don't look for big strutural things. Don't try to create new components unless it's clealy worth it
+
+Look for lines of code that could be written better. These don't need to be huge wins
+
+Then you review the places they found with a critical eye
+
+Tell me which ones we should actually do
+
+---
+
+Spin up 5 subagents who pick random sections of the code. Get each one to find up to 1 bug
+
+Then you review the bugs they found with a critical eye
+
+Tell me which ones we should actually fix

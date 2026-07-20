@@ -1,10 +1,11 @@
-import type { IndustryContentDefinition } from "../types";
+import type { IndustryPageContent } from "../types";
+import { partnershipsIntroParagraph } from "./shared";
 
 export const insuranceContent = {
   heading: "Overbase for insurance brokers",
   introParagraphs: [
     "Commercial insurance brokers have a large network of natural partners—carriers who can help spot new coverage needs, law and accounting firms that see great referral leads, and industry associations with built-in members",
-    "These partnerships drive growth, but many opportunities never surface. Because everyone's data is trapped in separate systems",
+    partnershipsIntroParagraph,
   ],
   screenshots: {
     setup: {
@@ -30,4 +31,4 @@ export const insuranceContent = {
       },
     ],
   },
-} satisfies IndustryContentDefinition;
+} satisfies IndustryPageContent;

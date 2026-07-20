@@ -2,7 +2,7 @@
   import type { Snippet } from 'svelte';
 
   type ContentMeasureElement = 'article' | 'div' | 'section';
-  type ContentMeasureWidth = 'standard' | 'narrow' | 'wide' | 'copy';
+  type ContentMeasureWidth = 'standard' | 'narrow' | 'copy';
 
   let {
     as = 'div',
@@ -17,10 +17,9 @@
   } = $props();
 
   const widthClasses = {
-    standard: 'max-w-[780px]',
-    narrow: 'max-w-[720px]',
-    wide: 'max-w-[860px]',
-    copy: 'max-w-[640px]'
+    standard: 'max-w-[702px]',
+    narrow: 'max-w-[648px]',
+    copy: 'max-w-[576px]'
   };
 </script>
 

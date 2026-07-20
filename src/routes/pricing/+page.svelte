@@ -7,39 +7,64 @@
 
   const joinHref = createPortalAuthUrlForMarketingPath('join', '/pricing');
 
-  const pricingPlan = {
-    price: '5%',
-    priceLabel: 'of revenue',
-    name: 'Success based',
-    description: 'Pay 5% of the revenue we help you generate and only pay after you get paid',
-    ctaLabel: 'Join now',
-    benefits: [
-      'Unlimited users and unlimited use',
-      'Add any and all data sources',
-      'Invite as many partners as you want'
-    ]
-  } as const;
-
-  const faqItems = [
+  const pricingPlans = [
     {
-      question: "Wait, what's your price again?",
-      answer:
-        'We charge 5% of the net new revenue we help you generate. You only pay after you get paid'
+      price: '$100',
+      priceLabel: 'per month',
+      name: 'Single user',
+      description: 'Monthly fee to help professionals grow their practice',
+      ctaLabel: 'Join now',
+      ctaHref: joinHref,
+      external: true,
+      benefits: [
+        'One user',
+        'Use pre-existing formats',
+        'Your network joins for free',
+        'Zero retention data processing'
+      ]
     },
     {
-      question: 'Do my ecosystem partners pay anything?',
+      price: '5%',
+      priceLabel: 'of revenue',
+      name: 'Whole firm',
+      description: 'Professional services firms pay 5% of the revenue we help generate',
+      ctaLabel: 'Schedule demo',
+      ctaHref: 'https://cal.com/juliennewman',
+      external: true,
+      benefits: [
+        'Unlimited users',
+        'Use custom formats',
+        'Your network joins for free',
+        'Zero retention data processing'
+      ]
+    }
+  ] as const;
+
+  const faqItems = [
+     {
+      question: 'Can I join on my own?',
       answer:
-        'No. Your ecosystem partners can share any data with you for free through Overbase. They would only pay if they selected to receive revenue opportunities'
+        'Yes, easily. Quickly sign up for a simple $100 per month'
+    },
+      {
+      question: 'Can my whole firm join?',
+      answer:
+        'Yes, and on favorable terms. If your whole firm joins, we use success based pricing where we charge 5% of the revenue we help you generate and we get paid after you get paid'
+    },
+     {
+      question: "What's different about custom formats?",
+      answer:
+        'Overbase packages up the most popular formats so single users can easily access them. When we partner with a whole firm, we create custom formats together that perfectly match how that firm works'
+    },
+    {
+      question: 'Does my network pay anything?',
+      answer:
+        'No. Your network can join Overbase and share data with you for free. They would only pay if they selected to receive opportunities'
     },
     {
       question: 'How does success-based pricing work?',
       answer:
-        'You pay 5% of the net new revenue we generate together, and you only pay after you get paid. Revenue is attributed by your team in a self-reported way'
-    },
-    {
-      question: 'Are there any upfront costs at all?',
-      answer:
-        "Most companies pay $15,000 for a proof of concept before signing an annual contract. Some companies purchase a one-week onsite deployment kickoff for $5,000, which includes an Overbase engineer on-site, travel expenses, deployment assistance, knowledge transfer, and hands-on training"
+        'Your firm pays 5% of the revenue we generate together, and you only pay after you get paid. Revenue is attributed by your team in a self-reported way'
     }
   ] as const;
 </script>
@@ -51,11 +76,14 @@
     </h1>
 
     <p class="mt-[24px] text-[17px] font-book leading-[1.55] tracking-normal text-stone-700">
-      How much does Overbase cost? Our pricing is success based. We only get paid after you get paid. You pay 5% of the net new revenue we help you generate and only
-      pay after you get paid
+      How much does Overbase cost? You can easily join on your own for a simple $100 per month. If your whole firm joins, we charge 5% of the revenue we help generate
     </p>
 
-    <PricingCard {joinHref} plan={pricingPlan} />
+    <div class="mt-[43px] grid gap-[20px] sm:grid-cols-2">
+      {#each pricingPlans as plan (plan.name)}
+        <PricingCard {plan} />
+      {/each}
+    </div>
   </ContentMeasure>
 
   <PricingFaqSection heading="Frequently Asked Questions" items={faqItems} />

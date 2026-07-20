@@ -35,7 +35,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .home-view-reveal {
+    .home-view-reveal,
+    .home-view-reveal.is-viewed {
       transition: none;
     }
   }

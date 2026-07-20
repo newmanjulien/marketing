@@ -3,9 +3,8 @@
 
 export const reservedSuccessRoomSlugs = [
   "about",
-  "annual-survey",
-  "cmos",
   "docs",
+  "fonts",
   "industries",
   "legal",
   "pricing",

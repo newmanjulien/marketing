@@ -1,3 +1,5 @@
+import { v, type Infer } from 'convex/values';
+
 export const successRoomDescription =
   "A shared space for everything we create while preparing for a proof of concept and deciding whether to collaborate";
 
@@ -48,6 +50,30 @@ export const kickoffScheduleResourceDefinition = {
   description:
     "Review and edit the schedule for Overbase's engineer to come to your office and kick off our collaboration in person",
 } as const;
+
+export const successRoomResourceKeyValidator = v.union(
+  v.literal(deckResourceKey),
+  v.literal(audioResourceKey),
+  v.literal(mutualSuccessPlanResourceKey),
+  v.literal(initialFormatResourceKey),
+  v.literal(kickoffScheduleResourceKey),
+);
+
+// Deck and audio are uploaded assets; the rest render as routed pages.
+export const assetSuccessRoomResourceKeyValidator = v.union(
+  v.literal(deckResourceKey),
+  v.literal(audioResourceKey),
+);
+
+export const routedSuccessRoomResourceKeyValidator = v.union(
+  v.literal(mutualSuccessPlanResourceKey),
+  v.literal(initialFormatResourceKey),
+  v.literal(kickoffScheduleResourceKey),
+);
+
+export type SuccessRoomResourceKey = Infer<typeof successRoomResourceKeyValidator>;
+export type AssetSuccessRoomResourceKey = Infer<typeof assetSuccessRoomResourceKeyValidator>;
+export type RoutedSuccessRoomResourceKey = Infer<typeof routedSuccessRoomResourceKeyValidator>;
 
 export const successRoomResourceDefinitions = [
   deckResourceDefinition,

@@ -1,25 +1,24 @@
-import type { DocsPage, DocsPageRegistryEntry, DocsSectionModule } from './docsTypes';
-import { docsSections, isDocsSection, type DocsSection } from './docsSections';
+import type { DocsPage, DocsPageEntry, DocsSectionModule } from './docsTypes';
+import { docsSections, type DocsSectionDefinition } from './docsSections';
 
-const docsCategoryLabels: Record<string, string> = {
-  insurance: 'Insurance'
-};
-
-const docsPageEntries: DocsPageRegistryEntry[] = [
+const docsPageEntries: DocsPageEntry[] = [
   {
     category: 'insurance',
+    categoryLabel: 'Insurance',
     slug: 'applied-epic-access',
     title: 'Applied Epic Requirements',
     description: 'Read-only Applied Epic API and user access requirements for implementation teams.'
   },
   {
     category: 'insurance',
+    categoryLabel: 'Insurance',
     slug: 'microsoft-outlook-calendar-integration',
     title: 'Microsoft Outlook Calendar Integration for Renewal Intelligence',
     description: 'Read-only Microsoft 365 calendar access requirements for Renewal Intelligence.'
   },
   {
     category: 'insurance',
+    categoryLabel: 'Insurance',
     slug: 'zoominfo-client-data-enrichment',
     title: 'ZoomInfo Integration for Client Data Enrichment',
     description: 'ZoomInfo company enrichment requirements for client and account data quality.'
@@ -28,87 +27,39 @@ const docsPageEntries: DocsPageRegistryEntry[] = [
 
 const docsSectionModules = import.meta.glob<DocsSectionModule>('../../content/docs/*/*/*.svx');
 
-type DocsSectionLoader = () => Promise<DocsSectionModule>;
-type DocsSectionLoaders = Partial<Record<DocsSection, DocsSectionLoader>>;
-type ResolvedDocsSection = (typeof docsSections)[number] & {
-  load: DocsSectionLoader;
-};
+export const getDocsPageParams = () =>
+  docsPageEntries.map(({ category, slug }) => ({ category, slug }));
 
-const getDocsPageKey = (category: string, slug: string) => `${category}/${slug}`;
+export const getDocsPage = async (category: string, slug: string): Promise<DocsPage | undefined> => {
+  const pageEntry = docsPageEntries.find(
+    (entry) => entry.category === category && entry.slug === slug
+  );
 
-const getDocsSectionPathParts = (path: string) => {
-  const [category, slug, filename] = path.split('/').slice(-3);
-  const section = filename.slice(0, -4);
-
-  return isDocsSection(section) ? { category, slug, section } : undefined;
-};
-
-const docsPageRegistry = new Map(
-  docsPageEntries.map((entry) => [getDocsPageKey(entry.category, entry.slug), entry])
-);
-
-const docsPageSectionLoaders = new Map<string, DocsSectionLoaders>();
-
-for (const [path, load] of Object.entries(docsSectionModules)) {
-  const pathParts = getDocsSectionPathParts(path);
-
-  if (pathParts) {
-    const pageKey = getDocsPageKey(pathParts.category, pathParts.slug);
-    const pageLoaders = docsPageSectionLoaders.get(pageKey) ?? {};
-
-    pageLoaders[pathParts.section] = load;
-    docsPageSectionLoaders.set(pageKey, pageLoaders);
-  }
-}
-
-const resolveRequiredSections = (
-  sectionLoaders: DocsSectionLoaders | undefined
-): ResolvedDocsSection[] | undefined => {
-  if (!sectionLoaders) {
+  if (!pageEntry) {
     return undefined;
   }
 
-  const resolvedSections: ResolvedDocsSection[] = [];
+  const sectionLoaders: { section: DocsSectionDefinition; load: () => Promise<DocsSectionModule> }[] = [];
 
   for (const section of docsSections) {
-    const load = sectionLoaders[section.key];
+    const load = docsSectionModules[`../../content/docs/${category}/${slug}/${section.key}.svx`];
 
     if (!load) {
       return undefined;
     }
 
-    resolvedSections.push({
-      ...section,
-      load
-    });
-  }
-
-  return resolvedSections;
-};
-
-export const getDocsPage = async (category: string, slug: string): Promise<DocsPage | undefined> => {
-  const pageKey = getDocsPageKey(category, slug);
-  const pageEntry = docsPageRegistry.get(pageKey);
-  const requiredSections = resolveRequiredSections(docsPageSectionLoaders.get(pageKey));
-
-  if (!pageEntry || !requiredSections) {
-    return undefined;
+    sectionLoaders.push({ section, load });
   }
 
   const sections = await Promise.all(
-    requiredSections.map(async ({ load, ...section }) => {
-      const sectionModule = await load();
-
-      return {
-        ...section,
-        component: sectionModule.default
-      };
-    })
+    sectionLoaders.map(async ({ section, load }) => ({
+      ...section,
+      component: (await load()).default
+    }))
   );
 
   return {
     ...pageEntry,
-    categoryLabel: docsCategoryLabels[pageEntry.category] ?? pageEntry.category,
     sections
   };
 };

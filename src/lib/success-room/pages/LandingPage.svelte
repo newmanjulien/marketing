@@ -8,8 +8,7 @@
   import DocumentsPanel from '../documents/DocumentsPanel.svelte';
   import Header from '../shell/Header.svelte';
   import BenefitsPanel from '../plan/BenefitsPanel.svelte';
-  import PainPointsPanel from './PainPointsPanel.svelte';
-  import GoalsPanel from './GoalsPanel.svelte';
+  import BenefitPromptsPanel from './BenefitPromptsPanel.svelte';
   import TeamImagePreloader from '../team/TeamImagePreloader.svelte';
   import TeamPanel from '../team/TeamPanel.svelte';
   import { createSuccessRoomLandingDraft } from '../persistence/landingDraft.svelte';
@@ -41,6 +40,13 @@
 
   type SuccessRoomSection = (typeof baseSuccessRoomSections)[number];
 
+  // These sections only exist once benefits are selected, and animate in and out
+  // with that selection.
+  const benefitDependentSectionKeys: readonly SuccessRoomSection['key'][] = [
+    'pain-points',
+    'goals'
+  ];
+
   const resolveActiveSectionKey = (
     sections: readonly SuccessRoomSection[],
     requestedSectionKey: string | null
@@ -65,20 +71,16 @@
       : [])
   ]);
   const successRoomSections = $derived(
-    baseSuccessRoomSections.filter((section) => {
-      if (section.key === 'pain-points' || section.key === 'goals') {
-        return hasSelectedBenefits;
-      }
-
-      return true;
-    })
+    baseSuccessRoomSections.filter(
+      (section) => hasSelectedBenefits || !benefitDependentSectionKeys.includes(section.key)
+    )
   );
   const requestedSectionKey = $derived(page.url.searchParams.get('section'));
   const activeSectionKey = $derived(
     resolveActiveSectionKey(successRoomSections, requestedSectionKey)
   );
 
-  const updateSectionUrl = async (sectionKey: SuccessRoomSection['key'], replace = false) => {
+  const updateSectionUrl = async (sectionKey: SuccessRoomSection['key'], { replace = false } = {}) => {
     const url = new URL(page.url);
 
     if (sectionKey === 'benefits') {
@@ -87,14 +89,12 @@
       url.searchParams.set('section', sectionKey);
     }
 
-    const href = `${url.pathname}${url.search}${url.hash}`;
-
-    await goto(href, { replaceState: replace, keepFocus: true, noScroll: true });
+    await goto(url, { replaceState: replace, keepFocus: true, noScroll: true });
   };
 
   $effect(() => {
     if (requestedSectionKey && requestedSectionKey !== activeSectionKey) {
-      updateSectionUrl(activeSectionKey, true);
+      updateSectionUrl(activeSectionKey, { replace: true });
     }
   });
 </script>
@@ -110,12 +110,10 @@
     <TeamImagePreloader team={draft.team} />
 
     <PillTabs
-      idBase={`success-room-${room.slug}`}
       tabs={successRoomSections}
       ariaLabel={`${room.prospectName} success room sections`}
-      activeTabKey={activeSectionKey}
-      onActiveTabKeyChange={(sectionKey) => updateSectionUrl(sectionKey)}
-      animatedTabKeys={['pain-points', 'goals']}
+      bind:activeTabKey={() => activeSectionKey, (sectionKey) => updateSectionUrl(sectionKey)}
+      animatedTabKeys={benefitDependentSectionKeys}
       listClass="mt-[34px]"
       panelClass="mt-[38px]"
     >
@@ -132,16 +130,21 @@
         {:else if section.key === 'team'}
           <TeamPanel team={draft.team} onAddTeamMember={draft.addTeamMember} />
         {:else if section.key === 'pain-points'}
-          <PainPointsPanel
+          <BenefitPromptsPanel
             {selectedBenefits}
-            painPointsByBenefitKey={draft.painPointsByBenefitKey}
-            onPainPointChange={draft.setBenefitPainPoint}
+            description="For each benefit you selected, tell us the pain points and related metrics keeping you from it."
+            promptFor={(label) => `What's keeping you from “${label}”?`}
+            valuesByBenefitKey={draft.painPointsByBenefitKey}
+            onValueChange={draft.setBenefitPainPoint}
           />
         {:else if section.key === 'goals'}
-          <GoalsPanel
+          <BenefitPromptsPanel
             {selectedBenefits}
-            goalsByBenefitKey={draft.goalsByBenefitKey}
-            onGoalChange={draft.setBenefitGoal}
+            description="For each benefit you selected, tell us the goals and how you measure them."
+            promptFor={(label) =>
+              `What KPIs do you currently use to track “${label}”? Are there existing projects to achieve this?`}
+            valuesByBenefitKey={draft.goalsByBenefitKey}
+            onValueChange={draft.setBenefitGoal}
           />
         {/if}
       {/snippet}

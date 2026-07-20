@@ -3,7 +3,7 @@
 </script>
 
 <section
-  class="mt-[34px] rounded-[16px] border border-stone-200/70 bg-white px-[22px] py-[36px] text-center shadow-[0_1px_4px_rgba(28,25,23,0.06)] sm:px-[40px] sm:py-[44px]"
+  class="mt-[34px] rounded-[16px] border border-stone-200 bg-white px-[22px] py-[36px] text-center shadow-[0_1px_4px_rgba(28,25,23,0.06)] sm:px-[40px] sm:py-[44px]"
   role="status"
   aria-labelledby="document-request-confirmation-title"
 >

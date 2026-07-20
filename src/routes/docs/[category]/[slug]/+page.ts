@@ -1,6 +1,8 @@
 import { error } from '@sveltejs/kit';
-import { getDocsPage } from '$lib/docs/docsPages';
-import type { PageLoad } from './$types';
+import { getDocsPage, getDocsPageParams } from '$lib/docs/docsPages';
+import type { EntryGenerator, PageLoad } from './$types';
+
+export const entries: EntryGenerator = getDocsPageParams;
 
 export const load: PageLoad = async ({ params }) => {
   const docsPage = await getDocsPage(params.category, params.slug);

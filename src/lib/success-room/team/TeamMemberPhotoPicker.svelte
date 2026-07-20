@@ -72,7 +72,7 @@
       type="button"
       class="group relative flex aspect-square w-[88px] items-center justify-center overflow-hidden rounded-[8px] border border-stone-200 bg-stone-100 text-stone-400 transition-colors duration-150 hover:border-stone-300 hover:text-stone-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:opacity-60"
       aria-label={value ? 'Replace team member photo' : 'Choose team member photo'}
-      disabled={disabled}
+      {disabled}
       onclick={openFilePicker}
     >
       {#if previewUrl}
@@ -93,7 +93,7 @@
         <button
           type="button"
           class="inline-flex h-[34px] items-center gap-[7px] rounded-[8px] border border-stone-200 bg-white px-[11px] font-body text-[13px] font-book leading-none tracking-normal text-stone-600 transition-colors duration-150 hover:border-stone-300 hover:text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:bg-stone-50 disabled:text-stone-300"
-          disabled={disabled}
+          {disabled}
           onclick={openFilePicker}
         >
           <ImageIcon size={15} weight="regular" aria-hidden="true" />
@@ -104,7 +104,7 @@
           <button
             type="button"
             class="inline-flex h-[34px] items-center gap-[7px] rounded-[8px] border border-transparent bg-transparent px-[9px] font-body text-[13px] font-book leading-none tracking-normal text-stone-400 transition-colors duration-150 hover:bg-stone-100 hover:text-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:text-stone-300"
-            disabled={disabled}
+            {disabled}
             onclick={removeFile}
           >
             <TrashIcon size={14} weight="regular" aria-hidden="true" />

@@ -1,22 +1,18 @@
 <script lang="ts">
   import { successRoomDocumentRequestTitle } from '../domain/documentRequests';
-  import { getSuccessRoomDocumentRequestPath } from '../domain/urls';
+  import { getSuccessRoomDocumentRequestPath, getSuccessRoomResourcePath } from '../domain/urls';
   import type { SuccessRoomLandingRoom } from '../domain/types';
   import DocumentLinkCard from './DocumentLinkCard.svelte';
-  import ResourceCard from './ResourceCard.svelte';
 
   let {
     room
   }: {
     room: Pick<SuccessRoomLandingRoom, 'slug' | 'prospectName' | 'resources'>;
   } = $props();
-
-  const descriptionClasses =
-    'text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]';
 </script>
 
 <div class="grid gap-[18px]">
-  <p class={descriptionClasses}>
+  <p class="text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]">
     Explore the documents and resources we co-created during this evaluation process
   </p>
 
@@ -25,7 +21,13 @@
     aria-label={`${room.prospectName} success room resources`}
   >
     {#each room.resources as resource (resource.slug)}
-      <ResourceCard {room} {resource} />
+      {@const isAsset = resource.delivery.type === 'asset'}
+      <DocumentLinkCard
+        href={getSuccessRoomResourcePath(room.slug, resource.slug)}
+        target={isAsset ? '_blank' : undefined}
+        rel={isAsset ? 'noopener noreferrer' : undefined}
+        label={resource.actionLabel}
+      />
     {/each}
 
     <DocumentLinkCard

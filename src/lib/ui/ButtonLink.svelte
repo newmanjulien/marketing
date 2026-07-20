@@ -5,8 +5,7 @@
   type ButtonLinkProps = Omit<HTMLAnchorAttributes, 'href' | 'children'> & {
     href: string;
     variant: 'primary' | 'secondary' | 'soft';
-    size: 'small' | 'large' | 'hero' | 'xlarge';
-    textSize?: 'default' | 'compact';
+    size: 'small' | 'medium' | 'large' | 'hero' | 'xlarge';
     shape?: 'default' | 'pill';
     fullWidth?: boolean;
     highlightSweep?: boolean;
@@ -17,7 +16,6 @@
     href,
     variant,
     size,
-    textSize = 'default',
     shape = 'default',
     fullWidth = false,
     highlightSweep = false,
@@ -35,25 +33,11 @@
   };
 
   const sizeClasses = {
-    small: 'h-[36px] px-[14px]',
-    large: 'h-[50px] px-[23px]',
-    hero: 'h-[54px] px-[28px]',
-    xlarge: 'h-[58px] px-[32px]'
-  };
-
-  const textSizeClasses = {
-    default: {
-      small: 'text-[15px]',
-      large: 'text-[18px]',
-      hero: 'text-[18px]',
-      xlarge: 'text-[19px]'
-    },
-    compact: {
-      small: 'text-[14px]',
-      large: 'text-[16px]',
-      hero: 'text-[17px]',
-      xlarge: 'text-[17px]'
-    }
+    small: 'h-[36px] px-[14px] text-[14px]',
+    medium: 'h-[42px] px-[14px] text-[14px]',
+    large: 'h-[50px] px-[23px] text-[18px]',
+    hero: 'h-[54px] px-[28px] text-[17px]',
+    xlarge: 'h-[58px] px-[32px] text-[17px]'
   };
 
   const variantClasses = {
@@ -70,7 +54,6 @@
     baseClasses,
     shapeClasses[shape],
     sizeClasses[size],
-    textSizeClasses[textSize][size],
     variantClasses[variant],
     { 'w-full': fullWidth },
     { 'button-link-highlight-sweep relative overflow-hidden': highlightSweep },

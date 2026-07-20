@@ -39,11 +39,12 @@
     onClose();
   };
 
-  const submit = async () => {
-    const trimmedName = name.trim();
-    const trimmedRole = role.trim();
+  const canSubmit = $derived(
+    name.trim() !== '' && role.trim() !== '' && photoFile !== null && !submitting
+  );
 
-    if (!trimmedName || !trimmedRole || !photoFile || submitting) {
+  const submit = async () => {
+    if (!canSubmit || !photoFile) {
       return;
     }
 
@@ -52,8 +53,8 @@
 
     try {
       await onAddTeamMember({
-        name: trimmedName,
-        role: trimmedRole,
+        name: name.trim(),
+        role: role.trim(),
         photoFile
       });
       resetForm();
@@ -104,7 +105,7 @@
       <button
         type="submit"
         class="h-[36px] rounded-[8px] border border-stone-900 bg-stone-900 px-[13px] font-body text-[13px] font-book leading-none tracking-normal text-white transition-colors duration-150 hover:border-stone-700 hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:border-stone-200 disabled:bg-stone-100 disabled:text-stone-400"
-        disabled={!name.trim() || !role.trim() || !photoFile || submitting}
+        disabled={!canSubmit}
       >
         {submitting ? 'Adding...' : 'Add'}
       </button>

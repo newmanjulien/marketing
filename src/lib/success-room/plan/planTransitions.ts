@@ -1,4 +1,5 @@
 import { cubicOut } from 'svelte/easing';
+import { prefersReducedMotion } from 'svelte/motion';
 import type { TransitionConfig } from 'svelte/transition';
 
 const accordionMotion = {
@@ -8,9 +9,6 @@ const accordionMotion = {
   openOvershoot: 0.018,
   openSettleStart: 0.84
 } as const;
-
-const prefersReducedMotion = (node: Element) =>
-  node.ownerDocument.defaultView?.matchMedia('(prefers-reduced-motion: reduce)').matches ?? false;
 
 const getAccordionOpenProgress = (t: number) => {
   if (t < accordionMotion.openSettleStart) {
@@ -25,7 +23,7 @@ const getAccordionOpenProgress = (t: number) => {
 
 export const mutualSuccessPlanOpen = (node: Element): TransitionConfig => {
   const height = node.scrollHeight;
-  const reducedMotion = prefersReducedMotion(node);
+  const reducedMotion = prefersReducedMotion.current;
 
   return {
     duration: reducedMotion ? 1 : accordionMotion.openDurationMs,
@@ -43,7 +41,7 @@ export const mutualSuccessPlanOpen = (node: Element): TransitionConfig => {
 
 export const mutualSuccessPlanClose = (node: Element): TransitionConfig => {
   const height = node.scrollHeight;
-  const reducedMotion = prefersReducedMotion(node);
+  const reducedMotion = prefersReducedMotion.current;
 
   return {
     duration: reducedMotion ? 1 : accordionMotion.closeDurationMs,
