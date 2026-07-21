@@ -1,0 +1,12 @@
+name: Links
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npx --yes linkinator https://overbase.app --recurse --retry --timeout 30000 --verbosity error

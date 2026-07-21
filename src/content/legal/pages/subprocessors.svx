@@ -17,44 +17,39 @@
 
   const subprocessorRows = [
     {
-      companyName: 'DigitalOcean',
-      description: 'Cloud hosting and infrastructure provider',
+      companyName: 'Amazon',
+      description: 'Cloud hosting and infrastructure',
       location: 'United States'
     },
     {
-      companyName: 'Confluent, Inc.',
-      description: 'Managed event streaming platform (Kafka)',
-      location: 'United States'
-    },
-    {
-      companyName: 'Datadog, Inc.',
+      companyName: 'Google',
       description:
-        'Log processing for debugging, troubleshooting, auditing, reporting, and detecting and alerting on application behavior',
+        'Cloud hosting and infrastructure',
       location: 'United States'
     },
     {
-      companyName: 'Dash0',
-      description: 'Platform/Monitoring services',
-      location: 'United States'
-    },
-    {
-      companyName: 'MongoDB Atlas (MongoDB, Inc.)',
-      description: 'Cloud database provider',
+      companyName: 'Anthropic',
+      description: 'Application AI functionality',
       location: 'United States'
     },
     {
       companyName: 'OpenAI, L.L.C.',
-      description: 'AI services',
+      description: 'Application AI functionality',
+      location: 'United States'
+    },
+    {
+      companyName: 'SpaceXAI',
+      description: 'Application AI functionality',
       location: 'United States'
     },
     {
       companyName: 'Loops',
-      description: 'Cloud-based service for transactional email delivery',
+      description: 'Transactional email delivery',
       location: 'United States'
     },
     {
-      companyName: 'Snowflake',
-      description: 'Data warehousing and analytics',
+      companyName: 'Twillio',
+      description: 'Text message delivery',
       location: 'United States'
     }
   ] satisfies readonly LegalTableRow[];
