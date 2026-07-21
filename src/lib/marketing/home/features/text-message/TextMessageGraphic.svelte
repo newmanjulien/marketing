@@ -69,7 +69,7 @@
         class={[
           'tab-indicator pointer-events-none absolute left-0 top-0 rounded-[8px] border border-stone-200 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)] will-change-transform',
           !prefersReducedMotion.current &&
-            'transition-[transform,width,height,opacity] duration-200 ease-out'
+            'transition-[transform,width,height,opacity] duration-[250ms] ease-out'
         ]}
       ></span>
 

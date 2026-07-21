@@ -26,9 +26,43 @@
     { mark: gt, name: 'Greenberg Traurig', industryId: 'law', brand: '#171717' },
     { mark: marsh, name: 'Marsh', industryId: 'insurance', brand: '#002c77' },
     { mark: bain, name: 'Bain & Company', industryId: 'consulting', brand: '#cc0000' },
-    { mark: ey, name: 'Ernst & Young', industryId: 'accounting', brand: '#2e2e38' },
-    { mark: lw, name: 'Latham & Watkins', industryId: 'law', brand: '#a6192e' }
+    { mark: lw, name: 'Latham & Watkins', industryId: 'law', brand: '#a6192e' },
+    { mark: ey, name: 'Ernst & Young', industryId: 'accounting', brand: '#2e2e38' }
   ];
+
+  const lastIndex = logos.length - 1;
+
+  // Once the entrance finishes, the far-right logo highlights itself — a single
+  // pop with brand color that drives the graphic to its industry, then relaxes
+  // back to grey. The whole lifecycle is driven by the CSS animations: the
+  // entrance settling starts the pop ('pending' → 'active'), the bounce
+  // finishing ends it ('active' → 'done') — and a real hover at any point
+  // jumps it straight to 'done', retiring it for good.
+  let pop = $state<'pending' | 'active' | 'done'>('pending');
+
+  function handleLogoHover(id: IndustryId) {
+    pop = 'done';
+    onIndustryHover(id);
+  }
+
+  // Both animations are CSS-timed, so their end events are the cues — no
+  // duplicated durations in JS. The bounce runs on the inner .logo span and
+  // bubbles up to the item. (Keyframe names are hash-scoped by Svelte, hence
+  // includes rather than ===.)
+  //
+  // If the pointer has been resting on the logo since load, no mouseenter ever
+  // fired but :hover already ran the bounce — and .is-auto, declaring the same
+  // animation, wouldn't restart it, so its end event never comes. Skip straight
+  // to 'done' and let :hover carry the visuals until the mouse leaves.
+  function handleAnimationEnd(index: number, event: AnimationEvent) {
+    if (index !== lastIndex) return;
+    if (pop === 'pending' && event.animationName.includes('logo-enter')) {
+      pop = (event.currentTarget as HTMLElement).matches(':hover') ? 'done' : 'active';
+      onIndustryHover(logos[lastIndex].industryId);
+    } else if (pop === 'active' && event.animationName.includes('logo-bounce')) {
+      pop = 'done';
+    }
+  }
 </script>
 
 {#snippet hk()}
@@ -123,10 +157,12 @@
   {#each logos as logo, index (logo.name)}
     <!-- svelte-ignore a11y_no_static_element_interactions -- hover is a mouse-only flourish; the graphic's tabs remain the accessible control -->
     <div
-      class="logo-item relative flex will-change-[transform,opacity]"
+      class="logo-item relative flex"
+      class:is-auto={pop === 'active' && index === lastIndex}
       style:--brand={logo.brand}
       style:--logo-index={index}
-      onmouseenter={() => onIndustryHover(logo.industryId)}
+      onmouseenter={() => handleLogoHover(logo.industryId)}
+      onanimationend={(event) => handleAnimationEnd(index, event)}
     >
       <span class="logo flex h-[25px] w-[25px]" aria-hidden="true">{@render logo.mark()}</span>
       <span class="logo-label">{logo.name}<span class="logo-label-industry">{industryLabelById[logo.industryId]}</span></span>
@@ -141,7 +177,7 @@
     opacity: 0;
     transform: translateY(4px);
     animation: logo-enter 320ms cubic-bezier(0.22, 1, 0.36, 1)
-      calc(var(--logos-enter-delay, 0ms) + var(--logo-index) * 90ms) both;
+      calc(var(--logos-enter-delay, 0ms) + var(--logo-index) * 70ms) both;
   }
 
   @keyframes logo-enter {
@@ -160,7 +196,7 @@
     width: 100%;
   }
 
-  .logo-item:hover .logo {
+  .logo-item:is(:hover, .is-auto) .logo {
     color: var(--brand);
     animation: logo-bounce 900ms cubic-bezier(0.28, 0.84, 0.42, 1);
   }
@@ -195,7 +231,7 @@
     margin: 0 4px;
   }
 
-  .logo-item:hover .logo-label {
+  .logo-item:is(:hover, .is-auto) .logo-label {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
@@ -235,7 +271,7 @@
     transition: fill 180ms ease;
   }
 
-  .logo-item:hover .ey-beam {
+  .logo-item:is(:hover, .is-auto) .ey-beam {
     fill: #ffe600;
   }
 
@@ -244,10 +280,9 @@
       animation: none;
       opacity: 1;
       transform: none;
-      will-change: auto;
     }
 
-    .logo-item:hover .logo {
+    .logo-item:is(:hover, .is-auto) .logo {
       animation: none;
     }
   }

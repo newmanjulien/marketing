@@ -4,8 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preconnect" href="https://portal.overbase.app" />
-    <link rel="dns-prefetch" href="//portal.overbase.app" />
     <link rel="preload" href="/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Declared here (not app.css) so the face is registered before any stylesheet loads —
+         in dev, Vite injects app.css too late. The preload above starts the fetch at parse time. -->
+    <style>
+      @font-face {
+        font-family: 'Newsreader';
+        font-style: normal;
+        font-weight: 200 800;
+        font-display: swap;
+        src: url('/fonts/newsreader.woff2') format('woff2');
+      }
+    </style>
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="48x48" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />

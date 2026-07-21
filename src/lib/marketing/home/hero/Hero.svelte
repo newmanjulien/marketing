@@ -24,12 +24,12 @@
     <h1
       class="hero-title max-w-[540px] font-heading text-[45px] font-semibold leading-[1.04] tracking-normal text-stone-750 sm:max-w-none sm:text-[51px]"
     >
-      <span class="hero-title-lead inline-block will-change-[transform,opacity]">Grow</span>
-      <span class="hero-title-growth inline-block will-change-[transform,opacity]">your practice</span>
+      <span class="hero-title-lead inline-block">Grow</span>
+      <span class="hero-title-growth inline-block">your practice</span>
     </h1>
 
     <p
-      class="hero-support mt-[19px] max-w-[380px] font-light text-[25px] leading-[1.60] tracking-normal text-stone-500 will-change-[transform,opacity]"
+      class="hero-support mt-[19px] max-w-[380px] font-light text-[25px] leading-[1.60] tracking-normal text-stone-500"
     >
       Overbase turns your network into new clients and more business
     </p>
@@ -38,7 +38,7 @@
       <HeroLogos onIndustryHover={selectIndustry} />
     </div>
 
-    <div class="hero-actions mt-[44px] flex justify-center will-change-[transform,opacity]">
+    <div class="hero-actions mt-[44px] flex justify-center">
       <ButtonLink
         href={joinHref}
         target="_blank"
@@ -56,7 +56,7 @@
   </ContentMeasure>
 
   <ContentMeasure>
-    <div id="text-message" class="hero-graphic mt-[77px] scroll-mt-[100px] will-change-[transform,opacity]">
+    <div id="text-message" class="hero-graphic mt-[77px] scroll-mt-[100px]">
       <TextMessageGraphic {industryId} onIndustrySelect={selectIndustry} />
     </div>
   </ContentMeasure>
@@ -69,12 +69,18 @@
     --hero-content-delay: 990ms;
   }
 
+  /* The 180ms delay keeps "Grow" hidden through the font-loading window, so a
+     fallback→Newsreader swap almost never paints. */
   .hero-title-lead {
-    animation: hero-title-lead-settle 220ms var(--hero-ease) both;
+    opacity: 0;
+    transform: translateY(4px);
+    animation: hero-content-enter 420ms var(--hero-ease) 180ms both;
   }
 
   .hero-title-growth {
-    animation: hero-title-growth-enter 420ms var(--hero-ease) 350ms both;
+    opacity: 0;
+    transform: translateX(-10px);
+    animation: hero-content-enter 420ms var(--hero-ease) 350ms both;
   }
 
   .hero-support,
@@ -95,43 +101,19 @@
      settle than the surrounding content, so it gently floats in. */
   .hero-actions {
     transform: translateY(10px);
-    animation: hero-content-enter 620ms var(--hero-ease) var(--hero-content-delay) both;
+    animation-duration: 620ms;
   }
 
-  /* Logos come in last: a short beat after the actions and graphic finish.
+  /* Logos come in last: a short beat after the graphic finishes.
      HeroLogos staggers its items relative to this base delay. */
   .hero-logos {
     --logos-enter-delay: calc(var(--hero-content-delay) + var(--hero-content-duration) + 40ms);
   }
 
-  @keyframes hero-title-lead-settle {
-    from {
-      opacity: 0.92;
-      transform: translateY(2px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes hero-title-growth-enter {
-    from {
-      opacity: 0;
-      transform: translateX(-10px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
   @keyframes hero-content-enter {
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: none;
     }
   }
 
@@ -144,7 +126,6 @@
       animation: none;
       opacity: 1;
       transform: none;
-      will-change: auto;
     }
   }
 </style>
