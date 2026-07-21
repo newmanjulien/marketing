@@ -4,7 +4,8 @@
   import { textMessageScenariosByIndustryId } from './textMessageContent';
   import { ArrowUpIcon, ArrowsClockwiseIcon } from 'phosphor-svelte';
   import TextMessageScenarioDropdown from './TextMessageScenarioDropdown.svelte';
-  import type { Action } from 'svelte/action';
+  import { tabIndicator } from '$lib/ui/tabIndicator';
+  import { prefersReducedMotion } from 'svelte/motion';
 
   let {
     industryId,
@@ -16,51 +17,9 @@
 
   // The highlight pill rests under the selected industry, but slides to whichever
   // one the pointer is hovering — so the tab feels like it follows your cursor.
+  // Text and icon emphasis follow the same target, not the raw selection.
   let hoveredIndustryId = $state<IndustryId | null>(null);
   const indicatorKey = $derived(hoveredIndustryId ?? industryId);
-
-  // Measures the targeted button and exposes its box to the pill as CSS vars.
-  // The pill itself animates purely in CSS off those vars.
-  const tabIndicator: Action<HTMLElement, string> = (node, initialKey) => {
-    let key = initialKey;
-    let frame = 0;
-    const observer = new ResizeObserver(() => schedule());
-
-    function measure() {
-      const target = node.querySelector<HTMLElement>(`[data-indicator-key="${key}"]`);
-      if (!target) {
-        node.style.setProperty('--indicator-opacity', '0');
-        return;
-      }
-
-      const navRect = node.getBoundingClientRect();
-      const rect = target.getBoundingClientRect();
-      node.style.setProperty('--indicator-x', `${rect.left - navRect.left}px`);
-      node.style.setProperty('--indicator-y', `${rect.top - navRect.top}px`);
-      node.style.setProperty('--indicator-width', `${rect.width}px`);
-      node.style.setProperty('--indicator-height', `${rect.height}px`);
-      node.style.setProperty('--indicator-opacity', '1');
-    }
-
-    function schedule() {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(measure);
-    }
-
-    observer.observe(node);
-    schedule();
-
-    return {
-      update(nextKey) {
-        key = nextKey;
-        schedule();
-      },
-      destroy() {
-        cancelAnimationFrame(frame);
-        observer.disconnect();
-      }
-    };
-  };
 
   const scenarios = $derived(textMessageScenariosByIndustryId[industryId]);
 
@@ -107,24 +66,28 @@
     >
       <span
         aria-hidden="true"
-        class="tab-indicator pointer-events-none absolute left-0 top-0 rounded-[8px] border border-stone-200 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-[transform,width,height,opacity] duration-200 ease-out will-change-transform"
+        class={[
+          'tab-indicator pointer-events-none absolute left-0 top-0 rounded-[8px] border border-stone-200 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)] will-change-transform',
+          !prefersReducedMotion.current &&
+            'transition-[transform,width,height,opacity] duration-200 ease-out'
+        ]}
       ></span>
 
       {#each homeIndustries as industry (industry.id)}
-        {@const isSelected = industryId === industry.id}
+        {@const isEmphasized = indicatorKey === industry.id}
         <button
           type="button"
           data-indicator-key={industry.id}
           class={[
             'relative flex items-center gap-[14px] rounded-[8px] border border-transparent px-[10px] py-[9px] text-[17px] leading-none tracking-normal transition-colors',
-            isSelected ? 'font-medium text-stone-750' : 'font-book text-stone-500 hover:text-stone-600'
+            isEmphasized ? 'font-medium text-stone-750' : 'font-book text-stone-500'
           ]}
-          aria-pressed={isSelected}
+          aria-pressed={industryId === industry.id}
           onclick={() => onIndustrySelect(industry.id)}
           onmouseenter={() => (hoveredIndustryId = industry.id)}
           onfocus={() => (hoveredIndustryId = industry.id)}
         >
-          <industry.icon size={18} weight={isSelected ? 'bold' : 'regular'} />
+          <industry.icon size={18} weight={isEmphasized ? 'bold' : 'regular'} />
           <span>{industry.label}</span>
         </button>
       {/each}
@@ -192,12 +155,6 @@
     width: var(--indicator-width, 0);
     height: var(--indicator-height, 0);
     opacity: var(--indicator-opacity, 0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .tab-indicator {
-      transition-duration: 0ms !important;
-    }
   }
 
   .bubble {
