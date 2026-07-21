@@ -16,3 +16,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+        env:
+          # svelte-kit sync generates the $env/static typings from the real
+          # environment; the variable must exist but its value never matters here.
+          PUBLIC_CONVEX_URL: http://ci-placeholder

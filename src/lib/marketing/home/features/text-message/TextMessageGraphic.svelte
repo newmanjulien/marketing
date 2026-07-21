@@ -4,6 +4,7 @@
   import { textMessageScenariosByIndustryId } from './textMessageContent';
   import { ArrowUpIcon, ArrowsClockwiseIcon } from 'phosphor-svelte';
   import TextMessageScenarioDropdown from './TextMessageScenarioDropdown.svelte';
+  import type { Action } from 'svelte/action';
 
   let {
     industryId,
@@ -12,6 +13,54 @@
     industryId: IndustryId;
     onIndustrySelect: (id: IndustryId) => void;
   } = $props();
+
+  // The highlight pill rests under the selected industry, but slides to whichever
+  // one the pointer is hovering — so the tab feels like it follows your cursor.
+  let hoveredIndustryId = $state<IndustryId | null>(null);
+  const indicatorKey = $derived(hoveredIndustryId ?? industryId);
+
+  // Measures the targeted button and exposes its box to the pill as CSS vars.
+  // The pill itself animates purely in CSS off those vars.
+  const tabIndicator: Action<HTMLElement, string> = (node, initialKey) => {
+    let key = initialKey;
+    let frame = 0;
+    const observer = new ResizeObserver(() => schedule());
+
+    function measure() {
+      const target = node.querySelector<HTMLElement>(`[data-indicator-key="${key}"]`);
+      if (!target) {
+        node.style.setProperty('--indicator-opacity', '0');
+        return;
+      }
+
+      const navRect = node.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      node.style.setProperty('--indicator-x', `${rect.left - navRect.left}px`);
+      node.style.setProperty('--indicator-y', `${rect.top - navRect.top}px`);
+      node.style.setProperty('--indicator-width', `${rect.width}px`);
+      node.style.setProperty('--indicator-height', `${rect.height}px`);
+      node.style.setProperty('--indicator-opacity', '1');
+    }
+
+    function schedule() {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(measure);
+    }
+
+    observer.observe(node);
+    schedule();
+
+    return {
+      update(nextKey) {
+        key = nextKey;
+        schedule();
+      },
+      destroy() {
+        cancelAnimationFrame(frame);
+        observer.disconnect();
+      }
+    };
+  };
 
   const scenarios = $derived(textMessageScenariosByIndustryId[industryId]);
 
@@ -49,19 +98,31 @@
   <div
     class="flex w-[244px] shrink-0 flex-col border-r border-stone-200 bg-stone-50/90 px-[10px] py-[12px] sm:px-[12px] sm:w-[294px]"
   >
-    <div class="flex flex-col items-stretch gap-[6px]">
+    <div
+      class="relative flex flex-col items-stretch gap-[6px]"
+      role="group"
+      aria-label="Industry"
+      use:tabIndicator={indicatorKey}
+      onmouseleave={() => (hoveredIndustryId = null)}
+    >
+      <span
+        aria-hidden="true"
+        class="tab-indicator pointer-events-none absolute left-0 top-0 rounded-[8px] border border-stone-200 bg-white shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-[transform,width,height,opacity] duration-200 ease-out will-change-transform"
+      ></span>
+
       {#each homeIndustries as industry (industry.id)}
         {@const isSelected = industryId === industry.id}
         <button
           type="button"
+          data-indicator-key={industry.id}
           class={[
-            'flex items-center gap-[14px] rounded-[8px] px-[10px] py-[9px] text-[17px] leading-none tracking-normal transition-colors',
-            isSelected
-              ? 'border border-stone-200 bg-white font-medium text-stone-750 shadow-[0_1px_0_rgba(48,47,45,0.03)]'
-              : 'border border-transparent font-book text-stone-500 hover:text-stone-600'
+            'relative flex items-center gap-[14px] rounded-[8px] border border-transparent px-[10px] py-[9px] text-[17px] leading-none tracking-normal transition-colors',
+            isSelected ? 'font-medium text-stone-750' : 'font-book text-stone-500 hover:text-stone-600'
           ]}
           aria-pressed={isSelected}
           onclick={() => onIndustrySelect(industry.id)}
+          onmouseenter={() => (hoveredIndustryId = industry.id)}
+          onfocus={() => (hoveredIndustryId = industry.id)}
         >
           <industry.icon size={18} weight={isSelected ? 'bold' : 'regular'} />
           <span>{industry.label}</span>
@@ -126,6 +187,19 @@
 </p>
 
 <style>
+  .tab-indicator {
+    transform: translate3d(var(--indicator-x, 0), var(--indicator-y, 0), 0);
+    width: var(--indicator-width, 0);
+    height: var(--indicator-height, 0);
+    opacity: var(--indicator-opacity, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tab-indicator {
+      transition-duration: 0ms !important;
+    }
+  }
+
   .bubble {
     position: relative;
     background: #0b84fe;
