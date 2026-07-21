@@ -7,10 +7,7 @@ const staticDirectory = path.join(projectRoot, 'static');
 const outputPath = path.join(projectRoot, 'shared/generated/reservedSuccessRoomSlugs.ts');
 const urlSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-const isRouteGroup = (name) => name.startsWith('(') && name.endsWith(')');
-const isDynamicSegment = (name) => name.startsWith('[') && name.endsWith(']');
-const isReservedSlugName = (name) => urlSlugPattern.test(name);
-const isExtensionlessFile = (name) => path.extname(name) === '';
+const isUrlSlug = (name) => urlSlugPattern.test(name);
 
 const getTopLevelRouteSlugs = async () => {
   const entries = await readdir(routesDirectory, { withFileTypes: true });
@@ -18,18 +15,17 @@ const getTopLevelRouteSlugs = async () => {
   return entries
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
-    .filter((name) => !isRouteGroup(name))
-    .filter((name) => !isDynamicSegment(name))
-    .filter(isReservedSlugName);
+    // Route groups "(...)" and dynamic segments "[...]" fail the slug pattern.
+    .filter(isUrlSlug);
 };
 
 const getTopLevelStaticSlugs = async () => {
   const entries = await readdir(staticDirectory, { withFileTypes: true });
 
   return entries
-    .filter((entry) => entry.isDirectory() || (entry.isFile() && isExtensionlessFile(entry.name)))
+    .filter((entry) => entry.isDirectory() || (entry.isFile() && path.extname(entry.name) === ''))
     .map((entry) => entry.name)
-    .filter(isReservedSlugName);
+    .filter(isUrlSlug);
 };
 
 const reservedSlugs = [

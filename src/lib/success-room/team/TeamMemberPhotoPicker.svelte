@@ -34,13 +34,7 @@
     };
   });
 
-  const openFilePicker = () => {
-    if (disabled) {
-      return;
-    }
-
-    fileInput?.click();
-  };
+  const openFilePicker = () => fileInput?.click();
   const selectFile = (file: File | null) => {
     pickerError = '';
 
@@ -124,7 +118,7 @@
     class="sr-only"
     type="file"
     accept="image/*"
-    disabled={disabled}
+    {disabled}
     onchange={(event) => {
       selectFile(event.currentTarget.files?.[0] ?? null);
     }}

@@ -57,11 +57,19 @@ export const normalizeSlug = (slug: string) => {
   return parsedSlug;
 };
 
-export const roomBySlug = (ctx: QueryCtx | MutationCtx, slug: string) =>
-  ctx.db
+// A malformed slug is treated as a miss: no room can exist under it.
+export const roomBySlug = async (ctx: QueryCtx | MutationCtx, slug: string) => {
+  const parsedSlug = parseSuccessRoomSlug(slug);
+
+  if (!parsedSlug) {
+    return null;
+  }
+
+  return ctx.db
     .query("successRooms")
-    .withIndex("by_slug", (q) => q.eq("slug", normalizeSlug(slug)))
+    .withIndex("by_slug", (q) => q.eq("slug", parsedSlug))
     .unique();
+};
 
 export const requireRoomBySlug = async (ctx: QueryCtx | MutationCtx, slug: string) => {
   const room = await roomBySlug(ctx, slug);
@@ -88,15 +96,13 @@ export const assertResourceEnabled = (
 type SeedBenefitCard = SuccessRoom["benefitCards"][number];
 type SeedPlanAccordion = SuccessRoom["planAccordions"][number];
 
-export const sanitizeSeedBenefitCards = (cards: SeedBenefitCard[]) => {
+export const assertValidSeedBenefitCards = (cards: SeedBenefitCard[]) => {
   assertNotEmpty(cards, "Benefit cards");
   assertMaxLength(cards, maxBenefitCards, "Benefit cards");
   assertUniqueKeys(cards, "Benefit card");
-
-  return cards;
 };
 
-export const sanitizeSeedPlanAccordions = (accordions: SeedPlanAccordion[]) => {
+export const assertValidSeedPlanAccordions = (accordions: SeedPlanAccordion[]) => {
   assertNotEmpty(accordions, "Plan accordions");
   assertMaxLength(accordions, maxPlanAccordions, "Plan accordions");
   assertUniqueKeys(accordions, "Plan accordion");
@@ -109,8 +115,6 @@ export const sanitizeSeedPlanAccordions = (accordions: SeedPlanAccordion[]) => {
     accordions.flatMap((accordion) => accordion.tasks),
     "Plan task",
   );
-
-  return accordions;
 };
 
 const benefitKeys = (room: SuccessRoom) => new Set(room.benefitCards.map((card) => card.key));

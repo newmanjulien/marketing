@@ -1,9 +1,7 @@
-import type {
-  SuccessRoomBenefitsState,
-  SuccessRoomEditableTextState,
-  SuccessRoomKickoffScheduleState,
-  SuccessRoomPlanState
-} from './types';
+import type { SuccessRoomBenefitsState } from '$shared/successRoomBenefits';
+import type { SuccessRoomKickoffScheduleState } from '$shared/successRoomKickoffSchedule';
+import type { SuccessRoomPlanState } from '$shared/successRoomPlan';
+import type { SuccessRoomEditableTextState } from './types';
 
 export const cloneBenefits = (benefits: SuccessRoomBenefitsState): SuccessRoomBenefitsState => ({
   selectedCardKeys: [...benefits.selectedCardKeys],
@@ -25,7 +23,7 @@ export const cloneEditableTextState = (
   content: editableState.content,
   dataSources: [...editableState.dataSources],
   success: { ...editableState.success },
-  ...(editableState.attachment ? { attachment: editableState.attachment } : {})
+  attachment: editableState.attachment
 });
 
 export const cloneKickoffScheduleState = (

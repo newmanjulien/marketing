@@ -6,7 +6,7 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { readFile } from "node:fs/promises";
-import { basename, isAbsolute, resolve } from "node:path";
+import { basename, resolve } from "node:path";
 
 const exec = promisify(execFile);
 
@@ -38,7 +38,7 @@ export const runConvex = async (functionName, args = {}) => {
 };
 
 export const uploadSeedFile = async ({ path, contentType }) => {
-  const absolutePath = isAbsolute(path) ? path : resolve(projectRoot, path);
+  const absolutePath = resolve(projectRoot, path);
   const uploadUrl = await runConvex("admin:generateUploadUrl");
   const bytes = await readFile(absolutePath);
   const response = await fetch(uploadUrl, {

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { kickoffScheduleColumns as columns } from '../../../../shared/successRoomResources';
-  import type { SuccessRoomKickoffScheduleState } from '../domain/types';
+  import { kickoffScheduleColumns as columns } from '$shared/successRoomResources';
+  import type { SuccessRoomKickoffScheduleState } from '$shared/successRoomKickoffSchedule';
 
   let {
     schedule = $bindable()

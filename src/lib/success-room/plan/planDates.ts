@@ -1,4 +1,4 @@
-import { isValidPlanTaskDate } from '../../../../shared/successRoomPlan';
+import { isValidPlanTaskDate } from '$shared/successRoomPlan';
 
 const taskDateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'short',

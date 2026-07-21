@@ -28,10 +28,10 @@
   ];
 
   // The row shown when nothing is hovered: the last row, the funnel's end result.
-  const defaultConversion = conversions[conversions.length - 1];
+  const defaultConversion = conversions.at(-1)!;
 
   // $state.raw so `active === row` reference comparison works against the array items.
-  let active = $state.raw<ConversionRow>(defaultConversion);
+  let active = $state.raw(defaultConversion);
 </script>
 
 <div class="rounded-[16px] border border-stone-200 bg-white px-[18px] py-[18px] shadow-[0_1px_0_rgba(48,47,45,0.03)] sm:px-[22px] sm:py-[22px]">

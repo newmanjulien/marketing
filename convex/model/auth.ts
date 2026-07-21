@@ -5,17 +5,13 @@ import { successRoomAccessDeniedCode } from "../../shared/successRoomAccess";
 export const sha256Hex = async (value: string) => {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
 
-  return Array.from(new Uint8Array(digest))
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 };
 
 export const generateSessionToken = () => {
   const bytes = crypto.getRandomValues(new Uint8Array(32));
 
-  return Array.from(bytes)
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
 };
 
 export const authenticateRoomSession = async (ctx: QueryCtx, sessionToken: string) => {

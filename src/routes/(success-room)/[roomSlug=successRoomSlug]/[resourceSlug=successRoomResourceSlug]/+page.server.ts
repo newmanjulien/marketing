@@ -6,7 +6,7 @@ import {
   unlockSuccessRoom
 } from '$lib/success-room/server/pageServer.server';
 import { isSuccessRoomResourceNotEnabledError } from '$lib/success-room/server/access.server';
-import { isSuccessRoomAssetResourceSlug } from '$lib/success-room/domain/resourceSlugs';
+import { isSuccessRoomAssetResourceSlug } from '$shared/successRoomResources';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ cookies, params, setHeaders }) => {

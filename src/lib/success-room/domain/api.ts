@@ -1,4 +1,4 @@
-import type { api } from '../../../../convex/_generated/api';
+import type { api } from '$convex/_generated/api';
 import type { FunctionArgs, FunctionReference } from 'convex/server';
 
 // The SvelteKit API routes add the session token from the cookie; the client

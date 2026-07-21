@@ -1,23 +1,17 @@
 import { fail } from '@sveltejs/kit';
 import type { Cookies } from '@sveltejs/kit';
 import { convex } from '$lib/success-room/server/convexClient.server';
-import { maxSuccessRoomDocumentRequestDescriptionLength } from '../../../../shared/successRoomDocumentRequests';
+import { maxSuccessRoomDocumentRequestDescriptionLength } from '$shared/successRoomDocumentRequests';
 import type { DocumentRequestFormFailure } from '$lib/success-room/domain/types';
 import {
   clearSuccessRoomSessionToken,
   isSuccessRoomAccessError,
   requireSuccessRoomSessionToken
 } from './access.server';
-import { api } from '../../../../convex/_generated/api';
+import { api } from '$convex/_generated/api';
 
 const failDocumentRequest = (statusCode: number, failure: DocumentRequestFormFailure) =>
   fail(statusCode, { documentRequest: failure });
-
-const readDescription = (formData: FormData) => {
-  const description = formData.get('description');
-
-  return typeof description === 'string' ? description.trim() : '';
-};
 
 export const submitSuccessRoomDocumentRequest = async ({
   cookies,
@@ -29,7 +23,8 @@ export const submitSuccessRoomDocumentRequest = async ({
   formData: FormData;
 }) => {
   const sessionToken = requireSuccessRoomSessionToken(cookies, roomSlug);
-  const description = readDescription(formData);
+  const rawDescription = formData.get('description');
+  const description = typeof rawDescription === 'string' ? rawDescription.trim() : '';
 
   if (!description) {
     return failDocumentRequest(400, {

@@ -3,7 +3,7 @@
 
   let {
     currentIndex = $bindable(),
-    itemCount,
+    itemCount
   }: {
     currentIndex: number;
     itemCount: number;
@@ -18,10 +18,9 @@
 <div class="mt-[14px] flex items-center justify-between">
   <button
     type="button"
-    class="{buttonClasses} pr-[8px]"
+    class={[buttonClasses, 'pr-[8px]']}
     disabled={currentIndex === 0}
     onclick={() => (currentIndex -= 1)}
-    aria-label="Show previous"
   >
     <span
       class={arrowCircleClasses}
@@ -34,10 +33,9 @@
 
   <button
     type="button"
-    class="{buttonClasses} pl-[8px]"
+    class={[buttonClasses, 'pl-[8px]']}
     disabled={currentIndex >= itemCount - 1}
     onclick={() => (currentIndex += 1)}
-    aria-label="Show next"
   >
     <span>Next</span>
     <span

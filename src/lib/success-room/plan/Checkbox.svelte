@@ -6,7 +6,6 @@
   };
 
   let {
-    id,
     checked = $bindable(false),
     class: className,
     ...inputProps
@@ -15,7 +14,6 @@
 
 <input
   {...inputProps}
-  {id}
   type="checkbox"
   class={['success-room-checkbox', className]}
   bind:checked

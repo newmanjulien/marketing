@@ -4,7 +4,6 @@
   import PageFrame from '$lib/ui/PageFrame.svelte';
   import { createPortalAuthUrl } from '$lib/marketing/portalAuthLinks';
   import PricingCard from '$lib/marketing/pricing/PricingCard.svelte';
-  import PricingFaqSection from '$lib/marketing/pricing/PricingFaqSection.svelte';
 
   const joinHref = createPortalAuthUrl('join', page.url.pathname);
 
@@ -91,5 +90,22 @@
     </div>
   </ContentMeasure>
 
-  <PricingFaqSection heading="Frequently Asked Questions" items={faqItems} />
+  <ContentMeasure as="section" width="narrow" class="mt-[128px]">
+    <h2 class="font-heading text-[35px] font-book leading-[1.18] tracking-normal text-stone-750">
+      Frequently Asked Questions
+    </h2>
+
+    <div class="mt-[38px] flex flex-col gap-[32px]">
+      {#each faqItems as item (item.question)}
+        <article>
+          <h3 class="font-heading text-[17px] font-book leading-[1.25] tracking-normal text-stone-750 sm:text-[18px]">
+            {item.question}
+          </h3>
+          <p class="mt-[12px] text-[14px] font-book leading-[1.55] tracking-normal text-stone-500 sm:text-[15px]">
+            {item.answer}
+          </p>
+        </article>
+      {/each}
+    </div>
+  </ContentMeasure>
 </PageFrame>

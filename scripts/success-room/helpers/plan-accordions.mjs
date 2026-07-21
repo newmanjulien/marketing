@@ -19,7 +19,7 @@ const expectedHeaders = [
   "taskTitle",
   "taskSortOrder",
 ];
-const variants = new Set(["default", "muted", "highlighted"]);
+const variants = ["default", "muted", "highlighted"];
 
 const assertMatchingAccordionMetadata = (
   existingAccordion,
@@ -58,9 +58,9 @@ export const readPlanAccordions = async (baseDir) => {
       rowNumber,
     );
 
-    if (!variants.has(accordionVariant)) {
+    if (!variants.includes(accordionVariant)) {
       throw new Error(
-        `${filename} row ${rowNumber} accordionVariant must be one of: ${[...variants].join(", ")}.`,
+        `${filename} row ${rowNumber} accordionVariant must be one of: ${variants.join(", ")}.`,
       );
     }
 

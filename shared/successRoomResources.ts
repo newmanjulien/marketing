@@ -1,4 +1,4 @@
-import { v, type Infer } from 'convex/values';
+import { v } from 'convex/values';
 
 export const successRoomDescription =
   "A shared space for everything we create while preparing for a proof of concept and deciding whether to collaborate";
@@ -52,29 +52,45 @@ export const kickoffScheduleResourceDefinition = {
     "Review and edit the schedule for Overbase's engineer to come to your office and kick off our collaboration in person",
 } as const;
 
+// Deck and audio are uploaded assets; the rest render as routed pages.
+export const successRoomAssetResourceSlugs = [deckResourceSlug, audioResourceSlug] as const;
+
+export const successRoomRoutedResourceSlugs = [
+  mutualSuccessPlanResourceSlug,
+  initialFormatResourceSlug,
+  kickoffScheduleResourceSlug,
+] as const;
+
+export const successRoomResourceSlugs = [
+  ...successRoomAssetResourceSlugs,
+  ...successRoomRoutedResourceSlugs,
+] as const;
+
 export const successRoomResourceSlugValidator = v.union(
-  v.literal(deckResourceSlug),
-  v.literal(audioResourceSlug),
-  v.literal(mutualSuccessPlanResourceSlug),
-  v.literal(initialFormatResourceSlug),
-  v.literal(kickoffScheduleResourceSlug),
+  ...successRoomResourceSlugs.map((slug) => v.literal(slug)),
 );
 
-// Deck and audio are uploaded assets; the rest render as routed pages.
 export const successRoomAssetResourceSlugValidator = v.union(
-  v.literal(deckResourceSlug),
-  v.literal(audioResourceSlug),
+  ...successRoomAssetResourceSlugs.map((slug) => v.literal(slug)),
 );
 
 export const successRoomRoutedResourceSlugValidator = v.union(
-  v.literal(mutualSuccessPlanResourceSlug),
-  v.literal(initialFormatResourceSlug),
-  v.literal(kickoffScheduleResourceSlug),
+  ...successRoomRoutedResourceSlugs.map((slug) => v.literal(slug)),
 );
 
-export type SuccessRoomResourceSlug = Infer<typeof successRoomResourceSlugValidator>;
-export type SuccessRoomAssetResourceSlug = Infer<typeof successRoomAssetResourceSlugValidator>;
-export type SuccessRoomRoutedResourceSlug = Infer<typeof successRoomRoutedResourceSlugValidator>;
+export type SuccessRoomResourceSlug = (typeof successRoomResourceSlugs)[number];
+export type SuccessRoomAssetResourceSlug = (typeof successRoomAssetResourceSlugs)[number];
+export type SuccessRoomRoutedResourceSlug = (typeof successRoomRoutedResourceSlugs)[number];
+
+export const isSuccessRoomResourceSlug = (
+  slug: string,
+): slug is SuccessRoomResourceSlug =>
+  successRoomResourceSlugs.some((resourceSlug) => resourceSlug === slug);
+
+export const isSuccessRoomAssetResourceSlug = (
+  slug: string,
+): slug is SuccessRoomAssetResourceSlug =>
+  successRoomAssetResourceSlugs.some((assetSlug) => assetSlug === slug);
 
 export const successRoomResourceDefinitions = [
   deckResourceDefinition,
@@ -83,6 +99,18 @@ export const successRoomResourceDefinitions = [
   initialFormatResourceDefinition,
   kickoffScheduleResourceDefinition,
 ] as const;
+
+type SuccessRoomResourceDefinition = (typeof successRoomResourceDefinitions)[number];
+
+export type SuccessRoomEditableTextResourceSlug = Extract<
+  SuccessRoomResourceDefinition,
+  { kind: "editable-text" }
+>["slug"];
+
+export type SuccessRoomKickoffScheduleResourceSlug = Extract<
+  SuccessRoomResourceDefinition,
+  { kind: "kickoff-schedule" }
+>["slug"];
 
 export const kickoffScheduleColumns = [
   { key: "monday", label: "Monday" },

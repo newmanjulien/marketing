@@ -39,23 +39,21 @@
       description={resource.description}
     />
 
-    {#if draft.current.kind === 'mutual-success-plan'}
-      {@const snapshot = draft.current}
+    {@const snapshot = draft.current}
+    {#if snapshot.kind === 'mutual-success-plan'}
       <MutualSuccessPlanResourcePanel
         resource={snapshot.resource}
         plan={snapshot.plan}
         onPlanAction={draft.dispatchPlanAction}
       />
-    {:else if draft.current.kind === 'editable-text'}
-      {@const snapshot = draft.current}
+    {:else if snapshot.kind === 'editable-text'}
       <EditableTextResourcePanel
         {room}
         resource={snapshot.resource}
         bind:editableState={() => snapshot.editableText, draft.setEditableTextState}
         onAttachmentPersisted={draft.applyPersistedEditableTextAttachment}
       />
-    {:else if draft.current.kind === 'kickoff-schedule'}
-      {@const snapshot = draft.current}
+    {:else if snapshot.kind === 'kickoff-schedule'}
       <KickoffSchedulePanel
         bind:schedule={() => snapshot.kickoffSchedule, draft.setKickoffScheduleState}
       />

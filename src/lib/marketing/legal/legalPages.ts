@@ -38,8 +38,6 @@ const legalPageLoaders = new Map(
   ])
 );
 
-const formatLegalDate = (updatedAt: string) => legalDateFormatter.format(new Date(updatedAt));
-
 // Presentation order for the legal index. Must list every page exactly once.
 export const legalPageSlugs = [
   'terms',
@@ -62,9 +60,7 @@ const orderedLegalPages = legalPageSlugs.map((slug) => {
 });
 
 if (orderedLegalPages.length !== legalPageLoaders.size) {
-  const unordered = [...legalPageLoaders.keys()].filter((slug) => !legalPageSlugs.includes(slug));
-
-  throw new Error(`Legal pages missing from legalPageSlugs: ${unordered.join(', ')}`);
+  throw new Error('legalPageSlugs must list every legal page exactly once.');
 }
 
 export const getLegalPage = async (slug: string): Promise<LegalPage | undefined> => {
@@ -78,7 +74,7 @@ export const getLegalPage = async (slug: string): Promise<LegalPage | undefined>
 
   return {
     title: page.title,
-    updatedAtLabel: formatLegalDate(page.updatedAt),
+    updatedAtLabel: legalDateFormatter.format(new Date(page.updatedAt)),
     bodyComponent
   };
 };

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { SuccessRoomLandingRoom } from '../domain/types';
-  import { isSuccessRoomAssetResourceSlug } from '../domain/resourceSlugs';
+  import { isSuccessRoomAssetResourceSlug } from '$shared/successRoomResources';
   import { getSuccessRoomDocumentRequestPath, getSuccessRoomResourcePath } from '../domain/urls';
   import DocumentLinkCard from './DocumentLinkCard.svelte';
 

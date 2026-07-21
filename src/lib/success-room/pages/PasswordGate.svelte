@@ -15,8 +15,6 @@
     description: string;
     message?: string;
   } = $props();
-
-  const unlockAction = $derived(getNamedFormAction(page.url, 'unlock'));
 </script>
 
 <PageFrame>
@@ -24,7 +22,7 @@
     <div class="max-w-[440px]">
       <Header eyebrow="Success room" title={prospectName} {description} />
 
-      <form method="POST" action={unlockAction} use:enhance class="mt-[34px] grid gap-[12px]">
+      <form method="POST" action={getNamedFormAction(page.url, 'unlock')} use:enhance class="mt-[34px] grid gap-[12px]">
         <input
           class="h-[42px] w-full rounded-[8px] border border-stone-200 bg-white px-[14px] font-body text-[14px] font-book tracking-normal text-stone-700 outline-none shadow-[0_1px_0_rgba(48,47,45,0.03)] placeholder:text-stone-400 focus:border-stone-300 focus:text-stone-900"
           type="password"

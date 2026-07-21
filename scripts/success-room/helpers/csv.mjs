@@ -55,10 +55,8 @@ const parseCsvRows = (text, filename) => {
     throw new Error(`${filename} has an unterminated quoted field.`);
   }
 
-  if (cell !== "" || row.length > 0) {
-    row.push(cell);
-    rows.push(row);
-  }
+  row.push(cell);
+  rows.push(row);
 
   return rows.filter((candidate) =>
     candidate.some((value) => value.trim() !== ""),
@@ -68,13 +66,11 @@ const parseCsvRows = (text, filename) => {
 const assertExpectedHeaders = (actualHeaders, expectedHeaders, filename) => {
   // trim() also strips a leading BOM (U+FEFF is ECMAScript whitespace).
   const normalizedActualHeaders = actualHeaders.map((header) => header.trim());
-  const actualHeaderSet = new Set(normalizedActualHeaders);
-  const expectedHeaderSet = new Set(expectedHeaders);
   const missingHeaders = expectedHeaders.filter(
-    (header) => !actualHeaderSet.has(header),
+    (header) => !normalizedActualHeaders.includes(header),
   );
   const extraHeaders = [...new Set(normalizedActualHeaders)].filter(
-    (header) => !expectedHeaderSet.has(header),
+    (header) => !expectedHeaders.includes(header),
   );
   const duplicateHeaders = [
     ...new Set(

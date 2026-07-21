@@ -9,43 +9,24 @@
   import Header from '../shell/Header.svelte';
   import BenefitsPanel from '../plan/BenefitsPanel.svelte';
   import BenefitPromptsPanel from './BenefitPromptsPanel.svelte';
-  import TeamImagePreloader from '../team/TeamImagePreloader.svelte';
   import TeamPanel from '../team/TeamPanel.svelte';
   import { createSuccessRoomLandingDraft } from '../persistence/landingDraft.svelte';
-  import { customBenefitKey } from '../../../../shared/successRoomBenefits';
+  import { customBenefitKey } from '$shared/successRoomBenefits';
   import type { SuccessRoomLandingRoom, SuccessRoomLandingState } from '../domain/types';
 
   const baseSuccessRoomSections = [
-    {
-      key: 'benefits',
-      label: 'Benefits'
-    },
-    {
-      key: 'pain-points',
-      label: 'Pain points'
-    },
-    {
-      key: 'goals',
-      label: 'Goals'
-    },
-    {
-      key: 'team',
-      label: 'Team'
-    },
-    {
-      key: 'documents',
-      label: 'Documents'
-    }
+    { key: 'benefits', label: 'Benefits' },
+    { key: 'pain-points', label: 'Pain points' },
+    { key: 'goals', label: 'Goals' },
+    { key: 'team', label: 'Team' },
+    { key: 'documents', label: 'Documents' }
   ] as const satisfies readonly PillTab[];
 
   type SuccessRoomSection = (typeof baseSuccessRoomSections)[number];
 
   // These sections only exist once benefits are selected, and animate in and out
   // with that selection.
-  const benefitDependentSectionKeys: readonly SuccessRoomSection['key'][] = [
-    'pain-points',
-    'goals'
-  ];
+  const benefitDependentSectionKeys: readonly SuccessRoomSection['key'][] = ['pain-points', 'goals'];
 
   let {
     room,
@@ -87,10 +68,41 @@
     await goto(url, { replaceState: replace, keepFocus: true, noScroll: true });
   };
 
+  // The requested ?section param names a section that doesn't exist or is
+  // hidden, so clean it out of the URL.
   $effect(() => {
     if (requestedSectionKey && requestedSectionKey !== activeSectionKey) {
-      updateSectionUrl(activeSectionKey, { replace: true });
+      void updateSectionUrl(activeSectionKey, { replace: true });
     }
+  });
+
+  // Idle-preload team photos so the Team tab renders instantly when opened.
+  const preloadedImages = new Map<string, HTMLImageElement>();
+
+  $effect(() => {
+    const hrefs = new Set(
+      draft.team.map(({ imageHref }) => imageHref).filter((href) => href !== null)
+    );
+    const preload = () => {
+      for (const href of hrefs) {
+        if (preloadedImages.has(href)) {
+          continue;
+        }
+
+        const image = new Image();
+        image.decoding = 'async';
+        image.src = href;
+        preloadedImages.set(href, image);
+      }
+    };
+
+    if ('requestIdleCallback' in window) {
+      const handle = window.requestIdleCallback(preload);
+      return () => window.cancelIdleCallback(handle);
+    }
+
+    const handle = setTimeout(preload, 0);
+    return () => clearTimeout(handle);
   });
 </script>
 
@@ -101,8 +113,6 @@
       title={room.prospectName}
       description={room.description}
     />
-
-    <TeamImagePreloader team={draft.team} />
 
     <PillTabs
       tabs={successRoomSections}

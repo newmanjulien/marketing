@@ -15,12 +15,7 @@ export function createModalBehavior({ onClose }: ModalBehaviorOptions): Attachme
 
     lockBodyScroll();
     document.addEventListener('keydown', handleKeydown);
-    void focusDialogAfterRender();
-
-    async function focusDialogAfterRender() {
-      await tick();
-      (getFocusableElements()[0] ?? dialogElement).focus();
-    }
+    void tick().then(() => (getFocusableElements()[0] ?? dialogElement).focus());
 
     function getFocusableElements() {
       return Array.from(

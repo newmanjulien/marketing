@@ -5,17 +5,6 @@
   import { prefersReducedMotion } from 'svelte/motion';
   import type { SuccessRoomTeamMember } from '../domain/types';
 
-  type TeamGalleryItem =
-    | {
-        key: string;
-        type: 'member';
-        member: SuccessRoomTeamMember;
-      }
-    | {
-        key: 'add-team-member';
-        type: 'add';
-      };
-
   let {
     team,
     onAddTeamMember
@@ -41,7 +30,7 @@
     };
   };
 
-  const galleryItems = $derived<TeamGalleryItem[]>([
+  const galleryItems = $derived([
     ...team.map((member) => ({
       key: member.key,
       type: 'member' as const,

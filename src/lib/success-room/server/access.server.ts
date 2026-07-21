@@ -7,7 +7,7 @@ import {
   successRoomAccessDeniedCode,
   successRoomResourceNotEnabledCode,
   successRoomSessionLifetimeMs
-} from '../../../../shared/successRoomAccess';
+} from '$shared/successRoomAccess';
 
 const sessionCookieMaxAgeSeconds = successRoomSessionLifetimeMs / 1000;
 

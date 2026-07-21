@@ -1,11 +1,11 @@
 import type { QueryCtx } from "../_generated/server";
 import {
   audioResourceDefinition,
-  audioResourceSlug,
   deckResourceDefinition,
   deckResourceSlug,
   initialFormatResourceDefinition,
   initialFormatResourceSlug,
+  isSuccessRoomAssetResourceSlug,
   kickoffScheduleResourceDefinition,
   kickoffScheduleResourceSlug,
   mutualSuccessPlanResourceDefinition,
@@ -30,20 +30,6 @@ export const baseRoom = (room: SuccessRoom) => ({
   slug: room.slug,
   prospectName: room.prospectName,
   description: successRoomDescription,
-});
-
-const benefitCardSummary = (card: SuccessRoom["benefitCards"][number]) => ({
-  key: card.key,
-  title: card.title,
-  description: card.description,
-});
-
-const planAccordionSummary = (accordion: SuccessRoom["planAccordions"][number]) => ({
-  key: accordion.key,
-  title: accordion.title,
-  description: accordion.description,
-  variant: accordion.variant,
-  tasks: accordion.tasks,
 });
 
 const routedResourceDefinitions = {
@@ -75,7 +61,7 @@ const landingResource = async (
     return null;
   }
 
-  if (resourceSlug === deckResourceSlug || resourceSlug === audioResourceSlug) {
+  if (isSuccessRoomAssetResourceSlug(resourceSlug)) {
     return assetResourceSummary(ctx, room, resourceSlug);
   }
 
@@ -94,7 +80,7 @@ export const publicLandingPayload = async (ctx: QueryCtx, room: SuccessRoom) => 
   locked: false as const,
   room: {
     ...baseRoom(room),
-    benefitCards: room.benefitCards.map(benefitCardSummary),
+    benefitCards: room.benefitCards,
     team: await teamSummaries(ctx, room),
     resources: await landingResources(ctx, room),
   },
@@ -108,11 +94,9 @@ export const assetResourceResolution = async (
   room: SuccessRoom,
   resourceSlug: SuccessRoomAssetResourceSlug,
 ) => {
-  if (!hasResource(room, resourceSlug)) {
-    return { status: "missing" as const };
-  }
-
-  const file = await fileByRoomKind(ctx, room._id, resourceSlug);
+  const file = hasResource(room, resourceSlug)
+    ? await fileByRoomKind(ctx, room._id, resourceSlug)
+    : null;
   const href = file ? await ctx.storage.getUrl(file.storageId) : null;
 
   if (!href) {
@@ -143,7 +127,7 @@ export const publicResourcePayload = async (
       resource: {
         ...mutualSuccessPlanResourceDefinition,
         catalog: {
-          planAccordions: room.planAccordions.map(planAccordionSummary),
+          planAccordions: room.planAccordions,
           team: await teamSummaries(ctx, room),
         },
       },
@@ -165,7 +149,7 @@ export const publicResourcePayload = async (
         kind: "editable-text" as const,
         editableText: {
           ...editableText,
-          ...(attachment ? { attachment: await linkedFileSummary(ctx, attachment) } : {}),
+          attachment: attachment ? await linkedFileSummary(ctx, attachment) : null,
         },
       },
     };

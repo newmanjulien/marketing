@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { maxCustomBenefitLength } from '../../../../shared/successRoomBenefits';
+  import { maxCustomBenefitLength } from '$shared/successRoomBenefits';
   import Checkbox from './Checkbox.svelte';
   import type { SuccessRoomBenefitCard } from '../domain/types';
 

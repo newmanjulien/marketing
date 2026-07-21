@@ -35,8 +35,8 @@
 
   const baseListClasses = 'flex flex-wrap items-center gap-[7px]';
   const tabClasses =
-    'min-h-[34px] rounded-full border border-stone-200 bg-stone-100 px-[18px] text-[14px] font-medium leading-none text-stone-600 transition-colors duration-150 hover:border-stone-200 hover:bg-stone-50 hover:text-stone-800';
-  const activeTabClasses = 'border-stone-200 bg-white text-stone-800';
+    'min-h-[34px] rounded-full border border-stone-200 bg-stone-100 px-[18px] text-[14px] font-medium leading-none text-stone-600 transition-colors duration-150 hover:bg-stone-50 hover:text-stone-800';
+  const activeTabClasses = 'bg-white text-stone-800';
 
   const getTabId = (tabKey: Tab['key']) => `${idBase}-${tabKey}-tab`;
   const getPanelId = (tabKey: Tab['key']) => `${idBase}-${tabKey}-panel`;

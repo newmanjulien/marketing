@@ -30,9 +30,9 @@ export const deleteFile = async (ctx: MutationCtx, fileId: Id<"successRoomFiles"
 };
 
 export const linkedFileSummary = async (ctx: QueryCtx | MutationCtx, file: SuccessRoomFile) => {
-  const url = await ctx.storage.getUrl(file.storageId);
+  const href = await ctx.storage.getUrl(file.storageId);
 
-  if (!url) {
+  if (!href) {
     throw new ConvexError("Success room file is unavailable");
   }
 
@@ -40,7 +40,7 @@ export const linkedFileSummary = async (ctx: QueryCtx | MutationCtx, file: Succe
     filename: file.filename,
     contentType: file.contentType,
     byteSize: file.byteSize,
-    href: url,
+    href,
   };
 };
 

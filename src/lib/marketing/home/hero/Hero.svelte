@@ -95,7 +95,7 @@
      settle than the surrounding content, so it gently floats in. */
   .hero-actions {
     transform: translateY(10px);
-    animation: hero-actions-enter 620ms var(--hero-ease) var(--hero-content-delay) both;
+    animation: hero-content-enter 620ms var(--hero-ease) var(--hero-content-delay) both;
   }
 
   /* Logos come in last: a short beat after the actions and graphic finish.
@@ -129,13 +129,6 @@
   }
 
   @keyframes hero-content-enter {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes hero-actions-enter {
     to {
       opacity: 1;
       transform: translateY(0);

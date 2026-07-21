@@ -1,28 +1,14 @@
-import {
-  attachSuccessRoomSaveQueueLifecycle,
-  createSuccessRoomSaveQueue
-} from './saveQueue';
+import { createSuccessRoomSaveQueue } from './saveQueue';
 import { createSyncedSnapshot, scheduleJsonSave } from './autosave.svelte';
 import { createTeamMember, type TeamMemberInput } from '../team/teamClient';
 import { cloneBenefits } from '../domain/state';
+import type { SuccessRoomBenefitsState } from '$shared/successRoomBenefits';
 import type {
   SuccessRoomBenefitsPatch,
-  SuccessRoomBenefitsState,
   SuccessRoomLandingRoom,
   SuccessRoomLandingState,
   SuccessRoomTeamMember
 } from '../domain/types';
-
-const getBenefitsVersion = (benefits: SuccessRoomBenefitsState) => JSON.stringify(benefits);
-
-const appendMissingTeamMembers = (
-  baseTeam: SuccessRoomTeamMember[],
-  additionalTeam: SuccessRoomTeamMember[],
-) => {
-  const baseKeys = new Set(baseTeam.map((member) => member.key));
-
-  return [...baseTeam, ...additionalTeam.filter((member) => !baseKeys.has(member.key))];
-};
 
 type SuccessRoomBenefitsDraftSnapshot = {
   roomSlug: string;
@@ -38,7 +24,7 @@ const createBenefitsDraftSnapshot = (
   state: SuccessRoomLandingState,
 ): SuccessRoomBenefitsDraftSnapshot => ({
   roomSlug: room.slug,
-  serverBenefitsVersion: getBenefitsVersion(state.benefits),
+  serverBenefitsVersion: JSON.stringify(state.benefits),
   benefits: cloneBenefits(state.benefits),
   customBenefitInput: state.benefits.selectedCustomBenefit ?? ''
 });
@@ -48,7 +34,6 @@ export const createSuccessRoomLandingDraft = (
   getState: () => SuccessRoomLandingState,
 ) => {
   const saveQueue = createSuccessRoomSaveQueue();
-  const initialRoom = getRoom();
   const benefitsDraft = createSyncedSnapshot({
     getSnapshot: () => createBenefitsDraftSnapshot(getRoom(), getState()),
     shouldReplace: (current, next) =>
@@ -59,15 +44,17 @@ export const createSuccessRoomLandingDraft = (
   // Locally added members are scoped to the room they were created in, so a room
   // switch drops them without any state synchronization.
   let locallyAddedTeam = $state<{ roomSlug: string; members: SuccessRoomTeamMember[] }>({
-    roomSlug: initialRoom.slug,
+    roomSlug: getRoom().slug,
     members: []
   });
   const locallyAddedTeamMembers = $derived(
     locallyAddedTeam.roomSlug === getRoom().slug ? locallyAddedTeam.members : []
   );
-  const team = $derived(appendMissingTeamMembers(getRoom().team, locallyAddedTeamMembers));
-
-  attachSuccessRoomSaveQueueLifecycle(saveQueue);
+  const team = $derived.by(() => {
+    const baseTeam = getRoom().team;
+    const baseKeys = new Set(baseTeam.map((member) => member.key));
+    return [...baseTeam, ...locallyAddedTeamMembers.filter((member) => !baseKeys.has(member.key))];
+  });
 
   const saveBenefits = (key: string, benefits: SuccessRoomBenefitsPatch) => {
     scheduleJsonSave({
@@ -107,9 +94,7 @@ export const createSuccessRoomLandingDraft = (
     // While the benefit stays deselected only the local input text changed,
     // so there is nothing to persist.
     if (wasSelected || isSelected) {
-      saveBenefits('customBenefit', {
-        selectedCustomBenefit
-      });
+      saveBenefits('customBenefit', { selectedCustomBenefit });
     }
   };
 

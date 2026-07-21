@@ -1,4 +1,4 @@
-import type { api } from '../../../../convex/_generated/api';
+import type { api } from '$convex/_generated/api';
 import type { FunctionReturnType } from 'convex/server';
 import { deleteSuccessRoomApi, postSuccessRoomApi } from '../api/client';
 import { uploadSuccessRoomFile } from '../api/uploads';

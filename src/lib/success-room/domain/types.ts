@@ -1,14 +1,11 @@
-import type { SuccessRoomBenefitsState as SharedSuccessRoomBenefitsState } from '../../../../shared/successRoomBenefits';
-import type { SuccessRoomEditableTextContent } from '../../../../shared/successRoomEditableText';
-import type { SuccessRoomKickoffScheduleState as SharedSuccessRoomKickoffScheduleState } from '../../../../shared/successRoomKickoffSchedule';
-import type {
-  SuccessRoomPlanAction as SharedSuccessRoomPlanAction,
-  SuccessRoomPlanState as SharedSuccessRoomPlanState
-} from '../../../../shared/successRoomPlan';
+import type { SuccessRoomBenefitsState } from '$shared/successRoomBenefits';
+import type { SuccessRoomEditableTextContent } from '$shared/successRoomEditableText';
+import type { SuccessRoomKickoffScheduleState } from '$shared/successRoomKickoffSchedule';
+import type { SuccessRoomPlanState } from '$shared/successRoomPlan';
 import type {
   SuccessRoomEditableTextResourceSlug,
   SuccessRoomKickoffScheduleResourceSlug
-} from './resourceSlugs';
+} from '$shared/successRoomResources';
 
 export type SuccessRoomResourceBase<Kind extends string, Slug extends string = string> = {
   kind: Kind;
@@ -97,25 +94,17 @@ export type SuccessRoomMutualSuccessPlanCatalog = {
   team: SuccessRoomTeamMember[];
 };
 
-export type SuccessRoomBenefitsState = SharedSuccessRoomBenefitsState;
-
 export type SuccessRoomBenefitsPatch = Partial<SuccessRoomBenefitsState>;
 
-export type SuccessRoomPlanState = SharedSuccessRoomPlanState;
-
-export type SuccessRoomPlanAction = SharedSuccessRoomPlanAction;
-
 export type SuccessRoomEditableTextState = SuccessRoomEditableTextContent & {
-  attachment?: SuccessRoomLinkedFileMetadata;
+  attachment: SuccessRoomLinkedFileMetadata | null;
 };
 
 export type SuccessRoomEditableTextAttachmentUpdate = {
   roomSlug: string;
   resourceSlug: SuccessRoomEditableTextResourceSlug;
-  attachment?: SuccessRoomLinkedFileMetadata;
+  attachment: SuccessRoomLinkedFileMetadata | null;
 };
-
-export type SuccessRoomKickoffScheduleState = SharedSuccessRoomKickoffScheduleState;
 
 export type SuccessRoomBaseRoom = {
   slug: string;

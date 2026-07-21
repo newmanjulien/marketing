@@ -3,7 +3,7 @@
   import { page } from '$app/state';
   import { getNamedFormAction } from '$lib/success-room/domain/urls';
   import type { SubmitFunction } from '@sveltejs/kit';
-  import { maxSuccessRoomDocumentRequestDescriptionLength } from '../../../../shared/successRoomDocumentRequests';
+  import { maxSuccessRoomDocumentRequestDescriptionLength } from '$shared/successRoomDocumentRequests';
   import type { DocumentRequestFormFailure } from '../domain/types';
 
   let { form }: { form?: DocumentRequestFormFailure } = $props();

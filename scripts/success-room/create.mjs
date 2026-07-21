@@ -1,46 +1,46 @@
 // Run from the project root:
-//   npm run create:success-room
+//   npm run create:success-room -- <room-slug> "<title>" <password> <deck.pdf> <audio.mp3>
 //
 // Uses the Convex CLI's deploy credentials (SCRIPT_TARGET=prod for production).
-// This creates the hard-coded room below, reads create-benefits.csv,
-// and uploads its configured deck/audio files.
+// This creates the room with deck, audio, and benefits from create-benefits.csv.
+// It never adds extra sections; if the slug already exists, Convex throws and
+// nothing is created. To add extra sections, run the matching script in
+// scripts/success-room/add-sections/.
+//
+// File paths outside the project are allowed. Relative paths resolve from the
+// project root.
 
 import { readBenefitCards } from "./helpers/benefit-cards.mjs";
 import { runConvex, uploadSeedFile } from "./helpers/convex.mjs";
 
-// Add a new base room here. This script creates deck, audio, and benefits.
-// It never adds extra sections and never overwrites an existing room.
-// To add extra sections, run the matching script in scripts/success-room/add-sections/.
-// If this slug already exists, Convex throws and no room rows are replaced.
-const room = {
-  slug: "navacord",
-  title: "Navacord success room",
-  password: "newman",
+const [roomSlug, title, password, deckPath, audioPath] = process.argv.slice(2);
 
-  // Absolute paths outside the project are allowed. Relative paths resolve from the project root.
-  deckPath: "/Users/juliennewman/Downloads/Navacord and Overbase - deck.pdf",
-  audioPath: "/Users/juliennewman/Downloads/Navacord and Overbase - audio.mp3",
-};
+if (!roomSlug || !title || !password || !deckPath?.endsWith(".pdf") || !audioPath?.endsWith(".mp3")) {
+  console.error(
+    'Usage: npm run create:success-room -- <room-slug> "<title>" <password> <deck.pdf> <audio.mp3>',
+  );
+  process.exit(1);
+}
 
 const benefitCards = await readBenefitCards(import.meta.dirname);
 const { slug } = await runConvex("admin:validateNewSuccessRoomSlug", {
-  slug: room.slug,
+  slug: roomSlug,
 });
 const passwordHash = await runConvex("auth:hashRoomPassword", {
-  password: room.password,
+  password,
 });
 const deck = await uploadSeedFile({
-  path: room.deckPath,
+  path: deckPath,
   contentType: "application/pdf",
 });
 const audio = await uploadSeedFile({
-  path: room.audioPath,
+  path: audioPath,
   contentType: "audio/mpeg",
 });
 
 await runConvex("admin:createSuccessRoom", {
   slug,
-  prospectName: room.title,
+  prospectName: title,
   passwordHash,
   deck,
   audio,

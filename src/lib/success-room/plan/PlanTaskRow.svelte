@@ -26,8 +26,6 @@
   const emptyAssigneeClasses =
     'flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full border border-stone-200 bg-white text-[11px] font-medium leading-none text-stone-400';
   const checkboxId = $derived(`plan-task-${task.key}`);
-  const hasDate = $derived(displayDate !== null);
-  const displayDateLabel = $derived(displayDate ? formatTaskDateLabel(displayDate) : 'Set date');
 </script>
 
 <li class="min-w-0">
@@ -81,12 +79,12 @@
         type="button"
         class={[
           'cursor-pointer whitespace-nowrap rounded-[5px] border-0 bg-transparent p-0 font-body text-[13px] font-book leading-[1.4] tracking-normal transition-colors duration-150 hover:text-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-stone-900/20 sm:text-[14px]',
-          hasDate ? dateClass : 'italic text-stone-400'
+          displayDate ? dateClass : 'italic text-stone-400'
         ]}
-        aria-label={`${hasDate ? 'Change' : 'Set'} date for ${task.title}`}
+        aria-label={`${displayDate ? 'Change' : 'Set'} date for ${task.title}`}
         onclick={onOpenDatePicker}
       >
-        {displayDateLabel}
+        {displayDate ? formatTaskDateLabel(displayDate) : 'Set date'}
       </button>
     </span>
   </div>

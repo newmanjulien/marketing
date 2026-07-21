@@ -1,8 +1,10 @@
+import { createSuccessRoomSaveQueue } from './saveQueue';
 import {
-  attachSuccessRoomSaveQueueLifecycle,
-  createSuccessRoomSaveQueue
-} from './saveQueue';
-import { applySuccessRoomPlanAction } from '../../../../shared/successRoomPlan';
+  applySuccessRoomPlanAction,
+  type SuccessRoomPlanAction,
+  type SuccessRoomPlanState
+} from '$shared/successRoomPlan';
+import type { SuccessRoomKickoffScheduleState } from '$shared/successRoomKickoffSchedule';
 import { createSyncedSnapshot, scheduleJsonSave } from './autosave.svelte';
 import {
   cloneKickoffScheduleState,
@@ -14,10 +16,7 @@ import type {
   SuccessRoomEditableTextResource,
   SuccessRoomEditableTextState,
   SuccessRoomKickoffScheduleResource,
-  SuccessRoomKickoffScheduleState,
   SuccessRoomMutualSuccessPlanResource,
-  SuccessRoomPlanAction,
-  SuccessRoomPlanState,
   SuccessRoomResourceRoom,
   SuccessRoomResourceState,
   SuccessRoomRoutedResource
@@ -98,8 +97,6 @@ export const createSuccessRoomResourceDraft = (
       current.roomSlug !== next.roomSlug || current.resource.slug !== next.resource.slug
   });
 
-  attachSuccessRoomSaveQueueLifecycle(saveQueue);
-
   const dispatchPlanAction = (action: SuccessRoomPlanAction) => {
     const current = draft.current;
 
@@ -160,11 +157,9 @@ export const createSuccessRoomResourceDraft = (
       return;
     }
 
-    const { attachment: _currentAttachment, ...editableText } = current.editableText;
-
     draft.replace({
       ...current,
-      editableText: { ...editableText, ...(attachment ? { attachment } : {}) }
+      editableText: { ...current.editableText, attachment }
     });
   };
 

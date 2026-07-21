@@ -7,11 +7,11 @@ import {
   isSuccessRoomAccessError,
   setSuccessRoomSessionToken
 } from './access.server';
-import { api } from '../../../../convex/_generated/api';
+import { api } from '$convex/_generated/api';
 import type {
   SuccessRoomAssetResourceSlug,
   SuccessRoomRoutedResourceSlug
-} from '../../../../shared/successRoomResources';
+} from '$shared/successRoomResources';
 import { convex } from '$lib/success-room/server/convexClient.server';
 
 const getUnlockedSuccessRoomPayload = async <Payload>(

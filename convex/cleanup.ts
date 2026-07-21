@@ -30,7 +30,7 @@ export const deleteExpiredSessions = internalMutation({
 // blobs once they are older than a day so in-flight uploads are never touched.
 export const deleteOrphanedStorage = internalMutation({
   args: {
-    cursor: v.optional(v.union(v.string(), v.null())),
+    cursor: v.optional(v.string()),
     cutoff: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
@@ -62,9 +62,8 @@ export const deleteOrphanedStorage = internalMutation({
     const reachedCutoff = storagePage.page.some(
       (storedFile) => storedFile._creationTime >= cutoff,
     );
-    const complete = storagePage.isDone || reachedCutoff;
 
-    if (!complete) {
+    if (!storagePage.isDone && !reachedCutoff) {
       await ctx.scheduler.runAfter(0, internal.cleanup.deleteOrphanedStorage, {
         cursor: storagePage.continueCursor,
         cutoff,

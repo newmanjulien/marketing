@@ -5,28 +5,23 @@ import {
   audioResourceSlug,
   deckResourceSlug,
   mutualSuccessPlanResourceSlug,
+  successRoomResourceSlugs,
   successRoomRoutedResourceSlugValidator,
-  successRoomResourceDefinitions,
-  type SuccessRoomResourceSlug,
 } from "../shared/successRoomResources";
 import { createDefaultPlanState } from "../shared/successRoomPlan";
 import { createDefaultBenefitsState } from "../shared/successRoomBenefits";
 import { createDefaultEditableTextContent } from "../shared/successRoomEditableText";
 import { createDefaultKickoffScheduleState } from "../shared/successRoomKickoffSchedule";
 import {
+  assertValidSeedBenefitCards,
+  assertValidSeedPlanAccordions,
   normalizeSlug,
   requireRoomBySlug,
   roomBySlug,
-  sanitizeSeedBenefitCards,
-  sanitizeSeedPlanAccordions,
 } from "./model/rooms";
 
 // Seed and maintenance API for the scripts in scripts/success-room. Internal
 // functions only: they run through `npx convex run`, never from the browser.
-
-const allResourceSlugs: SuccessRoomResourceSlug[] = successRoomResourceDefinitions.map(
-  ({ slug }) => slug,
-);
 
 export const validateNewSuccessRoomSlug = internalQuery({
   args: {
@@ -64,12 +59,14 @@ export const createSuccessRoom = internalMutation({
       throw new ConvexError("Success room slug already exists");
     }
 
+    assertValidSeedBenefitCards(args.benefitCards);
+
     const roomId = await ctx.db.insert("successRooms", {
       slug,
       prospectName: args.prospectName,
       passwordHash: args.passwordHash,
       enabledResourceSlugs: [deckResourceSlug, audioResourceSlug],
-      benefitCards: sanitizeSeedBenefitCards(args.benefitCards),
+      benefitCards: args.benefitCards,
       planAccordions: [],
       teamMembers: [],
       state: {
@@ -95,8 +92,10 @@ export const replaceSuccessRoomBenefitCards = internalMutation({
   handler: async (ctx, args) => {
     const room = await requireRoomBySlug(ctx, args.slug);
 
+    assertValidSeedBenefitCards(args.benefitCards);
+
     await ctx.db.patch(room._id, {
-      benefitCards: sanitizeSeedBenefitCards(args.benefitCards),
+      benefitCards: args.benefitCards,
     });
   },
 });
@@ -110,14 +109,15 @@ export const enableSuccessRoomSection = internalMutation({
   handler: async (ctx, args) => {
     const room = await requireRoomBySlug(ctx, args.slug);
     const enabled = new Set([...room.enabledResourceSlugs, args.resourceSlug]);
-    const enabledResourceSlugs = allResourceSlugs.filter((slug) => enabled.has(slug));
+    const enabledResourceSlugs = successRoomResourceSlugs.filter((slug) => enabled.has(slug));
     const nextState = { ...room.state };
     let planAccordions = room.planAccordions;
 
     // The plan section is seeded from the script's CSV, replacing any existing
     // plan content and progress.
     if (args.resourceSlug === mutualSuccessPlanResourceSlug) {
-      planAccordions = sanitizeSeedPlanAccordions(args.planAccordions ?? []);
+      planAccordions = args.planAccordions ?? [];
+      assertValidSeedPlanAccordions(planAccordions);
       // Open the first accordion by default; null would mean all closed.
       nextState.plan = createDefaultPlanState(planAccordions[0]?.key ?? null);
     }

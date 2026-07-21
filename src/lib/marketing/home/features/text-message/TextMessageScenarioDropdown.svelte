@@ -52,7 +52,7 @@
     <CaretDownIcon
       size={13}
       weight="bold"
-      class="shrink-0 text-stone-400 transition-transform {open ? 'rotate-180' : ''}"
+      class={['shrink-0 text-stone-400 transition-transform', open && 'rotate-180']}
     />
   </button>
 

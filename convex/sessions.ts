@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { internalMutation, internalQuery } from "./_generated/server";
 import { generateSessionToken, sha256Hex } from "./model/auth";
 import { successRoomSessionLifetimeMs } from "../shared/successRoomAccess";
-import { parseSuccessRoomSlug } from "../shared/successRoomSlugs";
+import { roomBySlug } from "./model/rooms";
 
 // Internal support for the login action in convex/auth.ts.
 
@@ -15,25 +15,9 @@ const loginLockoutWindowMs = 15 * 60 * 1000;
 export const getRoomLogin = internalQuery({
   args: { slug: v.string() },
   handler: async (ctx, args) => {
-    const slug = parseSuccessRoomSlug(args.slug);
+    const room = await roomBySlug(ctx, args.slug);
 
-    if (!slug) {
-      return null;
-    }
-
-    const room = await ctx.db
-      .query("successRooms")
-      .withIndex("by_slug", (q) => q.eq("slug", slug))
-      .unique();
-
-    if (!room) {
-      return null;
-    }
-
-    return {
-      roomId: room._id,
-      passwordHash: room.passwordHash,
-    };
+    return room ? { roomId: room._id, passwordHash: room.passwordHash } : null;
   },
 });
 

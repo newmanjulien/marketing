@@ -1,11 +1,11 @@
-import type { api } from '../../../../convex/_generated/api';
-import type { Id } from '../../../../convex/_generated/dataModel';
+import type { api } from '$convex/_generated/api';
+import type { Id } from '$convex/_generated/dataModel';
 import type { FunctionReturnType } from 'convex/server';
 import { postSuccessRoomApi } from './client';
 import {
   maxSuccessRoomUploadByteSize,
   maxSuccessRoomUploadSizeLabel
-} from '../../../../shared/successRoomUploads';
+} from '$shared/successRoomUploads';
 
 const createUploadUrl = async (roomSlug: string) => {
   const response = await postSuccessRoomApi(roomSlug, 'upload-url', {});
