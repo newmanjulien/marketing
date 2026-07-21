@@ -64,7 +64,7 @@
       <TestimonialsGraphic />
     </FeatureSection>
 
-    <FeatureSection title="Get new clients and more business">
+    <FeatureSection title="Grow your practice">
       {#snippet body()}
         Sharing data with your network helps you get new clients that you wouldn't have. And it helps you find opportunities to get more business from your current clients
       {/snippet}

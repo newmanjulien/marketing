@@ -109,7 +109,7 @@
 
       <section>
         <h2 class="font-heading text-[24px] font-book leading-[1.15] tracking-normal text-stone-900">
-          Get new clients and more business
+          Grow your practice
         </h2>
 
         <div class="mt-[10px] flex flex-col gap-[22px]">
