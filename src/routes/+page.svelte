@@ -1,13 +1,14 @@
 <script lang="ts">
-  import CalendarConnectGraphic from '$lib/home/features/calendar-connect/CalendarConnectGraphic.svelte';
-  import NetworkResultsGraphic from '$lib/home/features/network-results/NetworkResultsGraphic.svelte';
-  import TestimonialsGraphic from '$lib/home/features/testimonials/TestimonialsGraphic.svelte';
-  import HomeCtaSection from '$lib/home/cta/HomeCtaSection.svelte';
-  import Hero from '$lib/home/hero/Hero.svelte';
-  import FeatureSection from '$lib/home/shared/FeatureSection.svelte';
+  import CalendarConnectGraphic from '$lib/marketing/home/features/CalendarConnectGraphic.svelte';
+  import NetworkResultsGraphic from '$lib/marketing/home/features/NetworkResultsGraphic.svelte';
+  import TestimonialsGraphic from '$lib/marketing/home/features/TestimonialsGraphic.svelte';
+  import HomeCtaSection from '$lib/marketing/home/cta/HomeCtaSection.svelte';
+  import Hero from '$lib/marketing/home/hero/Hero.svelte';
+  import FeatureSection from '$lib/marketing/home/shared/FeatureSection.svelte';
 </script>
 
 <svelte:head>
+  <title>Overbase › Grow your practice</title>
   <meta
     name="description"
     content="Overbase helps professional services firms share sales data with your ecosystem partners"

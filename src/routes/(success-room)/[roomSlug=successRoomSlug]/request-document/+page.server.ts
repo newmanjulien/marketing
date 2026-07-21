@@ -4,7 +4,7 @@ import {
   unlockSuccessRoom
 } from '$lib/success-room/server/pageServer.server';
 import { submitSuccessRoomDocumentRequest } from '$lib/success-room/server/documentRequests.server';
-import { getFormActionRedirectPath } from '$lib/forms/formActionUrls';
+import { getFormActionRedirectPath } from '$lib/success-room/domain/urls';
 import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 

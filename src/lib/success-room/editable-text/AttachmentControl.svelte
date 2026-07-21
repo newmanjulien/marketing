@@ -4,7 +4,7 @@
     deleteEditableTextAttachment,
     uploadEditableTextAttachment
   } from './editableTextClient';
-  import type { SuccessRoomEditableTextResourceSlug } from '../domain/config';
+  import type { SuccessRoomEditableTextResourceSlug } from '../domain/resourceSlugs';
   import type {
     SuccessRoomEditableTextAttachmentUpdate,
     SuccessRoomLinkedFileMetadata

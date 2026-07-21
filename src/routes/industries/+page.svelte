@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { industryNavigationItems, type IndustryId } from '$lib/industries/industryNavigation';
-  import ContentMeasure from '$lib/page/ContentMeasure.svelte';
-  import PageFrame from '$lib/page/PageFrame.svelte';
+  import { industryNavigationItems, type IndustryId } from '$lib/marketing/industries/industryContent';
+  import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
+  import PageFrame from '$lib/ui/PageFrame.svelte';
   import { ArrowUpRightIcon } from 'phosphor-svelte';
 
   const industrySummaries = {
@@ -13,6 +13,10 @@
     accounting: 'See how accounting firms grow revenue by sharing sales data with advisory firms they form strategic alliances with, law firms and wealth managers'
   } satisfies Record<IndustryId, string>;
 </script>
+
+<svelte:head>
+  <title>Overbase › Industries</title>
+</svelte:head>
 
 <PageFrame>
   <ContentMeasure as="section" width="narrow">

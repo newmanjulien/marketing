@@ -9,6 +9,10 @@
   );
 </script>
 
+<svelte:head>
+  <title>Overbase › {data.room.prospectName}</title>
+</svelte:head>
+
 {#if data.locked === true}
   <PasswordGate
     prospectName={data.room.prospectName}

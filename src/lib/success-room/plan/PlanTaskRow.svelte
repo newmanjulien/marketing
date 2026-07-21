@@ -23,46 +23,37 @@
     onOpenDatePicker: () => void;
   } = $props();
 
-  const taskItemClasses = 'min-w-0';
-  const taskRowClasses =
-    'grid min-w-0 grid-cols-[14px_minmax(0,1fr)_20px_52px] items-start gap-[10px] text-[13px] leading-[1.4] tracking-normal sm:gap-[14px] sm:text-[14px]';
-  const taskCheckboxCellClasses = 'flex h-[20px] items-center';
-  const taskLabelClasses = 'min-w-0 cursor-pointer';
-  const taskTitleClasses = 'block min-w-0';
-  const taskAssigneeCellClasses = 'flex h-[20px] w-full items-center justify-center';
-  const taskDateCellClasses = 'flex h-[20px] w-full items-center justify-end';
-  const taskDateButtonClasses =
-    'cursor-pointer whitespace-nowrap rounded-[5px] border-0 bg-transparent p-0 font-body text-[13px] font-book leading-[1.4] tracking-normal transition-colors duration-150 hover:text-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-stone-900/20 sm:text-[14px]';
-  const taskDatePlaceholderClasses = 'italic text-stone-400';
-  const taskAssigneeImageClasses = 'h-[20px] w-[20px] shrink-0 rounded-full object-cover';
-  const taskEmptyAssigneeClasses =
+  const emptyAssigneeClasses =
     'flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-full border border-stone-200 bg-white text-[11px] font-medium leading-none text-stone-400';
-  const taskAssigneeButtonClasses =
-    'flex h-[20px] w-[20px] shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-stone-900/20';
-  const checkboxClasses = 'h-[14px] w-[14px] flex-none opacity-100';
   const checkboxId = $derived(`plan-task-${task.key}`);
   const hasDate = $derived(displayDate !== null);
   const displayDateLabel = $derived(displayDate ? formatTaskDateLabel(displayDate) : 'Set date');
 </script>
 
-<li class={taskItemClasses}>
-  <div class={[taskRowClasses, textClass, 'font-book']}>
-    <span class={taskCheckboxCellClasses}>
+<li class="min-w-0">
+  <div
+    class={[
+      'grid min-w-0 grid-cols-[14px_minmax(0,1fr)_20px_52px] items-start gap-[10px] text-[13px] leading-[1.4] tracking-normal sm:gap-[14px] sm:text-[14px]',
+      textClass,
+      'font-book'
+    ]}
+  >
+    <span class="flex h-[20px] items-center">
       <Checkbox
         id={checkboxId}
-        class={checkboxClasses}
+        class="h-[14px] w-[14px] flex-none opacity-100"
         bind:checked
       />
     </span>
 
-    <label for={checkboxId} class={taskLabelClasses}>
-      <span class={taskTitleClasses}>{task.title}</span>
+    <label for={checkboxId} class="min-w-0 cursor-pointer">
+      <span class="block min-w-0">{task.title}</span>
     </label>
 
-    <span class={taskAssigneeCellClasses}>
+    <span class="flex h-[20px] w-full items-center justify-center">
       <button
         type="button"
-        class={taskAssigneeButtonClasses}
+        class="flex h-[20px] w-[20px] shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-stone-900/20"
         aria-label={`${assignedTeamMember ? 'Change' : 'Assign'} owner for ${task.title}`}
         onclick={onOpenAssignee}
       >
@@ -71,24 +62,27 @@
             src={assignedTeamMember.imageHref}
             alt=""
             title={assignedTeamMember.name}
-            class={taskAssigneeImageClasses}
+            class="h-[20px] w-[20px] shrink-0 rounded-full object-cover"
             loading="lazy"
             decoding="async"
           />
         {:else if assignedTeamMember}
-          <span class={taskEmptyAssigneeClasses} title={assignedTeamMember.name} aria-label={assignedTeamMember.name}>
+          <span class={emptyAssigneeClasses} title={assignedTeamMember.name} aria-label={assignedTeamMember.name}>
             {assignedTeamMember.name.slice(0, 1)}
           </span>
         {:else}
-          <span class={taskEmptyAssigneeClasses} aria-label="Unassigned">?</span>
+          <span class={emptyAssigneeClasses} aria-label="Unassigned">?</span>
         {/if}
       </button>
     </span>
 
-    <span class={taskDateCellClasses}>
+    <span class="flex h-[20px] w-full items-center justify-end">
       <button
         type="button"
-        class={[taskDateButtonClasses, hasDate ? dateClass : taskDatePlaceholderClasses]}
+        class={[
+          'cursor-pointer whitespace-nowrap rounded-[5px] border-0 bg-transparent p-0 font-body text-[13px] font-book leading-[1.4] tracking-normal transition-colors duration-150 hover:text-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-stone-900/20 sm:text-[14px]',
+          hasDate ? dateClass : 'italic text-stone-400'
+        ]}
         aria-label={`${hasDate ? 'Change' : 'Set'} date for ${task.title}`}
         onclick={onOpenDatePicker}
       >

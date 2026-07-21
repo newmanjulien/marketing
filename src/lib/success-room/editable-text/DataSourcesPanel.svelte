@@ -2,7 +2,7 @@
   import type { SuccessRoomEditableTextState } from '../domain/types';
 
   let {
-    editableState = $bindable<SuccessRoomEditableTextState>()
+    editableState = $bindable()
   }: {
     editableState: SuccessRoomEditableTextState;
   } = $props();

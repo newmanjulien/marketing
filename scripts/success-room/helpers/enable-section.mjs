@@ -3,14 +3,14 @@
 
 import { runConvex } from "./convex.mjs";
 
-export const enableSuccessRoomSection = async ({ slug, resourceKey, planAccordions }) => {
+export const enableSuccessRoomSection = async ({ slug, resourceSlug, planAccordions }) => {
   const result = await runConvex("admin:enableSuccessRoomSections", {
     slug,
-    resourceKeys: [resourceKey],
+    resourceSlugs: [resourceSlug],
     ...(planAccordions ? { planAccordions } : {}),
   });
 
   console.log(
-    `Enabled ${resourceKey} for ${slug}: ${result.enabledResourceKeys.join(", ")}.`,
+    `Enabled ${resourceSlug} for ${slug}: ${result.enabledResourceSlugs.join(", ")}.`,
   );
 };

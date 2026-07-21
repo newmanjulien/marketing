@@ -1,7 +1,11 @@
 <script lang="ts">
-  import ContentMeasure from '$lib/page/ContentMeasure.svelte';
-  import PageFrame from '$lib/page/PageFrame.svelte';
+  import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
+  import PageFrame from '$lib/ui/PageFrame.svelte';
 </script>
+
+<svelte:head>
+  <title>Overbase › About</title>
+</svelte:head>
 
 <PageFrame>
   <ContentMeasure as="article" width="copy">

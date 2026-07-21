@@ -7,8 +7,8 @@
 </script>
 
 <script lang="ts">
-  import LegalTable from '$lib/legal/LegalTable.svelte';
-  import type { LegalTableColumn, LegalTableRow } from '$lib/legal/legalTypes';
+  import LegalTable from '$lib/marketing/legal/LegalTable.svelte';
+  import type { LegalTableColumn, LegalTableRow } from '$lib/marketing/legal/legalPages';
 
   const processingColumns = [
     { key: 'topic', label: 'Topic' },

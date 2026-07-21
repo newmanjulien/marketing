@@ -66,25 +66,34 @@ const parseCsvRows = (text, filename) => {
 };
 
 const assertExpectedHeaders = (actualHeaders, expectedHeaders, filename) => {
-  const normalizedActualHeaders = actualHeaders.map((header, index) =>
-    index === 0 ? header.replace(/^\uFEFF/, "").trim() : header.trim(),
-  );
+  // trim() also strips a leading BOM (U+FEFF is ECMAScript whitespace).
+  const normalizedActualHeaders = actualHeaders.map((header) => header.trim());
   const actualHeaderSet = new Set(normalizedActualHeaders);
   const expectedHeaderSet = new Set(expectedHeaders);
   const missingHeaders = expectedHeaders.filter(
     (header) => !actualHeaderSet.has(header),
   );
-  const extraHeaders = normalizedActualHeaders.filter(
+  const extraHeaders = [...new Set(normalizedActualHeaders)].filter(
     (header) => !expectedHeaderSet.has(header),
   );
+  const duplicateHeaders = [
+    ...new Set(
+      normalizedActualHeaders.filter(
+        (header, index) => normalizedActualHeaders.indexOf(header) !== index,
+      ),
+    ),
+  ];
 
-  if (missingHeaders.length > 0 || extraHeaders.length > 0) {
+  if (missingHeaders.length > 0 || extraHeaders.length > 0 || duplicateHeaders.length > 0) {
     throw new Error(
-      `${filename} must use these headers: ${expectedHeaders.join(", ")}.${
-        missingHeaders.length > 0
-          ? ` Missing: ${missingHeaders.join(", ")}.`
-          : ""
-      }${extraHeaders.length > 0 ? ` Unexpected: ${extraHeaders.join(", ")}.` : ""}`,
+      [
+        `${filename} must use these headers: ${expectedHeaders.join(", ")}.`,
+        missingHeaders.length > 0 && `Missing: ${missingHeaders.join(", ")}.`,
+        extraHeaders.length > 0 && `Unexpected: ${extraHeaders.join(", ")}.`,
+        duplicateHeaders.length > 0 && `Duplicated: ${duplicateHeaders.join(", ")}.`,
+      ]
+        .filter(Boolean)
+        .join(" "),
     );
   }
 

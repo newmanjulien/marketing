@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import SiteShell from '$lib/site/SiteShell.svelte';
+  import SiteShell from '$lib/marketing/site/SiteShell.svelte';
   import '../app.css';
 
   let { children }: { children: Snippet } = $props();

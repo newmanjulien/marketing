@@ -2,21 +2,18 @@ import { ConvexError, v } from "convex/values";
 import { internalMutation, internalQuery } from "./_generated/server";
 import { benefitCardValidator, planAccordionValidator, storedFileValidator } from "./schema";
 import {
-  audioResourceKey,
-  deckResourceKey,
-  kickoffScheduleResourceKey,
-  mutualSuccessPlanResourceKey,
-  routedSuccessRoomResourceKeyValidator,
+  audioResourceSlug,
+  deckResourceSlug,
+  kickoffScheduleResourceSlug,
+  mutualSuccessPlanResourceSlug,
+  successRoomRoutedResourceSlugValidator,
   successRoomResourceDefinitions,
-  type RoutedSuccessRoomResourceKey,
-  type SuccessRoomResourceKey,
+  type SuccessRoomResourceSlug,
 } from "../shared/successRoomResources";
-import {
-  createDefaultBenefitsState,
-  createDefaultEditableTextContent,
-  createDefaultKickoffScheduleState,
-  createDefaultPlanState,
-} from "../shared/successRoomState";
+import { createDefaultPlanState } from "../shared/successRoomPlan";
+import { createDefaultBenefitsState } from "../shared/successRoomBenefits";
+import { createDefaultEditableTextContent } from "../shared/successRoomEditableText";
+import { createDefaultKickoffScheduleState } from "../shared/successRoomKickoffSchedule";
 import {
   assertNotEmpty,
   normalizeSlug,
@@ -29,7 +26,7 @@ import {
 // Seed and maintenance API for the scripts in scripts/success-room. Internal
 // functions only: they run through `npx convex run`, never from the browser.
 
-const allResourceKeys: SuccessRoomResourceKey[] = successRoomResourceDefinitions.map(
+const allResourceSlugs: SuccessRoomResourceSlug[] = successRoomResourceDefinitions.map(
   ({ slug }) => slug,
 );
 
@@ -73,7 +70,7 @@ export const createSuccessRoom = internalMutation({
       slug,
       prospectName: args.prospectName,
       passwordHash: args.passwordHash,
-      enabledResourceKeys: [deckResourceKey, audioResourceKey],
+      enabledResourceSlugs: [deckResourceSlug, audioResourceSlug],
       benefitCards: sanitizeSeedBenefitCards(args.benefitCards),
       planAccordions: [],
       teamMembers: [],
@@ -109,39 +106,35 @@ export const replaceSuccessRoomBenefitCards = internalMutation({
 export const enableSuccessRoomSections = internalMutation({
   args: {
     slug: v.string(),
-    resourceKeys: v.array(routedSuccessRoomResourceKeyValidator),
+    resourceSlugs: v.array(successRoomRoutedResourceSlugValidator),
     planAccordions: v.optional(v.array(planAccordionValidator)),
   },
   handler: async (ctx, args) => {
-    assertNotEmpty(args.resourceKeys, "Success room sections");
+    assertNotEmpty(args.resourceSlugs, "Success room sections");
 
     const room = await requireRoomBySlug(ctx, args.slug);
-    const requestedResourceKeys = [
-      ...new Set<RoutedSuccessRoomResourceKey>(args.resourceKeys),
-    ];
-    const enabledResourceKeys = Array.from(
-      new Set<SuccessRoomResourceKey>([...room.enabledResourceKeys, ...requestedResourceKeys]),
-    ).sort((left, right) => allResourceKeys.indexOf(left) - allResourceKeys.indexOf(right));
+    const enabled = new Set([...room.enabledResourceSlugs, ...args.resourceSlugs]);
+    const enabledResourceSlugs = allResourceSlugs.filter((slug) => enabled.has(slug));
     const nextState = { ...room.state };
     let planAccordions = room.planAccordions;
 
-    if (requestedResourceKeys.includes(mutualSuccessPlanResourceKey)) {
+    if (args.resourceSlugs.includes(mutualSuccessPlanResourceSlug)) {
       planAccordions = sanitizeSeedPlanAccordions(args.planAccordions ?? []);
       // Open the first accordion by default; null would mean all closed.
       nextState.plan = createDefaultPlanState(planAccordions[0]?.key ?? null);
     }
 
-    if (requestedResourceKeys.includes(kickoffScheduleResourceKey)) {
+    if (args.resourceSlugs.includes(kickoffScheduleResourceSlug)) {
       nextState.kickoffSchedule = createDefaultKickoffScheduleState();
     }
 
     await ctx.db.patch(room._id, {
-      enabledResourceKeys,
+      enabledResourceSlugs,
       planAccordions,
       state: nextState,
     });
 
-    return { enabledResourceKeys };
+    return { enabledResourceSlugs };
   },
 });
 

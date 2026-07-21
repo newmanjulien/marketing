@@ -1,4 +1,6 @@
-import type { kickoffScheduleColumns } from '../../../../shared/successRoomResources';
+import type { SuccessRoomBenefitsState as SharedSuccessRoomBenefitsState } from '../../../../shared/successRoomBenefits';
+import type { SuccessRoomEditableTextContent } from '../../../../shared/successRoomEditableText';
+import type { SuccessRoomKickoffScheduleState as SharedSuccessRoomKickoffScheduleState } from '../../../../shared/successRoomKickoffSchedule';
 import type {
   SuccessRoomPlanAction as SharedSuccessRoomPlanAction,
   SuccessRoomPlanState as SharedSuccessRoomPlanState
@@ -6,15 +8,7 @@ import type {
 import type {
   SuccessRoomEditableTextResourceSlug,
   SuccessRoomKickoffScheduleResourceSlug
-} from './config';
-
-export type SuccessRoomAssetDelivery = {
-  type: 'asset';
-};
-
-export type SuccessRoomRouteDelivery = {
-  type: 'route';
-};
+} from './resourceSlugs';
 
 export type SuccessRoomResourceBase<Kind extends string, Slug extends string = string> = {
   kind: Kind;
@@ -24,18 +18,13 @@ export type SuccessRoomResourceBase<Kind extends string, Slug extends string = s
   description?: string;
 };
 
-export type SuccessRoomPdfResource = SuccessRoomResourceBase<'pdf'> & {
-  delivery: SuccessRoomAssetDelivery;
-};
+export type SuccessRoomPdfResource = SuccessRoomResourceBase<'pdf'>;
 
-export type SuccessRoomAudioResource = SuccessRoomResourceBase<'audio'> & {
-  delivery: SuccessRoomAssetDelivery;
-};
+export type SuccessRoomAudioResource = SuccessRoomResourceBase<'audio'>;
 
 export type SuccessRoomMutualSuccessPlanResourceSummary =
   SuccessRoomResourceBase<'mutual-success-plan'> & {
     description: string;
-    delivery: SuccessRoomRouteDelivery;
   };
 
 export type SuccessRoomMutualSuccessPlanResource =
@@ -45,14 +34,14 @@ export type SuccessRoomMutualSuccessPlanResource =
 
 export type SuccessRoomEditableTextResource =
   SuccessRoomResourceBase<'editable-text', SuccessRoomEditableTextResourceSlug> & {
-    delivery: SuccessRoomRouteDelivery;
-    editorRows?: number;
+    description: string;
+    editorRows: number;
+    editorPlaceholder: string;
   };
 
 export type SuccessRoomKickoffScheduleResource =
   SuccessRoomResourceBase<'kickoff-schedule', SuccessRoomKickoffScheduleResourceSlug> & {
     description: string;
-    delivery: SuccessRoomRouteDelivery;
   };
 
 export type SuccessRoomRoutedResource =
@@ -81,7 +70,7 @@ export type SuccessRoomTeamMember = {
   key: string;
   name: string;
   role: string;
-  imageHref: string;
+  imageHref: string | null;
 };
 
 export type SuccessRoomBenefitCard = {
@@ -93,7 +82,6 @@ export type SuccessRoomBenefitCard = {
 export type SuccessRoomPlanTask = {
   key: string;
   title: string;
-  date?: string;
 };
 
 export type SuccessRoomPlanAccordion = {
@@ -109,12 +97,7 @@ export type SuccessRoomMutualSuccessPlanCatalog = {
   team: SuccessRoomTeamMember[];
 };
 
-export type SuccessRoomBenefitsState = {
-  selectedCardKeys: string[];
-  selectedCustomBenefit: string | null;
-  painPointsByBenefitKey: Record<string, string>;
-  goalsByBenefitKey: Record<string, string>;
-};
+export type SuccessRoomBenefitsState = SharedSuccessRoomBenefitsState;
 
 export type SuccessRoomBenefitsPatch = Partial<SuccessRoomBenefitsState>;
 
@@ -122,14 +105,7 @@ export type SuccessRoomPlanState = SharedSuccessRoomPlanState;
 
 export type SuccessRoomPlanAction = SharedSuccessRoomPlanAction;
 
-export type SuccessRoomEditableTextState = {
-  content: string;
-  dataSources: string[];
-  success: {
-    revenueGrowth: string;
-    audience: string;
-    workflow: string;
-  };
+export type SuccessRoomEditableTextState = SuccessRoomEditableTextContent & {
   attachment?: SuccessRoomLinkedFileMetadata;
 };
 
@@ -139,17 +115,7 @@ export type SuccessRoomEditableTextAttachmentUpdate = {
   attachment?: SuccessRoomLinkedFileMetadata;
 };
 
-export type SuccessRoomKickoffScheduleColumn = (typeof kickoffScheduleColumns)[number];
-
-export type SuccessRoomKickoffScheduleRow = {
-  key: string;
-  sortOrder: number;
-  cells: Record<string, string>;
-};
-
-export type SuccessRoomKickoffScheduleState = {
-  rows: SuccessRoomKickoffScheduleRow[];
-};
+export type SuccessRoomKickoffScheduleState = SharedSuccessRoomKickoffScheduleState;
 
 export type SuccessRoomBaseRoom = {
   slug: string;
@@ -182,3 +148,11 @@ export type SuccessRoomResourceState =
       kind: 'kickoff-schedule';
       kickoffSchedule: SuccessRoomKickoffScheduleState;
     };
+
+type DocumentRequestFailureStatus = 'validation-error' | 'submission-error';
+
+export type DocumentRequestFormFailure = {
+  description: string;
+  message: string;
+  status: DocumentRequestFailureStatus;
+};

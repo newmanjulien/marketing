@@ -3,16 +3,14 @@ import type { Doc } from "../_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "../_generated/server";
 import { successRoomResourceNotEnabledCode } from "../../shared/successRoomAccess";
 import {
-  customBenefitPainPointKey,
+  customBenefitKey,
   maxCustomBenefitLength,
+  type SuccessRoomBenefitsState,
 } from "../../shared/successRoomBenefits";
 import { parseSuccessRoomSlug } from "../../shared/successRoomSlugs";
-import { kickoffScheduleColumns } from "../../shared/successRoomResources";
-import type { SuccessRoomResourceKey } from "../../shared/successRoomResources";
-import type {
-  SuccessRoomBenefitsState,
-  SuccessRoomKickoffScheduleState,
-} from "../../shared/successRoomState";
+import { kickoffScheduleColumns, kickoffScheduleRowKeys } from "../../shared/successRoomResources";
+import type { SuccessRoomResourceSlug } from "../../shared/successRoomResources";
+import type { SuccessRoomKickoffScheduleState } from "../../shared/successRoomKickoffSchedule";
 import { isValidPlanTaskDate } from "../../shared/successRoomPlan";
 import type { SuccessRoomPlanState } from "../../shared/successRoomPlan";
 
@@ -44,14 +42,8 @@ export const assertNotEmpty = (items: unknown[], label: string) => {
 };
 
 export const assertUniqueKeys = (items: Array<{ key: string }>, label: string) => {
-  const keys = new Set<string>();
-
-  for (const item of items) {
-    if (keys.has(item.key)) {
-      throw new ConvexError(`${label} keys must be unique`);
-    }
-
-    keys.add(item.key);
+  if (new Set(items.map((item) => item.key)).size !== items.length) {
+    throw new ConvexError(`${label} keys must be unique`);
   }
 };
 
@@ -81,14 +73,14 @@ export const requireRoomBySlug = async (ctx: QueryCtx | MutationCtx, slug: strin
   return room;
 };
 
-export const hasResource = (room: SuccessRoom, resourceKey: SuccessRoomResourceKey) =>
-  room.enabledResourceKeys.includes(resourceKey);
+export const hasResource = (room: SuccessRoom, resourceSlug: SuccessRoomResourceSlug) =>
+  room.enabledResourceSlugs.includes(resourceSlug);
 
 export const assertResourceEnabled = (
   room: SuccessRoom,
-  resourceKey: SuccessRoomResourceKey,
+  resourceSlug: SuccessRoomResourceSlug,
 ) => {
-  if (!hasResource(room, resourceKey)) {
+  if (!hasResource(room, resourceSlug)) {
     throw new ConvexError(successRoomResourceNotEnabledCode);
   }
 };
@@ -101,7 +93,7 @@ export const sanitizeSeedBenefitCards = (cards: SeedBenefitCard[]) => {
   assertMaxLength(cards, maxBenefitCards, "Benefit cards");
   assertUniqueKeys(cards, "Benefit card");
 
-  return [...cards].sort((left, right) => left.sortOrder - right.sortOrder);
+  return cards;
 };
 
 export const sanitizeSeedPlanAccordions = (accordions: SeedPlanAccordion[]) => {
@@ -109,21 +101,16 @@ export const sanitizeSeedPlanAccordions = (accordions: SeedPlanAccordion[]) => {
   assertMaxLength(accordions, maxPlanAccordions, "Plan accordions");
   assertUniqueKeys(accordions, "Plan accordion");
 
-  const taskKeys = new Set<string>();
-
   for (const accordion of accordions) {
     assertMaxLength(accordion.tasks, maxPlanTasksPerAccordion, "Plan accordion tasks");
-
-    for (const task of accordion.tasks) {
-      if (taskKeys.has(task.key)) {
-        throw new ConvexError("Plan task keys must be unique");
-      }
-
-      taskKeys.add(task.key);
-    }
   }
 
-  return [...accordions].sort((left, right) => left.sortOrder - right.sortOrder);
+  assertUniqueKeys(
+    accordions.flatMap((accordion) => accordion.tasks),
+    "Plan task",
+  );
+
+  return accordions;
 };
 
 const benefitKeys = (room: SuccessRoom) => new Set(room.benefitCards.map((card) => card.key));
@@ -169,7 +156,7 @@ export const sanitizeBenefitsState = (
   const selectedCardKeys = uniqueItems(state.selectedCardKeys).filter((key) =>
     validCardKeys.has(key),
   );
-  const allowedBenefitKeys = new Set([...validCardKeys, customBenefitPainPointKey]);
+  const allowedBenefitKeys = new Set([...validCardKeys, customBenefitKey]);
 
   return {
     selectedCardKeys,
@@ -211,21 +198,17 @@ export const sanitizePlanState = (
 export const sanitizeKickoffScheduleState = (
   state: SuccessRoomKickoffScheduleState,
 ): SuccessRoomKickoffScheduleState => ({
-  rows: state.rows
-    .map((row) => ({
-      key: row.key,
-      sortOrder: row.sortOrder,
-      cells: Object.fromEntries(
-        Object.entries(row.cells).filter(([columnKey]) => kickoffScheduleColumnKeys.has(columnKey)),
-      ),
-    }))
-    .sort((left, right) => left.sortOrder - right.sortOrder),
-});
+  rows: kickoffScheduleRowKeys.map((key) => {
+    const row = state.rows.find((candidate) => candidate.key === key);
 
-export const patchRoomState = async (
-  ctx: MutationCtx,
-  room: SuccessRoom,
-  state: SuccessRoom["state"],
-) => {
-  await ctx.db.patch(room._id, { state });
-};
+    return {
+      key,
+      cells: Object.fromEntries(
+        Object.entries(row?.cells ?? {})
+          .filter(([columnKey]) => kickoffScheduleColumnKeys.has(columnKey))
+          .map(([columnKey, text]) => [columnKey, text.trim()])
+          .filter(([, text]) => text.length > 0),
+      ),
+    };
+  }),
+});

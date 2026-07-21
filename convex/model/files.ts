@@ -54,15 +54,17 @@ export const teamMemberSummary = async (
     key: member.key,
     name: member.name,
     role: member.role,
-    imageHref: photo ? (await linkedFileSummary(ctx, photo)).href : "",
+    imageHref: photo ? await ctx.storage.getUrl(photo.storageId) : null,
   };
 };
 
 export const teamSummaries = async (ctx: QueryCtx | MutationCtx, room: SuccessRoom) =>
   await Promise.all(room.teamMembers.map((member) => teamMemberSummary(ctx, member)));
 
-// Accepts a freshly uploaded blob into the room, or deletes it and throws when
-// it fails validation. Uploads are claimed exactly once.
+// Accepts a freshly uploaded blob into the room, or throws when it fails
+// validation. Uploads are claimed exactly once. Rejected blobs stay in storage
+// for the orphaned-storage cron: mutations are atomic, so deleting here before
+// throwing would just be rolled back.
 export const acceptUploadedBlob = async (
   ctx: MutationCtx,
   roomId: Id<"successRooms">,
@@ -78,11 +80,6 @@ export const acceptUploadedBlob = async (
     requiredContentTypePrefix?: string;
   },
 ) => {
-  const rejectUpload = async (message: string): Promise<never> => {
-    await ctx.storage.delete(storageId);
-    throw new ConvexError(message);
-  };
-
   const storedBlob = await ctx.db.system.get("_storage", storageId);
 
   if (!storedBlob) {
@@ -101,21 +98,21 @@ export const acceptUploadedBlob = async (
   const trimmedFilename = filename.trim();
 
   if (!trimmedFilename) {
-    return await rejectUpload("Uploaded filename is required");
+    throw new ConvexError("Uploaded filename is required");
   }
 
   if (storedBlob.size === 0) {
-    return await rejectUpload("A non-empty file is required");
+    throw new ConvexError("A non-empty file is required");
   }
 
   if (storedBlob.size > maxSuccessRoomUploadByteSize) {
-    return await rejectUpload(`Files must be ${maxSuccessRoomUploadSizeLabel} or smaller`);
+    throw new ConvexError(`Files must be ${maxSuccessRoomUploadSizeLabel} or smaller`);
   }
 
   const contentType = storedBlob.contentType ?? "application/octet-stream";
 
   if (requiredContentTypePrefix && !contentType.startsWith(requiredContentTypePrefix)) {
-    return await rejectUpload("Uploaded file has an unsupported type");
+    throw new ConvexError("Uploaded file has an unsupported type");
   }
 
   return await ctx.db.insert("successRoomFiles", {

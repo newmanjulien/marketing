@@ -93,7 +93,6 @@ export const createSuccessRoomResourceDraft = (
 ) => {
   const saveQueue = createSuccessRoomSaveQueue();
   const draft = createSyncedSnapshot({
-    initial: createResourceDraftSnapshot(getRoom(), getResource(), getState()),
     getSnapshot: () => createResourceDraftSnapshot(getRoom(), getResource(), getState()),
     shouldReplace: (current, next) =>
       current.roomSlug !== next.roomSlug || current.resource.slug !== next.resource.slug
@@ -113,7 +112,7 @@ export const createSuccessRoomResourceDraft = (
       saveQueue,
       key: getPlanActionSaveKey(action),
       roomSlug: current.roomSlug,
-      endpoint: 'plan',
+      operation: 'plan',
       body: { action },
       errorMessage: 'Success room plan could not be saved.'
     });
@@ -133,7 +132,7 @@ export const createSuccessRoomResourceDraft = (
       saveQueue,
       key: `editable-text:${current.resource.slug}`,
       roomSlug: current.roomSlug,
-      endpoint: 'editable-text',
+      operation: 'editable-text',
       body: {
         editableText: {
           content: editableText.content,
@@ -183,7 +182,7 @@ export const createSuccessRoomResourceDraft = (
       saveQueue,
       key: `kickoff-schedule:${current.resource.slug}`,
       roomSlug: current.roomSlug,
-      endpoint: 'kickoff-schedule',
+      operation: 'kickoff-schedule',
       body: { kickoffSchedule },
       errorMessage: 'Success room kickoff schedule could not be saved.',
       debounceMs: 500

@@ -1,6 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { Cookies, RequestEvent } from '@sveltejs/kit';
-import { getFormActionRedirectPath } from '$lib/forms/formActionUrls';
+import { getFormActionRedirectPath } from '$lib/success-room/domain/urls';
 import {
   clearSuccessRoomSessionToken,
   getSuccessRoomSessionToken,
@@ -8,12 +8,12 @@ import {
   setSuccessRoomSessionToken
 } from './access.server';
 import { api } from '../../../../convex/_generated/api';
-import type {
-  SuccessRoomAssetResourceSlug,
-  SuccessRoomRoutedResourceSlug
-} from '$lib/success-room/domain/config';
-import { successRoomDescription } from '$lib/success-room/domain/config';
-import { convex } from '$lib/server/convexClient.server';
+import {
+  successRoomDescription,
+  type SuccessRoomAssetResourceSlug,
+  type SuccessRoomRoutedResourceSlug
+} from '../../../../shared/successRoomResources';
+import { convex } from '$lib/success-room/server/convexClient.server';
 
 const getUnlockedSuccessRoomPayload = async <Payload>(
   cookies: Cookies,

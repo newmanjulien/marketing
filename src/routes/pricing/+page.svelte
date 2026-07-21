@@ -1,11 +1,12 @@
 <script lang="ts">
-  import ContentMeasure from '$lib/page/ContentMeasure.svelte';
-  import PageFrame from '$lib/page/PageFrame.svelte';
-  import { createPortalAuthUrlForMarketingPath } from '$lib/portalAuthLinks';
-  import PricingCard from '$lib/pricing/PricingCard.svelte';
-  import PricingFaqSection from '$lib/pricing/PricingFaqSection.svelte';
+  import { page } from '$app/state';
+  import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
+  import PageFrame from '$lib/ui/PageFrame.svelte';
+  import { createPortalAuthUrlForMarketingPath } from '$lib/marketing/portalAuthLinks';
+  import PricingCard from '$lib/marketing/pricing/PricingCard.svelte';
+  import PricingFaqSection from '$lib/marketing/pricing/PricingFaqSection.svelte';
 
-  const joinHref = createPortalAuthUrlForMarketingPath('join', '/pricing');
+  const joinHref = createPortalAuthUrlForMarketingPath('join', page.url.pathname);
 
   const pricingPlans = [
     {
@@ -41,17 +42,17 @@
   ] as const;
 
   const faqItems = [
-     {
+    {
       question: 'Can I join on my own?',
       answer:
         'Yes, easily. Quickly sign up for a simple $90 per month'
     },
-      {
+    {
       question: 'Can my whole firm join?',
       answer:
         'Yes, and on favorable terms. If your whole firm joins, we use success based pricing where we charge 5% of the revenue we help you generate and we get paid after you get paid'
     },
-     {
+    {
       question: "What's different about custom formats?",
       answer:
         'Overbase packages up the most popular formats so single users can easily access them. When we partner with a whole firm, we create custom formats together that perfectly match how that firm works'
@@ -69,6 +70,10 @@
   ] as const;
 </script>
 
+<svelte:head>
+  <title>Overbase › Pricing</title>
+</svelte:head>
+
 <PageFrame>
   <ContentMeasure as="section" width="narrow">
     <h1 class="font-heading text-[42px] font-medium leading-[1.05] tracking-normal text-stone-900">
@@ -76,7 +81,7 @@
     </h1>
 
     <p class="mt-[24px] text-[17px] font-book leading-[1.55] tracking-normal text-stone-700">
-      How much does Overbase cost? You can easily join on your own for a simple $100 per month. If your whole firm joins, we charge 5% of the revenue we help generate
+      How much does Overbase cost? You can easily join on your own for a simple $90 per month. If your whole firm joins, we charge 5% of the revenue we help generate
     </p>
 
     <div class="mt-[43px] grid gap-[20px] sm:grid-cols-2">

@@ -6,7 +6,7 @@
   const preloadedImages = new Map<string, HTMLImageElement>();
 
   $effect(() => {
-    const hrefs = new Set(team.map(({ imageHref }) => imageHref.trim()).filter(Boolean));
+    const hrefs = new Set(team.map(({ imageHref }) => imageHref).filter((href) => href !== null));
     const preload = () => {
       for (const href of hrefs) {
         if (preloadedImages.has(href)) {

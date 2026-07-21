@@ -16,18 +16,8 @@ export const createSuccessRoomSaveQueue = () => {
   const entries = new Map<string, SaveQueueEntry>();
 
   const getEntry = (key: string) => {
-    const existingEntry = entries.get(key);
-
-    if (existingEntry) {
-      return existingEntry;
-    }
-
-    const entry: SaveQueueEntry = {
-      task: null,
-      timeout: null,
-      running: false,
-      promise: null
-    };
+    const entry: SaveQueueEntry =
+      entries.get(key) ?? { task: null, timeout: null, running: false, promise: null };
 
     entries.set(key, entry);
 
@@ -52,7 +42,9 @@ export const createSuccessRoomSaveQueue = () => {
     entry.running = true;
     entry.promise = (async () => {
       try {
-        while (entry.task) {
+        // A task with an armed timeout is still inside its debounce window;
+        // leave it for the timer, which re-invokes runEntry when it elapses.
+        while (entry.task && !entry.timeout) {
           const task = entry.task;
 
           entry.task = null;

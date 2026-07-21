@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { getLegalPage, getLegalPageSlugs } from '$lib/legal/legalPages';
+import { getLegalPage, getLegalPageSlugs } from '$lib/marketing/legal/legalPages';
 import type { EntryGenerator, PageLoad } from './$types';
 
 export const entries: EntryGenerator = () => getLegalPageSlugs().map((slug) => ({ slug }));

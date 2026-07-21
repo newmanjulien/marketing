@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ContentMeasure from '$lib/page/ContentMeasure.svelte';
-  import PageFrame from '$lib/page/PageFrame.svelte';
+  import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
+  import PageFrame from '$lib/ui/PageFrame.svelte';
   import EditableTextResourcePanel from '../editable-text/EditableTextResourcePanel.svelte';
   import KickoffSchedulePanel from '../kickoff-schedule/KickoffSchedulePanel.svelte';
   import Header from '../shell/Header.svelte';

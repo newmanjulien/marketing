@@ -9,7 +9,7 @@
   let {
     roomSlug,
     resource,
-    editableState = $bindable<SuccessRoomEditableTextState>(),
+    editableState = $bindable(),
     onAttachmentPersisted
   }: {
     roomSlug: string;
@@ -17,12 +17,6 @@
     editableState: SuccessRoomEditableTextState;
     onAttachmentPersisted: (update: SuccessRoomEditableTextAttachmentUpdate) => void;
   } = $props();
-
-  const textareaClasses =
-    'w-full resize-none border-0 bg-transparent font-body text-[14px] font-book leading-[1.65] tracking-normal text-stone-600 outline-none placeholder:text-stone-400 focus:text-stone-900';
-  const footerClasses =
-    'mt-[14px] flex flex-col gap-[11px] border-t border-stone-200 pt-[12px] sm:flex-row sm:items-center sm:justify-between';
-  const defaultEditorRows = 9;
 
   const setContent = (content: string) => {
     editableState = {
@@ -37,18 +31,15 @@
   aria-label={`${resource.title} editable text`}
 >
   <textarea
-    class={textareaClasses}
+    class="w-full resize-none border-0 bg-transparent font-body text-[14px] font-book leading-[1.65] tracking-normal text-stone-600 outline-none placeholder:text-stone-400 focus:text-stone-900"
     aria-label={resource.title}
-    rows={resource.editorRows ?? defaultEditorRows}
-    bind:value={
-      () => editableState.content,
-      (content) => setContent(content)
-    }
-    placeholder="Write the initial email format"
+    rows={resource.editorRows}
+    bind:value={() => editableState.content, setContent}
+    placeholder={resource.editorPlaceholder}
     spellcheck="true"
   ></textarea>
 
-  <div class={footerClasses}>
+  <div class="mt-[14px] flex flex-col gap-[11px] border-t border-stone-200 pt-[12px] sm:flex-row sm:items-center sm:justify-between">
     {#key `${roomSlug}:${resource.slug}`}
       <AttachmentControl
         {roomSlug}

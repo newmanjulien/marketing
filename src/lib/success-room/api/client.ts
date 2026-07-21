@@ -19,12 +19,18 @@ export const postSuccessRoomApi = <Operation extends SuccessRoomPostApiOperation
   roomSlug: string,
   operation: Operation,
   body: SuccessRoomPostApiBody<Operation>
-) =>
-  fetch(getSuccessRoomApiPath(roomSlug, operation), {
+) => {
+  const payload = new Blob([JSON.stringify(body)], { type: 'application/json' });
+
+  return fetch(getSuccessRoomApiPath(roomSlug, operation), {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body)
+    body: payload,
+    // Saves are flushed from `pagehide`, so requests must survive document
+    // teardown — but keepalive bodies are capped at 64KB (shared across
+    // in-flight requests), so oversized saves fall back to a regular request.
+    keepalive: payload.size < 60_000
   }).then(relockOnExpiredSession);
+};
 
 export const deleteSuccessRoomApi = (roomSlug: string, operation: SuccessRoomDeleteApiOperation) =>
   fetch(getSuccessRoomApiPath(roomSlug, operation), { method: 'DELETE' }).then(

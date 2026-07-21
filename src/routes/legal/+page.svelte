@@ -1,11 +1,15 @@
 <script lang="ts">
-  import ContentMeasure from '$lib/page/ContentMeasure.svelte';
-  import PageFrame from '$lib/page/PageFrame.svelte';
+  import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
+  import PageFrame from '$lib/ui/PageFrame.svelte';
   import { ArrowUpRightIcon } from 'phosphor-svelte';
   import type { PageProps } from './$types';
 
   let { data }: PageProps = $props();
 </script>
+
+<svelte:head>
+  <title>Overbase › Legal</title>
+</svelte:head>
 
 <PageFrame>
   <ContentMeasure as="section" width="narrow">

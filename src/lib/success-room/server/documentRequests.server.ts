@@ -1,10 +1,8 @@
 import { fail } from '@sveltejs/kit';
 import type { Cookies } from '@sveltejs/kit';
-import { convex } from '$lib/server/convexClient.server';
-import {
-  maxSuccessRoomDocumentRequestDescriptionLength,
-  type DocumentRequestFormFailure
-} from '$lib/success-room/domain/documentRequests';
+import { convex } from '$lib/success-room/server/convexClient.server';
+import { maxSuccessRoomDocumentRequestDescriptionLength } from '../../../../shared/successRoomDocumentRequests';
+import type { DocumentRequestFormFailure } from '$lib/success-room/domain/types';
 import {
   clearSuccessRoomSessionToken,
   isSuccessRoomAccessError,

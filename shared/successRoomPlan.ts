@@ -33,6 +33,15 @@ export const successRoomPlanActionValidator = v.union(
 export type SuccessRoomPlanState = Infer<typeof successRoomPlanStateValidator>;
 export type SuccessRoomPlanAction = Infer<typeof successRoomPlanActionValidator>;
 
+export const createDefaultPlanState = (
+  openAccordionKey: string | null = null,
+): SuccessRoomPlanState => ({
+  openAccordionKey,
+  checkedTaskKeys: [],
+  dateOverridesByTaskKey: {},
+  assigneeKeyByTaskKey: {},
+});
+
 const planTaskDatePattern = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 // Task date overrides are stored as strict YYYY-MM-DD calendar dates. Writes

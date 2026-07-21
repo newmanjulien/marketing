@@ -43,7 +43,7 @@
   let {
     room,
     resource,
-    editableState = $bindable<SuccessRoomEditableTextState>(),
+    editableState = $bindable(),
     onAttachmentPersisted
   }: {
     room: SuccessRoomResourceRoom;

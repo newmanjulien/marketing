@@ -7,15 +7,13 @@ import type {
 import type { SuccessRoomSaveQueue } from './saveQueue';
 
 export const createSyncedSnapshot = <Snapshot>({
-  initial,
   getSnapshot,
   shouldReplace
 }: {
-  initial: Snapshot;
   getSnapshot: () => Snapshot;
   shouldReplace: (current: Snapshot, next: Snapshot) => boolean;
 }) => {
-  let current = $state<Snapshot>(initial);
+  let current = $state<Snapshot>(getSnapshot());
 
   $effect(() => {
     const next = getSnapshot();
@@ -36,11 +34,11 @@ export const createSyncedSnapshot = <Snapshot>({
   };
 };
 
-export const scheduleJsonSave = <Endpoint extends SuccessRoomAutosaveApiOperation>({
+export const scheduleJsonSave = <Operation extends SuccessRoomAutosaveApiOperation>({
   saveQueue,
   key,
   roomSlug,
-  endpoint,
+  operation,
   body,
   errorMessage,
   debounceMs = 0
@@ -48,15 +46,15 @@ export const scheduleJsonSave = <Endpoint extends SuccessRoomAutosaveApiOperatio
   saveQueue: SuccessRoomSaveQueue;
   key: string;
   roomSlug: string;
-  endpoint: Endpoint;
-  body: SuccessRoomPostApiBody<Endpoint>;
+  operation: Operation;
+  body: SuccessRoomPostApiBody<Operation>;
   errorMessage: string;
   debounceMs?: number;
 }) => {
   saveQueue.schedule(
     key,
     async () => {
-      const response = await postSuccessRoomApi(roomSlug, endpoint, body);
+      const response = await postSuccessRoomApi(roomSlug, operation, body);
 
       if (!response.ok) {
         throw new Error(errorMessage);

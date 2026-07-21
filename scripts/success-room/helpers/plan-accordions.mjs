@@ -104,11 +104,11 @@ export const readPlanAccordions = async (baseDir) => {
   }
 
   return [...accordionsByKey.values()]
-    .map((accordion) => ({
+    .sort((left, right) => left.sortOrder - right.sortOrder)
+    .map(({ sortOrder: _sortOrder, ...accordion }) => ({
       ...accordion,
       tasks: accordion.tasks
         .sort((left, right) => left.sortOrder - right.sortOrder)
-        .map(({ sortOrder: _sortOrder, ...task }) => task),
-    }))
-    .sort((left, right) => left.sortOrder - right.sortOrder);
+        .map(({ sortOrder: _taskSortOrder, ...task }) => task),
+    }));
 };

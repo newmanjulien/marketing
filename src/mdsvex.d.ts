@@ -1,6 +1,6 @@
 declare module '$content/legal/pages/*.svx' {
   import type { Component } from 'svelte';
-  import type { LegalPageMetadata } from '$lib/legal/legalTypes';
+  import type { LegalPageMetadata } from '$lib/marketing/legal/legalPages';
 
   export const page: LegalPageMetadata;
 

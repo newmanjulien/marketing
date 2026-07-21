@@ -44,11 +44,7 @@
     accordion.tasks.some((task) => {
       if (checkedTaskKeys.has(task.key)) return false;
 
-      const date = resolveTaskDisplayDate({
-        dateOverridesByTaskKey: plan.dateOverridesByTaskKey,
-        taskKey: task.key,
-        fallbackDateLabel: task.date
-      });
+      const date = resolveTaskDisplayDate(plan.dateOverridesByTaskKey, task.key);
 
       return date !== null && date.getTime() < startOfTodayMs;
     });
@@ -144,11 +140,7 @@
         >
           {#each item.tasks as task (task.key)}
             {@const taskKey = task.key}
-            {@const displayDate = resolveTaskDisplayDate({
-              dateOverridesByTaskKey: plan.dateOverridesByTaskKey,
-              taskKey,
-              fallbackDateLabel: task.date
-            })}
+            {@const displayDate = resolveTaskDisplayDate(plan.dateOverridesByTaskKey, taskKey)}
             {@const assignedTeamMember = getAssignedTeamMember(taskKey)}
             <PlanTaskRow
               {task}

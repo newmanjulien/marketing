@@ -27,20 +27,16 @@ const appendMissingTeamMembers = (
   baseTeam: SuccessRoomTeamMember[],
   additionalTeam: SuccessRoomTeamMember[],
 ) => {
-  const mergedTeamMembers = new Map<string, SuccessRoomTeamMember>();
+  const baseKeys = new Set(baseTeam.map((member) => member.key));
 
-  for (const member of [...baseTeam, ...additionalTeam]) {
-    if (!mergedTeamMembers.has(member.key)) {
-      mergedTeamMembers.set(member.key, member);
-    }
-  }
-
-  return [...mergedTeamMembers.values()];
+  return [...baseTeam, ...additionalTeam.filter((member) => !baseKeys.has(member.key))];
 };
 
 type SuccessRoomBenefitsDraftSnapshot = {
   roomSlug: string;
-  benefitsVersion: string;
+  // The server benefits this draft is based on. Local patches carry it forward
+  // unchanged, so shouldReplace fires only when the server state itself changes.
+  serverBenefitsVersion: string;
   benefits: SuccessRoomBenefitsState;
   customBenefitInput: string;
 };
@@ -50,7 +46,7 @@ const createBenefitsDraftSnapshot = (
   state: SuccessRoomLandingState,
 ): SuccessRoomBenefitsDraftSnapshot => ({
   roomSlug: room.slug,
-  benefitsVersion: getBenefitsVersion(state.benefits),
+  serverBenefitsVersion: getBenefitsVersion(state.benefits),
   benefits: normalizeBenefitsForEditor(state.benefits),
   customBenefitInput: state.benefits.selectedCustomBenefit ?? ''
 });
@@ -61,12 +57,11 @@ export const createSuccessRoomLandingDraft = (
 ) => {
   const saveQueue = createSuccessRoomSaveQueue();
   const initialRoom = getRoom();
-  const initialBenefitsSnapshot = createBenefitsDraftSnapshot(initialRoom, getState());
   const benefitsDraft = createSyncedSnapshot({
-    initial: initialBenefitsSnapshot,
     getSnapshot: () => createBenefitsDraftSnapshot(getRoom(), getState()),
     shouldReplace: (current, next) =>
-      current.roomSlug !== next.roomSlug || current.benefitsVersion !== next.benefitsVersion
+      current.roomSlug !== next.roomSlug ||
+      current.serverBenefitsVersion !== next.serverBenefitsVersion
   });
 
   // Locally added members are scoped to the room they were created in, so a room
@@ -82,15 +77,12 @@ export const createSuccessRoomLandingDraft = (
 
   attachSuccessRoomSaveQueueLifecycle(saveQueue);
 
-  const saveBenefits = (
-    key: string,
-    benefits: SuccessRoomBenefitsPatch
-  ) => {
+  const saveBenefits = (key: string, benefits: SuccessRoomBenefitsPatch) => {
     scheduleJsonSave({
       saveQueue,
       key,
       roomSlug: getRoom().slug,
-      endpoint: 'benefits',
+      operation: 'benefits',
       body: { benefits },
       errorMessage: 'Success room benefits could not be saved.',
       debounceMs: 500
@@ -103,10 +95,6 @@ export const createSuccessRoomLandingDraft = (
       benefits: { ...benefitsDraft.current.benefits, ...patch }
     });
     saveBenefits(saveKey, patch);
-  };
-
-  const setSelectedBenefitKeys = (nextSelectedBenefitKeys: string[]) => {
-    patchBenefits('selectedBenefits', { selectedCardKeys: [...nextSelectedBenefitKeys] });
   };
 
   const updateCustomBenefit = (customBenefitInput: string, selected: boolean) => {
@@ -156,7 +144,7 @@ export const createSuccessRoomLandingDraft = (
       return benefitsDraft.current.benefits.selectedCardKeys;
     },
     set selectedBenefitKeys(nextSelectedBenefitKeys: string[]) {
-      setSelectedBenefitKeys(nextSelectedBenefitKeys);
+      patchBenefits('selectedBenefits', { selectedCardKeys: [...nextSelectedBenefitKeys] });
     },
     get customBenefitInput() {
       return benefitsDraft.current.customBenefitInput;
@@ -199,10 +187,10 @@ export const createSuccessRoomLandingDraft = (
 
       locallyAddedTeam = {
         roomSlug,
-        members: appendMissingTeamMembers(
-          locallyAddedTeam.roomSlug === roomSlug ? locallyAddedTeam.members : [],
-          [createdMember]
-        )
+        members: [
+          ...(locallyAddedTeam.roomSlug === roomSlug ? locallyAddedTeam.members : []),
+          createdMember
+        ]
       };
     }
   };

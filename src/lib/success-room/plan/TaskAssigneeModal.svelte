@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ModalShell from '$lib/ui/ModalShell.svelte';
+  import ModalShell from '$lib/success-room/ui/ModalShell.svelte';
   import type { SuccessRoomTeamMember } from '../domain/types';
 
   let {

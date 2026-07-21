@@ -1,18 +1,15 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { successRoomResourceKeyValidator } from "../shared/successRoomResources";
+import { successRoomResourceSlugValidator } from "../shared/successRoomResources";
 import { successRoomPlanStateValidator } from "../shared/successRoomPlan";
-import {
-  successRoomBenefitsStateValidator,
-  successRoomEditableTextContentValidator,
-  successRoomKickoffScheduleStateValidator,
-} from "../shared/successRoomState";
+import { successRoomBenefitsStateValidator } from "../shared/successRoomBenefits";
+import { successRoomEditableTextContentValidator } from "../shared/successRoomEditableText";
+import { successRoomKickoffScheduleStateValidator } from "../shared/successRoomKickoffSchedule";
 
 export const benefitCardValidator = v.object({
   key: v.string(),
   title: v.string(),
   description: v.string(),
-  sortOrder: v.number(),
 });
 
 export const planAccordionValidator = v.object({
@@ -20,12 +17,10 @@ export const planAccordionValidator = v.object({
   title: v.string(),
   description: v.string(),
   variant: v.union(v.literal("default"), v.literal("muted"), v.literal("highlighted")),
-  sortOrder: v.number(),
   tasks: v.array(
     v.object({
       key: v.string(),
       title: v.string(),
-      dateLabel: v.optional(v.string()),
     }),
   ),
 });
@@ -63,7 +58,7 @@ export default defineSchema({
         lastFailedAt: v.number(),
       }),
     ),
-    enabledResourceKeys: v.array(successRoomResourceKeyValidator),
+    enabledResourceSlugs: v.array(successRoomResourceSlugValidator),
     benefitCards: v.array(benefitCardValidator),
     planAccordions: v.array(planAccordionValidator),
     teamMembers: v.array(teamMemberValidator),

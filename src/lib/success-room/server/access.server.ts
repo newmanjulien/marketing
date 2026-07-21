@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import type { Cookies } from '@sveltejs/kit';
+import type { Cookies, RequestEvent } from '@sveltejs/kit';
 import { ConvexError } from 'convex/values';
 import { dev } from '$app/environment';
 import { getSuccessRoomPath } from '$lib/success-room/domain/urls';
@@ -71,11 +71,7 @@ const readJsonObjectBody = async (request: Request) => {
 export const handleSuccessRoomApiRequest = async <
   Body extends Record<string, unknown> = Record<string, never>,
 >(
-  {
-    cookies,
-    params,
-    request,
-  }: { cookies: Cookies; params: { roomSlug: string }; request: Request },
+  { cookies, params, request }: RequestEvent<{ roomSlug: string }>,
   run: (input: { sessionToken: string; body: Body }) => Promise<Response>,
 ) => {
   const sessionToken = requireSuccessRoomSessionToken(cookies, params.roomSlug);

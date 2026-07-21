@@ -1,8 +1,8 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import ContentMeasure from '$lib/page/ContentMeasure.svelte';
-  import PageFrame from '$lib/page/PageFrame.svelte';
+  import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
+  import PageFrame from '$lib/ui/PageFrame.svelte';
   import PillTabs from '$lib/ui/PillTabs.svelte';
   import type { PillTab } from '$lib/ui/PillTabs.svelte';
   import DocumentsPanel from '../documents/DocumentsPanel.svelte';
@@ -12,7 +12,7 @@
   import TeamImagePreloader from '../team/TeamImagePreloader.svelte';
   import TeamPanel from '../team/TeamPanel.svelte';
   import { createSuccessRoomLandingDraft } from '../persistence/landingDraft.svelte';
-  import { customBenefitPainPointKey } from '../../../../shared/successRoomBenefits';
+  import { customBenefitKey } from '../../../../shared/successRoomBenefits';
   import type { SuccessRoomLandingRoom, SuccessRoomLandingState } from '../domain/types';
 
   const baseSuccessRoomSections = [
@@ -47,11 +47,6 @@
     'goals'
   ];
 
-  const resolveActiveSectionKey = (
-    sections: readonly SuccessRoomSection[],
-    requestedSectionKey: string | null
-  ) => sections.find((section) => section.key === requestedSectionKey)?.key ?? 'benefits';
-
   let {
     room,
     state: successRoomState
@@ -67,7 +62,7 @@
       .filter((card) => draft.selectedBenefitKeys.includes(card.key))
       .map((card) => ({ key: card.key, label: card.title })),
     ...(draft.customBenefitSelected
-      ? [{ key: customBenefitPainPointKey, label: draft.customBenefitInput }]
+      ? [{ key: customBenefitKey, label: draft.customBenefitInput }]
       : [])
   ]);
   const successRoomSections = $derived(
@@ -77,7 +72,7 @@
   );
   const requestedSectionKey = $derived(page.url.searchParams.get('section'));
   const activeSectionKey = $derived(
-    resolveActiveSectionKey(successRoomSections, requestedSectionKey)
+    successRoomSections.find((section) => section.key === requestedSectionKey)?.key ?? 'benefits'
   );
 
   const updateSectionUrl = async (sectionKey: SuccessRoomSection['key'], { replace = false } = {}) => {
@@ -112,7 +107,7 @@
     <PillTabs
       tabs={successRoomSections}
       ariaLabel={`${room.prospectName} success room sections`}
-      bind:activeTabKey={() => activeSectionKey, (sectionKey) => updateSectionUrl(sectionKey)}
+      bind:activeTabKey={() => activeSectionKey, updateSectionUrl}
       animatedTabKeys={benefitDependentSectionKeys}
       listClass="mt-[34px]"
       panelClass="mt-[38px]"

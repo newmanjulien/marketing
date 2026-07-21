@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { successRoomDocumentRequestTitle } from '../domain/documentRequests';
-  import { getSuccessRoomDocumentRequestPath, getSuccessRoomResourcePath } from '../domain/urls';
   import type { SuccessRoomLandingRoom } from '../domain/types';
+  import { isSuccessRoomAssetResourceSlug } from '../domain/resourceSlugs';
+  import { getSuccessRoomDocumentRequestPath, getSuccessRoomResourcePath } from '../domain/urls';
   import DocumentLinkCard from './DocumentLinkCard.svelte';
 
   let {
@@ -21,7 +21,7 @@
     aria-label={`${room.prospectName} success room resources`}
   >
     {#each room.resources as resource (resource.slug)}
-      {@const isAsset = resource.delivery.type === 'asset'}
+      {@const isAsset = isSuccessRoomAssetResourceSlug(resource.slug)}
       <DocumentLinkCard
         href={getSuccessRoomResourcePath(room.slug, resource.slug)}
         target={isAsset ? '_blank' : undefined}
@@ -32,7 +32,7 @@
 
     <DocumentLinkCard
       href={getSuccessRoomDocumentRequestPath(room.slug)}
-      label={successRoomDocumentRequestTitle}
+      label="Do you need something else?"
       variant="request"
     />
   </nav>

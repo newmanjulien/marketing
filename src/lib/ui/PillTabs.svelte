@@ -31,7 +31,7 @@
 
   const idBase = $props.id();
 
-  let activeTab = $derived(tabs.find(({ key }) => key === activeTabKey) ?? tabs[0]);
+  const activeTab = $derived(tabs.find(({ key }) => key === activeTabKey) ?? tabs[0]);
 
   const baseListClasses = 'flex flex-wrap items-center gap-[7px]';
   const tabClasses =
@@ -73,9 +73,10 @@
       focusTab(tab.key);
     }
   };
-  const handleTabKeydown = (event: KeyboardEvent) => {
-    const currentIndex = tabs.findIndex(({ key }) => key === activeTab?.key);
-
+  // Navigates from the tab the event fired on, not from `activeTab`: the bound
+  // `activeTabKey` can update asynchronously (e.g. via a `goto` setter), so
+  // `activeTab` may still point at the previous tab while focus has moved.
+  const handleTabKeydown = (event: KeyboardEvent, currentIndex: number) => {
     switch (event.key) {
       case 'ArrowLeft':
         event.preventDefault();
@@ -99,7 +100,8 @@
 
 {#if activeTab}
   <div class={[baseListClasses, listClass]} role="tablist" aria-label={ariaLabel}>
-    {#each tabs as tab (tab.key)}
+    {#each tabs as tab, index (tab.key)}
+      {@const isActive = activeTab.key === tab.key}
       <span
         class="inline-flex"
         animate:flip={{ duration: getPillTabReflowDuration, easing: cubicOut }}
@@ -108,16 +110,14 @@
           id={getTabId(tab.key)}
           type="button"
           role="tab"
-          aria-selected={activeTab.key === tab.key}
-          aria-controls={activeTab.key === tab.key ? getPanelId(tab.key) : undefined}
-          tabindex={activeTab.key === tab.key ? 0 : -1}
-          class={[tabClasses, activeTab.key === tab.key && activeTabClasses]}
+          aria-selected={isActive}
+          aria-controls={isActive ? getPanelId(tab.key) : undefined}
+          tabindex={isActive ? 0 : -1}
+          class={[tabClasses, isActive && activeTabClasses]}
           in:pillTabEntry={tab.key}
           out:pillTabExit={tab.key}
-          onclick={() => {
-            selectTab(tab.key);
-          }}
-          onkeydown={handleTabKeydown}
+          onclick={() => selectTab(tab.key)}
+          onkeydown={(event) => handleTabKeydown(event, index)}
         >
           {tab.label}
         </button>

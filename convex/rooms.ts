@@ -4,22 +4,19 @@ import { internal } from "./_generated/api";
 import { internalMutation, query } from "./_generated/server";
 import { roomMutation, roomQuery } from "./functions";
 import {
-  assetSuccessRoomResourceKeyValidator,
-  initialFormatResourceKey,
-  kickoffScheduleResourceKey,
-  mutualSuccessPlanResourceKey,
-  routedSuccessRoomResourceKeyValidator,
+  successRoomAssetResourceSlugValidator,
+  initialFormatResourceSlug,
+  kickoffScheduleResourceSlug,
+  mutualSuccessPlanResourceSlug,
+  successRoomRoutedResourceSlugValidator,
 } from "../shared/successRoomResources";
-import {
-  successRoomBenefitsStateValidator,
-  successRoomEditableTextContentValidator,
-  successRoomKickoffScheduleStateValidator,
-} from "../shared/successRoomState";
+import { successRoomBenefitsStateValidator } from "../shared/successRoomBenefits";
+import { successRoomEditableTextContentValidator } from "../shared/successRoomEditableText";
+import { successRoomKickoffScheduleStateValidator } from "../shared/successRoomKickoffSchedule";
 import { successRoomPlanActionValidator, applySuccessRoomPlanAction } from "../shared/successRoomPlan";
 import { maxSuccessRoomDocumentRequestDescriptionLength } from "../shared/successRoomDocumentRequests";
 import {
   assertResourceEnabled,
-  patchRoomState,
   roomBySlug,
   sanitizeBenefitsState,
   sanitizeKickoffScheduleState,
@@ -77,14 +74,14 @@ export const getBasePage = roomQuery({
 
 export const resolveAssetResource = roomQuery({
   args: {
-    resourceSlug: assetSuccessRoomResourceKeyValidator,
+    resourceSlug: successRoomAssetResourceSlugValidator,
   },
   handler: async (ctx, args) => await assetResourceResolution(ctx, ctx.room, args.resourceSlug),
 });
 
 export const getRoutedResourcePage = roomQuery({
   args: {
-    resourceSlug: routedSuccessRoomResourceKeyValidator,
+    resourceSlug: successRoomRoutedResourceSlugValidator,
   },
   handler: async (ctx, args) => await publicResourcePayload(ctx, ctx.room, args.resourceSlug),
 });
@@ -94,14 +91,14 @@ export const patchBenefits = roomMutation({
     benefits: v.object(partial(successRoomBenefitsStateValidator.fields)),
   },
   handler: async (ctx, args) => {
-    const nextBenefits = sanitizeBenefitsState(ctx.room, {
-      ...ctx.room.state.benefits,
-      ...args.benefits,
-    });
-
-    await patchRoomState(ctx, ctx.room, {
-      ...ctx.room.state,
-      benefits: nextBenefits,
+    await ctx.db.patch(ctx.room._id, {
+      state: {
+        ...ctx.room.state,
+        benefits: sanitizeBenefitsState(ctx.room, {
+          ...ctx.room.state.benefits,
+          ...args.benefits,
+        }),
+      },
     });
   },
 });
@@ -111,12 +108,14 @@ export const applyPlanAction = roomMutation({
     action: successRoomPlanActionValidator,
   },
   handler: async (ctx, args) => {
-    assertResourceEnabled(ctx.room, mutualSuccessPlanResourceKey);
+    assertResourceEnabled(ctx.room, mutualSuccessPlanResourceSlug);
     const nextPlan = applySuccessRoomPlanAction(ctx.room.state.plan, args.action);
 
-    await patchRoomState(ctx, ctx.room, {
-      ...ctx.room.state,
-      plan: sanitizePlanState(ctx.room, nextPlan),
+    await ctx.db.patch(ctx.room._id, {
+      state: {
+        ...ctx.room.state,
+        plan: sanitizePlanState(ctx.room, nextPlan),
+      },
     });
   },
 });
@@ -126,13 +125,15 @@ export const patchEditableText = roomMutation({
     editableText: successRoomEditableTextContentValidator,
   },
   handler: async (ctx, args) => {
-    assertResourceEnabled(ctx.room, initialFormatResourceKey);
+    assertResourceEnabled(ctx.room, initialFormatResourceSlug);
 
-    await patchRoomState(ctx, ctx.room, {
-      ...ctx.room.state,
-      editableText: {
-        ...args.editableText,
-        attachmentFileId: ctx.room.state.editableText.attachmentFileId,
+    await ctx.db.patch(ctx.room._id, {
+      state: {
+        ...ctx.room.state,
+        editableText: {
+          ...args.editableText,
+          attachmentFileId: ctx.room.state.editableText.attachmentFileId,
+        },
       },
     });
   },
@@ -143,11 +144,13 @@ export const replaceKickoffSchedule = roomMutation({
     kickoffSchedule: successRoomKickoffScheduleStateValidator,
   },
   handler: async (ctx, args) => {
-    assertResourceEnabled(ctx.room, kickoffScheduleResourceKey);
+    assertResourceEnabled(ctx.room, kickoffScheduleResourceSlug);
 
-    await patchRoomState(ctx, ctx.room, {
-      ...ctx.room.state,
-      kickoffSchedule: sanitizeKickoffScheduleState(args.kickoffSchedule),
+    await ctx.db.patch(ctx.room._id, {
+      state: {
+        ...ctx.room.state,
+        kickoffSchedule: sanitizeKickoffScheduleState(args.kickoffSchedule),
+      },
     });
   },
 });
@@ -165,9 +168,6 @@ export const claimUpload = roomMutation({
     filename: v.string(),
     purpose: uploadPurposeValidator,
   },
-  // Blobs are only ever deleted inside acceptUploadedBlob, after it has
-  // confirmed the blob is unclaimed; rejections here just throw and leave the
-  // blob for the orphaned-storage cron.
   handler: async (ctx, args) => {
     if (args.purpose.type === "team-member-photo") {
       const name = args.purpose.name.trim();
@@ -191,7 +191,7 @@ export const claimUpload = roomMutation({
       };
     }
 
-    assertResourceEnabled(ctx.room, initialFormatResourceKey);
+    assertResourceEnabled(ctx.room, initialFormatResourceSlug);
 
     const attachmentFileId = await acceptUploadedBlob(ctx, ctx.room._id, {
       storageId: args.storageId,
@@ -204,11 +204,13 @@ export const claimUpload = roomMutation({
       await deleteFile(ctx, previousAttachmentFileId);
     }
 
-    await patchRoomState(ctx, ctx.room, {
-      ...ctx.room.state,
-      editableText: {
-        ...ctx.room.state.editableText,
-        attachmentFileId,
+    await ctx.db.patch(ctx.room._id, {
+      state: {
+        ...ctx.room.state,
+        editableText: {
+          ...ctx.room.state.editableText,
+          attachmentFileId,
+        },
       },
     });
 
@@ -228,7 +230,7 @@ export const claimUpload = roomMutation({
 export const removeEditableAttachment = roomMutation({
   args: {},
   handler: async (ctx) => {
-    assertResourceEnabled(ctx.room, initialFormatResourceKey);
+    assertResourceEnabled(ctx.room, initialFormatResourceSlug);
 
     const { attachmentFileId, ...editableText } = ctx.room.state.editableText;
 
@@ -236,9 +238,11 @@ export const removeEditableAttachment = roomMutation({
       await deleteFile(ctx, attachmentFileId);
     }
 
-    await patchRoomState(ctx, ctx.room, {
-      ...ctx.room.state,
-      editableText,
+    await ctx.db.patch(ctx.room._id, {
+      state: {
+        ...ctx.room.state,
+        editableText,
+      },
     });
   },
 });

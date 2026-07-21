@@ -1,4 +1,4 @@
-import { industryNavigationItems } from '$lib/industries/industryNavigation';
+import { industryNavigationItems } from '$lib/marketing/industries/industryContent';
 import type { RequestHandler } from './$types';
 
 export const prerender = true;

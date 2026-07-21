@@ -1,13 +1,8 @@
 <script lang="ts">
-  import ContentMeasure from '$lib/page/ContentMeasure.svelte';
-  import PageFrame from '$lib/page/PageFrame.svelte';
-  import {
-    successRoomDocumentRequestDescription,
-    successRoomDocumentRequestTitle,
-    type DocumentRequestFormFailure
-  } from '../domain/documentRequests';
+  import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
+  import PageFrame from '$lib/ui/PageFrame.svelte';
+  import type { DocumentRequestFormFailure, SuccessRoomBaseRoom } from '../domain/types';
   import { getSuccessRoomPath } from '../domain/urls';
-  import type { SuccessRoomBaseRoom } from '../domain/types';
   import DocumentRequestConfirmation from '../documents/DocumentRequestConfirmation.svelte';
   import DocumentRequestForm from '../documents/DocumentRequestForm.svelte';
   import Header from '../shell/Header.svelte';
@@ -28,8 +23,10 @@
     <Header
       backHref={getSuccessRoomPath(room.slug, 'documents')}
       backLabel="Success room"
-      title={successRoomDocumentRequestTitle}
-      description={submitted ? undefined : successRoomDocumentRequestDescription}
+      title="Do you need something else?"
+      description={submitted
+        ? undefined
+        : 'Describe any additional document that would help you socialize this opportunity within your firm'}
     />
 
     {#if submitted}

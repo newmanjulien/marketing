@@ -2,7 +2,7 @@
   import type { SuccessRoomEditableTextState } from '../domain/types';
 
   let {
-    editableState = $bindable<SuccessRoomEditableTextState>()
+    editableState = $bindable()
   }: {
     editableState: SuccessRoomEditableTextState;
   } = $props();
@@ -27,12 +27,6 @@
     }
   ] as const satisfies readonly { key: SuccessFieldKey; label: string; hint: string }[];
 
-  const promptListClasses = 'grid gap-[18px]';
-  const questionLabelClasses =
-    'block text-[14px] font-normal leading-[1.3] tracking-normal text-stone-750 sm:text-[15px]';
-  const textAreaClasses =
-    'min-h-[108px] w-full resize-none rounded-[16px] border border-stone-200 bg-white px-[18px] py-[14px] text-[14px] font-book leading-[1.45] text-stone-800 outline-none transition-colors duration-150 placeholder:text-stone-400 focus:border-stone-300 focus:ring-2 focus:ring-stone-900/20 sm:min-h-[120px] sm:px-[20px] sm:py-[16px] sm:text-[15px]';
-
   const setSuccessField = (key: SuccessFieldKey, value: string) => {
     editableState = {
       ...editableState,
@@ -44,12 +38,14 @@
   };
 </script>
 
-<div class={promptListClasses}>
+<div class="grid gap-[18px]">
   {#each successQuestions as question (question.key)}
     <div class="grid gap-[8px]">
-      <span class={questionLabelClasses}>{question.label}</span>
+      <span class="block text-[14px] font-normal leading-[1.3] tracking-normal text-stone-750 sm:text-[15px]">
+        {question.label}
+      </span>
       <textarea
-        class={textAreaClasses}
+        class="min-h-[108px] w-full resize-none rounded-[16px] border border-stone-200 bg-white px-[18px] py-[14px] text-[14px] font-book leading-[1.45] text-stone-800 outline-none transition-colors duration-150 placeholder:text-stone-400 focus:border-stone-300 focus:ring-2 focus:ring-stone-900/20 sm:min-h-[120px] sm:px-[20px] sm:py-[16px] sm:text-[15px]"
         aria-label={question.label}
         placeholder={question.hint}
         bind:value={

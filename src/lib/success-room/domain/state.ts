@@ -3,7 +3,6 @@ import type {
   SuccessRoomKickoffScheduleState,
   SuccessRoomPlanState
 } from './types';
-import { kickoffScheduleColumns } from '../../../../shared/successRoomResources';
 
 export const clonePlan = (plan: SuccessRoomPlanState): SuccessRoomPlanState => ({
   openAccordionKey: plan.openAccordionKey,
@@ -30,12 +29,6 @@ export const cloneKickoffScheduleState = (
 ): SuccessRoomKickoffScheduleState => ({
   rows: schedule.rows.map((row) => ({
     key: row.key,
-    sortOrder: row.sortOrder,
-    cells: Object.fromEntries(
-      kickoffScheduleColumns.map((column) => [
-        column.key,
-        row.cells[column.key] ?? ''
-      ])
-    )
+    cells: { ...row.cells }
   }))
 });

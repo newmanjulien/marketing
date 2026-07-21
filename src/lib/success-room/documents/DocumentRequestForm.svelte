@@ -1,12 +1,10 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import { page } from '$app/state';
-  import { getNamedFormAction } from '$lib/forms/formActionUrls';
+  import { getNamedFormAction } from '$lib/success-room/domain/urls';
   import type { SubmitFunction } from '@sveltejs/kit';
-  import {
-    maxSuccessRoomDocumentRequestDescriptionLength,
-    type DocumentRequestFormFailure
-  } from '../domain/documentRequests';
+  import { maxSuccessRoomDocumentRequestDescriptionLength } from '../../../../shared/successRoomDocumentRequests';
+  import type { DocumentRequestFormFailure } from '../domain/types';
 
   let { form }: { form?: DocumentRequestFormFailure } = $props();
   let isSubmitting = $state(false);

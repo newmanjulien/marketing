@@ -2,7 +2,7 @@
   import { ImageIcon, PencilSimpleIcon, TrashIcon } from 'phosphor-svelte';
 
   let {
-    value = $bindable<File | null>(null),
+    value = $bindable(null),
     disabled = false
   }: {
     value: File | null;

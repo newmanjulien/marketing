@@ -29,7 +29,8 @@ export const readBenefitCards = async (baseDir) => {
         sortOrder: parseSortOrder(record, "sortOrder", filename, rowNumber),
       };
     })
-    .sort((left, right) => left.sortOrder - right.sortOrder);
+    .sort((left, right) => left.sortOrder - right.sortOrder)
+    .map(({ sortOrder: _sortOrder, ...card }) => card);
 
   if (benefitCards.length === 0) {
     throw new Error(`${filename} must include at least one benefit.`);

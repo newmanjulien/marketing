@@ -1,20 +1,20 @@
 import type { QueryCtx } from "../_generated/server";
 import {
   audioResourceDefinition,
-  audioResourceKey,
+  audioResourceSlug,
   deckResourceDefinition,
-  deckResourceKey,
+  deckResourceSlug,
   initialFormatResourceDefinition,
-  initialFormatResourceKey,
+  initialFormatResourceSlug,
   kickoffScheduleResourceDefinition,
-  kickoffScheduleResourceKey,
+  kickoffScheduleResourceSlug,
   mutualSuccessPlanResourceDefinition,
-  mutualSuccessPlanResourceKey,
+  mutualSuccessPlanResourceSlug,
   successRoomDescription,
   successRoomResourceDefinitions,
-  type AssetSuccessRoomResourceKey,
-  type RoutedSuccessRoomResourceKey,
-  type SuccessRoomResourceKey,
+  type SuccessRoomAssetResourceSlug,
+  type SuccessRoomRoutedResourceSlug,
+  type SuccessRoomResourceSlug,
 } from "../../shared/successRoomResources";
 import {
   assertResourceEnabled,
@@ -43,60 +43,43 @@ const planAccordionSummary = (accordion: SuccessRoom["planAccordions"][number]) 
   title: accordion.title,
   description: accordion.description,
   variant: accordion.variant,
-  tasks: accordion.tasks.map((task) => ({
-    key: task.key,
-    title: task.title,
-    date: task.dateLabel,
-  })),
+  tasks: accordion.tasks,
 });
-
-const routeDelivery = { type: "route" } as const;
 
 const routedResourceDefinitions = {
-  [mutualSuccessPlanResourceKey]: mutualSuccessPlanResourceDefinition,
-  [initialFormatResourceKey]: initialFormatResourceDefinition,
-  [kickoffScheduleResourceKey]: kickoffScheduleResourceDefinition,
+  [mutualSuccessPlanResourceSlug]: mutualSuccessPlanResourceDefinition,
+  [initialFormatResourceSlug]: initialFormatResourceDefinition,
+  [kickoffScheduleResourceSlug]: kickoffScheduleResourceDefinition,
 } as const;
-
-const routedResourceSummary = (resourceKey: RoutedSuccessRoomResourceKey) => ({
-  ...routedResourceDefinitions[resourceKey],
-  delivery: routeDelivery,
-});
 
 const assetResourceSummary = async (
   ctx: QueryCtx,
   room: SuccessRoom,
-  resourceKey: AssetSuccessRoomResourceKey,
+  resourceSlug: SuccessRoomAssetResourceSlug,
 ) => {
-  const file = await fileByRoomKind(ctx, room._id, resourceKey);
+  const file = await fileByRoomKind(ctx, room._id, resourceSlug);
 
   if (!file) {
     return null;
   }
 
-  const definition =
-    resourceKey === deckResourceKey ? deckResourceDefinition : audioResourceDefinition;
-
-  return {
-    ...definition,
-    delivery: { type: "asset" as const },
-  };
+  return resourceSlug === deckResourceSlug ? deckResourceDefinition : audioResourceDefinition;
 };
 
 const landingResource = async (
   ctx: QueryCtx,
   room: SuccessRoom,
-  resourceKey: SuccessRoomResourceKey,
+  resourceSlug: SuccessRoomResourceSlug,
 ) => {
-  if (!hasResource(room, resourceKey)) {
+  if (!hasResource(room, resourceSlug)) {
     return null;
   }
 
-  if (resourceKey === deckResourceKey || resourceKey === audioResourceKey) {
-    return await assetResourceSummary(ctx, room, resourceKey);
+  if (resourceSlug === deckResourceSlug || resourceSlug === audioResourceSlug) {
+    return await assetResourceSummary(ctx, room, resourceSlug);
   }
 
-  return routedResourceSummary(resourceKey);
+  return routedResourceDefinitions[resourceSlug];
 };
 
 const landingResources = async (ctx: QueryCtx, room: SuccessRoom) => {
@@ -123,13 +106,13 @@ export const publicLandingPayload = async (ctx: QueryCtx, room: SuccessRoom) => 
 export const assetResourceResolution = async (
   ctx: QueryCtx,
   room: SuccessRoom,
-  resourceKey: AssetSuccessRoomResourceKey,
+  resourceSlug: SuccessRoomAssetResourceSlug,
 ) => {
-  if (!hasResource(room, resourceKey)) {
+  if (!hasResource(room, resourceSlug)) {
     return { status: "missing" as const };
   }
 
-  const file = await fileByRoomKind(ctx, room._id, resourceKey);
+  const file = await fileByRoomKind(ctx, room._id, resourceSlug);
   const href = file ? await ctx.storage.getUrl(file.storageId) : null;
 
   if (!href) {
@@ -145,7 +128,7 @@ export const assetResourceResolution = async (
 export const publicResourcePayload = async (
   ctx: QueryCtx,
   room: SuccessRoom,
-  resourceSlug: RoutedSuccessRoomResourceKey,
+  resourceSlug: SuccessRoomRoutedResourceSlug,
 ) => {
   assertResourceEnabled(room, resourceSlug);
 
@@ -154,7 +137,7 @@ export const publicResourcePayload = async (
     room: baseRoom(room),
   };
 
-  if (resourceSlug === mutualSuccessPlanResourceKey) {
+  if (resourceSlug === mutualSuccessPlanResourceSlug) {
     return {
       ...basePayload,
       resource: {
@@ -163,25 +146,21 @@ export const publicResourcePayload = async (
           planAccordions: room.planAccordions.map(planAccordionSummary),
           team: await teamSummaries(ctx, room),
         },
-        delivery: routeDelivery,
       },
       state: {
-        kind: mutualSuccessPlanResourceKey as typeof mutualSuccessPlanResourceKey,
+        kind: "mutual-success-plan" as const,
         plan: sanitizePlanState(room, room.state.plan),
       },
     };
   }
 
-  if (resourceSlug === initialFormatResourceKey) {
+  if (resourceSlug === initialFormatResourceSlug) {
     const { attachmentFileId, ...editableText } = room.state.editableText;
     const attachment = attachmentFileId ? await ctx.db.get(attachmentFileId) : null;
 
     return {
       ...basePayload,
-      resource: {
-        ...initialFormatResourceDefinition,
-        delivery: routeDelivery,
-      },
+      resource: initialFormatResourceDefinition,
       state: {
         kind: "editable-text" as const,
         editableText: {
@@ -192,13 +171,10 @@ export const publicResourcePayload = async (
     };
   }
 
-  if (resourceSlug === kickoffScheduleResourceKey) {
+  if (resourceSlug === kickoffScheduleResourceSlug) {
     return {
       ...basePayload,
-      resource: {
-        ...kickoffScheduleResourceDefinition,
-        delivery: routeDelivery,
-      },
+      resource: kickoffScheduleResourceDefinition,
       state: {
         kind: "kickoff-schedule" as const,
         kickoffSchedule: sanitizeKickoffScheduleState(room.state.kickoffSchedule),

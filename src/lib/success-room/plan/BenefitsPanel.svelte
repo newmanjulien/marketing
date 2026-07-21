@@ -5,7 +5,7 @@
 
   let {
     benefitCards,
-    selectedBenefitKeys = $bindable<string[]>([]),
+    selectedBenefitKeys = $bindable([]),
     customBenefitInput = $bindable(''),
     customBenefitSelected = $bindable(false)
   }: {
@@ -15,51 +15,35 @@
     customBenefitSelected: boolean;
   } = $props();
 
-  let checkedBenefitKeys = $derived(new Set(selectedBenefitKeys));
   const canSelectCustomBenefit = $derived(customBenefitInput.trim().length > 0);
 
   const cardClasses =
     'group flex h-[132px] flex-col rounded-[16px] border border-stone-200 bg-white px-[18px] py-[14px] text-stone-900 shadow-[0_1px_4px_rgba(28,25,23,0.06)] transition-[border-color,box-shadow] duration-200 hover:border-stone-300 hover:shadow-[0_6px_14px_rgba(28,25,23,0.06)] focus-within:border-stone-300 sm:px-[20px] sm:py-[16px]';
-  const selectableCardClasses = 'cursor-pointer';
   const checkedCardClasses = 'border-stone-300 bg-stone-50/60';
   const titleClasses =
     'min-w-0 text-[15px] font-normal leading-[1.2] tracking-normal text-stone-750 transition-colors duration-200 group-hover:text-stone-900 sm:text-[16px]';
-  const checkboxClasses =
-    'mt-[1px] h-[15px] w-[15px] shrink-0 cursor-pointer';
-  const panelDescriptionClasses =
-    'text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]';
-  const descriptionClasses =
-    'mt-[10px] block max-w-[26rem] text-[13px] font-book leading-[1.4] tracking-normal text-stone-500 sm:text-[14px]';
-  const customBenefitInputClasses =
-    'mt-[10px] block min-h-0 w-full flex-1 resize-none rounded-[10px] border border-stone-200 bg-white px-[10px] py-[7px] font-body text-[13px] font-book leading-[1.35] tracking-normal text-stone-800 outline-none transition-[background-color,border-color,color] duration-150 placeholder:text-stone-400 focus:border-stone-300 focus:bg-stone-50/70 focus:text-stone-900 sm:text-[14px]';
+  const checkboxClasses = 'mt-[1px] h-[15px] w-[15px] shrink-0 cursor-pointer';
 
   const setBenefitChecked = (benefitKey: string, checked: boolean) => {
-    const nextSelectedBenefitKeys = new Set(checkedBenefitKeys);
-
-    if (checked) {
-      nextSelectedBenefitKeys.add(benefitKey);
-    } else {
-      nextSelectedBenefitKeys.delete(benefitKey);
-    }
-
-    selectedBenefitKeys = Array.from(nextSelectedBenefitKeys);
+    selectedBenefitKeys = checked
+      ? [...selectedBenefitKeys, benefitKey]
+      : selectedBenefitKeys.filter((key) => key !== benefitKey);
   };
 </script>
 
 <div class="grid gap-[18px]">
-  <p class={panelDescriptionClasses}>
+  <p class="text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]">
     Select the most important benefits you're hoping to get from our collaboration
   </p>
 
   <ul class="grid w-full gap-[14px] sm:grid-cols-2" aria-label="Benefits">
     {#each benefitCards as card (card.key)}
-      {@const isChecked = checkedBenefitKeys.has(card.key)}
+      {@const isChecked = selectedBenefitKeys.includes(card.key)}
       <li>
-        <label class={[cardClasses, selectableCardClasses, isChecked && checkedCardClasses]}>
+        <label class={[cardClasses, 'cursor-pointer', isChecked && checkedCardClasses]}>
           <span class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-[14px]">
             <span class={titleClasses}>{card.title}</span>
             <Checkbox
-              id={`benefit-${card.key}`}
               class={checkboxClasses}
               bind:checked={
                 () => isChecked,
@@ -68,7 +52,7 @@
             />
           </span>
 
-          <span class={descriptionClasses}>{card.description}</span>
+          <span class="mt-[10px] block max-w-[26rem] text-[13px] font-book leading-[1.4] tracking-normal text-stone-500 sm:text-[14px]">{card.description}</span>
         </label>
       </li>
     {/each}
@@ -78,20 +62,16 @@
         <span class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-[14px]">
           <label class={titleClasses} for="custom-benefit-input">Another benefit</label>
           <Checkbox
-            id="custom-benefit-selected"
             class={[checkboxClasses, 'disabled:cursor-not-allowed disabled:opacity-40']}
             disabled={!canSelectCustomBenefit}
             aria-label="Select another benefit"
-            bind:checked={
-              () => customBenefitSelected,
-              (checked) => (customBenefitSelected = checked)
-            }
+            bind:checked={customBenefitSelected}
           />
         </span>
 
         <textarea
           id="custom-benefit-input"
-          class={customBenefitInputClasses}
+          class="mt-[10px] block min-h-0 w-full flex-1 resize-none rounded-[10px] border border-stone-200 bg-white px-[10px] py-[7px] font-body text-[13px] font-book leading-[1.35] tracking-normal text-stone-800 outline-none transition-[background-color,border-color,color] duration-150 placeholder:text-stone-400 focus:border-stone-300 focus:bg-stone-50/70 focus:text-stone-900 sm:text-[14px]"
           aria-label="Another benefit"
           placeholder="Describe this benefit"
           rows="2"

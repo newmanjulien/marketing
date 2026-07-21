@@ -1,4 +1,4 @@
-import { getLegalPageIndexItems } from '$lib/legal/legalPages';
+import { getLegalPageIndexItems } from '$lib/marketing/legal/legalPages';
 import type { PageServerLoad } from './$types';
 
 // Server-only so the index ships plain metadata instead of every legal page's body component.
