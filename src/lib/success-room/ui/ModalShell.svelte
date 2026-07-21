@@ -20,6 +20,8 @@
   }: ModalShellProps = $props();
 
   const titleId = $props.id();
+  // Created once with a stable identity so the attachment never re-runs
+  // (re-running would reset focus capture and the scroll lock).
   const modal = createModalBehavior({ onClose: () => onClose() });
 </script>
 
@@ -34,7 +36,7 @@
     ></button>
 
     <div
-      use:modal
+      {@attach modal}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}

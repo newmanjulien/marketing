@@ -22,7 +22,7 @@
   };
 </script>
 
-<ModalShell {open} title="Assign task" onClose={onClose}>
+<ModalShell {open} title="Assign task" {onClose}>
   {#if team.length === 0}
     <p class="m-0 text-[14px] font-book leading-[1.4] tracking-normal text-stone-500">
       No team members yet.

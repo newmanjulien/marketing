@@ -8,12 +8,12 @@ import { createKey } from "./rooms";
 export type SuccessRoomFile = Doc<"successRoomFiles">;
 export type FileKind = SuccessRoomFile["kind"];
 
-export const fileByRoomKind = async (
+export const fileByRoomKind = (
   ctx: QueryCtx | MutationCtx,
   roomId: Id<"successRooms">,
   kind: FileKind,
 ) =>
-  await ctx.db
+  ctx.db
     .query("successRoomFiles")
     .withIndex("by_room_kind", (q) => q.eq("roomId", roomId).eq("kind", kind))
     .first();
@@ -58,8 +58,8 @@ export const teamMemberSummary = async (
   };
 };
 
-export const teamSummaries = async (ctx: QueryCtx | MutationCtx, room: SuccessRoom) =>
-  await Promise.all(room.teamMembers.map((member) => teamMemberSummary(ctx, member)));
+export const teamSummaries = (ctx: QueryCtx | MutationCtx, room: SuccessRoom) =>
+  Promise.all(room.teamMembers.map((member) => teamMemberSummary(ctx, member)));
 
 // Accepts a freshly uploaded blob into the room, or throws when it fails
 // validation. Uploads are claimed exactly once. Rejected blobs stay in storage
@@ -115,7 +115,7 @@ export const acceptUploadedBlob = async (
     throw new ConvexError("Uploaded file has an unsupported type");
   }
 
-  return await ctx.db.insert("successRoomFiles", {
+  const fileId = await ctx.db.insert("successRoomFiles", {
     roomId,
     kind,
     storageId,
@@ -123,6 +123,9 @@ export const acceptUploadedBlob = async (
     contentType,
     byteSize: storedBlob.size,
   });
+
+  // Reading back a row inserted in the same transaction cannot miss.
+  return (await ctx.db.get(fileId))!;
 };
 
 export const addTeamMember = async (

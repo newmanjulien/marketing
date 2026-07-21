@@ -8,10 +8,9 @@ import {
   setSuccessRoomSessionToken
 } from './access.server';
 import { api } from '../../../../convex/_generated/api';
-import {
-  successRoomDescription,
-  type SuccessRoomAssetResourceSlug,
-  type SuccessRoomRoutedResourceSlug
+import type {
+  SuccessRoomAssetResourceSlug,
+  SuccessRoomRoutedResourceSlug
 } from '../../../../shared/successRoomResources';
 import { convex } from '$lib/success-room/server/convexClient.server';
 
@@ -38,17 +37,17 @@ const getUnlockedSuccessRoomPayload = async <Payload>(
   }
 };
 
-export const getUnlockedSuccessRoomLandingPage = async (cookies: Cookies, roomSlug: string) =>
+export const getUnlockedSuccessRoomLandingPage = (cookies: Cookies, roomSlug: string) =>
   getUnlockedSuccessRoomPayload(cookies, roomSlug, (sessionToken) =>
     convex.query(api.rooms.getLandingPage, { sessionToken })
   );
 
-export const getUnlockedSuccessRoomBasePage = async (cookies: Cookies, roomSlug: string) =>
+export const getUnlockedSuccessRoomBasePage = (cookies: Cookies, roomSlug: string) =>
   getUnlockedSuccessRoomPayload(cookies, roomSlug, (sessionToken) =>
     convex.query(api.rooms.getBasePage, { sessionToken })
   );
 
-export const resolveUnlockedSuccessRoomAsset = async (
+export const resolveUnlockedSuccessRoomAsset = (
   cookies: Cookies,
   roomSlug: string,
   resourceSlug: SuccessRoomAssetResourceSlug
@@ -57,7 +56,7 @@ export const resolveUnlockedSuccessRoomAsset = async (
     convex.query(api.rooms.resolveAssetResource, { sessionToken, resourceSlug })
   );
 
-export const getUnlockedSuccessRoomResourcePage = async (
+export const getUnlockedSuccessRoomResourcePage = (
   cookies: Cookies,
   roomSlug: string,
   resourceSlug: SuccessRoomRoutedResourceSlug
@@ -73,14 +72,7 @@ export const getLockedSuccessRoomPayload = async (roomSlug: string) => {
     error(404, 'Success room not found');
   }
 
-  return {
-    locked: true as const,
-    room: {
-      slug: room.slug,
-      prospectName: room.prospectName,
-      description: successRoomDescription
-    }
-  };
+  return { locked: true as const, room };
 };
 
 export const unlockSuccessRoom = async ({

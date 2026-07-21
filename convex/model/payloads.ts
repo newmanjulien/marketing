@@ -76,7 +76,7 @@ const landingResource = async (
   }
 
   if (resourceSlug === deckResourceSlug || resourceSlug === audioResourceSlug) {
-    return await assetResourceSummary(ctx, room, resourceSlug);
+    return assetResourceSummary(ctx, room, resourceSlug);
   }
 
   return routedResourceDefinitions[resourceSlug];

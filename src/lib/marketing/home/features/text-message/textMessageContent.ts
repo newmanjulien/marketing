@@ -1,5 +1,5 @@
-import { homeIndustries } from "$lib/marketing/home/homeIndustries";
-import type { IndustryId } from "$lib/marketing/industries/industryContent";
+import { homeIndustries } from '$lib/marketing/home/homeIndustries';
+import type { IndustryId } from '$lib/marketing/industries/industryContent';
 
 export type TextMessageScenario = {
   id: string;
@@ -12,29 +12,30 @@ export type TextMessageScenario = {
 // src/content/home/text-message/<industry>/<order>-<id>.md
 // so anyone can edit the copy as plain text. Each file has a small frontmatter
 // block (label, description) followed by the message body.
-const files = import.meta.glob(
-  "/src/content/home/text-message/*/*.md",
-  { query: "?raw", import: "default", eager: true },
-) as Record<string, string>;
+const files = import.meta.glob<string>('/src/content/home/text-message/*/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true
+});
 
 type ParsedScenario = TextMessageScenario & { industry: string; order: number };
 
 function parseFrontmatter(raw: string): { label: string; description: string; body: string } {
   const match = /^---\n([\s\S]*?)\n---\n?/.exec(raw);
   if (!match) {
-    throw new Error("text-message content file is missing its frontmatter block");
+    throw new Error('text-message content file is missing its frontmatter block');
   }
 
   const fields: Record<string, string> = {};
-  for (const line of match[1].split("\n")) {
-    const separator = line.indexOf(":");
+  for (const line of match[1].split('\n')) {
+    const separator = line.indexOf(':');
     if (separator === -1) continue;
     fields[line.slice(0, separator).trim()] = line.slice(separator + 1).trim();
   }
 
   const { label, description } = fields;
   if (!label || !description) {
-    throw new Error("text-message content file must define both `label` and `description`");
+    throw new Error('text-message content file must define both `label` and `description`');
   }
 
   return { label, description, body: raw.slice(match[0].length).trim() };
@@ -67,7 +68,7 @@ export const textMessageScenariosByIndustryId = Object.fromEntries(
     if (!scenarios?.length) {
       throw new Error(
         `No text-message content found for industry "${industry.id}". ` +
-          `Add at least one file under src/content/home/text-message/${industry.id}/`,
+          `Add at least one file under src/content/home/text-message/${industry.id}/`
       );
     }
 
@@ -76,5 +77,5 @@ export const textMessageScenariosByIndustryId = Object.fromEntries(
       .map(({ id, label, message, description }) => ({ id, label, message, description }));
 
     return [industry.id, sorted];
-  }),
+  })
 ) as Record<IndustryId, readonly TextMessageScenario[]>;

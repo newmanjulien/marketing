@@ -1,5 +1,5 @@
 import { tick } from 'svelte';
-import type { Action } from 'svelte/action';
+import type { Attachment } from 'svelte/attachments';
 
 let activeScrollLocks = 0;
 let previousBodyOverflow = '';
@@ -8,7 +8,7 @@ type ModalBehaviorOptions = {
   onClose: () => void;
 };
 
-export function createModalBehavior({ onClose }: ModalBehaviorOptions): Action<HTMLDivElement> {
+export function createModalBehavior({ onClose }: ModalBehaviorOptions): Attachment<HTMLDivElement> {
   return (dialogElement) => {
     const previouslyFocusedElement =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -71,12 +71,10 @@ export function createModalBehavior({ onClose }: ModalBehaviorOptions): Action<H
       }
     }
 
-    return {
-      destroy() {
-        document.removeEventListener('keydown', handleKeydown);
-        unlockBodyScroll();
-        previouslyFocusedElement?.focus();
-      }
+    return () => {
+      document.removeEventListener('keydown', handleKeydown);
+      unlockBodyScroll();
+      previouslyFocusedElement?.focus();
     };
   };
 }

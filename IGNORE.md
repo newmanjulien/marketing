@@ -4,7 +4,11 @@ Look over all of this again. Tell me about how we could accomplish the same user
 
 Create a plan for a fresh agent who has no context. Explain from first principles without any information that's not necessary
 
-Compare this codebase vs head. What changes do you disagree with (if any)?
+# Last commit
+
+(do in xHigh)
+
+Compare this codebase vs last commit. What changes do you disagree with (if any)? Spin up sub-agents to help
 
 # Taste
 

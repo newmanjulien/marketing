@@ -3,20 +3,14 @@ export type PortalAuthRoute = 'login' | 'join';
 const PORTAL_ORIGIN = 'https://portal.overbase.app';
 const MARKETING_ORIGIN = 'https://overbase.app';
 
-function isSafeRelativePath(path: string) {
-  return path.startsWith('/') && !path.startsWith('//');
-}
-
-function createMarketingReturnUrl(path: string) {
-  return new URL(isSafeRelativePath(path) ? path : '/', MARKETING_ORIGIN).href;
-}
-
-function createPortalAuthUrl(route: PortalAuthRoute, marketingReturnUrl: string) {
+export function createPortalAuthUrl(route: PortalAuthRoute, marketingPath: string) {
+  // Reject absolute and protocol-relative ("//host") paths so returnTo can
+  // only point back into the marketing site.
+  const isSafeRelativePath = marketingPath.startsWith('/') && !marketingPath.startsWith('//');
+  const returnUrl = new URL(isSafeRelativePath ? marketingPath : '/', MARKETING_ORIGIN);
   const url = new URL(`/${route}`, PORTAL_ORIGIN);
-  url.searchParams.set('returnTo', marketingReturnUrl);
-  return url.href;
-}
 
-export function createPortalAuthUrlForMarketingPath(route: PortalAuthRoute, marketingPath: string) {
-  return createPortalAuthUrl(route, createMarketingReturnUrl(marketingPath));
+  url.searchParams.set('returnTo', returnUrl.href);
+
+  return url.href;
 }

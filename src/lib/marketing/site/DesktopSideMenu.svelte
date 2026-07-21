@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { industryNavigationItems } from '$lib/marketing/industries/industryContent';
+  import { industries } from '$lib/marketing/industries/industryContent';
   import DesktopSideMenuFlyout from './DesktopSideMenuFlyout.svelte';
   import { productNavItems } from './navigation';
 
@@ -17,7 +17,7 @@
   </a>
 
   <nav class="flex flex-col gap-[15px] text-[15px] font-book leading-none text-stone-700">
-    <DesktopSideMenuFlyout label="Industries" href="/industries" links={industryNavigationItems} />
+    <DesktopSideMenuFlyout label="Industries" href="/industries" links={industries} />
 
     {#each productNavItems as item (item.label)}
       <a

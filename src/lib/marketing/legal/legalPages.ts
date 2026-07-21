@@ -1,26 +1,18 @@
 import type { Component } from 'svelte';
-
-export type LegalPageMetadata = {
-  title: string;
-  updatedAt: string;
-  contentWidth?: 'narrow' | 'standard';
-};
+import { resolve } from '$app/paths';
 
 type LegalPageModule = {
   default: Component;
-  page: LegalPageMetadata;
+  page: {
+    title: string;
+    updatedAt: string;
+  };
 };
 
-export type LegalPage = LegalPageMetadata & {
-  slug: string;
+export type LegalPage = {
+  title: string;
   updatedAtLabel: string;
   bodyComponent: Component;
-};
-
-export type LegalPageIndexItem = LegalPageMetadata & {
-  slug: string;
-  href: string;
-  updatedAtLabel: string;
 };
 
 export type LegalTableColumn = {
@@ -49,7 +41,7 @@ const legalPageLoaders = new Map(
 const formatLegalDate = (updatedAt: string) => legalDateFormatter.format(new Date(updatedAt));
 
 // Presentation order for the legal index. Must list every page exactly once.
-const legalPageOrder = [
+export const legalPageSlugs = [
   'terms',
   'billing-and-payment-terms',
   'dpa',
@@ -59,23 +51,21 @@ const legalPageOrder = [
   'subprocessors'
 ];
 
-const orderedLegalPages = legalPageOrder.map((slug) => {
+const orderedLegalPages = legalPageSlugs.map((slug) => {
   const loadLegalPage = legalPageLoaders.get(slug);
 
   if (!loadLegalPage) {
-    throw new Error(`legalPageOrder lists "${slug}" but no page file matches it`);
+    throw new Error(`legalPageSlugs lists "${slug}" but no page file matches it`);
   }
 
   return { slug, loadLegalPage };
 });
 
 if (orderedLegalPages.length !== legalPageLoaders.size) {
-  const unordered = [...legalPageLoaders.keys()].filter((slug) => !legalPageOrder.includes(slug));
+  const unordered = [...legalPageLoaders.keys()].filter((slug) => !legalPageSlugs.includes(slug));
 
-  throw new Error(`Legal pages missing from legalPageOrder: ${unordered.join(', ')}`);
+  throw new Error(`Legal pages missing from legalPageSlugs: ${unordered.join(', ')}`);
 }
-
-export const getLegalPageSlugs = () => [...legalPageOrder];
 
 export const getLegalPage = async (slug: string): Promise<LegalPage | undefined> => {
   const loadLegalPage = legalPageLoaders.get(slug);
@@ -87,23 +77,17 @@ export const getLegalPage = async (slug: string): Promise<LegalPage | undefined>
   const { default: bodyComponent, page } = await loadLegalPage();
 
   return {
-    slug,
-    ...page,
+    title: page.title,
     updatedAtLabel: formatLegalDate(page.updatedAt),
     bodyComponent
   };
 };
 
-export const getLegalPageIndexItems = (): Promise<LegalPageIndexItem[]> =>
+export const getLegalPageIndexItems = () =>
   Promise.all(
-    orderedLegalPages.map(async ({ slug, loadLegalPage }) => {
-      const { page } = await loadLegalPage();
-
-      return {
-        slug,
-        href: `/legal/${slug}`,
-        ...page,
-        updatedAtLabel: formatLegalDate(page.updatedAt)
-      };
-    })
+    orderedLegalPages.map(async ({ slug, loadLegalPage }) => ({
+      slug,
+      href: resolve('/legal/[slug]', { slug }),
+      title: (await loadLegalPage()).page.title
+    }))
   );

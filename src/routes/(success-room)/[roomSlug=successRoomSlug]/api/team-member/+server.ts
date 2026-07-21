@@ -6,8 +6,8 @@ import type { SuccessRoomPostApiBody } from '$lib/success-room/domain/api';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = (event) =>
-  handleSuccessRoomApiRequest<SuccessRoomPostApiBody<'claim-upload'>>(
+  handleSuccessRoomApiRequest<SuccessRoomPostApiBody<'team-member'>>(
     event,
     async ({ sessionToken, body }) =>
-      json(await convex.mutation(api.rooms.claimUpload, { ...body, sessionToken }))
+      json(await convex.mutation(api.rooms.createTeamMember, { ...body, sessionToken }))
   );

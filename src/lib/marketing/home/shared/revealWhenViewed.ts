@@ -1,15 +1,11 @@
-import type { Action } from 'svelte/action';
+import type { Attachment } from 'svelte/attachments';
 
 // The section is visible by default (markup ships with `is-viewed`) so content
-// shows without JavaScript; the action removes the class and hands it to the
-// observer. Brief intersections are debounced by the 45ms transition delay on
-// `.is-viewed` in HomeSection — a class toggled off within that window never
-// produces a visible change.
-export const revealWhenViewed: Action<HTMLElement> = (node) => {
-  if (!('IntersectionObserver' in window)) {
-    return;
-  }
-
+// shows without JavaScript; the attachment removes the class and hands it to
+// the observer. Brief intersections are debounced by the 45ms transition delay
+// on `.is-viewed` in HomeSection — a class toggled off within that window
+// never produces a visible change.
+export const revealWhenViewed: Attachment<HTMLElement> = (node) => {
   node.classList.remove('is-viewed');
 
   const observer = new IntersectionObserver(
@@ -21,7 +17,5 @@ export const revealWhenViewed: Action<HTMLElement> = (node) => {
 
   observer.observe(node);
 
-  return {
-    destroy: () => observer.disconnect()
-  };
+  return () => observer.disconnect();
 };

@@ -1,17 +1,8 @@
 <script lang="ts">
-  import { industryNavigationItems, type IndustryId } from '$lib/marketing/industries/industryContent';
+  import { industries } from '$lib/marketing/industries/industryContent';
   import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
   import PageFrame from '$lib/ui/PageFrame.svelte';
   import { ArrowUpRightIcon } from 'phosphor-svelte';
-
-  const industrySummaries = {
-    insurance: 'See how insurance brokers grow revenue by sharing sales data with carriers, law and accounting firms or with industry associations',
-    law: 'See how law firms grow revenue by sharing data with other lawyers, headhunters and with data providers',
-    'government-relations':
-      'See how GR firms grow revenue by sharing data with law firms, headhunters and with data providers',
-    consulting: 'See how consulting firms grow revenue by sharing sales data with tech vendors, private equity firms or with other practice areas within their own firm',
-    accounting: 'See how accounting firms grow revenue by sharing sales data with advisory firms they form strategic alliances with, law firms and wealth managers'
-  } satisfies Record<IndustryId, string>;
 </script>
 
 <svelte:head>
@@ -31,7 +22,7 @@
     </p>
 
     <nav class="mt-[56px]" aria-label="Industries">
-      {#each industryNavigationItems as industry (industry.id)}
+      {#each industries as industry (industry.id)}
         <a
           href={industry.href}
           class="group flex items-start justify-between gap-8 border-b border-stone-200 py-[24px] text-stone-700 transition-colors hover:text-stone-900"
@@ -45,7 +36,7 @@
             <span
               class="mt-[14px] block text-[15px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[16px]"
             >
-              {industrySummaries[industry.id]}
+              {industry.summary}
             </span>
           </span>
 

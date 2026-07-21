@@ -4,7 +4,6 @@ import { benefitCardValidator, planAccordionValidator, storedFileValidator } fro
 import {
   audioResourceSlug,
   deckResourceSlug,
-  kickoffScheduleResourceSlug,
   mutualSuccessPlanResourceSlug,
   successRoomRoutedResourceSlugValidator,
   successRoomResourceDefinitions,
@@ -15,7 +14,6 @@ import { createDefaultBenefitsState } from "../shared/successRoomBenefits";
 import { createDefaultEditableTextContent } from "../shared/successRoomEditableText";
 import { createDefaultKickoffScheduleState } from "../shared/successRoomKickoffSchedule";
 import {
-  assertNotEmpty,
   normalizeSlug,
   requireRoomBySlug,
   roomBySlug,
@@ -47,7 +45,7 @@ export const validateNewSuccessRoomSlug = internalQuery({
 
 export const generateUploadUrl = internalMutation({
   args: {},
-  handler: async (ctx) => await ctx.storage.generateUploadUrl(),
+  handler: (ctx) => ctx.storage.generateUploadUrl(),
 });
 
 export const createSuccessRoom = internalMutation({
@@ -103,29 +101,25 @@ export const replaceSuccessRoomBenefitCards = internalMutation({
   },
 });
 
-export const enableSuccessRoomSections = internalMutation({
+export const enableSuccessRoomSection = internalMutation({
   args: {
     slug: v.string(),
-    resourceSlugs: v.array(successRoomRoutedResourceSlugValidator),
+    resourceSlug: successRoomRoutedResourceSlugValidator,
     planAccordions: v.optional(v.array(planAccordionValidator)),
   },
   handler: async (ctx, args) => {
-    assertNotEmpty(args.resourceSlugs, "Success room sections");
-
     const room = await requireRoomBySlug(ctx, args.slug);
-    const enabled = new Set([...room.enabledResourceSlugs, ...args.resourceSlugs]);
+    const enabled = new Set([...room.enabledResourceSlugs, args.resourceSlug]);
     const enabledResourceSlugs = allResourceSlugs.filter((slug) => enabled.has(slug));
     const nextState = { ...room.state };
     let planAccordions = room.planAccordions;
 
-    if (args.resourceSlugs.includes(mutualSuccessPlanResourceSlug)) {
+    // The plan section is seeded from the script's CSV, replacing any existing
+    // plan content and progress.
+    if (args.resourceSlug === mutualSuccessPlanResourceSlug) {
       planAccordions = sanitizeSeedPlanAccordions(args.planAccordions ?? []);
       // Open the first accordion by default; null would mean all closed.
       nextState.plan = createDefaultPlanState(planAccordions[0]?.key ?? null);
-    }
-
-    if (args.resourceSlugs.includes(kickoffScheduleResourceSlug)) {
-      nextState.kickoffSchedule = createDefaultKickoffScheduleState();
     }
 
     await ctx.db.patch(room._id, {

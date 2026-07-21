@@ -10,7 +10,7 @@
   } = $props();
 </script>
 
-<section class="home-view-reveal is-viewed px-[18px] sm:px-8" use:revealWhenViewed>
+<section class="home-view-reveal is-viewed px-[18px] sm:px-8" {@attach revealWhenViewed}>
   <ContentMeasure>
     {@render children()}
   </ContentMeasure>

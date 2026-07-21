@@ -57,7 +57,11 @@ export const deleteOrphanedStorage = internalMutation({
       }
     }
 
-    const reachedCutoff = orphanCandidates.length < storagePage.page.length;
+    // Pages are ordered by creation time, so once a page contains a file newer
+    // than the cutoff every later page is newer too.
+    const reachedCutoff = storagePage.page.some(
+      (storedFile) => storedFile._creationTime >= cutoff,
+    );
     const complete = storagePage.isDone || reachedCutoff;
 
     if (!complete) {

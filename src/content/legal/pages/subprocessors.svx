@@ -1,8 +1,7 @@
-<script context="module" lang="ts">
+<script module lang="ts">
   export const page = {
     title: 'Subprocessors',
-    updatedAt: '2026-07-02',
-    contentWidth: 'standard'
+    updatedAt: '2026-07-02'
   };
 </script>
 
@@ -61,6 +60,6 @@
   ] satisfies readonly LegalTableRow[];
 </script>
 
-A subprocessor is a legal entity that Crossbeam engages to perform specific functions, as described below. Subprocessors have, or may have, access to Customer Data as-needed to perform these functions.
+A subprocessor is a legal entity that Overbase, Inc. engages to perform specific functions, as described below. Subprocessors have, or may have, access to Customer Data as-needed to perform these functions.
 
 <LegalTable columns={subprocessorColumns} rows={subprocessorRows} />

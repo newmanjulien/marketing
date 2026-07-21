@@ -57,8 +57,8 @@ export const normalizeSlug = (slug: string) => {
   return parsedSlug;
 };
 
-export const roomBySlug = async (ctx: QueryCtx | MutationCtx, slug: string) =>
-  await ctx.db
+export const roomBySlug = (ctx: QueryCtx | MutationCtx, slug: string) =>
+  ctx.db
     .query("successRooms")
     .withIndex("by_slug", (q) => q.eq("slug", normalizeSlug(slug)))
     .unique();

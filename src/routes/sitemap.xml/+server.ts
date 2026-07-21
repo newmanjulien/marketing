@@ -1,4 +1,4 @@
-import { industryNavigationItems } from '$lib/marketing/industries/industryContent';
+import { industries } from '$lib/marketing/industries/industryContent';
 import type { RequestHandler } from './$types';
 
 export const prerender = true;
@@ -9,7 +9,7 @@ const SITE_ORIGIN = 'https://overbase.app';
 const staticPaths = ['/', '/about', '/pricing', '/industries'];
 
 export const GET: RequestHandler = () => {
-  const paths = [...staticPaths, ...industryNavigationItems.map((industry) => industry.href)];
+  const paths = [...staticPaths, ...industries.map((industry) => industry.href)];
 
   const urls = paths
     .map((path) => `  <url>\n    <loc>${SITE_ORIGIN}${path}</loc>\n  </url>`)

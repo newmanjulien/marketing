@@ -36,17 +36,6 @@ import {
   publicResourcePayload,
 } from "./model/payloads";
 
-const uploadPurposeValidator = v.union(
-  v.object({
-    type: v.literal("editable-attachment"),
-  }),
-  v.object({
-    type: v.literal("team-member-photo"),
-    name: v.string(),
-    role: v.string(),
-  }),
-);
-
 // The password gate shows the room name before the prospect unlocks it.
 export const getPublicRoom = query({
   args: {
@@ -61,12 +50,12 @@ export const getPublicRoom = query({
 
 export const getLandingPage = roomQuery({
   args: {},
-  handler: async (ctx) => await publicLandingPayload(ctx, ctx.room),
+  handler: (ctx) => publicLandingPayload(ctx, ctx.room),
 });
 
 export const getBasePage = roomQuery({
   args: {},
-  handler: async (ctx) => ({
+  handler: (ctx) => ({
     locked: false as const,
     room: baseRoom(ctx.room),
   }),
@@ -76,14 +65,14 @@ export const resolveAssetResource = roomQuery({
   args: {
     resourceSlug: successRoomAssetResourceSlugValidator,
   },
-  handler: async (ctx, args) => await assetResourceResolution(ctx, ctx.room, args.resourceSlug),
+  handler: (ctx, args) => assetResourceResolution(ctx, ctx.room, args.resourceSlug),
 });
 
 export const getRoutedResourcePage = roomQuery({
   args: {
     resourceSlug: successRoomRoutedResourceSlugValidator,
   },
-  handler: async (ctx, args) => await publicResourcePayload(ctx, ctx.room, args.resourceSlug),
+  handler: (ctx, args) => publicResourcePayload(ctx, ctx.room, args.resourceSlug),
 });
 
 export const patchBenefits = roomMutation({
@@ -162,38 +151,15 @@ export const createUploadUrl = roomMutation({
   }),
 });
 
-export const claimUpload = roomMutation({
+export const claimEditableAttachment = roomMutation({
   args: {
     storageId: v.id("_storage"),
     filename: v.string(),
-    purpose: uploadPurposeValidator,
   },
   handler: async (ctx, args) => {
-    if (args.purpose.type === "team-member-photo") {
-      const name = args.purpose.name.trim();
-      const role = args.purpose.role.trim();
-
-      if (!name || !role) {
-        throw new ConvexError("Team member name and role are required");
-      }
-
-      const photoFileId = await acceptUploadedBlob(ctx, ctx.room._id, {
-        storageId: args.storageId,
-        filename: args.filename,
-        kind: "team-member-photo",
-        requiredContentTypePrefix: "image/",
-      });
-      const member = await addTeamMember(ctx, ctx.room, { name, role, photoFileId });
-
-      return {
-        type: "team-member-photo" as const,
-        member: await teamMemberSummary(ctx, member),
-      };
-    }
-
     assertResourceEnabled(ctx.room, initialFormatResourceSlug);
 
-    const attachmentFileId = await acceptUploadedBlob(ctx, ctx.room._id, {
+    const attachment = await acceptUploadedBlob(ctx, ctx.room._id, {
       storageId: args.storageId,
       filename: args.filename,
       kind: "editable-attachment",
@@ -209,21 +175,39 @@ export const claimUpload = roomMutation({
         ...ctx.room.state,
         editableText: {
           ...ctx.room.state.editableText,
-          attachmentFileId,
+          attachmentFileId: attachment._id,
         },
       },
     });
 
-    const attachment = await ctx.db.get(attachmentFileId);
+    return linkedFileSummary(ctx, attachment);
+  },
+});
 
-    if (!attachment) {
-      throw new ConvexError("Success room attachment could not be saved");
+export const createTeamMember = roomMutation({
+  args: {
+    storageId: v.id("_storage"),
+    filename: v.string(),
+    name: v.string(),
+    role: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const name = args.name.trim();
+    const role = args.role.trim();
+
+    if (!name || !role) {
+      throw new ConvexError("Team member name and role are required");
     }
 
-    return {
-      type: "editable-attachment" as const,
-      attachment: await linkedFileSummary(ctx, attachment),
-    };
+    const photo = await acceptUploadedBlob(ctx, ctx.room._id, {
+      storageId: args.storageId,
+      filename: args.filename,
+      kind: "team-member-photo",
+      requiredContentTypePrefix: "image/",
+    });
+    const member = await addTeamMember(ctx, ctx.room, { name, role, photoFileId: photo._id });
+
+    return teamMemberSummary(ctx, member);
   },
 });
 
@@ -285,9 +269,8 @@ export const markDocumentRequestNotification = internalMutation({
     requestId: v.id("successRoomDocumentRequests"),
     notificationStatus: v.union(v.literal("sent"), v.literal("failed")),
   },
-  handler: async (ctx, args) => {
-    await ctx.db.patch(args.requestId, {
+  handler: (ctx, args) =>
+    ctx.db.patch(args.requestId, {
       notificationStatus: args.notificationStatus,
-    });
-  },
+    }),
 });

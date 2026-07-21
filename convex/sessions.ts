@@ -1,10 +1,16 @@
 import { v } from "convex/values";
 import { internalMutation, internalQuery } from "./_generated/server";
-import { generateSessionToken, loginLockoutWindowMs, sha256Hex } from "./model/auth";
+import { generateSessionToken, sha256Hex } from "./model/auth";
 import { successRoomSessionLifetimeMs } from "../shared/successRoomAccess";
 import { parseSuccessRoomSlug } from "../shared/successRoomSlugs";
 
 // Internal support for the login action in convex/auth.ts.
+
+// After this many consecutive failures within the window, wrong-password
+// attempts report "locked" instead of "invalid-password". Message-only: the
+// correct password always works (see the comment in convex/auth.ts).
+const maxFailedLogins = 10;
+const loginLockoutWindowMs = 15 * 60 * 1000;
 
 export const getRoomLogin = internalQuery({
   args: { slug: v.string() },
@@ -27,7 +33,6 @@ export const getRoomLogin = internalQuery({
     return {
       roomId: room._id,
       passwordHash: room.passwordHash,
-      loginThrottle: room.loginThrottle,
     };
   },
 });
@@ -38,7 +43,7 @@ export const recordFailedLogin = internalMutation({
     const room = await ctx.db.get(args.roomId);
 
     if (!room) {
-      return;
+      return { locked: false };
     }
 
     const now = Date.now();
@@ -47,13 +52,14 @@ export const recordFailedLogin = internalMutation({
       room.loginThrottle && now - room.loginThrottle.lastFailedAt < loginLockoutWindowMs
         ? room.loginThrottle
         : undefined;
+    const loginThrottle = {
+      failedCount: (activeThrottle?.failedCount ?? 0) + 1,
+      lastFailedAt: now,
+    };
 
-    await ctx.db.patch(args.roomId, {
-      loginThrottle: {
-        failedCount: (activeThrottle?.failedCount ?? 0) + 1,
-        lastFailedAt: now,
-      },
-    });
+    await ctx.db.patch(args.roomId, { loginThrottle });
+
+    return { locked: loginThrottle.failedCount >= maxFailedLogins };
   },
 });
 

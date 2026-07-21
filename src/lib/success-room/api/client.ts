@@ -3,13 +3,14 @@ import type {
   SuccessRoomPostApiBody,
   SuccessRoomPostApiOperation
 } from '../domain/api';
+import { invalidateAll } from '$app/navigation';
 import { getSuccessRoomApiPath } from '../domain/urls';
 
 const relockOnExpiredSession = (response: Response) => {
   if (response.status === 401) {
-    // The server cleared the stale session cookie; reloading re-runs the page
-    // load, which renders the password gate.
-    location.reload();
+    // The server cleared the stale session cookie; invalidating re-runs the
+    // page load, which renders the password gate.
+    void invalidateAll();
   }
 
   return response;

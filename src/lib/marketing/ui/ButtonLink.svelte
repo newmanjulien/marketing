@@ -5,7 +5,7 @@
   type ButtonLinkProps = Omit<HTMLAnchorAttributes, 'href' | 'children'> & {
     href: string;
     variant: 'primary' | 'secondary' | 'soft';
-    size: 'small' | 'medium' | 'large' | 'hero' | 'xlarge';
+    size: 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge';
     shape?: 'default' | 'pill';
     fullWidth?: boolean;
     highlightSweep?: boolean;
@@ -36,8 +36,8 @@
     small: 'h-[36px] px-[14px] text-[14px]',
     medium: 'h-[42px] px-[14px] text-[14px]',
     large: 'h-[50px] px-[23px] text-[18px]',
-    hero: 'h-[54px] px-[28px] text-[17px]',
-    xlarge: 'h-[58px] px-[32px] text-[17px]'
+    xlarge: 'h-[54px] px-[28px] text-[17px]',
+    xxlarge: 'h-[58px] px-[32px] text-[17px]'
   };
 
   const variantClasses = {

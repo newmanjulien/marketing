@@ -4,10 +4,10 @@
   import { homeIndustries } from '$lib/marketing/home/homeIndustries';
   import type { IndustryId } from '$lib/marketing/industries/industryContent';
   import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
-  import { createPortalAuthUrlForMarketingPath } from '$lib/marketing/portalAuthLinks';
+  import { createPortalAuthUrl } from '$lib/marketing/portalAuthLinks';
   import ButtonLink from '$lib/marketing/ui/ButtonLink.svelte';
 
-  const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
+  const joinHref = createPortalAuthUrl('join', '/');
 
   // Hovering a logo and clicking a tab in the graphic both drive the same selection.
   let industryId = $state<IndustryId>(homeIndustries[0].id);
@@ -44,7 +44,7 @@
         target="_blank"
         rel="noopener noreferrer"
         variant="primary"
-        size="xlarge"
+        size="xxlarge"
         shape="pill"
         highlightSweep
         class="shadow-[0_5px_12px_rgba(41,37,36,0.2)] hover:-translate-y-[2px] hover:shadow-[0_8px_16px_rgba(41,37,36,0.28)]"

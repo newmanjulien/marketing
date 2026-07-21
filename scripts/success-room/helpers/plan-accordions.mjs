@@ -64,7 +64,7 @@ export const readPlanAccordions = async (baseDir) => {
       );
     }
 
-    const accordion = {
+    const parsed = {
       key: requireValue(record, "accordionKey", filename, rowNumber),
       title: requireValue(record, "accordionTitle", filename, rowNumber),
       description: requireValue(
@@ -82,21 +82,21 @@ export const readPlanAccordions = async (baseDir) => {
       ),
       tasks: [],
     };
-    const existingAccordion = accordionsByKey.get(accordion.key);
 
     // Repeated accordion metadata must stay identical so a task row cannot
     // silently change the parent accordion title, description, variant, or order.
-    if (existingAccordion) {
-      assertMatchingAccordionMetadata(existingAccordion, accordion, rowNumber);
+    let accordion = accordionsByKey.get(parsed.key);
+    if (accordion) {
+      assertMatchingAccordionMetadata(accordion, parsed, rowNumber);
     } else {
+      accordion = parsed;
       accordionsByKey.set(accordion.key, accordion);
     }
 
     const taskKey = requireValue(record, "taskKey", filename, rowNumber);
     assertUniqueKey(taskKeys, taskKey, filename, rowNumber, "task key");
 
-    const target = existingAccordion ?? accordion;
-    target.tasks.push({
+    accordion.tasks.push({
       key: taskKey,
       title: requireValue(record, "taskTitle", filename, rowNumber),
       sortOrder: parseSortOrder(record, "taskSortOrder", filename, rowNumber),

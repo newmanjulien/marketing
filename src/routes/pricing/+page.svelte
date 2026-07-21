@@ -2,11 +2,11 @@
   import { page } from '$app/state';
   import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
   import PageFrame from '$lib/ui/PageFrame.svelte';
-  import { createPortalAuthUrlForMarketingPath } from '$lib/marketing/portalAuthLinks';
+  import { createPortalAuthUrl } from '$lib/marketing/portalAuthLinks';
   import PricingCard from '$lib/marketing/pricing/PricingCard.svelte';
   import PricingFaqSection from '$lib/marketing/pricing/PricingFaqSection.svelte';
 
-  const joinHref = createPortalAuthUrlForMarketingPath('join', page.url.pathname);
+  const joinHref = createPortalAuthUrl('join', page.url.pathname);
 
   const pricingPlans = [
     {

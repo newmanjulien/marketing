@@ -1,5 +1,8 @@
-import { deleteSuccessRoomApi } from '../api/client';
+import type { api } from '../../../../convex/_generated/api';
+import type { FunctionReturnType } from 'convex/server';
+import { deleteSuccessRoomApi, postSuccessRoomApi } from '../api/client';
 import { uploadSuccessRoomFile } from '../api/uploads';
+import type { SuccessRoomLinkedFileMetadata } from '../domain/types';
 
 export const uploadEditableTextAttachment = async ({
   roomSlug,
@@ -7,18 +10,20 @@ export const uploadEditableTextAttachment = async ({
 }: {
   roomSlug: string;
   file: File;
-}) => {
-  const result = await uploadSuccessRoomFile({
-    roomSlug,
-    file,
-    purpose: { type: 'editable-attachment' }
+}): Promise<SuccessRoomLinkedFileMetadata> => {
+  const storageId = await uploadSuccessRoomFile({ roomSlug, file });
+  const response = await postSuccessRoomApi(roomSlug, 'editable-attachment', {
+    storageId,
+    filename: file.name
   });
 
-  if (result.type !== 'editable-attachment') {
-    throw new Error('Attachment upload returned an unexpected result.');
+  if (!response.ok) {
+    throw new Error('Attachment could not be uploaded.');
   }
 
-  return result.attachment;
+  return (await response.json()) as FunctionReturnType<
+    typeof api.rooms.claimEditableAttachment
+  >;
 };
 
 export const deleteEditableTextAttachment = async ({ roomSlug }: { roomSlug: string }) => {

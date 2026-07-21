@@ -6,7 +6,6 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { readFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
 import { basename, isAbsolute, resolve } from "node:path";
 
 const exec = promisify(execFile);
@@ -40,21 +39,12 @@ export const runConvex = async (functionName, args = {}) => {
 
 export const uploadSeedFile = async ({ path, contentType }) => {
   const absolutePath = isAbsolute(path) ? path : resolve(projectRoot, path);
-
-  if (!existsSync(absolutePath)) {
-    throw new Error(
-      `Seed asset does not exist: ${path}\nResolved path: ${absolutePath}`,
-    );
-  }
-
   const uploadUrl = await runConvex("admin:generateUploadUrl");
   const bytes = await readFile(absolutePath);
   const response = await fetch(uploadUrl, {
     method: "POST",
-    headers: {
-      "content-type": contentType,
-    },
-    body: new Blob([bytes], { type: contentType }),
+    headers: { "content-type": contentType },
+    body: bytes,
   });
 
   if (!response.ok) {

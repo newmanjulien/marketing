@@ -7,7 +7,7 @@
 </script>
 
 <PageFrame>
-  <ContentMeasure as="article" width={page.contentWidth ?? 'narrow'}>
+  <ContentMeasure as="article">
     <a
       href="/legal"
       class="text-[14px] font-medium leading-none tracking-normal text-stone-500 transition-colors duration-200 hover:text-stone-900"

@@ -6,26 +6,19 @@
   import type {
     SuccessRoomMutualSuccessPlanResource,
     SuccessRoomPlanAccordion,
-    SuccessRoomPlanState,
-    SuccessRoomTeamMember
+    SuccessRoomPlanState
   } from '../domain/types';
 
   let {
     resource,
-    team,
-    planAccordions,
     plan,
-    openAccordionKey,
     onOpenAccordion,
     onTaskCheckedChange,
     onOpenAssigneePicker,
     onOpenDatePicker
   }: {
     resource: SuccessRoomMutualSuccessPlanResource;
-    team: SuccessRoomTeamMember[];
-    planAccordions: SuccessRoomPlanAccordion[];
     plan: SuccessRoomPlanState;
-    openAccordionKey: string | null;
     onOpenAccordion: (accordionKey: string) => void;
     onTaskCheckedChange: (taskKey: string, checked: boolean) => void;
     onOpenAssigneePicker: (taskKey: string) => void;
@@ -34,20 +27,17 @@
 
   let checkedTaskKeys = $derived(new Set(plan.checkedTaskKeys));
 
-  const startOfTodayMs = (() => {
-    const now = new Date();
+  const isAccordionOffTrack = (accordion: SuccessRoomPlanAccordion) => {
+    const startOfTodayMs = new Date().setHours(0, 0, 0, 0);
 
-    return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  })();
-
-  const isAccordionOffTrack = (accordion: SuccessRoomPlanAccordion) =>
-    accordion.tasks.some((task) => {
+    return accordion.tasks.some((task) => {
       if (checkedTaskKeys.has(task.key)) return false;
 
       const date = resolveTaskDisplayDate(plan.dateOverridesByTaskKey, task.key);
 
       return date !== null && date.getTime() < startOfTodayMs;
     });
+  };
 
   const accordionListClasses = 'grid w-full gap-[14px]';
   const accordionItemClasses =
@@ -92,13 +82,15 @@
   const getAssignedTeamMember = (taskKey: string) => {
     const memberKey = plan.assigneeKeyByTaskKey[taskKey];
 
-    return memberKey ? team.find((member) => member.key === memberKey) : undefined;
+    return memberKey
+      ? resource.catalog.team.find((member) => member.key === memberKey)
+      : undefined;
   };
 </script>
 
 <ul class={accordionListClasses} aria-label={`${resource.title} content`}>
-  {#each planAccordions as item (item.key)}
-    {@const isOpen = openAccordionKey === item.key}
+  {#each resource.catalog.planAccordions as item (item.key)}
+    {@const isOpen = plan.openAccordionKey === item.key}
     {@const ToggleIcon = isOpen ? MinusIcon : PlusIcon}
     {@const cardVariant = accordionCardVariants[item.variant]}
     {@const offTrack = isAccordionOffTrack(item)}

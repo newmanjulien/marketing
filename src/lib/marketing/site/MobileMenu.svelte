@@ -1,19 +1,16 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { industryNavigationItems } from '$lib/marketing/industries/industryContent';
-  import { createPortalAuthUrlForMarketingPath } from '$lib/marketing/portalAuthLinks';
+  import { industries } from '$lib/marketing/industries/industryContent';
+  import { createPortalAuthUrl } from '$lib/marketing/portalAuthLinks';
   import ButtonLink from '$lib/marketing/ui/ButtonLink.svelte';
   import { cubicOut } from 'svelte/easing';
   import { slide } from 'svelte/transition';
-  import { authNavItems, productNavItems } from './navigation';
+  import { productNavItems } from './navigation';
 
   const navSections = [
-    { id: 'mobile-industries-heading', label: 'Industries', links: industryNavigationItems },
+    { id: 'mobile-industries-heading', label: 'Industries', links: industries },
     { id: 'mobile-site-heading', label: 'Overbase', links: productNavItems }
   ] as const;
-
-  // The mobile menu renders secondary auth links in the soft style.
-  const authLinkVariants = { primary: 'primary', secondary: 'soft' } as const;
 
   const activePath = $derived(page.url.pathname);
 </script>
@@ -54,18 +51,26 @@
     </div>
 
     <div class="mt-[30px] flex flex-col gap-[12px] border-t border-stone-200 px-[20px] pt-[24px]">
-      {#each authNavItems as link (link.authRoute)}
-        <ButtonLink
-          href={createPortalAuthUrlForMarketingPath(link.authRoute, activePath)}
-          target="_blank"
-          rel="noopener noreferrer"
-          variant={authLinkVariants[link.variant]}
-          size="large"
-          fullWidth
-        >
-          {link.label}
-        </ButtonLink>
-      {/each}
+      <ButtonLink
+        href={createPortalAuthUrl('login', activePath)}
+        target="_blank"
+        rel="noopener noreferrer"
+        variant="soft"
+        size="large"
+        fullWidth
+      >
+        Log in
+      </ButtonLink>
+      <ButtonLink
+        href={createPortalAuthUrl('join', activePath)}
+        target="_blank"
+        rel="noopener noreferrer"
+        variant="primary"
+        size="large"
+        fullWidth
+      >
+        Join
+      </ButtonLink>
     </div>
   </div>
 </nav>

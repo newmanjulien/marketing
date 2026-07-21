@@ -3,7 +3,6 @@
 import { v } from "convex/values";
 import { action, internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { isLoginLocked } from "./model/auth";
 import { hashPassword, verifyPassword } from "./model/passwords";
 
 export type LoginResult =
@@ -26,10 +25,11 @@ export const login = action({
     // always work, otherwise anyone who knows the room URL could lock the
     // legitimate prospect out by hammering wrong passwords.
     if (!(await verifyPassword(args.password, roomLogin.passwordHash))) {
-      await ctx.runMutation(internal.sessions.recordFailedLogin, { roomId: roomLogin.roomId });
-      return {
-        failure: isLoginLocked(roomLogin.loginThrottle, Date.now()) ? "locked" : "invalid-password",
-      };
+      const { locked } = await ctx.runMutation(internal.sessions.recordFailedLogin, {
+        roomId: roomLogin.roomId,
+      });
+
+      return { failure: locked ? "locked" : "invalid-password" };
     }
 
     const sessionToken = await ctx.runMutation(internal.sessions.createSession, {
@@ -44,5 +44,5 @@ export const login = action({
 // single implementation.
 export const hashRoomPassword = internalAction({
   args: { password: v.string() },
-  handler: async (_ctx, args) => await hashPassword(args.password),
+  handler: (_ctx, args) => hashPassword(args.password),
 });

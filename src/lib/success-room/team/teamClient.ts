@@ -1,3 +1,6 @@
+import type { api } from '../../../../convex/_generated/api';
+import type { FunctionReturnType } from 'convex/server';
+import { postSuccessRoomApi } from '../api/client';
 import { uploadSuccessRoomFile } from '../api/uploads';
 import type { SuccessRoomTeamMember } from '../domain/types';
 
@@ -19,19 +22,17 @@ export const createTeamMember = async ({
     throw new Error('Team member photo must be an image.');
   }
 
-  const result = await uploadSuccessRoomFile({
-    roomSlug,
-    file: photoFile,
-    purpose: {
-      type: 'team-member-photo',
-      name,
-      role
-    }
+  const storageId = await uploadSuccessRoomFile({ roomSlug, file: photoFile });
+  const response = await postSuccessRoomApi(roomSlug, 'team-member', {
+    storageId,
+    filename: photoFile.name,
+    name,
+    role
   });
 
-  if (result.type !== 'team-member-photo') {
-    throw new Error('Team member upload returned an unexpected result.');
+  if (!response.ok) {
+    throw new Error('Team member could not be created.');
   }
 
-  return result.member;
+  return (await response.json()) as FunctionReturnType<typeof api.rooms.createTeamMember>;
 };

@@ -67,7 +67,7 @@
   };
 </script>
 
-<ModalShell open={open} title="Add team member" onClose={closeModal}>
+<ModalShell {open} title="Add team member" onClose={closeModal}>
   <form
     class="grid gap-[14px]"
     onsubmit={(event) => {

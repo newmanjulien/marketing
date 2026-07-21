@@ -7,11 +7,7 @@ const config = {
   extensions: ['.svelte', '.svx'],
   preprocess: [vitePreprocess(), mdsvex({ extensions: ['.svx'] })],
   kit: {
-    adapter: adapter(),
-    alias: {
-      $content: 'src/content',
-      '$content/*': 'src/content/*'
-    }
+    adapter: adapter()
   }
 };
 

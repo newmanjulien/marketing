@@ -1,6 +1,7 @@
+import type { api } from '../../../../convex/_generated/api';
 import type { Id } from '../../../../convex/_generated/dataModel';
+import type { FunctionReturnType } from 'convex/server';
 import { postSuccessRoomApi } from './client';
-import type { SuccessRoomUploadPurpose, SuccessRoomUploadResult } from '../domain/api';
 import {
   maxSuccessRoomUploadByteSize,
   maxSuccessRoomUploadSizeLabel
@@ -13,7 +14,9 @@ const createUploadUrl = async (roomSlug: string) => {
     throw new Error('Upload could not be prepared.');
   }
 
-  const { uploadUrl } = (await response.json()) as { uploadUrl: string };
+  const { uploadUrl } = (await response.json()) as FunctionReturnType<
+    typeof api.rooms.createUploadUrl
+  >;
   return uploadUrl;
 };
 
@@ -32,15 +35,15 @@ const uploadToStorage = async (uploadUrl: string, file: File) => {
   return storageId;
 };
 
+// Puts the file into Convex storage; callers claim the returned storage id
+// through their own feature endpoint.
 export const uploadSuccessRoomFile = async ({
   roomSlug,
-  file,
-  purpose
+  file
 }: {
   roomSlug: string;
   file: File;
-  purpose: SuccessRoomUploadPurpose;
-}): Promise<SuccessRoomUploadResult> => {
+}) => {
   if (file.size === 0) {
     throw new Error('Files must not be empty.');
   }
@@ -50,22 +53,6 @@ export const uploadSuccessRoomFile = async ({
   }
 
   const uploadUrl = await createUploadUrl(roomSlug);
-  const storageId = await uploadToStorage(uploadUrl, file);
-  const claimResponse = await postSuccessRoomApi(roomSlug, 'claim-upload', {
-    storageId,
-    filename: file.name,
-    purpose
-  });
 
-  if (!claimResponse.ok) {
-    throw new Error('File could not be uploaded.');
-  }
-
-  const result = (await claimResponse.json()) as SuccessRoomUploadResult;
-
-  if (result.type !== purpose.type) {
-    throw new Error('Upload returned an unexpected result.');
-  }
-
-  return result;
+  return uploadToStorage(uploadUrl, file);
 };

@@ -1,18 +1,22 @@
 import type {
+  SuccessRoomBenefitsState,
   SuccessRoomEditableTextState,
   SuccessRoomKickoffScheduleState,
   SuccessRoomPlanState
 } from './types';
 
+export const cloneBenefits = (benefits: SuccessRoomBenefitsState): SuccessRoomBenefitsState => ({
+  selectedCardKeys: [...benefits.selectedCardKeys],
+  selectedCustomBenefit: benefits.selectedCustomBenefit,
+  painPointsByBenefitKey: { ...benefits.painPointsByBenefitKey },
+  goalsByBenefitKey: { ...benefits.goalsByBenefitKey }
+});
+
 export const clonePlan = (plan: SuccessRoomPlanState): SuccessRoomPlanState => ({
   openAccordionKey: plan.openAccordionKey,
   checkedTaskKeys: [...plan.checkedTaskKeys],
-  dateOverridesByTaskKey: {
-    ...plan.dateOverridesByTaskKey
-  },
-  assigneeKeyByTaskKey: {
-    ...plan.assigneeKeyByTaskKey
-  }
+  dateOverridesByTaskKey: { ...plan.dateOverridesByTaskKey },
+  assigneeKeyByTaskKey: { ...plan.assigneeKeyByTaskKey }
 });
 
 export const cloneEditableTextState = (

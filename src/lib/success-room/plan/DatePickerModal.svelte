@@ -1,6 +1,7 @@
 <script lang="ts">
   import { CaretLeftIcon, CaretRightIcon } from 'phosphor-svelte';
   import ModalShell from '$lib/success-room/ui/ModalShell.svelte';
+  import { formatIsoDate } from './planDates';
 
   let {
     open,
@@ -25,9 +26,6 @@
 
   const startOfMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth(), 1);
 
-  const getDateKey = (date: Date) =>
-    `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-
   // Writable derived: month navigation reassigns it, and reopening the modal
   // (or a new selectedDate) snaps it back to the selected month.
   let visibleMonth = $derived(startOfMonth(open ? selectedDate : new Date()));
@@ -36,16 +34,11 @@
     const year = visibleMonth.getFullYear();
     const month = visibleMonth.getMonth();
     const firstDayOfWeek = visibleMonth.getDay();
-    const gridStartDate = new Date(year, month, 1 - firstDayOfWeek);
-    const selectedDateKey = getDateKey(selectedDate);
+    const selectedDateKey = formatIsoDate(selectedDate);
 
     return Array.from({ length: 42 }, (_, index) => {
-      const date = new Date(
-        gridStartDate.getFullYear(),
-        gridStartDate.getMonth(),
-        gridStartDate.getDate() + index
-      );
-      const key = getDateKey(date);
+      const date = new Date(year, month, 1 - firstDayOfWeek + index);
+      const key = formatIsoDate(date);
 
       return {
         date,

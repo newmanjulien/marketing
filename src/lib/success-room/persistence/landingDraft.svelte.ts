@@ -4,6 +4,7 @@ import {
 } from './saveQueue';
 import { createSyncedSnapshot, scheduleJsonSave } from './autosave.svelte';
 import { createTeamMember, type TeamMemberInput } from '../team/teamClient';
+import { cloneBenefits } from '../domain/state';
 import type {
   SuccessRoomBenefitsPatch,
   SuccessRoomBenefitsState,
@@ -11,15 +12,6 @@ import type {
   SuccessRoomLandingState,
   SuccessRoomTeamMember
 } from '../domain/types';
-
-const normalizeBenefitsForEditor = (
-  benefits: SuccessRoomBenefitsState
-): SuccessRoomBenefitsState => ({
-  selectedCardKeys: [...benefits.selectedCardKeys],
-  selectedCustomBenefit: benefits.selectedCustomBenefit,
-  painPointsByBenefitKey: { ...benefits.painPointsByBenefitKey },
-  goalsByBenefitKey: { ...benefits.goalsByBenefitKey }
-});
 
 const getBenefitsVersion = (benefits: SuccessRoomBenefitsState) => JSON.stringify(benefits);
 
@@ -47,7 +39,7 @@ const createBenefitsDraftSnapshot = (
 ): SuccessRoomBenefitsDraftSnapshot => ({
   roomSlug: room.slug,
   serverBenefitsVersion: getBenefitsVersion(state.benefits),
-  benefits: normalizeBenefitsForEditor(state.benefits),
+  benefits: cloneBenefits(state.benefits),
   customBenefitInput: state.benefits.selectedCustomBenefit ?? ''
 });
 

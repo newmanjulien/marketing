@@ -13,7 +13,7 @@
   <title>Overbase › {data.room.prospectName}</title>
 </svelte:head>
 
-{#if data.locked === true}
+{#if data.locked}
   <PasswordGate
     prospectName={data.room.prospectName}
     description={data.room.description}

@@ -1,9 +1,9 @@
 <script lang="ts">
   import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
   import ButtonLink from '$lib/marketing/ui/ButtonLink.svelte';
-  import { createPortalAuthUrlForMarketingPath } from '$lib/marketing/portalAuthLinks';
+  import { createPortalAuthUrl } from '$lib/marketing/portalAuthLinks';
 
-  const joinHref = createPortalAuthUrlForMarketingPath('join', '/');
+  const joinHref = createPortalAuthUrl('join', '/');
 </script>
 
 <section class="border-t border-stone-200 bg-stone-50/60 px-[18px] py-[72px] sm:px-8 sm:py-[90px]">
@@ -26,7 +26,7 @@
         target="_blank"
         rel="noopener noreferrer"
         variant="primary"
-        size="hero"
+        size="xlarge"
         shape="pill"
       >
         Join now

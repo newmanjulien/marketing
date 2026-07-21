@@ -2,19 +2,6 @@ import { ConvexError } from "convex/values";
 import type { QueryCtx } from "../_generated/server";
 import { successRoomAccessDeniedCode } from "../../shared/successRoomAccess";
 
-// After this many consecutive failures, logins are refused until the window
-// since the last failure has passed.
-export const maxFailedLogins = 10;
-export const loginLockoutWindowMs = 15 * 60 * 1000;
-
-export const isLoginLocked = (
-  throttle: { failedCount: number; lastFailedAt: number } | undefined,
-  now: number,
-) =>
-  throttle !== undefined &&
-  throttle.failedCount >= maxFailedLogins &&
-  now - throttle.lastFailedAt < loginLockoutWindowMs;
-
 export const sha256Hex = async (value: string) => {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
 
