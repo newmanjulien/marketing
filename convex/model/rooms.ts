@@ -27,8 +27,6 @@ const kickoffScheduleColumnKeys = new Set<string>(
 
 export const createKey = (prefix: string) => `${prefix}:${crypto.randomUUID()}`;
 
-export const uniqueItems = <Item>(items: Item[]) => [...new Set(items)];
-
 export const assertMaxLength = (items: unknown[], maxLength: number, label: string) => {
   if (items.length > maxLength) {
     throw new ConvexError(`${label} must include ${maxLength} items or fewer`);
@@ -117,17 +115,6 @@ export const assertValidSeedPlanAccordions = (accordions: SeedPlanAccordion[]) =
   );
 };
 
-const benefitKeys = (room: SuccessRoom) => new Set(room.benefitCards.map((card) => card.key));
-
-const planAccordionKeys = (room: SuccessRoom) =>
-  new Set(room.planAccordions.map((accordion) => accordion.key));
-
-const planTaskKeys = (room: SuccessRoom) =>
-  new Set(room.planAccordions.flatMap((accordion) => accordion.tasks.map((task) => task.key)));
-
-const teamMemberKeys = (room: SuccessRoom) =>
-  new Set(room.teamMembers.map((member) => member.key));
-
 const sanitizeTextByBenefitKey = (
   textByBenefitKey: Record<string, string>,
   allowedBenefitKeys: Set<string>,
@@ -148,7 +135,7 @@ export const sanitizeBenefitsState = (
   room: SuccessRoom,
   state: SuccessRoomBenefitsState,
 ): SuccessRoomBenefitsState => {
-  const validCardKeys = benefitKeys(room);
+  const validCardKeys = new Set(room.benefitCards.map((card) => card.key));
   const selectedCustomBenefit = state.selectedCustomBenefit?.trim() || null;
 
   if (selectedCustomBenefit && selectedCustomBenefit.length > maxCustomBenefitLength) {
@@ -157,7 +144,7 @@ export const sanitizeBenefitsState = (
     );
   }
 
-  const selectedCardKeys = uniqueItems(state.selectedCardKeys).filter((key) =>
+  const selectedCardKeys = [...new Set(state.selectedCardKeys)].filter((key) =>
     validCardKeys.has(key),
   );
   const allowedBenefitKeys = new Set([...validCardKeys, customBenefitKey]);
@@ -177,15 +164,17 @@ export const sanitizePlanState = (
   room: SuccessRoom,
   state: SuccessRoomPlanState,
 ): SuccessRoomPlanState => {
-  const validAccordionKeys = planAccordionKeys(room);
-  const validTaskKeys = planTaskKeys(room);
-  const validMemberKeys = teamMemberKeys(room);
+  const validAccordionKeys = new Set(room.planAccordions.map((accordion) => accordion.key));
+  const validTaskKeys = new Set(
+    room.planAccordions.flatMap((accordion) => accordion.tasks.map((task) => task.key)),
+  );
+  const validMemberKeys = new Set(room.teamMembers.map((member) => member.key));
   const openAccordionKey = state.openAccordionKey;
 
   return {
     openAccordionKey:
       openAccordionKey && validAccordionKeys.has(openAccordionKey) ? openAccordionKey : null,
-    checkedTaskKeys: uniqueItems(state.checkedTaskKeys).filter((key) => validTaskKeys.has(key)),
+    checkedTaskKeys: [...new Set(state.checkedTaskKeys)].filter((key) => validTaskKeys.has(key)),
     dateOverridesByTaskKey: Object.fromEntries(
       Object.entries(state.dateOverridesByTaskKey).filter(
         ([taskKey, date]) => validTaskKeys.has(taskKey) && isValidPlanTaskDate(date),

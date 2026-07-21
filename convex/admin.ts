@@ -110,22 +110,25 @@ export const enableSuccessRoomSection = internalMutation({
     const room = await requireRoomBySlug(ctx, args.slug);
     const enabled = new Set([...room.enabledResourceSlugs, args.resourceSlug]);
     const enabledResourceSlugs = successRoomResourceSlugs.filter((slug) => enabled.has(slug));
-    const nextState = { ...room.state };
-    let planAccordions = room.planAccordions;
+
+    if (args.resourceSlug !== mutualSuccessPlanResourceSlug) {
+      await ctx.db.patch(room._id, { enabledResourceSlugs });
+      return { enabledResourceSlugs };
+    }
 
     // The plan section is seeded from the script's CSV, replacing any existing
     // plan content and progress.
-    if (args.resourceSlug === mutualSuccessPlanResourceSlug) {
-      planAccordions = args.planAccordions ?? [];
-      assertValidSeedPlanAccordions(planAccordions);
-      // Open the first accordion by default; null would mean all closed.
-      nextState.plan = createDefaultPlanState(planAccordions[0]?.key ?? null);
-    }
+    const planAccordions = args.planAccordions ?? [];
+    assertValidSeedPlanAccordions(planAccordions);
 
     await ctx.db.patch(room._id, {
       enabledResourceSlugs,
       planAccordions,
-      state: nextState,
+      state: {
+        ...room.state,
+        // Open the first accordion by default; null would mean all closed.
+        plan: createDefaultPlanState(planAccordions[0]?.key ?? null),
+      },
     });
 
     return { enabledResourceSlugs };

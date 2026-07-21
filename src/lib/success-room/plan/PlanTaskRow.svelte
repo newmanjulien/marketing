@@ -5,7 +5,7 @@
 
   let {
     task,
-    checked = $bindable(false),
+    checked = $bindable(),
     assignedTeamMember,
     displayDate,
     textClass,
@@ -31,9 +31,8 @@
 <li class="min-w-0">
   <div
     class={[
-      'grid min-w-0 grid-cols-[14px_minmax(0,1fr)_20px_52px] items-start gap-[10px] text-[13px] leading-[1.4] tracking-normal sm:gap-[14px] sm:text-[14px]',
-      textClass,
-      'font-book'
+      'grid min-w-0 grid-cols-[14px_minmax(0,1fr)_20px_52px] items-start gap-[10px] text-[13px] font-book leading-[1.4] tracking-normal sm:gap-[14px] sm:text-[14px]',
+      textClass
     ]}
   >
     <span class="flex h-[20px] items-center">

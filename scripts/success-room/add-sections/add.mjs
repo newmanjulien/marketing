@@ -19,13 +19,12 @@ if (!slug || !sections.includes(section)) {
   process.exit(1);
 }
 
-const planAccordions =
-  section === "mutual-success-plan" ? await readPlanAccordions(import.meta.dirname) : null;
-
 const result = await runConvex("admin:enableSuccessRoomSection", {
   slug,
   resourceSlug: section,
-  ...(planAccordions ? { planAccordions } : {}),
+  ...(section === "mutual-success-plan"
+    ? { planAccordions: await readPlanAccordions(import.meta.dirname) }
+    : {}),
 });
 
 console.log(

@@ -6,16 +6,8 @@
   let { data, form }: PageProps = $props();
 </script>
 
-<svelte:head>
-  <title>Overbase › {data.room.prospectName}</title>
-</svelte:head>
-
 {#if data.locked}
-  <PasswordGate
-    prospectName={data.room.prospectName}
-    description={data.room.description}
-    message={form?.message}
-  />
+  <PasswordGate room={data.room} message={form?.message} />
 {:else}
   <LandingPage room={data.room} state={data.state} />
 {/if}

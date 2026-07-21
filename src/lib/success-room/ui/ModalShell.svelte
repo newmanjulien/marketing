@@ -7,7 +7,7 @@
     open: boolean;
     title: string;
     onClose: () => void;
-    class?: string;
+    maxWidth?: number;
     children: Snippet;
   };
 
@@ -15,7 +15,7 @@
     open,
     title,
     onClose,
-    class: className,
+    maxWidth = 440,
     children
   }: ModalShellProps = $props();
 
@@ -41,10 +41,8 @@
       aria-modal="true"
       aria-labelledby={titleId}
       tabindex="-1"
-      class={[
-        'relative flex max-h-[calc(100vh-3rem)] w-full max-w-[440px] flex-col overflow-hidden rounded-[16px] border border-stone-200/80 bg-white text-stone-950 shadow-[0_12px_34px_rgba(68,64,60,0.14)] outline-none',
-        className
-      ]}
+      class="relative flex max-h-[calc(100vh-3rem)] w-full flex-col overflow-hidden rounded-[16px] border border-stone-200/80 bg-white text-stone-950 shadow-[0_12px_34px_rgba(68,64,60,0.14)] outline-none"
+      style:max-width="{maxWidth}px"
     >
       <button
         type="button"

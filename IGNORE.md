@@ -4,17 +4,9 @@ Look over all of this again. Tell me about how we could accomplish the same user
 
 Create a plan for a fresh agent who has no context. Explain from first principles without any information that's not necessary
 
-# Last commit
+# New components - usually not worth doing
 
-(do in xHigh)
-
-Compare this codebase vs last commit. What changes do you disagree with (if any)? Spin up sub-agents to help
-
-# Taste (played out)
-
-Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where the code could be written more tastefully
-
-Look for small things that would put off a senior dev. Style issues are fine
+Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where we should create a new component
 
 Then spin up new agents who inspect the code and review what the first agents found with a critical eye
 
@@ -26,7 +18,21 @@ Then spin up subagent(s) to look over your code and the code in the files you to
 
 Then spin up subagent(s) to apply the changes (if any)
 
-# Svelte (played out)
+# Delete components
+
+Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where there's a component, but it actually should be flattened (there shouldn't be a component)
+
+Then spin up new agents who inspect the code and review what the first agents found with a critical eye
+
+Then you make up your own mind and decide which ones we should actually do
+
+Then spin up subagent(s) to apply the changes
+
+Then spin up subagent(s) to look over your code and the code in the files you touched. Are there any mistakes or problems? Any sloppiness? Any code which could be shorter? Anything which could have a clearer mental model? I'm OK with changing a lot of stuff or nothing at all. After proposing ideas (if any) then look at them with fresh eyes and recommend which we should actually do
+
+Then spin up subagent(s) to apply the changes (if any)
+
+# Svelte - first to get played out
 
 Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where the code could make better use of sveltekit's advantages
 
@@ -42,7 +48,37 @@ Then spin up subagent(s) to look over your code and the code in the files you to
 
 Then spin up subagent(s) to apply the changes (if any)
 
-# Short
+# Bugs - takes longest to do
+
+Spin up 5 subagents who pick random sections of the code. Get each one to find up to 1 bug
+
+Then spin up new agents who inspect the code and review what the first agents found with a critical eye
+
+Then you make up your own mind and decide which ones we should actually do
+
+Then spin up subagent(s) to apply the changes
+
+Then spin up subagent(s) to look over your code and the code in the files you touched. Are there any mistakes or problems? Any sloppiness? Any code which could be shorter? Anything which could have a clearer mental model? I'm OK with changing a lot of stuff or nothing at all. After proposing ideas (if any) then look at them with fresh eyes and recommend which we should actually do
+
+Then spin up subagent(s) to apply the changes (if any)
+
+# Taste
+
+Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where the code could be written more tastefully
+
+Look for small things that would put off a senior dev. Style issues are fine
+
+Then spin up new agents who inspect the code and review what the first agents found with a critical eye
+
+Then you make up your own mind and decide which ones we should actually do
+
+Then spin up subagent(s) to apply the changes
+
+Then spin up subagent(s) to look over your code and the code in the files you touched. Are there any mistakes or problems? Any sloppiness? Any code which could be shorter? Anything which could have a clearer mental model? I'm OK with changing a lot of stuff or nothing at all. After proposing ideas (if any) then look at them with fresh eyes and recommend which we should actually do
+
+Then spin up subagent(s) to apply the changes (if any)
+
+# Short - can run the most time
 
 Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where the code could be shorter
 
@@ -60,32 +96,6 @@ Then spin up subagent(s) to look over your code and the code in the files you to
 
 Then spin up subagent(s) to apply the changes (if any)
 
-# Bugs (played out)
+# Last commit - only if big changes
 
-Spin up 5 subagents who pick random sections of the code. Get each one to find up to 1 bug
-
-Then spin up new agents who inspect the code and review what the first agents found with a critical eye
-
-Then you make up your own mind and decide which ones we should actually do
-
-Then spin up subagent(s) to apply the changes
-
-Then spin up subagent(s) to look over your code and the code in the files you touched. Are there any mistakes or problems? Any sloppiness? Any code which could be shorter? Anything which could have a clearer mental model? I'm OK with changing a lot of stuff or nothing at all. After proposing ideas (if any) then look at them with fresh eyes and recommend which we should actually do
-
-Then spin up subagent(s) to apply the changes (if any)
-
-# New components
-
-Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where we should create a new component
-
-Then spin up new agents who inspect the code and review what the first agents found with a critical eye
-
-Then you make up your own mind and decide which ones we should actually do
-
-# Delete components
-
-Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where there's a component, but it actually should be flattened (there shouldn't be a component)
-
-Then spin up new agents who inspect the code and review what the first agents found with a critical eye
-
-Then you make up your own mind and decide which ones we should actually do
+Compare this codebase vs last commit. What changes do you disagree with (if any)? Spin up sub-agents to help

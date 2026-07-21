@@ -5,22 +5,15 @@
   import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
   import PageFrame from '$lib/ui/PageFrame.svelte';
   import Header from '../shell/Header.svelte';
+  import type { SuccessRoomBaseRoom } from '../domain/types';
 
-  let {
-    prospectName,
-    description,
-    message
-  }: {
-    prospectName: string;
-    description: string;
-    message?: string;
-  } = $props();
+  let { room, message }: { room: SuccessRoomBaseRoom; message?: string } = $props();
 </script>
 
 <PageFrame>
   <ContentMeasure as="section" width="narrow">
     <div class="max-w-[440px]">
-      <Header eyebrow="Success room" title={prospectName} {description} />
+      <Header eyebrow="Success room" title={room.prospectName} description={room.description} />
 
       <form method="POST" action={getNamedFormAction(page.url, 'unlock')} use:enhance class="mt-[34px] grid gap-[12px]">
         <input

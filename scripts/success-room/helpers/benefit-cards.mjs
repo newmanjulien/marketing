@@ -1,9 +1,4 @@
-import {
-  assertUniqueKey,
-  parseSortOrder,
-  readCsvRecords,
-  requireValue,
-} from "./csv.mjs";
+import { assertUniqueKey, parseSortOrder, readCsvRecords } from "./csv.mjs";
 
 const filename = "create-benefits.csv";
 const expectedHeaders = ["key", "title", "description", "sortOrder"];
@@ -18,15 +13,14 @@ export const readBenefitCards = async (baseDir) => {
   const benefitCards = records
     .map((record, index) => {
       const rowNumber = index + 2;
-      const key = requireValue(record, "key", filename, rowNumber);
 
-      assertUniqueKey(benefitKeys, key, filename, rowNumber, "benefit key");
+      assertUniqueKey(benefitKeys, record.key, filename, rowNumber, "benefit key");
 
       return {
-        key,
-        title: requireValue(record, "title", filename, rowNumber),
-        description: requireValue(record, "description", filename, rowNumber),
-        sortOrder: parseSortOrder(record, "sortOrder", filename, rowNumber),
+        key: record.key,
+        title: record.title,
+        description: record.description,
+        sortOrder: parseSortOrder(record.sortOrder, "sortOrder", filename, rowNumber),
       };
     })
     .sort((left, right) => left.sortOrder - right.sortOrder)

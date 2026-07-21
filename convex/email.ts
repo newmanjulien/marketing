@@ -71,13 +71,14 @@ export const sendDocumentRequestNotification = internalAction({
   handler: async (ctx, args) => {
     const user = process.env.PRIVATE_EMAIL_USER?.trim();
     const password = process.env.PRIVATE_EMAIL_PASSWORD;
-    const recipient = process.env.SUCCESS_ROOM_DOCUMENT_REQUEST_RECIPIENT?.trim() || user;
 
-    if (!user || !password || !recipient) {
+    if (!user || !password) {
       throw new Error(
-        "Document request email is not configured: set PRIVATE_EMAIL_USER, PRIVATE_EMAIL_PASSWORD, and SUCCESS_ROOM_DOCUMENT_REQUEST_RECIPIENT with npx convex env set",
+        "Document request email is not configured: set PRIVATE_EMAIL_USER and PRIVATE_EMAIL_PASSWORD with npx convex env set",
       );
     }
+
+    const recipient = process.env.SUCCESS_ROOM_DOCUMENT_REQUEST_RECIPIENT?.trim() || user;
 
     const transport = nodemailer.createTransport({
       host: smtpHost,

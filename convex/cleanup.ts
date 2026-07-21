@@ -13,7 +13,7 @@ export const deleteExpiredSessions = internalMutation({
     const cutoff = args.cutoff ?? Date.now();
     const expiredSessions = await ctx.db
       .query("successRoomSessions")
-      .withIndex("by_expires_at", (query) => query.lt("expiresAt", cutoff))
+      .withIndex("by_expires_at", (q) => q.lt("expiresAt", cutoff))
       .take(cleanupPageSize);
 
     for (const session of expiredSessions) {
@@ -49,7 +49,7 @@ export const deleteOrphanedStorage = internalMutation({
     for (const storedFile of orphanCandidates) {
       const claimedFile = await ctx.db
         .query("successRoomFiles")
-        .withIndex("by_storage_id", (query) => query.eq("storageId", storedFile._id))
+        .withIndex("by_storage_id", (q) => q.eq("storageId", storedFile._id))
         .first();
 
       if (!claimedFile) {

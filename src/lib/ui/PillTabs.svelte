@@ -40,8 +40,8 @@
 
   const getTabId = (tabKey: Tab['key']) => `${idBase}-${tabKey}-tab`;
   const getPanelId = (tabKey: Tab['key']) => `${idBase}-${tabKey}-panel`;
-  const getPillTabReflowDuration = () => (prefersReducedMotion.current ? 0 : 160);
-  const pillTabTransition =
+  const getReflowDuration = () => (prefersReducedMotion.current ? 0 : 160);
+  const tabTransition =
     (duration: number, offsetPx: number) => (_node: Element, tabKey: Tab['key']) => {
       if (!animatedTabKeys.includes(tabKey) || prefersReducedMotion.current) {
         return { duration: 0 };
@@ -57,8 +57,8 @@
         `
       };
     };
-  const pillTabEntry = pillTabTransition(220, 4);
-  const pillTabExit = pillTabTransition(160, 2);
+  const tabEntry = tabTransition(220, 4);
+  const tabExit = tabTransition(160, 2);
   const focusTab = (tabKey: Tab['key']) => {
     document.getElementById(getTabId(tabKey))?.focus();
   };
@@ -104,7 +104,7 @@
       {@const isActive = activeTab.key === tab.key}
       <span
         class="inline-flex"
-        animate:flip={{ duration: getPillTabReflowDuration, easing: cubicOut }}
+        animate:flip={{ duration: getReflowDuration, easing: cubicOut }}
       >
         <button
           id={getTabId(tab.key)}
@@ -114,8 +114,8 @@
           aria-controls={isActive ? getPanelId(tab.key) : undefined}
           tabindex={isActive ? 0 : -1}
           class={[tabClasses, isActive && activeTabClasses]}
-          in:pillTabEntry={tab.key}
-          out:pillTabExit={tab.key}
+          in:tabEntry={tab.key}
+          out:tabExit={tab.key}
           onclick={() => selectTab(tab.key)}
           onkeydown={(event) => handleTabKeydown(event, index)}
         >

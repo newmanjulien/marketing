@@ -3,7 +3,7 @@
   import DatePickerModal from './DatePickerModal.svelte';
   import PlanTaskRow from './PlanTaskRow.svelte';
   import TaskAssigneeModal from './TaskAssigneeModal.svelte';
-  import { formatIsoDate, resolveTaskDisplayDate } from './planDates';
+  import { formatIsoDate, parseIsoDate } from './planDates';
   import { mutualSuccessPlanClose, mutualSuccessPlanOpen } from './planTransitions';
   import type {
     SuccessRoomPlanAction,
@@ -40,8 +40,8 @@
       : plan.assigneeKeyByTaskKey[assigneePickerTaskKey]
   );
 
-  const openAccordion = (accordionKey: string) => {
-    // Toggle: clicking the open accordion closes it (null = all closed).
+  const toggleAccordion = (accordionKey: string) => {
+    // Clicking the open accordion closes it (null = all closed).
     onPlanAction({
       type: 'set-open-accordion',
       accordionKey: accordionKey === plan.openAccordionKey ? null : accordionKey
@@ -78,9 +78,9 @@
     return accordion.tasks.some((task) => {
       if (checkedTaskKeys.has(task.key)) return false;
 
-      const date = resolveTaskDisplayDate(plan.dateOverridesByTaskKey, task.key);
+      const iso = plan.dateOverridesByTaskKey[task.key];
 
-      return date !== null && date.getTime() < startOfTodayMs;
+      return iso !== undefined && parseIsoDate(iso).getTime() < startOfTodayMs;
     });
   };
 
@@ -99,7 +99,7 @@
   const accordionTitleClasses =
     'col-start-1 row-start-1 flex min-w-0 items-center gap-[8px] text-[15px] font-normal leading-[1.2] tracking-normal sm:text-[16px]';
   const accordionDescriptionClasses =
-    'col-start-1 row-start-2 mt-[8px] block min-w-0 cursor-pointer text-[13px] leading-[1.4] tracking-normal sm:text-[14px]';
+    'col-start-1 row-start-2 mt-[8px] block min-w-0 cursor-pointer text-[13px] font-book leading-[1.4] tracking-normal sm:text-[14px]';
   const accordionToggleIconClasses =
     'col-start-2 row-start-1 shrink-0 self-center transition-colors duration-150';
   const accordionTaskListClasses = 'mt-[16px] grid gap-[14px]';
@@ -149,7 +149,7 @@
           class={accordionTriggerClasses}
           aria-expanded={isOpen}
           aria-controls={`${item.key}-tasks`}
-          onclick={() => openAccordion(item.key)}
+          onclick={() => toggleAccordion(item.key)}
         >
           <span class={[accordionTitleClasses, cardVariant.title]}>
             {#if offTrack}
@@ -165,7 +165,7 @@
             <ToggleIcon size={15} weight="bold" />
           </span>
           {#if !isOpen}
-            <span class={[accordionDescriptionClasses, cardVariant.description, 'font-book']}>
+            <span class={[accordionDescriptionClasses, cardVariant.description]}>
               {item.description}
             </span>
           {/if}
@@ -181,7 +181,8 @@
           >
             {#each item.tasks as task (task.key)}
               {@const taskKey = task.key}
-              {@const displayDate = resolveTaskDisplayDate(plan.dateOverridesByTaskKey, taskKey)}
+              {@const iso = plan.dateOverridesByTaskKey[taskKey]}
+              {@const displayDate = iso ? parseIsoDate(iso) : null}
               {@const assignedTeamMember = getAssignedTeamMember(taskKey)}
               <PlanTaskRow
                 {task}

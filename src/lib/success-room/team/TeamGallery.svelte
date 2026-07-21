@@ -46,8 +46,7 @@
 <ul class="grid grid-cols-2 gap-x-[24px] gap-y-[34px] sm:grid-cols-4" aria-label="Team">
   {#each galleryItems as item (item.key)}
     <li
-      class="min-w-0"
-      class:group={item.type === 'member'}
+      class={['min-w-0', item.type === 'member' && 'group']}
       animate:flip={{ duration: getGalleryReflowDuration, easing: cubicOut }}
     >
       {#if item.type === 'member'}

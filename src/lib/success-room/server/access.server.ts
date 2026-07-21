@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import type { Cookies, RequestEvent } from '@sveltejs/kit';
 import { ConvexError } from 'convex/values';
 import { dev } from '$app/environment';
-import { getSuccessRoomPath } from '$lib/success-room/domain/urls';
+import { getSuccessRoomPath } from '../domain/urls';
 import {
   successRoomAccessDeniedCode,
   successRoomResourceNotEnabledCode,
@@ -44,16 +44,6 @@ export const isSuccessRoomAccessError = (loadError: unknown) =>
 export const isSuccessRoomResourceNotEnabledError = (loadError: unknown) =>
   loadError instanceof ConvexError && loadError.data === successRoomResourceNotEnabledCode;
 
-export const requireSuccessRoomSessionToken = (cookies: Cookies, roomSlug: string) => {
-  const sessionToken = getSuccessRoomSessionToken(cookies, roomSlug);
-
-  if (!sessionToken) {
-    error(401, 'Success room access required');
-  }
-
-  return sessionToken;
-};
-
 // Convex validators remain the runtime schema check; this only guarantees the
 // body is a plain JSON object so bad input fails as 400, not 500.
 const readJsonObjectBody = async (request: Request) => {
@@ -76,7 +66,10 @@ export const handleSuccessRoomApiRequest = async <
   { cookies, params, request }: RequestEvent<{ roomSlug: string }>,
   run: (input: { sessionToken: string; body: Body }) => Promise<Response>
 ) => {
-  const sessionToken = requireSuccessRoomSessionToken(cookies, params.roomSlug);
+  const sessionToken = getSuccessRoomSessionToken(cookies, params.roomSlug);
+  if (!sessionToken) {
+    error(401, 'Success room access required');
+  }
   const body = (request.method === 'POST' ? await readJsonObjectBody(request) : {}) as Body;
 
   try {
@@ -86,11 +79,11 @@ export const handleSuccessRoomApiRequest = async <
       error(404, 'Success room resource not found');
     }
 
-    if (!isSuccessRoomAccessError(mutationError)) {
-      throw mutationError;
+    if (isSuccessRoomAccessError(mutationError)) {
+      clearSuccessRoomSessionToken(cookies, params.roomSlug);
+      error(401, 'Success room access required');
     }
 
-    clearSuccessRoomSessionToken(cookies, params.roomSlug);
-    error(401, 'Success room access required');
+    throw mutationError;
   }
 };

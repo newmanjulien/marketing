@@ -22,18 +22,11 @@
     Meet the people supporting this evaluation, including team members from Overbase and your team
   </p>
 
-  <TeamGallery
-    {team}
-    onAddTeamMember={() => {
-      addTeamMemberModalOpen = true;
-    }}
-  />
+  <TeamGallery {team} onAddTeamMember={() => (addTeamMemberModalOpen = true)} />
 </div>
 
 <AddTeamMemberModal
   open={addTeamMemberModalOpen}
-  onClose={() => {
-    addTeamMemberModalOpen = false;
-  }}
+  onClose={() => (addTeamMemberModalOpen = false)}
   {onAddTeamMember}
 />

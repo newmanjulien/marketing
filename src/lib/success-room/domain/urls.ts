@@ -1,15 +1,19 @@
+import { resolve } from '$app/paths';
+
 export const getSuccessRoomPath = (roomSlug: string, section?: string) => {
-  const path = `/${roomSlug}`;
+  const path = resolve('/(success-room)/[roomSlug=successRoomSlug]', { roomSlug });
 
   return section ? `${path}?section=${encodeURIComponent(section)}` : path;
 };
 
+// Not resolve(): the resourceSlug matcher is a type guard, so resolve() demands the slug union — callers only hold string.
 export const getSuccessRoomResourcePath = (roomSlug: string, resourceSlug: string) =>
   `/${roomSlug}/${resourceSlug}`;
 
 export const getSuccessRoomDocumentRequestPath = (roomSlug: string) =>
-  `/${roomSlug}/request-document`;
+  resolve('/(success-room)/[roomSlug=successRoomSlug]/request-document', { roomSlug });
 
+// Not resolve(): operation spans three static api routes plus [operation=successRoomAutosaveOperation].
 export const getSuccessRoomApiPath = (roomSlug: string, operation: string) =>
   `/${roomSlug}/api/${operation}`;
 

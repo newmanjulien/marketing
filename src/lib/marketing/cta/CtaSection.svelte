@@ -1,11 +1,12 @@
 <script lang="ts">
+  import { page } from '$app/state';
   import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
   import ButtonLink from '$lib/marketing/ui/ButtonLink.svelte';
   import { createPortalAuthUrl } from '$lib/marketing/portalAuthLinks';
 
   let { heading, workPhrase = 'you work' }: { heading: string; workPhrase?: string } = $props();
 
-  const joinHref = createPortalAuthUrl('join', '/');
+  const joinHref = $derived(createPortalAuthUrl('join', page.url.pathname));
 </script>
 
 <section class="border-t border-stone-200 bg-stone-50/60 px-[18px] py-[72px] sm:px-8 sm:py-[90px]">

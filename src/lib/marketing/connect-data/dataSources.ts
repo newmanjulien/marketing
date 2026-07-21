@@ -8,7 +8,7 @@ import {
 // The data sources shown in ConnectDataGraphic: the industry pages cycle
 // through all of them, the home page shows just the Outlook entry.
 
-export const salesforce = {
+const salesforce = {
   provider: 'Salesforce',
   icon: CloudIcon,
   title: 'Salesforce sales data',
@@ -17,7 +17,7 @@ export const salesforce = {
     'Overbase reads your accounts, pipeline and closed deals straight from your CRM — nothing changes in how your team works'
 };
 
-export const excel = {
+const excel = {
   provider: 'Excel',
   icon: MicrosoftExcelLogoIcon,
   title: 'Excel sales data',
@@ -35,7 +35,7 @@ export const outlook = {
     'Your calendar shows who your firm meets — Overbase uses it to map relationships, never the content of your meetings'
 };
 
-export const googleDrive = {
+const googleDrive = {
   provider: 'Google Drive',
   icon: GoogleDriveLogoIcon,
   title: 'Google Drive documents',
@@ -45,3 +45,5 @@ export const googleDrive = {
 };
 
 export const dataSources = [salesforce, excel, outlook, googleDrive];
+
+export type DataSource = (typeof dataSources)[number];

@@ -49,6 +49,14 @@ export const legalPageSlugs = [
   'subprocessors'
 ];
 
+if (new Set(legalPageSlugs).size !== legalPageSlugs.length) {
+  throw new Error('legalPageSlugs contains a duplicate slug');
+}
+
+if (legalPageSlugs.length !== legalPageLoaders.size) {
+  throw new Error('legalPageSlugs must list every legal page');
+}
+
 const orderedLegalPages = legalPageSlugs.map((slug) => {
   const loadLegalPage = legalPageLoaders.get(slug);
 
@@ -58,10 +66,6 @@ const orderedLegalPages = legalPageSlugs.map((slug) => {
 
   return { slug, loadLegalPage };
 });
-
-if (orderedLegalPages.length !== legalPageLoaders.size) {
-  throw new Error('legalPageSlugs must list every legal page exactly once.');
-}
 
 export const getLegalPage = async (slug: string): Promise<LegalPage | undefined> => {
   const loadLegalPage = legalPageLoaders.get(slug);

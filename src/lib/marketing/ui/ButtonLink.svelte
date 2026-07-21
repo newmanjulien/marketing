@@ -55,8 +55,8 @@
     shapeClasses[shape],
     sizeClasses[size],
     variantClasses[variant],
-    { 'w-full': fullWidth },
-    { 'button-link-highlight-sweep relative overflow-hidden': highlightSweep },
+    fullWidth && 'w-full',
+    highlightSweep && 'button-link-highlight-sweep relative overflow-hidden',
     className
   ]}
 >

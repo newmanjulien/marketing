@@ -1,23 +1,11 @@
 <script lang="ts">
-  import type { Component } from 'svelte';
-  import { ArrowsClockwiseIcon, type IconComponentProps } from 'phosphor-svelte';
+  import { ArrowsClockwiseIcon } from 'phosphor-svelte';
+  import type { DataSource } from './dataSources';
 
-  let {
-    provider,
-    icon: Icon,
-    title,
-    buttonText,
-    onNext
-  }: {
-    provider: string;
-    icon: Component<IconComponentProps>;
-    title: string;
-    buttonText: string;
-    onNext?: () => void;
-  } = $props();
+  let { source, onNext }: { source: DataSource; onNext?: () => void } = $props();
 
   const connectionSettings = $derived([
-    { label: 'provider', value: provider },
+    { label: 'provider', value: source.provider },
     { label: 'access', value: 'Read only' },
     { label: 'retention', value: 'Zero' },
     { label: 'shared', value: 'Never' },
@@ -70,10 +58,10 @@
       <div class="w-full max-w-[360px] rounded-[10px] border-[1.5px] border-stone-500 bg-white p-[18px] shadow-[0_1px_2px_rgba(48,47,45,0.04)]">
         <div class="flex items-center gap-[10px]">
           <span class="flex h-[22px] w-[22px] shrink-0 items-center justify-center text-stone-400">
-            <Icon size={22} weight="regular" />
+            <source.icon size={22} weight="regular" />
           </span>
           <span class="text-[17px] font-book leading-none tracking-normal text-stone-600">
-            {title}
+            {source.title}
           </span>
         </div>
 
@@ -88,7 +76,7 @@
           class="mt-[18px] flex h-[44px] w-full items-center justify-center rounded-[6px] bg-stone-800 text-[17px] font-book leading-none tracking-normal text-white"
           aria-hidden="true"
         >
-          {buttonText}
+          {source.buttonText}
         </div>
       </div>
     </div>

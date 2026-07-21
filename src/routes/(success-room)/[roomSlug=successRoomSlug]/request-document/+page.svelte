@@ -4,25 +4,14 @@
   import type { PageProps } from './$types';
 
   let { data, form }: PageProps = $props();
-  const documentRequestForm = $derived(
-    form && 'documentRequest' in form ? form.documentRequest : undefined
-  );
 </script>
 
-<svelte:head>
-  <title>Overbase › {data.room.prospectName}</title>
-</svelte:head>
-
 {#if data.locked}
-  <PasswordGate
-    prospectName={data.room.prospectName}
-    description={data.room.description}
-    message={form?.message}
-  />
+  <PasswordGate room={data.room} message={form?.message} />
 {:else}
   <DocumentRequestPage
     room={data.room}
-    form={documentRequestForm}
-    submitted={data.documentRequestSubmitted && !documentRequestForm}
+    form={form?.documentRequest}
+    submitted={data.documentRequestSubmitted && !form?.documentRequest}
   />
 {/if}

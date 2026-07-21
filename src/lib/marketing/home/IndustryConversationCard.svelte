@@ -57,7 +57,7 @@
       class="relative flex flex-col items-stretch gap-[6px]"
       role="group"
       aria-label="Industry"
-      use:tabIndicator={indicatorKey}
+      {@attach tabIndicator(indicatorKey)}
       onmouseleave={() => (hoveredIndustryId = null)}
     >
       <span
@@ -81,7 +81,6 @@
           aria-pressed={industryId === industry.id}
           onclick={() => onIndustrySelect(industry.id)}
           onmouseenter={() => (hoveredIndustryId = industry.id)}
-          onfocus={() => (hoveredIndustryId = industry.id)}
         >
           <industry.icon size={18} weight={isEmphasized ? 'bold' : 'regular'} />
           <span>{industry.label}</span>

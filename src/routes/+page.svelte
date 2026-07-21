@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { prefersReducedMotion } from 'svelte/motion';
   import ConnectDataGraphic from '$lib/marketing/connect-data/ConnectDataGraphic.svelte';
   import { outlook } from '$lib/marketing/connect-data/dataSources';
   import NetworkFunnelGraphic from '$lib/marketing/home/NetworkFunnelGraphic.svelte';
@@ -13,10 +14,12 @@
     if (!target) return;
     event.preventDefault();
 
-    // Native smooth scroll honours the target's scroll-mt offset and the user's
-    // reduced-motion preference; behavior:'auto' falls back to an instant jump.
-    const motionOk = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    target.scrollIntoView({ behavior: motionOk ? 'smooth' : 'auto', block: 'start' });
+    // Native smooth scroll honours the target's scroll-mt offset;
+    // behavior:'auto' falls back to an instant jump for reduced motion.
+    target.scrollIntoView({
+      behavior: prefersReducedMotion.current ? 'auto' : 'smooth',
+      block: 'start'
+    });
   }
 </script>
 
@@ -36,12 +39,7 @@
       {#snippet body()}
         Easily, quickly and safely connect any data source. Overbase can analyze any structured and unstructured data
       {/snippet}
-      <ConnectDataGraphic
-        provider={outlook.provider}
-        icon={outlook.icon}
-        title={outlook.title}
-        buttonText={outlook.buttonText}
-      />
+      <ConnectDataGraphic source={outlook} />
     </FeatureSection>
 
     <FeatureSection title="Your network connects their data">

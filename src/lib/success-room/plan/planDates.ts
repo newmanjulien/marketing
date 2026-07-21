@@ -24,12 +24,3 @@ export const formatIsoDate = (date: Date) => {
 };
 
 export const formatTaskDateLabel = (date: Date) => taskDateFormatter.format(date);
-
-export const resolveTaskDisplayDate = (
-  dateOverridesByTaskKey: Record<string, string>,
-  taskKey: string
-): Date | null => {
-  const overrideDate = dateOverridesByTaskKey[taskKey];
-
-  return overrideDate ? parseIsoDate(overrideDate) : null;
-};

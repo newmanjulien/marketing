@@ -4,8 +4,6 @@ import {
   unlockSuccessRoom
 } from '$lib/success-room/server/pageServer.server';
 import { submitSuccessRoomDocumentRequest } from '$lib/success-room/server/documentRequests.server';
-import { getFormActionRedirectPath } from '$lib/success-room/domain/urls';
-import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ cookies, params, url }) => ({
@@ -16,20 +14,5 @@ export const load: PageServerLoad = async ({ cookies, params, url }) => ({
 
 export const actions = {
   unlock: unlockSuccessRoom,
-  requestDocument: async ({ cookies, params, request, url }) => {
-    const result = await submitSuccessRoomDocumentRequest({
-      cookies,
-      roomSlug: params.roomSlug,
-      formData: await request.formData()
-    });
-
-    if (result) {
-      return result;
-    }
-
-    redirect(
-      303,
-      getFormActionRedirectPath(url, { 'document-request': 'submitted' })
-    );
-  }
+  requestDocument: submitSuccessRoomDocumentRequest
 } satisfies Actions;

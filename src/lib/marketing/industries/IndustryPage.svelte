@@ -55,13 +55,7 @@
         </p>
 
         <div class="mt-[32px]">
-          <ConnectDataGraphic
-            provider={dataSource.provider}
-            icon={dataSource.icon}
-            title={dataSource.title}
-            buttonText={dataSource.buttonText}
-            onNext={showNextDataSource}
-          />
+          <ConnectDataGraphic source={dataSource} onNext={showNextDataSource} />
 
           <p
             class="mt-[18px] px-[2px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-500/70 sm:text-[17px]"

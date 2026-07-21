@@ -99,14 +99,7 @@ export const assetResourceResolution = async (
     : null;
   const href = file ? await ctx.storage.getUrl(file.storageId) : null;
 
-  if (!href) {
-    return { status: "missing" as const };
-  }
-
-  return {
-    status: "available" as const,
-    href,
-  };
+  return href ? { status: "available" as const, href } : { status: "missing" as const };
 };
 
 export const publicResourcePayload = async (

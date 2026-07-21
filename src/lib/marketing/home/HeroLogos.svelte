@@ -3,10 +3,14 @@
   import type { Snippet } from 'svelte';
 
   let {
-    onIndustryHover
+    onIndustryHover,
+    industrySelected
   }: {
     onIndustryHover: (id: IndustryId) => void;
+    industrySelected: boolean;
   } = $props();
+
+  const uid = $props.id();
 
   type Logo = {
     mark: Snippet;
@@ -31,8 +35,11 @@
   // pop with brand color that drives the graphic to its industry, then relaxes
   // back to grey. The whole lifecycle is driven by the CSS animations: the
   // entrance settling starts the pop ('pending' → 'active'), the bounce
-  // finishing ends it ('active' → 'done') — and a real hover at any point
-  // jumps it straight to 'done', retiring it for good.
+  // finishing ends it ('active' → 'done') — and any prior selection (a logo
+  // hover, or a tab click reported via industrySelected) retires it for good,
+  // so the auto-select never overwrites a choice the user already made. (The
+  // pop's own selectIndustry call flips industrySelected too, but by then pop
+  // is past 'pending', so it changes nothing.)
   let pop = $state<'pending' | 'active' | 'done'>('pending');
 
   function handleLogoHover(id: IndustryId) {
@@ -52,6 +59,13 @@
   function handleAnimationEnd(index: number, event: AnimationEvent) {
     if (index !== lastIndex) return;
     if (pop === 'pending' && event.animationName.includes('logo-enter')) {
+      // The pop's whole job is to drive the graphic to its industry — if the
+      // user already picked one, a bounce with no selection would be
+      // incoherent, so retire it outright.
+      if (industrySelected) {
+        pop = 'done';
+        return;
+      }
       pop = (event.currentTarget as HTMLElement).matches(':hover') ? 'done' : 'active';
       onIndustryHover(logos[lastIndex].industryId);
     } else if (pop === 'active' && event.animationName.includes('logo-bounce')) {
@@ -75,7 +89,7 @@
 
 {#snippet gt()}
   <svg viewBox="0 0 24 24" fill="currentColor">
-    <mask id="hero-logo-gt-mask">
+    <mask id="{uid}-gt-mask">
       <rect width="24" height="24" fill="white" />
       <text
         x="12"
@@ -87,18 +101,18 @@
         fill="black">GT</text
       >
     </mask>
-    <rect width="24" height="24" mask="url(#hero-logo-gt-mask)" />
+    <rect width="24" height="24" mask="url(#{uid}-gt-mask)" />
   </svg>
 {/snippet}
 
 {#snippet marsh()}
   <svg viewBox="0 0 24 24" fill="currentColor">
-    <mask id="hero-logo-marsh-mask">
+    <mask id="{uid}-marsh-mask">
       <rect width="24" height="24" fill="white" />
       <path d="M10.5 4L13.4 4L0.5 16.5L0.5 13.5Z" fill="black" />
       <path d="M13.5 20L10.6 20L23.5 7.5L23.5 10.5Z" fill="black" />
     </mask>
-    <rect x="1" y="4.5" width="22" height="15" rx="5" mask="url(#hero-logo-marsh-mask)" />
+    <rect x="1" y="4.5" width="22" height="15" rx="5" mask="url(#{uid}-marsh-mask)" />
   </svg>
 {/snippet}
 
@@ -131,7 +145,7 @@
 
 {#snippet lw()}
   <svg viewBox="0 0 24 24" fill="currentColor">
-    <mask id="hero-logo-lw-mask">
+    <mask id="{uid}-lw-mask">
       <rect width="24" height="24" fill="white" />
       <text
         x="12.2"
@@ -144,7 +158,7 @@
         fill="black">LW</text
       >
     </mask>
-    <rect width="24" height="24" mask="url(#hero-logo-lw-mask)" />
+    <rect width="24" height="24" mask="url(#{uid}-lw-mask)" />
   </svg>
 {/snippet}
 

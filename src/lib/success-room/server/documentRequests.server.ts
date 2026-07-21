@@ -1,30 +1,43 @@
-import { fail } from '@sveltejs/kit';
-import type { Cookies } from '@sveltejs/kit';
-import { convex } from '$lib/success-room/server/convexClient.server';
+import { fail, redirect } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
+import { convex } from './convexClient.server';
 import { maxSuccessRoomDocumentRequestDescriptionLength } from '$shared/successRoomDocumentRequests';
-import type { DocumentRequestFormFailure } from '$lib/success-room/domain/types';
+import type { DocumentRequestFormFailure } from '../domain/types';
+import { getFormActionRedirectPath } from '../domain/urls';
 import {
   clearSuccessRoomSessionToken,
-  isSuccessRoomAccessError,
-  requireSuccessRoomSessionToken
+  getSuccessRoomSessionToken,
+  isSuccessRoomAccessError
 } from './access.server';
 import { api } from '$convex/_generated/api';
 
 const failDocumentRequest = (statusCode: number, failure: DocumentRequestFormFailure) =>
   fail(statusCode, { documentRequest: failure });
 
+const failExpiredSession = (description: string) =>
+  failDocumentRequest(401, {
+    description,
+    status: 'submission-error',
+    message: 'Your Success Room access expired. Refresh the page and enter the password again.'
+  });
+
 export const submitSuccessRoomDocumentRequest = async ({
   cookies,
-  roomSlug,
-  formData
-}: {
-  cookies: Cookies;
-  roomSlug: string;
-  formData: FormData;
-}) => {
-  const sessionToken = requireSuccessRoomSessionToken(cookies, roomSlug);
+  params: { roomSlug },
+  request,
+  url
+}: RequestEvent<{ roomSlug: string }>) => {
+  const formData = await request.formData();
   const rawDescription = formData.get('description');
   const description = typeof rawDescription === 'string' ? rawDescription.trim() : '';
+
+  // The browser evicts the session cookie at expiry; fail the same way as a
+  // server-side expiry so the typed description survives.
+  const sessionToken = getSuccessRoomSessionToken(cookies, roomSlug);
+
+  if (!sessionToken) {
+    return failExpiredSession(description);
+  }
 
   if (!description) {
     return failDocumentRequest(400, {
@@ -49,11 +62,7 @@ export const submitSuccessRoomDocumentRequest = async ({
     if (isSuccessRoomAccessError(requestError)) {
       clearSuccessRoomSessionToken(cookies, roomSlug);
 
-      return failDocumentRequest(401, {
-        description,
-        status: 'submission-error',
-        message: 'Your Success Room access expired. Refresh the page and enter the password again.'
-      });
+      return failExpiredSession(description);
     }
 
     console.error('Unable to save Success Room document request', requestError);
@@ -64,4 +73,7 @@ export const submitSuccessRoomDocumentRequest = async ({
       message: 'Your request could not be saved. Please try again.'
     });
   }
+
+  // Outside the try: redirect() throws, and the catch would turn it into a 500.
+  redirect(303, getFormActionRedirectPath(url, { 'document-request': 'submitted' }));
 };

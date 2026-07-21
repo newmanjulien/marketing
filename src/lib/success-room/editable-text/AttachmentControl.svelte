@@ -78,7 +78,7 @@
   <button
     type="button"
     class={attachmentButtonClasses}
-    disabled={Boolean(attachment) || pendingOperation !== null}
+    disabled={attachment !== null || pendingOperation !== null}
     onclick={() => fileInput?.click()}
   >
     <PaperclipIcon size={15} weight="bold" aria-hidden="true" />

@@ -12,7 +12,6 @@ export type SuccessRoomResourceBase<Kind extends string, Slug extends string = s
   slug: Slug;
   title: string;
   actionLabel: string;
-  description?: string;
 };
 
 export type SuccessRoomPdfResource = SuccessRoomResourceBase<'pdf'>;

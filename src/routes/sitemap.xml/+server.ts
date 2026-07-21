@@ -1,3 +1,4 @@
+import { text } from '@sveltejs/kit';
 import { industries } from '$lib/marketing/industries/industries';
 import type { RequestHandler } from './$types';
 
@@ -20,7 +21,7 @@ export const GET: RequestHandler = () => {
 ${urls}
 </urlset>`;
 
-  return new Response(body, {
+  return text(body, {
     headers: {
       'Content-Type': 'application/xml'
     }

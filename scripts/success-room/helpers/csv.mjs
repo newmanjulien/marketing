@@ -80,16 +80,15 @@ const assertExpectedHeaders = (actualHeaders, expectedHeaders, filename) => {
     ),
   ];
 
-  if (missingHeaders.length > 0 || extraHeaders.length > 0 || duplicateHeaders.length > 0) {
+  const problems = [
+    missingHeaders.length > 0 && `Missing: ${missingHeaders.join(", ")}.`,
+    extraHeaders.length > 0 && `Unexpected: ${extraHeaders.join(", ")}.`,
+    duplicateHeaders.length > 0 && `Duplicated: ${duplicateHeaders.join(", ")}.`,
+  ].filter(Boolean);
+
+  if (problems.length > 0) {
     throw new Error(
-      [
-        `${filename} must use these headers: ${expectedHeaders.join(", ")}.`,
-        missingHeaders.length > 0 && `Missing: ${missingHeaders.join(", ")}.`,
-        extraHeaders.length > 0 && `Unexpected: ${extraHeaders.join(", ")}.`,
-        duplicateHeaders.length > 0 && `Duplicated: ${duplicateHeaders.join(", ")}.`,
-      ]
-        .filter(Boolean)
-        .join(" "),
+      `${filename} must use these headers: ${expectedHeaders.join(", ")}. ${problems.join(" ")}`,
     );
   }
 
@@ -114,28 +113,25 @@ export const readCsvRecords = async ({ baseDir, filename, expectedHeaders }) => 
     }
 
     return Object.fromEntries(
-      headers.map((header, index) => [header, row[index].trim()]),
+      headers.map((header, index) => {
+        const value = row[index].trim();
+
+        if (value === "") {
+          throw new Error(`${filename} row ${rowIndex + 2} is missing ${header}.`);
+        }
+
+        return [header, value];
+      }),
     );
   });
 };
 
-export const requireValue = (record, field, filename, rowNumber) => {
-  const value = record[field];
-
-  if (!value) {
-    throw new Error(`${filename} row ${rowNumber} is missing ${field}.`);
-  }
-
-  return value;
-};
-
-export const parseSortOrder = (record, field, filename, rowNumber) => {
-  const value = requireValue(record, field, filename, rowNumber);
+export const parseSortOrder = (value, label, filename, rowNumber) => {
   const sortOrder = Number(value);
 
   if (!Number.isInteger(sortOrder) || sortOrder < 0) {
     throw new Error(
-      `${filename} row ${rowNumber} ${field} must be a non-negative integer.`,
+      `${filename} row ${rowNumber} ${label} must be a non-negative integer.`,
     );
   }
 

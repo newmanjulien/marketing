@@ -5,6 +5,8 @@ const projectRoot = process.cwd();
 const routesDirectory = path.join(projectRoot, 'src/routes');
 const staticDirectory = path.join(projectRoot, 'static');
 const outputPath = path.join(projectRoot, 'shared/generated/reservedSuccessRoomSlugs.ts');
+// Must mirror successRoomSlugPattern in shared/successRoomSlugs.ts
+// (this script can't import the TS module).
 const urlSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const isUrlSlug = (name) => urlSlugPattern.test(name);

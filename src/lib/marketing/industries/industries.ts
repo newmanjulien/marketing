@@ -54,3 +54,6 @@ export type Industry = (typeof industries)[number];
 export const industriesById = Object.fromEntries(
   industries.map((industry) => [industry.id, industry])
 ) as Record<IndustryId, Industry>;
+
+export const isIndustryId = (value: string): value is IndustryId =>
+  Object.hasOwn(industriesById, value);

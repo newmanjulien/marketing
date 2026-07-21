@@ -10,9 +10,11 @@
 
   // Hovering a logo and clicking a tab in the graphic both drive the same selection.
   let industryId = $state<IndustryId>(industries[0].id);
+  let industrySelected = $state(false);
 
   function selectIndustry(id: IndustryId) {
     industryId = id;
+    industrySelected = true;
   }
 </script>
 
@@ -34,7 +36,7 @@
     </p>
 
     <div class="hero-logos mt-[39px]">
-      <HeroLogos onIndustryHover={selectIndustry} />
+      <HeroLogos onIndustryHover={selectIndustry} {industrySelected} />
     </div>
 
     <div class="hero-actions mt-[44px] flex justify-center">

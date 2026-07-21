@@ -18,10 +18,6 @@ export const createTeamMember = async ({
 }: TeamMemberInput & {
   roomSlug: string;
 }): Promise<SuccessRoomTeamMember> => {
-  if (!photoFile.type.startsWith('image/')) {
-    throw new Error('Team member photo must be an image.');
-  }
-
   const storageId = await uploadSuccessRoomFile({ roomSlug, file: photoFile });
   const response = await postSuccessRoomApi(roomSlug, 'team-member', {
     storageId,

@@ -20,6 +20,11 @@
     month: 'long',
     year: 'numeric'
   });
+  const dayLabelFormatter = new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
 
   const monthButtonClasses =
     'flex h-[30px] w-[30px] items-center justify-center rounded-[6px] border border-stone-200/80 bg-white p-0 text-stone-500 transition-colors duration-150 hover:bg-stone-50 hover:text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20';
@@ -44,6 +49,7 @@
         date,
         day: date.getDate(),
         key,
+        label: dayLabelFormatter.format(date),
         isCurrentMonth: date.getMonth() === month,
         isSelected: key === selectedDateKey
       };
@@ -60,7 +66,7 @@
   };
 </script>
 
-<ModalShell {open} title="Select date" {onClose} class="max-w-[360px]">
+<ModalShell {open} title="Select date" {onClose} maxWidth={360}>
   <div class="font-body">
     <div class="mb-[18px] flex items-center justify-between gap-[12px]">
       <button
@@ -104,11 +110,7 @@
                 ? 'bg-transparent text-stone-800 hover:bg-stone-100'
                 : 'bg-transparent text-stone-300 hover:bg-stone-50 hover:text-stone-500'
           ]}
-          aria-label={calendarDay.date.toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-          })}
+          aria-label={calendarDay.label}
           aria-pressed={calendarDay.isSelected}
           onclick={() => selectDate(calendarDay.date)}
         >

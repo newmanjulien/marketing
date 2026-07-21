@@ -11,14 +11,10 @@ type DocsPageSection = (typeof docsSections)[number] & {
 
 type DocsPageEntry = {
   title: string;
-  description?: string;
+  description: string;
   category: string;
   categoryLabel: string;
   slug: string;
-};
-
-type DocsSectionModule = {
-  default: Component;
 };
 
 export type DocsPage = DocsPageEntry & {
@@ -49,7 +45,7 @@ const docsPageEntries: DocsPageEntry[] = [
   }
 ];
 
-const docsSectionModules = import.meta.glob<DocsSectionModule>('/src/content/docs/*/*/*.svx');
+const docsSectionModules = import.meta.glob<{ default: Component }>('/src/content/docs/*/*/*.svx');
 
 export const getDocsPageParams = () =>
   docsPageEntries.map(({ category, slug }) => ({ category, slug }));

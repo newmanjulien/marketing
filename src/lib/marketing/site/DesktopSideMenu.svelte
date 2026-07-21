@@ -20,7 +20,7 @@
     <div class="group relative w-fit">
       <a
         href="/industries"
-        class="flex items-center gap-[6px] text-stone-700 outline-none hover:text-stone-900 focus-visible:text-stone-900"
+        class="flex items-center gap-[6px] outline-none hover:text-stone-900 focus-visible:text-stone-900"
         aria-haspopup="true"
       >
         <span>Industries</span>
@@ -37,13 +37,14 @@
       >
         <div class="flex flex-col gap-[14px] rounded-[8px] bg-stone-50 px-[14px] py-[13px] shadow-[0_4px_12px_rgba(28,25,23,0.035)] ring-1 ring-stone-200/60">
           {#each industries as link (link.href)}
+            {@const isActive = activePath === link.href}
             <a
               href={link.href}
               class={[
                 'block text-[14px] font-book leading-none hover:text-stone-900 focus-visible:text-stone-900 focus-visible:outline-none',
-                activePath === link.href ? 'text-stone-900' : 'text-stone-700'
+                isActive && 'text-stone-900'
               ]}
-              aria-current={activePath === link.href ? 'page' : undefined}
+              aria-current={isActive ? 'page' : undefined}
             >
               {link.label}
             </a>
@@ -53,13 +54,11 @@
     </div>
 
     {#each productNavItems as item (item.label)}
+      {@const isActive = activePath === item.href}
       <a
         href={item.href}
-        class={[
-          'w-fit hover:text-stone-900',
-          { 'text-stone-900': activePath === item.href }
-        ]}
-        aria-current={activePath === item.href ? 'page' : undefined}
+        class={['w-fit hover:text-stone-900', isActive && 'text-stone-900']}
+        aria-current={isActive ? 'page' : undefined}
       >
         {item.label}
       </a>

@@ -1,9 +1,4 @@
-import {
-  assertUniqueKey,
-  parseSortOrder,
-  readCsvRecords,
-  requireValue,
-} from "./csv.mjs";
+import { assertUniqueKey, parseSortOrder, readCsvRecords } from "./csv.mjs";
 
 const filename = "mutual-success-plan.csv";
 
@@ -51,31 +46,20 @@ export const readPlanAccordions = async (baseDir) => {
 
   for (const [index, record] of records.entries()) {
     const rowNumber = index + 2;
-    const accordionVariant = requireValue(
-      record,
-      "accordionVariant",
-      filename,
-      rowNumber,
-    );
 
-    if (!variants.includes(accordionVariant)) {
+    if (!variants.includes(record.accordionVariant)) {
       throw new Error(
         `${filename} row ${rowNumber} accordionVariant must be one of: ${variants.join(", ")}.`,
       );
     }
 
     const parsed = {
-      key: requireValue(record, "accordionKey", filename, rowNumber),
-      title: requireValue(record, "accordionTitle", filename, rowNumber),
-      description: requireValue(
-        record,
-        "accordionDescription",
-        filename,
-        rowNumber,
-      ),
-      variant: accordionVariant,
+      key: record.accordionKey,
+      title: record.accordionTitle,
+      description: record.accordionDescription,
+      variant: record.accordionVariant,
       sortOrder: parseSortOrder(
-        record,
+        record.accordionSortOrder,
         "accordionSortOrder",
         filename,
         rowNumber,
@@ -93,13 +77,12 @@ export const readPlanAccordions = async (baseDir) => {
       accordionsByKey.set(accordion.key, accordion);
     }
 
-    const taskKey = requireValue(record, "taskKey", filename, rowNumber);
-    assertUniqueKey(taskKeys, taskKey, filename, rowNumber, "task key");
+    assertUniqueKey(taskKeys, record.taskKey, filename, rowNumber, "task key");
 
     accordion.tasks.push({
-      key: taskKey,
-      title: requireValue(record, "taskTitle", filename, rowNumber),
-      sortOrder: parseSortOrder(record, "taskSortOrder", filename, rowNumber),
+      key: record.taskKey,
+      title: record.taskTitle,
+      sortOrder: parseSortOrder(record.taskSortOrder, "taskSortOrder", filename, rowNumber),
     });
   }
 

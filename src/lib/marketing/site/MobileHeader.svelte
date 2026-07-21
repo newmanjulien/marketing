@@ -1,6 +1,5 @@
 <script lang="ts">
   import { afterNavigate } from '$app/navigation';
-  import MobileMenuToggleIcon from './MobileMenuToggleIcon.svelte';
   import MobileMenu from './MobileMenu.svelte';
 
   let open = $state(false);
@@ -25,10 +24,49 @@
     aria-controls="mobile-menu"
     onclick={() => (open = !open)}
   >
-    <MobileMenuToggleIcon {open} />
+    <span class="relative block h-[26px] w-[26px]" aria-hidden="true">
+      <span class="line line-top"></span>
+      <span class="line line-bottom"></span>
+    </span>
   </button>
 
   {#if open}
     <MobileMenu />
   {/if}
 </header>
+
+<style>
+  .line {
+    position: absolute;
+    left: 3px;
+    top: 50%;
+    width: 20px;
+    height: 2px;
+    border-radius: 999px;
+    background: currentColor;
+    transform-origin: center;
+    transition: transform 260ms ease;
+  }
+
+  .line-top {
+    transform: translateY(-4px) rotate(0deg);
+  }
+
+  .line-bottom {
+    transform: translateY(4px) rotate(0deg);
+  }
+
+  button[aria-expanded='true'] .line-top {
+    transform: translateY(0) rotate(45deg);
+  }
+
+  button[aria-expanded='true'] .line-bottom {
+    transform: translateY(0) rotate(-45deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .line {
+      transition-duration: 1ms;
+    }
+  }
+</style>
