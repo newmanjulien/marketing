@@ -7,6 +7,5 @@ export const reservedSuccessRoomSlugs = [
   "fonts",
   "industries",
   "legal",
-  "pricing",
-  "screenshots"
+  "pricing"
 ] as const;

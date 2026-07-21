@@ -6,9 +6,9 @@
 </script>
 
 <svelte:head>
-  <title>{data.content.heading}</title>
+  <title>{data.industry.heading}</title>
 </svelte:head>
 
-{#key data.industryId}
-  <IndustryPage content={data.content} />
+{#key data.industry.id}
+  <IndustryPage industry={data.industry} />
 {/key}

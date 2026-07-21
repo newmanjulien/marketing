@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { industries } from '$lib/marketing/industries/industryContent';
+  import { industries } from '$lib/marketing/industries/industries';
   import { createPortalAuthUrl } from '$lib/marketing/portalAuthLinks';
   import ButtonLink from '$lib/marketing/ui/ButtonLink.svelte';
   import { cubicOut } from 'svelte/easing';

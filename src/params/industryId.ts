@@ -1,4 +1,5 @@
 import type { ParamMatcher } from '@sveltejs/kit';
-import { isIndustryId } from '$lib/marketing/industries/industryContent';
+import { industries, type IndustryId } from '$lib/marketing/industries/industries';
 
-export const match = isIndustryId satisfies ParamMatcher;
+export const match = ((value: string): value is IndustryId =>
+  industries.some((industry) => industry.id === value)) satisfies ParamMatcher;

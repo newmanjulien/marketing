@@ -1,4 +1,4 @@
-import { industries } from '$lib/marketing/industries/industryContent';
+import { industries } from '$lib/marketing/industries/industries';
 import type { RequestHandler } from './$types';
 
 export const prerender = true;

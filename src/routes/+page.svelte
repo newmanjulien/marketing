@@ -1,10 +1,12 @@
 <script lang="ts">
-  import CalendarConnectGraphic from '$lib/marketing/home/features/CalendarConnectGraphic.svelte';
-  import NetworkResultsGraphic from '$lib/marketing/home/features/NetworkResultsGraphic.svelte';
-  import TestimonialsGraphic from '$lib/marketing/home/features/TestimonialsGraphic.svelte';
-  import HomeCtaSection from '$lib/marketing/home/cta/HomeCtaSection.svelte';
-  import Hero from '$lib/marketing/home/hero/Hero.svelte';
-  import FeatureSection from '$lib/marketing/home/shared/FeatureSection.svelte';
+  import ConnectDataGraphic from '$lib/marketing/connect-data/ConnectDataGraphic.svelte';
+  import { outlook } from '$lib/marketing/connect-data/dataSources';
+  import NetworkFunnelGraphic from '$lib/marketing/home/NetworkFunnelGraphic.svelte';
+  import NetworkResultsGraphic from '$lib/marketing/network-results/NetworkResultsGraphic.svelte';
+  import TestimonialsGraphic from '$lib/marketing/home/TestimonialsGraphic.svelte';
+  import CtaSection from '$lib/marketing/cta/CtaSection.svelte';
+  import Hero from '$lib/marketing/home/Hero.svelte';
+  import FeatureSection from '$lib/marketing/home/FeatureSection.svelte';
 
   function scrollToTextMessage(event: MouseEvent) {
     const target = document.getElementById('text-message');
@@ -30,33 +32,51 @@
   <Hero />
 
   <div class="flex flex-col gap-[150px] pt-[150px] sm:gap-[190px] sm:pt-[190px]">
-    <FeatureSection title="You connect your data">
+    <FeatureSection title="You connect your sales data">
       {#snippet body()}
         Easily, quickly and safely connect any data source. Overbase can analyze any structured and unstructured data
       {/snippet}
-      <CalendarConnectGraphic />
+      <ConnectDataGraphic
+        provider={outlook.provider}
+        icon={outlook.icon}
+        title={outlook.title}
+        buttonText={outlook.buttonText}
+      />
     </FeatureSection>
 
     <FeatureSection title="Your network connects their data">
       {#snippet body()}
         Your network easily, quickly and safely connects their data for free then we find opportunities for both of you
       {/snippet}
-      <NetworkResultsGraphic />
+      <NetworkFunnelGraphic />
     </FeatureSection>
 
-    <FeatureSection title="Get opportunities by text message">
+    <FeatureSection title="Receive opportunities by text message">
       {#snippet body()}
         Overbase happens by text message. No dashboard. No need to change how you work. Just
         <a
           href="#text-message"
           onclick={scrollToTextMessage}
-          class="text-stone-500/80 underline decoration-current underline-offset-[3px] transition-colors hover:text-stone-500"
-          >get text messages</a
+          class="text-blue-500/80 underline decoration-current underline-offset-[3px] transition-colors hover:text-blue-500"
+          >receive text messages</a
         > and answer
       {/snippet}
       <TestimonialsGraphic />
     </FeatureSection>
 
-    <HomeCtaSection />
+    <FeatureSection title="Get new clients and more business">
+      {#snippet body()}
+        Sharing data with your network helps you get new clients that you wouldn't have otherwise. And it helps you find opportunities to get more business from your current clients
+      {/snippet}
+      <NetworkResultsGraphic
+        results={{
+          opportunities: { count: '37', rate: '74%' },
+          newClients: { count: '31', rate: '62%' },
+          moreBusiness: { count: '28', rate: '41%' }
+        }}
+      />
+    </FeatureSection>
+
+    <CtaSection heading="Built for professional services" />
   </div>
 </main>

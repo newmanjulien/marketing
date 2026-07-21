@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { industries } from '$lib/marketing/industries/industryContent';
+  import { industries } from '$lib/marketing/industries/industries';
   import ContentMeasure from '$lib/ui/ContentMeasure.svelte';
   import PageFrame from '$lib/ui/PageFrame.svelte';
   import { ArrowUpRightIcon } from 'phosphor-svelte';
