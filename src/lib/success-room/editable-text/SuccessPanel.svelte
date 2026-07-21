@@ -22,8 +22,8 @@
     },
     {
       key: 'workflow',
-      label: 'How does this fit into their existing workflow?',
-      hint: "An existing process or task this person already does that we're accelerating"
+      label: 'How does this fit into their current workflow?',
+      hint: "A process or task this person already does that we're accelerating"
     }
   ] as const satisfies readonly { key: SuccessFieldKey; label: string; hint: string }[];
 

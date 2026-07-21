@@ -18,7 +18,7 @@
       external: true,
       benefits: [
         'One user',
-        'Use pre-existing formats',
+        'Use existing formats',
         'Your network joins for free',
         'Zero retention data processing'
       ]

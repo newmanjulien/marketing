@@ -147,7 +147,7 @@
             {selectedBenefits}
             description="For each benefit you selected, tell us the goals and how you measure them."
             promptFor={(label) =>
-              `What KPIs do you currently use to track “${label}”? Are there existing projects to achieve this?`}
+              `What KPIs do you currently use to track “${label}”? Are there currently projects to achieve this?`}
             valuesByBenefitKey={draft.goalsByBenefitKey}
             onValueChange={draft.setBenefitGoal}
           />

@@ -66,13 +66,13 @@
 
     <FeatureSection title="Get new clients and more business">
       {#snippet body()}
-        Sharing data with your network helps you get new clients that you wouldn't have otherwise. And it helps you find opportunities to get more business from your current clients
+        Sharing data with your network helps you get new clients that you wouldn't have. And it helps you find opportunities to get more business from your current clients
       {/snippet}
       <NetworkResultsGraphic
         results={{
           opportunities: { count: '37', rate: '74%' },
-          newClients: { count: '31', rate: '62%' },
-          moreBusiness: { count: '28', rate: '41%' }
+          newClients: { count: '11', rate: '42%' },
+          moreBusiness: { count: '8', rate: '61%' }
         }}
       />
     </FeatureSection>
