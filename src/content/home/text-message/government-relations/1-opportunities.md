@@ -8,4 +8,4 @@ https://azleg.gov/active-bills/5858hggj
 
 The bill will be voted on in two months and there might be an opportunity to help Plug Power submit comments during rulemaking
 
-You know Jackson Reinstein, Plug Power's VP Strategy — want an intro drafted?
+You know Jackson Reinstein, Plug Power's VP Strategy. Want me to draft a message you can send to him?

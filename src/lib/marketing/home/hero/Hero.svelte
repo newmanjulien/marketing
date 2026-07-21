@@ -56,7 +56,7 @@
   </ContentMeasure>
 
   <ContentMeasure>
-    <div class="hero-graphic mt-[77px] will-change-[transform,opacity]">
+    <div id="text-message" class="hero-graphic mt-[77px] scroll-mt-[100px] will-change-[transform,opacity]">
       <TextMessageGraphic {industryId} onIndustrySelect={selectIndustry} />
     </div>
   </ContentMeasure>

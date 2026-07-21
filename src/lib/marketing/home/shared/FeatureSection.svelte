@@ -9,7 +9,7 @@
     children
   }: {
     title: string;
-    body: string;
+    body: Snippet;
     children: Snippet;
   } = $props();
 </script>
@@ -21,7 +21,7 @@
     </h2>
 
     <p class="mt-[8px] max-w-[720px] text-[19px] font-book leading-[1.55] tracking-normal text-stone-500/80 sm:text-[18px]">
-      {body}
+      {@render body()}
     </p>
 
     <div class="mt-[30px]">
