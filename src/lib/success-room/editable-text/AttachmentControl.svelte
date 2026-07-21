@@ -1,32 +1,25 @@
 <script lang="ts">
   import { FileIcon, PaperclipIcon, XIcon } from 'phosphor-svelte';
-  import {
-    deleteEditableTextAttachment,
-    uploadEditableTextAttachment
-  } from './editableTextClient';
-  import type { SuccessRoomEditableTextResourceSlug } from '$shared/successRoomResources';
   import type {
-    SuccessRoomEditableTextAttachmentUpdate,
+    SuccessRoomAttachmentOperation,
     SuccessRoomLinkedFileMetadata
   } from '../domain/types';
 
-  type AttachmentOperation = 'uploading' | 'removing';
-
   let {
-    roomSlug,
-    resourceSlug,
     attachment,
-    onAttachmentPersisted
+    operation,
+    error,
+    onUpload,
+    onRemove
   }: {
-    roomSlug: string;
-    resourceSlug: SuccessRoomEditableTextResourceSlug;
     attachment: SuccessRoomLinkedFileMetadata | null;
-    onAttachmentPersisted: (update: SuccessRoomEditableTextAttachmentUpdate) => void;
+    operation: SuccessRoomAttachmentOperation | null;
+    error: string;
+    onUpload: (file: File) => void;
+    onRemove: () => void;
   } = $props();
 
   let fileInput: HTMLInputElement | undefined = $state();
-  let pendingOperation = $state<AttachmentOperation | null>(null);
-  let attachmentError = $state('');
 
   const attachmentButtonClasses =
     'inline-flex h-[32px] w-fit items-center gap-[7px] rounded-[8px] border border-stone-200 bg-white px-[10px] font-body text-[13px] font-book leading-none tracking-normal text-stone-600 shadow-[0_1px_0_rgba(48,47,45,0.03)] transition-colors duration-150 hover:border-stone-300 hover:text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:bg-stone-50 disabled:text-stone-300 disabled:shadow-none disabled:hover:border-stone-200';
@@ -36,75 +29,39 @@
     'block truncate text-[13px] font-normal leading-[1.2] tracking-normal text-stone-700 transition-colors duration-150 hover:text-stone-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20';
   const attachmentRemoveButtonClasses =
     'flex h-[24px] w-[24px] items-center justify-center rounded-[6px] border-0 bg-transparent p-0 text-stone-400 transition-colors duration-150 hover:bg-stone-100 hover:text-stone-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:text-stone-300 disabled:hover:bg-transparent disabled:hover:text-stone-300';
-
-  const runAttachmentOperation = async (
-    operation: AttachmentOperation,
-    fallbackErrorMessage: string,
-    perform: () => Promise<void>
-  ) => {
-    if (pendingOperation) {
-      return;
-    }
-
-    pendingOperation = operation;
-    attachmentError = '';
-
-    try {
-      await perform();
-    } catch (error) {
-      attachmentError = error instanceof Error ? error.message : fallbackErrorMessage;
-    } finally {
-      pendingOperation = null;
-    }
-  };
-
-  const uploadAttachment = (file: File) =>
-    runAttachmentOperation('uploading', 'Could not upload this attachment.', async () => {
-      onAttachmentPersisted({
-        roomSlug,
-        resourceSlug,
-        attachment: await uploadEditableTextAttachment({ roomSlug, file })
-      });
-    });
-
-  const removeAttachment = () =>
-    runAttachmentOperation('removing', 'Could not remove this attachment.', async () => {
-      await deleteEditableTextAttachment({ roomSlug });
-      onAttachmentPersisted({ roomSlug, resourceSlug, attachment: null });
-    });
 </script>
 
 <div class="grid gap-[8px]">
   <button
     type="button"
     class={attachmentButtonClasses}
-    disabled={attachment !== null || pendingOperation !== null}
+    disabled={attachment !== null || operation !== null}
     onclick={() => fileInput?.click()}
   >
     <PaperclipIcon size={15} weight="bold" aria-hidden="true" />
-    <span>{pendingOperation === 'uploading' ? 'Uploading...' : 'Add attachment'}</span>
+    <span>{operation === 'uploading' ? 'Uploading...' : 'Add attachment'}</span>
   </button>
   <input
     bind:this={fileInput}
     class="sr-only"
     type="file"
-    disabled={pendingOperation !== null}
+    disabled={operation !== null}
     onchange={(event) => {
       const file = event.currentTarget.files?.[0];
       event.currentTarget.value = '';
 
       if (file) {
-        void uploadAttachment(file);
+        onUpload(file);
       }
     }}
   />
 
-  {#if attachmentError}
+  {#if error}
     <p
       class="m-0 text-[13px] font-book leading-[1.35] tracking-normal text-red-700"
       aria-live="polite"
     >
-      {attachmentError}
+      {error}
     </p>
   {/if}
 </div>
@@ -125,9 +82,9 @@
     <button
       type="button"
       class={attachmentRemoveButtonClasses}
-      aria-label={`${pendingOperation === 'removing' ? 'Removing' : 'Remove'} ${attachment.filename}`}
-      disabled={pendingOperation !== null}
-      onclick={() => void removeAttachment()}
+      aria-label={`${operation === 'removing' ? 'Removing' : 'Remove'} ${attachment.filename}`}
+      disabled={operation !== null}
+      onclick={onRemove}
     >
       <XIcon size={13} weight="bold" aria-hidden="true" />
     </button>

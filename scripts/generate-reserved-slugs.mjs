@@ -22,12 +22,10 @@ const getTopLevelRouteSlugs = async () => {
 };
 
 const getTopLevelStaticSlugs = async () => {
-  const entries = await readdir(staticDirectory, { withFileTypes: true });
+  const names = await readdir(staticDirectory);
 
-  return entries
-    .filter((entry) => entry.isDirectory() || (entry.isFile() && path.extname(entry.name) === ''))
-    .map((entry) => entry.name)
-    .filter(isUrlSlug);
+  // Filenames with extensions ("favicon.ico") fail the slug pattern.
+  return names.filter(isUrlSlug);
 };
 
 const reservedSlugs = [

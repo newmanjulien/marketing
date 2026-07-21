@@ -28,6 +28,7 @@
       </p>
     </header>
 
+    <!-- Every docs page shares the same section keys, so PillTabs' selection would carry over between pages; the key deliberately resets it. -->
     {#key `${docsPage.category}/${docsPage.slug}`}
       <PillTabs
         tabs={docsPage.sections}

@@ -67,15 +67,14 @@
       ]}
     >
       {#each scenarios as scenario (scenario.id)}
+        {@const isSelected = scenario.id === selectedScenario.id}
         <button
           type="button"
           role="option"
-          aria-selected={scenario.id === selectedScenario.id}
+          aria-selected={isSelected}
           class={[
             'flex h-[36px] w-full items-center rounded-[6px] px-[12px] text-[16px] font-book leading-none tracking-normal transition-colors sm:text-[17px]',
-            scenario.id === selectedScenario.id
-              ? 'bg-stone-100/80 text-stone-750'
-              : 'text-stone-600 hover:bg-stone-50'
+            isSelected ? 'bg-stone-100/80 text-stone-750' : 'text-stone-600 hover:bg-stone-50'
           ]}
           onclick={() => select(scenario.id)}
         >

@@ -11,11 +11,16 @@ import {
   cloneEditableTextState,
   clonePlan
 } from '../domain/state';
+import {
+  deleteEditableTextAttachment,
+  uploadEditableTextAttachment
+} from '../editable-text/editableTextClient';
 import type {
-  SuccessRoomEditableTextAttachmentUpdate,
+  SuccessRoomAttachmentOperation,
   SuccessRoomEditableTextResource,
   SuccessRoomEditableTextState,
   SuccessRoomKickoffScheduleResource,
+  SuccessRoomLinkedFileMetadata,
   SuccessRoomMutualSuccessPlanResource,
   SuccessRoomResourceRoom,
   SuccessRoomResourceState,
@@ -115,13 +120,18 @@ export const createSuccessRoomResourceDraft = (
     });
   };
 
-  const setEditableTextState = (editableState: SuccessRoomEditableTextState) => {
+  const getEditableTextSnapshot = () => {
     const current = draft.current;
 
     if (current.kind !== 'editable-text') {
       throw new Error('Current success-room resource is not editable text.');
     }
 
+    return current;
+  };
+
+  const setEditableTextState = (editableState: SuccessRoomEditableTextState) => {
+    const current = getEditableTextSnapshot();
     const editableText = cloneEditableTextState(editableState);
 
     draft.replace({ ...current, editableText });
@@ -142,17 +152,37 @@ export const createSuccessRoomResourceDraft = (
     });
   };
 
-  const applyPersistedEditableTextAttachment = ({
-    roomSlug,
-    resourceSlug,
-    attachment
-  }: SuccessRoomEditableTextAttachmentUpdate) => {
+  type AttachmentTarget = { roomSlug: string; resourceSlug: string };
+
+  let attachmentUi = $state<{
+    target: AttachmentTarget;
+    operation: SuccessRoomAttachmentOperation | null;
+    error: string;
+  } | null>(null);
+
+  const currentAttachmentUi = () => {
+    const current = draft.current;
+
+    return attachmentUi !== null &&
+      attachmentUi.target.roomSlug === current.roomSlug &&
+      attachmentUi.target.resourceSlug === current.resource.slug
+      ? attachmentUi
+      : null;
+  };
+
+  // The draft snapshot may have been replaced while the request was in
+  // flight, so only apply the result if we are still on the same room and
+  // resource.
+  const applyPersistedAttachment = (
+    target: AttachmentTarget,
+    attachment: SuccessRoomLinkedFileMetadata | null
+  ) => {
     const current = draft.current;
 
     if (
       current.kind !== 'editable-text' ||
-      current.roomSlug !== roomSlug ||
-      current.resource.slug !== resourceSlug
+      current.roomSlug !== target.roomSlug ||
+      current.resource.slug !== target.resourceSlug
     ) {
       return;
     }
@@ -162,6 +192,48 @@ export const createSuccessRoomResourceDraft = (
       editableText: { ...current.editableText, attachment }
     });
   };
+
+  const runAttachmentOperation = async (
+    operation: SuccessRoomAttachmentOperation,
+    fallbackErrorMessage: string,
+    perform: (target: AttachmentTarget) => Promise<void>
+  ) => {
+    // The lock is global — never two claim mutations in flight, whatever their
+    // targets — while the getters scope what is displayed to the target.
+    if (attachmentUi?.operation) {
+      return;
+    }
+
+    const snapshot = getEditableTextSnapshot();
+    const target = { roomSlug: snapshot.roomSlug, resourceSlug: snapshot.resource.slug };
+
+    attachmentUi = { target, operation, error: '' };
+
+    try {
+      await perform(target);
+      attachmentUi = null;
+    } catch (error) {
+      attachmentUi = {
+        target,
+        operation: null,
+        error: error instanceof Error ? error.message : fallbackErrorMessage
+      };
+    }
+  };
+
+  const uploadAttachment = (file: File) =>
+    runAttachmentOperation('uploading', 'Could not upload this attachment.', async (target) => {
+      applyPersistedAttachment(
+        target,
+        await uploadEditableTextAttachment({ roomSlug: target.roomSlug, file })
+      );
+    });
+
+  const removeAttachment = () =>
+    runAttachmentOperation('removing', 'Could not remove this attachment.', async (target) => {
+      await deleteEditableTextAttachment({ roomSlug: target.roomSlug });
+      applyPersistedAttachment(target, null);
+    });
 
   const setKickoffScheduleState = (schedule: SuccessRoomKickoffScheduleState) => {
     const current = draft.current;
@@ -188,9 +260,16 @@ export const createSuccessRoomResourceDraft = (
     get current() {
       return draft.current;
     },
+    get attachmentOperation() {
+      return currentAttachmentUi()?.operation ?? null;
+    },
+    get attachmentError() {
+      return currentAttachmentUi()?.error ?? '';
+    },
     dispatchPlanAction,
     setEditableTextState,
-    applyPersistedEditableTextAttachment,
+    uploadAttachment,
+    removeAttachment,
     setKickoffScheduleState
   };
 };

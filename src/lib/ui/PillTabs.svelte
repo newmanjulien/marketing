@@ -40,7 +40,6 @@
 
   const getTabId = (tabKey: Tab['key']) => `${idBase}-${tabKey}-tab`;
   const getPanelId = (tabKey: Tab['key']) => `${idBase}-${tabKey}-panel`;
-  const getReflowDuration = () => (prefersReducedMotion.current ? 0 : 160);
   const tabTransition =
     (duration: number, offsetPx: number) => (_node: Element, tabKey: Tab['key']) => {
       if (!animatedTabKeys.includes(tabKey) || prefersReducedMotion.current) {
@@ -59,18 +58,12 @@
     };
   const tabEntry = tabTransition(220, 4);
   const tabExit = tabTransition(160, 2);
-  const focusTab = (tabKey: Tab['key']) => {
-    document.getElementById(getTabId(tabKey))?.focus();
-  };
-  const selectTab = (tabKey: Tab['key']) => {
-    activeTabKey = tabKey;
-  };
   const selectTabAt = (index: number) => {
     const tab = tabs[index];
 
     if (tab) {
-      selectTab(tab.key);
-      focusTab(tab.key);
+      activeTabKey = tab.key;
+      document.getElementById(getTabId(tab.key))?.focus();
     }
   };
   // Navigates from the tab the event fired on, not from `activeTab`: the bound
@@ -104,7 +97,7 @@
       {@const isActive = activeTab.key === tab.key}
       <span
         class="inline-flex"
-        animate:flip={{ duration: getReflowDuration, easing: cubicOut }}
+        animate:flip={{ duration: () => (prefersReducedMotion.current ? 0 : 160), easing: cubicOut }}
       >
         <button
           id={getTabId(tab.key)}
@@ -116,7 +109,7 @@
           class={[tabClasses, isActive && activeTabClasses]}
           in:tabEntry={tab.key}
           out:tabExit={tab.key}
-          onclick={() => selectTab(tab.key)}
+          onclick={() => (activeTabKey = tab.key)}
           onkeydown={(event) => handleTabKeydown(event, index)}
         >
           {tab.label}

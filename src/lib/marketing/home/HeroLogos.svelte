@@ -59,9 +59,7 @@
   function handleAnimationEnd(index: number, event: AnimationEvent) {
     if (index !== lastIndex) return;
     if (pop === 'pending' && event.animationName.includes('logo-enter')) {
-      // The pop's whole job is to drive the graphic to its industry — if the
-      // user already picked one, a bounce with no selection would be
-      // incoherent, so retire it outright.
+      // A prior selection retires the pop — see the lifecycle comment on `pop`.
       if (industrySelected) {
         pop = 'done';
         return;

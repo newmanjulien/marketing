@@ -34,13 +34,14 @@
 
           <div class="flex flex-col">
             {#each section.links as link (link.href)}
+              {@const isActive = activePath === link.href}
               <a
                 href={link.href}
                 class={[
                   'py-[10px] text-[20px] leading-none',
-                  activePath === link.href ? 'text-stone-900' : 'text-stone-600'
+                  isActive ? 'text-stone-900' : 'text-stone-600'
                 ]}
-                aria-current={activePath === link.href ? 'page' : undefined}
+                aria-current={isActive ? 'page' : undefined}
               >
                 {link.label}
               </a>

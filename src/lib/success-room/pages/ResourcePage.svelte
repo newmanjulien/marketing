@@ -48,10 +48,12 @@
       />
     {:else if snapshot.kind === 'editable-text'}
       <EditableTextResourcePanel
-        {room}
         resource={snapshot.resource}
         bind:editableState={() => snapshot.editableText, draft.setEditableTextState}
-        onAttachmentPersisted={draft.applyPersistedEditableTextAttachment}
+        attachmentOperation={draft.attachmentOperation}
+        attachmentError={draft.attachmentError}
+        onAttachmentUpload={draft.uploadAttachment}
+        onAttachmentRemove={draft.removeAttachment}
       />
     {:else if snapshot.kind === 'kickoff-schedule'}
       <KickoffSchedulePanel

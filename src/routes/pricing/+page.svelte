@@ -14,7 +14,6 @@
       description: 'Simple fee for professionals who want to quickly grow their practice',
       ctaLabel: 'Join now',
       ctaHref: createPortalAuthUrl('join', page.url.pathname),
-      external: true,
       benefits: [
         'One user',
         'Use existing formats',
@@ -29,7 +28,6 @@
       description: 'Professional services firms only pay as a percentage of the revenue you get',
       ctaLabel: 'Schedule demo',
       ctaHref: 'https://cal.com/juliennewman',
-      external: true,
       benefits: [
         'Unlimited users',
         'Use custom formats',
@@ -105,8 +103,8 @@
             <div class="mt-[22px]">
               <ButtonLink
                 href={plan.ctaHref}
-                target={plan.external ? '_blank' : undefined}
-                rel={plan.external ? 'noopener noreferrer' : undefined}
+                target="_blank"
+                rel="noopener noreferrer"
                 variant="primary"
                 size="medium"
                 fullWidth

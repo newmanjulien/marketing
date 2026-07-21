@@ -99,11 +99,7 @@ export type SuccessRoomEditableTextState = SuccessRoomEditableTextContent & {
   attachment: SuccessRoomLinkedFileMetadata | null;
 };
 
-export type SuccessRoomEditableTextAttachmentUpdate = {
-  roomSlug: string;
-  resourceSlug: SuccessRoomEditableTextResourceSlug;
-  attachment: SuccessRoomLinkedFileMetadata | null;
-};
+export type SuccessRoomAttachmentOperation = 'uploading' | 'removing';
 
 export type SuccessRoomBaseRoom = {
   slug: string;
@@ -137,10 +133,8 @@ export type SuccessRoomResourceState =
       kickoffSchedule: SuccessRoomKickoffScheduleState;
     };
 
-type DocumentRequestFailureStatus = 'validation-error' | 'submission-error';
-
 export type DocumentRequestFormFailure = {
   description: string;
   message: string;
-  status: DocumentRequestFailureStatus;
+  status: 'validation-error' | 'submission-error';
 };
