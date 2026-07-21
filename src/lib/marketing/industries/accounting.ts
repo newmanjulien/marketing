@@ -5,7 +5,7 @@ export const accounting = {
   label: "Accounting firms",
   icon: CalculatorIcon,
   summary:
-    "See how accounting firms grow revenue by sharing sales data with advisory firms they form strategic alliances with, law firms and wealth managers",
+    "See how accountants grow their practice by turning their network into new clients and more business",
   heading: "Overbase for accounting",
   intro:
     "Accountants have a large network of natural partners—advisory firms they form strategic alliances with, lawyers who refer potential clients, and boutique accounting firms that refer clients once they outgrow them",

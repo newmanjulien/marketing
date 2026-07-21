@@ -5,7 +5,7 @@ export const consulting = {
   label: "Consulting firms",
   icon: HandshakeIcon,
   summary:
-    "See how consulting firms grow revenue by sharing sales data with tech vendors, private equity firms or with other practice areas within their own firm",
+    "See how consultants grow their practice by turning their network into new clients and more business",
   heading: "Overbase for consulting firms",
   intro:
     "Consulting firms have a large network of natural partners—technology vendors, other practice areas within your own firm whose clients have adjacent needs, and private equity firms that refer portfolio companies",

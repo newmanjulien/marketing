@@ -5,7 +5,7 @@ export const insurance = {
   label: "Insurance brokers",
   icon: UmbrellaIcon,
   summary:
-    "See how insurance brokers grow revenue by sharing sales data with carriers, law and accounting firms or with industry associations",
+    "See how insurance brokers grow their practice by turning their network into new clients and more business",
   heading: "Overbase for insurance brokers",
   intro:
     "Commercial insurance brokers have a large network of natural partners—carriers who can help spot new coverage needs, law and accounting firms that see great referral leads, and industry associations with built-in members",

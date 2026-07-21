@@ -5,7 +5,7 @@ export const law = {
   label: 'Law firms',
   icon: ScalesIcon,
   summary:
-    'See how law firms grow revenue by sharing data with other lawyers, headhunters and with data providers',
+    'See how lawyers grow their practice by turning their network into new clients and more business',
   heading: 'Overbase for law firms',
   intro:
     'Law firms have a large network of natural partners—data providers who track when clients need legal help, other lawyers who pass along relevant cases, and headhunters who flag open roles where you can recommend your contacts',

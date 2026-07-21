@@ -5,7 +5,7 @@ export const governmentRelations = {
   label: 'Government relations',
   icon: BankIcon,
   summary:
-    'See how GR firms grow revenue by sharing data with law firms, headhunters and with data providers',
+    'See how GR professionals grow their practice by turning their network into new clients and more business',
   heading: 'Overbase for GR firms',
   intro:
     'Government relations firms have a large network of natural partners—data providers who track when clients need help, lawyers who pass along files, and headhunters who flag open roles where you can recommend your contacts',
