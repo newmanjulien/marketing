@@ -89,7 +89,7 @@
 
   const panelContentClasses = 'grid gap-[22px]';
   const panelDescriptionClasses =
-    'text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]';
+    'text-[14px] font-book leading-[1.45] text-stone-700 sm:text-[15px]';
 
   const accordionListClasses = 'grid w-full gap-[14px]';
   const accordionItemClasses =
@@ -97,9 +97,9 @@
   const accordionTriggerClasses =
     'grid w-full min-w-0 cursor-pointer grid-cols-[minmax(0,1fr)_auto] gap-x-[18px] border-0 bg-transparent p-0 text-left text-inherit focus-visible:rounded-[5px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-stone-900/20 sm:gap-x-[22px]';
   const accordionTitleClasses =
-    'col-start-1 row-start-1 flex min-w-0 items-center gap-[8px] text-[15px] font-normal leading-[1.2] tracking-normal sm:text-[16px]';
+    'col-start-1 row-start-1 flex min-w-0 items-center gap-[8px] text-[15px] font-normal leading-[1.2] sm:text-[16px]';
   const accordionDescriptionClasses =
-    'col-start-1 row-start-2 mt-[8px] block min-w-0 cursor-pointer text-[13px] font-book leading-[1.4] tracking-normal sm:text-[14px]';
+    'col-start-1 row-start-2 mt-[8px] block min-w-0 cursor-pointer text-[13px] font-book leading-[1.4] sm:text-[14px]';
   const accordionToggleIconClasses =
     'col-start-2 row-start-1 shrink-0 self-center transition-colors duration-150';
   const accordionTaskListClasses = 'mt-[16px] grid gap-[14px]';

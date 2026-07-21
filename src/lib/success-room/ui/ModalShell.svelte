@@ -54,7 +54,7 @@
       </button>
 
       <header class="px-4 py-5">
-        <h2 id={titleId} class="text-[14px] font-normal leading-tight tracking-normal text-stone-950">
+        <h2 id={titleId} class="text-[14px] font-normal leading-tight text-stone-950">
           {title}
         </h2>
       </header>

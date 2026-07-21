@@ -101,7 +101,7 @@
 >
   {#snippet children(section)}
     <div class="grid gap-[22px]">
-      <p class="text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]">
+      <p class="text-[14px] font-book leading-[1.45] text-stone-700 sm:text-[15px]">
         {section.description}
       </p>
 
@@ -109,7 +109,7 @@
         <div class="grid gap-[18px]">
           {#each successQuestions as question (question.key)}
             <div class="grid gap-[8px]">
-              <span class="block text-[14px] font-normal leading-[1.3] tracking-normal text-stone-750 sm:text-[15px]">
+              <span class="block text-[14px] font-normal leading-[1.3] text-stone-750 sm:text-[15px]">
                 {question.label}
               </span>
               <textarea
@@ -130,7 +130,7 @@
           aria-label={`${resource.title} editable text`}
         >
           <textarea
-            class="w-full resize-none border-0 bg-transparent font-body text-[14px] font-book leading-[1.65] tracking-normal text-stone-600 outline-none placeholder:text-stone-400 focus:text-stone-900"
+            class="w-full resize-none border-0 bg-transparent font-body text-[14px] font-book leading-[1.65] text-stone-600 outline-none placeholder:text-stone-400 focus:text-stone-900"
             aria-label={resource.title}
             rows={resource.editorRows}
             bind:value={
@@ -155,7 +155,7 @@
         <div class="grid gap-[12px]">
           {#each dataSourceFields as placeholder, index}
             <input
-              class="h-[42px] w-full rounded-[8px] border border-stone-200 bg-white px-[14px] font-body text-[14px] font-book tracking-normal text-stone-700 outline-none shadow-[0_1px_0_rgba(48,47,45,0.03)] placeholder:text-stone-400 focus:border-stone-300 focus:text-stone-900"
+              class="h-[42px] w-full rounded-[8px] border border-stone-200 bg-white px-[14px] font-body text-[14px] font-book text-stone-700 outline-none shadow-[0_1px_0_rgba(48,47,45,0.03)] placeholder:text-stone-400 focus:border-stone-300 focus:text-stone-900"
               type="text"
               aria-label={placeholder}
               {placeholder}

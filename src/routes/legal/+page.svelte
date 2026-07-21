@@ -14,18 +14,18 @@
 <PageFrame>
   <ContentMeasure as="section" width="narrow">
     <header>
-      <p class="text-[14px] font-medium leading-none tracking-normal text-stone-500">
+      <p class="text-[14px] font-medium leading-none text-stone-500">
         Legal
       </p>
 
       <h1
-        class="mt-[28px] font-heading text-[42px] font-medium leading-[1.05] tracking-normal text-stone-750"
+        class="mt-[28px] font-heading text-[42px] font-medium leading-[1.05] text-stone-750"
       >
         Policies, terms and security
       </h1>
 
       <p
-        class="mt-[20px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[17px]"
+        class="mt-[20px] text-[16px] font-book leading-[1.55] text-stone-700 sm:text-[17px]"
       >
         Review the policies, terms and security materials that govern Overbase products and services
       </p>
@@ -38,7 +38,7 @@
           class="group flex items-center justify-between gap-8 border-b border-stone-200 py-[22px] text-stone-700 transition-colors hover:text-stone-900"
         >
           <span
-            class="min-w-0 flex-1 font-book text-[17px] leading-[1.08] tracking-normal text-stone-750 transition-colors group-hover:text-stone-900"
+            class="min-w-0 flex-1 font-book text-[17px] leading-[1.08] text-stone-750 transition-colors group-hover:text-stone-900"
           >
             {legalPage.title}
           </span>

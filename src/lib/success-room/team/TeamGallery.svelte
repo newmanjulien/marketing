@@ -70,12 +70,12 @@
 
           <div class="mt-[13px] min-w-0">
             <h2
-              class="m-0 break-words text-[15px] font-normal leading-[1.12] tracking-normal text-stone-750"
+              class="m-0 break-words text-[15px] font-normal leading-[1.12] text-stone-750"
             >
               {item.member.name}
             </h2>
             <p
-              class="mt-[7px] break-words text-[14px] font-book leading-[1.2] tracking-normal text-stone-500"
+              class="mt-[7px] break-words text-[14px] font-book leading-[1.2] text-stone-500"
             >
               {item.member.role}
             </p>
@@ -97,12 +97,12 @@
 
           <span class="mt-[13px] block min-w-0">
             <span
-              class="m-0 block break-words text-[15px] font-normal leading-[1.12] tracking-normal text-stone-750"
+              class="m-0 block break-words text-[15px] font-normal leading-[1.12] text-stone-750"
             >
               Add team member
             </span>
             <span
-              class="mt-[7px] block break-words text-[14px] font-book leading-[1.2] tracking-normal text-stone-500"
+              class="mt-[7px] block break-words text-[14px] font-book leading-[1.2] text-stone-500"
             >
               Add someone
             </span>

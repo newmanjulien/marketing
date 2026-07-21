@@ -27,8 +27,8 @@ type IndustryDefinition = {
   revenueOutcomeParagraphs: readonly string[];
   // Numbers for the results graphic in the closing section (one per funnel row).
   networkResults: NetworkResultsData;
-  // Heading of the bottom CTA section ("Built for …").
-  ctaHeading: string;
+  // Subject completing the bottom CTA heading "Built for ___" (e.g. "insurance brokers").
+  ctaSubject: string;
   // Subject + verb completing "Overbase is made for how ___" (e.g. "brokers work", "GR works").
   ctaWorkPhrase: string;
   scenarios: readonly Scenario[];

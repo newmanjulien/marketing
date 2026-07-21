@@ -12,7 +12,7 @@
 </script>
 
 <div class="grid gap-[18px]">
-  <p class="text-[14px] font-book leading-[1.45] tracking-normal text-stone-700 sm:text-[15px]">
+  <p class="text-[14px] font-book leading-[1.45] text-stone-700 sm:text-[15px]">
     Explore the documents and resources we co-created during this evaluation process
   </p>
 

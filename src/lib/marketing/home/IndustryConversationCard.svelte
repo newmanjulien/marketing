@@ -7,7 +7,7 @@
   } from '$lib/marketing/industries/industries';
   import { ArrowUpIcon, ArrowsClockwiseIcon } from 'phosphor-svelte';
   import TextMessageConversation from '$lib/marketing/text-message/TextMessageConversation.svelte';
-  import TextMessageScenarioDropdown from '$lib/marketing/text-message/TextMessageScenarioDropdown.svelte';
+  import TextMessageDropdown from '$lib/marketing/text-message/TextMessageDropdown.svelte';
   import { tabIndicator } from '$lib/ui/tabIndicator';
   import { prefersReducedMotion } from 'svelte/motion';
 
@@ -48,10 +48,33 @@
 </script>
 
 <div
-  class="flex h-[480px] overflow-hidden rounded-[14px] border border-stone-200 bg-white shadow-[0_8px_28px_-12px_rgba(48,47,45,0.12)]"
+  class="flex h-[480px] flex-col overflow-hidden rounded-[14px] border border-stone-200 bg-white shadow-[0_8px_28px_-12px_rgba(48,47,45,0.12)] sm:flex-row"
 >
+  <!-- Below `sm` there is no room for the sidebar, so industry and scenario
+       collapse into two dropdowns in a header strip above the conversation. -->
   <div
-    class="flex w-[244px] shrink-0 flex-col border-r border-stone-200 bg-stone-50/90 px-[10px] py-[12px] sm:px-[12px] sm:w-[294px]"
+    class="flex items-center gap-[8px] border-b border-stone-200 bg-stone-50/60 px-[12px] py-[10px] sm:hidden"
+  >
+    <div class="min-w-0 flex-1">
+      <TextMessageDropdown
+        options={industries}
+        selected={industriesById[industryId]}
+        onSelect={onIndustrySelect}
+        placement="down"
+      />
+    </div>
+    <div class="min-w-0 flex-1">
+      <TextMessageDropdown
+        options={scenarios}
+        selected={scenario}
+        onSelect={selectScenario}
+        placement="down"
+      />
+    </div>
+  </div>
+
+  <div
+    class="hidden w-[294px] shrink-0 flex-col border-r border-stone-200 bg-stone-50/90 px-[12px] py-[12px] sm:flex"
   >
     <div
       class="relative flex flex-col items-stretch gap-[6px]"
@@ -75,7 +98,7 @@
           type="button"
           data-indicator-key={industry.id}
           class={[
-            'relative flex items-center gap-[14px] rounded-[8px] border border-transparent px-[10px] py-[9px] text-[17px] leading-none tracking-normal transition-colors',
+            'relative flex items-center gap-[14px] rounded-[8px] border border-transparent px-[10px] py-[9px] text-[17px] leading-none transition-colors',
             isEmphasized ? 'font-medium text-stone-750' : 'font-book text-stone-500'
           ]}
           aria-pressed={industryId === industry.id}
@@ -89,11 +112,7 @@
     </div>
 
     <div class="mt-auto pt-[14px]">
-      <TextMessageScenarioDropdown
-        {scenarios}
-        selectedScenario={scenario}
-        onSelect={selectScenario}
-      />
+      <TextMessageDropdown options={scenarios} selected={scenario} onSelect={selectScenario} />
     </div>
   </div>
 
@@ -115,7 +134,7 @@
 
     <div class="flex items-center gap-[8px] border-t border-stone-200 px-[14px] py-[11px]">
       <div
-        class="flex h-[38px] flex-1 items-center rounded-full border border-stone-200/60 px-[16px] text-[14.5px] font-book leading-none tracking-normal text-stone-300 sm:text-[15.5px]"
+        class="flex h-[38px] flex-1 items-center rounded-full border border-stone-200/60 px-[16px] text-[14.5px] font-book leading-none text-stone-300 sm:text-[15.5px]"
       >
         Text message
       </div>
@@ -130,7 +149,7 @@
 </div>
 
 <p
-  class="mt-[18px] max-w-[720px] px-[2px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-500/70 sm:mt-[20px] sm:text-[17px]"
+  class="mt-[18px] max-w-[720px] px-[2px] text-[16px] font-book leading-[1.55] text-stone-500/70 sm:mt-[20px] sm:text-[17px]"
 >
   {scenario.description}
 </p>

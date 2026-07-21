@@ -6,8 +6,6 @@
   import { createPortalAuthUrl } from '$lib/marketing/portalAuthLinks';
   import ButtonLink from '$lib/marketing/ui/ButtonLink.svelte';
 
-  const joinHref = createPortalAuthUrl('join', '/');
-
   // Hovering a logo and clicking a tab in the graphic both drive the same selection.
   let industryId = $state<IndustryId>(industries[0].id);
   let industrySelected = $state(false);
@@ -23,14 +21,14 @@
 >
   <ContentMeasure class="flex flex-col items-center text-center">
     <h1
-      class="hero-title max-w-[540px] font-heading text-[45px] font-semibold leading-[1.04] tracking-normal text-stone-750 sm:max-w-none sm:text-[51px]"
+      class="max-w-[540px] font-heading text-[45px] font-semibold leading-[1.04] text-stone-750 sm:max-w-none sm:text-[51px]"
     >
       <span class="hero-title-lead inline-block">Grow</span>
-      <span class="hero-title-growth inline-block">your practice</span>
+      <span class="hero-title-rest inline-block">your practice</span>
     </h1>
 
     <p
-      class="hero-support mt-[19px] max-w-[380px] font-light text-[25px] leading-[1.60] tracking-normal text-stone-500"
+      class="hero-support mt-[19px] max-w-[380px] font-light text-[25px] leading-[1.60] text-stone-500"
     >
       Overbase turns your network into new clients and more business
     </p>
@@ -41,7 +39,7 @@
 
     <div class="hero-actions mt-[44px] flex justify-center">
       <ButtonLink
-        href={joinHref}
+        href={createPortalAuthUrl('join', '/')}
         target="_blank"
         rel="noopener noreferrer"
         variant="primary"
@@ -53,7 +51,6 @@
         Join now
       </ButtonLink>
     </div>
-
   </ContentMeasure>
 
   <ContentMeasure>
@@ -78,7 +75,7 @@
     animation: hero-content-enter 420ms var(--hero-ease) 180ms both;
   }
 
-  .hero-title-growth {
+  .hero-title-rest {
     opacity: 0;
     transform: translateX(-10px);
     animation: hero-content-enter 420ms var(--hero-ease) 350ms both;
@@ -120,7 +117,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .hero-title-lead,
-    .hero-title-growth,
+    .hero-title-rest,
     .hero-support,
     .hero-actions,
     .hero-graphic {

@@ -58,7 +58,7 @@
   };
 </script>
 
-<div class="grid gap-[7px] text-[13px] font-book leading-none tracking-normal text-stone-500">
+<div class="grid gap-[7px] text-[13px] font-book leading-none text-stone-500">
   <span>Photo</span>
 
   <div class="grid grid-cols-[88px_minmax(0,1fr)] items-center gap-[14px]">
@@ -86,7 +86,7 @@
       <div class="flex flex-wrap items-center gap-[8px]">
         <button
           type="button"
-          class="inline-flex h-[34px] items-center gap-[7px] rounded-[8px] border border-stone-200 bg-white px-[11px] font-body text-[13px] font-book leading-none tracking-normal text-stone-600 transition-colors duration-150 hover:border-stone-300 hover:text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:bg-stone-50 disabled:text-stone-300"
+          class="inline-flex h-[34px] items-center gap-[7px] rounded-[8px] border border-stone-200 bg-white px-[11px] font-body text-[13px] font-book leading-none text-stone-600 transition-colors duration-150 hover:border-stone-300 hover:text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:bg-stone-50 disabled:text-stone-300"
           {disabled}
           onclick={openFilePicker}
         >
@@ -97,7 +97,7 @@
         {#if value}
           <button
             type="button"
-            class="inline-flex h-[34px] items-center gap-[7px] rounded-[8px] border border-transparent bg-transparent px-[9px] font-body text-[13px] font-book leading-none tracking-normal text-stone-400 transition-colors duration-150 hover:bg-stone-100 hover:text-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:text-stone-300"
+            class="inline-flex h-[34px] items-center gap-[7px] rounded-[8px] border border-transparent bg-transparent px-[9px] font-body text-[13px] font-book leading-none text-stone-400 transition-colors duration-150 hover:bg-stone-100 hover:text-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20 disabled:cursor-not-allowed disabled:text-stone-300"
             {disabled}
             onclick={removeFile}
           >
@@ -107,7 +107,7 @@
         {/if}
       </div>
 
-      <p class="mt-[8px] truncate text-[12px] leading-[1.25] tracking-normal text-stone-400">
+      <p class="mt-[8px] truncate text-[12px] leading-[1.25] text-stone-400">
         {value ? value.name : 'Use a square headshot for the best fit.'}
       </p>
     </div>
@@ -125,7 +125,7 @@
   />
 
   {#if pickerError}
-    <p class="m-0 text-[12px] font-book leading-[1.3] tracking-normal text-red-700">
+    <p class="m-0 text-[12px] font-book leading-[1.3] text-red-700">
       {pickerError}
     </p>
   {/if}

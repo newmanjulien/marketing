@@ -10,16 +10,13 @@
   import FeatureSection from '$lib/marketing/home/FeatureSection.svelte';
 
   function scrollToTextMessage(event: MouseEvent) {
-    const target = document.getElementById('text-message');
-    if (!target) return;
     event.preventDefault();
 
     // Native smooth scroll honours the target's scroll-mt offset;
     // behavior:'auto' falls back to an instant jump for reduced motion.
-    target.scrollIntoView({
-      behavior: prefersReducedMotion.current ? 'auto' : 'smooth',
-      block: 'start'
-    });
+    document
+      .getElementById('text-message')!
+      .scrollIntoView({ behavior: prefersReducedMotion.current ? 'auto' : 'smooth' });
   }
 </script>
 
@@ -75,6 +72,6 @@
       />
     </FeatureSection>
 
-    <CtaSection heading="Built for professional services" />
+    <CtaSection subject="professional services" />
   </div>
 </main>

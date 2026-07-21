@@ -34,7 +34,7 @@
   >
     <label
       for="success-room-document-request"
-      class="text-[15px] font-normal leading-[1.2] tracking-normal text-stone-750 sm:text-[16px]"
+      class="text-[15px] font-normal leading-[1.2] text-stone-750 sm:text-[16px]"
     >
       Describe the document you need
     </label>
@@ -55,7 +55,7 @@
     {#if form?.message}
       <p
         id="success-room-document-request-feedback"
-        class="m-0 text-[13px] font-book leading-[1.45] tracking-normal text-red-700"
+        class="m-0 text-[13px] font-book leading-[1.45] text-red-700"
         aria-live="polite"
       >
         {form.message}
@@ -66,7 +66,7 @@
       type="submit"
       disabled={isSubmitting}
       aria-busy={isSubmitting}
-      class="inline-flex h-[42px] w-fit items-center justify-center gap-[8px] rounded-[7px] bg-stone-750 px-[18px] text-[13px] font-book leading-none tracking-normal text-white shadow-[0_1px_2px_rgba(28,25,23,0.12)] transition-[background-color,box-shadow,transform] duration-150 hover:-translate-y-px hover:bg-stone-700 hover:shadow-[0_4px_10px_rgba(28,25,23,0.14)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 disabled:cursor-not-allowed disabled:bg-stone-500 disabled:shadow-none disabled:hover:translate-y-0"
+      class="inline-flex h-[42px] w-fit items-center justify-center gap-[8px] rounded-[7px] bg-stone-750 px-[18px] text-[13px] font-book leading-none text-white shadow-[0_1px_2px_rgba(28,25,23,0.12)] transition-[background-color,box-shadow,transform] duration-150 hover:-translate-y-px hover:bg-stone-700 hover:shadow-[0_4px_10px_rgba(28,25,23,0.14)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950 disabled:cursor-not-allowed disabled:bg-stone-500 disabled:shadow-none disabled:hover:translate-y-0"
     >
       {#if isSubmitting}
         <span

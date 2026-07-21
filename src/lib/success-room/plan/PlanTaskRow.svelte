@@ -31,7 +31,7 @@
 <li class="min-w-0">
   <div
     class={[
-      'grid min-w-0 grid-cols-[14px_minmax(0,1fr)_20px_52px] items-start gap-[10px] text-[13px] font-book leading-[1.4] tracking-normal sm:gap-[14px] sm:text-[14px]',
+      'grid min-w-0 grid-cols-[14px_minmax(0,1fr)_20px_52px] items-start gap-[10px] text-[13px] font-book leading-[1.4] sm:gap-[14px] sm:text-[14px]',
       textClass
     ]}
   >
@@ -77,7 +77,7 @@
       <button
         type="button"
         class={[
-          'cursor-pointer whitespace-nowrap rounded-[5px] border-0 bg-transparent p-0 font-body text-[13px] font-book leading-[1.4] tracking-normal transition-colors duration-150 hover:text-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-stone-900/20 sm:text-[14px]',
+          'cursor-pointer whitespace-nowrap rounded-[5px] border-0 bg-transparent p-0 font-body text-[13px] font-book leading-[1.4] transition-colors duration-150 hover:text-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-stone-900/20 sm:text-[14px]',
           displayDate ? dateClass : 'italic text-stone-400'
         ]}
         aria-label={`${displayDate ? 'Change' : 'Set'} date for ${task.title}`}

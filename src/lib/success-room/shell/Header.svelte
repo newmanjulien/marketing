@@ -13,7 +13,7 @@
     description?: string;
   } = $props();
 
-  const eyebrowClasses = 'm-0 block text-[14px] font-medium leading-none tracking-normal text-stone-500';
+  const eyebrowClasses = 'm-0 block text-[14px] font-medium leading-none text-stone-500';
   const backLinkClasses = `${eyebrowClasses} transition-colors duration-200 hover:text-stone-900`;
 </script>
 
@@ -29,14 +29,14 @@
   {/if}
 
   <h1
-    class="mt-[28px] font-heading text-[32px] font-normal leading-[1.05] tracking-normal text-stone-750"
+    class="mt-[28px] font-heading text-[32px] font-normal leading-[1.05] text-stone-750"
   >
     {title}
   </h1>
 
   {#if description}
     <p
-      class="mt-[20px] text-[16px] font-book leading-[1.55] tracking-normal text-stone-700 sm:text-[17px]"
+      class="mt-[20px] text-[16px] font-book leading-[1.55] text-stone-700 sm:text-[17px]"
     >
       {description}
     </p>

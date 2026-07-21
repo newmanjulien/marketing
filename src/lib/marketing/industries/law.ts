@@ -18,7 +18,7 @@ export const law = {
     newClients: { count: '26', rate: '59%' },
     moreBusiness: { count: '22', rate: '43%' }
   },
-  ctaHeading: 'Built for law firms',
+  ctaSubject: 'law firms',
   ctaWorkPhrase: 'lawyers work',
   scenarios: [
     {
@@ -44,7 +44,7 @@ It's a commercial real estate acquisition. Details here: ob.link/95922
 Let me know if you want Travis to propose an intro next time he talks to them`
     },
     {
-      id: 'recruiters',
+      id: 'relationships',
       label: '3. Develop relationships',
       description:
         'Overbase turns your relationships with executive search firms into opportunities to place your contacts in key accounts. All by text message',

@@ -29,7 +29,7 @@
 >
   <span
     class={[
-      'min-w-0 break-words text-[16px] font-book leading-[1.4] tracking-normal transition-colors duration-200 group-hover:text-stone-900',
+      'min-w-0 break-words text-[16px] font-book leading-[1.4] transition-colors duration-200 group-hover:text-stone-900',
       variant === 'request' ? 'text-stone-600' : 'text-stone-750'
     ]}
   >

@@ -33,7 +33,7 @@
           <tr>
             {#each columns as column}
               <th
-                class="border-b border-stone-200/80 bg-stone-50 px-[14px] py-[13px] text-left text-[13px] font-medium leading-none tracking-normal text-stone-600"
+                class="border-b border-stone-200/80 bg-stone-50 px-[14px] py-[13px] text-left text-[13px] font-medium leading-none text-stone-600"
                 scope="col"
               >
                 {column.label}
@@ -52,7 +52,7 @@
                   ]}
                 >
                   <textarea
-                    class="block min-h-[72px] w-full resize-none border-0 bg-transparent px-[14px] py-[12px] font-body text-[14px] font-book leading-[1.45] tracking-normal text-stone-650 outline-none placeholder:text-stone-300 focus:bg-stone-50/70 focus:text-stone-900"
+                    class="block min-h-[72px] w-full resize-none border-0 bg-transparent px-[14px] py-[12px] font-body text-[14px] font-book leading-[1.45] text-stone-650 outline-none placeholder:text-stone-300 focus:bg-stone-50/70 focus:text-stone-900"
                     aria-label={`${column.label} row ${rowIndex + 1}`}
                     rows="3"
                     bind:value={

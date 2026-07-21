@@ -13,7 +13,6 @@
   };
 
   let {
-    href,
     variant,
     size,
     shape = 'default',
@@ -25,7 +24,7 @@
   }: ButtonLinkProps = $props();
 
   const baseClasses =
-    'inline-flex items-center justify-center font-book leading-none transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950';
+    'inline-flex items-center justify-center font-book leading-none transition-colors duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-950';
 
   const shapeClasses = {
     default: 'rounded-[9px]',
@@ -49,7 +48,6 @@
 
 <a
   {...anchorProps}
-  {href}
   class={[
     baseClasses,
     shapeClasses[shape],
@@ -69,7 +67,7 @@
     position: absolute;
     inset: -40% auto -40% -55%;
     width: 42%;
-    transform: skewX(-24deg) translateX(0);
+    transform: skewX(-24deg);
     background: linear-gradient(
       90deg,
       transparent 0%,

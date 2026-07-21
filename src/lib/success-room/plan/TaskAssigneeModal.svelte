@@ -24,7 +24,7 @@
 
 <ModalShell {open} title="Assign task" {onClose}>
   {#if team.length === 0}
-    <p class="m-0 text-[14px] font-book leading-[1.4] tracking-normal text-stone-500">
+    <p class="m-0 text-[14px] font-book leading-[1.4] text-stone-500">
       No team members yet.
     </p>
   {:else}
@@ -60,16 +60,16 @@
               {/if}
 
               <span class="min-w-0">
-                <span class="block truncate text-[14px] font-normal leading-[1.15] tracking-normal text-stone-900">
+                <span class="block truncate text-[14px] font-normal leading-[1.15] text-stone-900">
                   {member.name}
                 </span>
-                <span class="mt-[5px] block truncate text-[13px] font-book leading-[1.2] tracking-normal text-stone-500">
+                <span class="mt-[5px] block truncate text-[13px] font-book leading-[1.2] text-stone-500">
                   {member.role}
                 </span>
               </span>
 
               {#if selected}
-                <span class="text-[12px] font-book leading-none tracking-normal text-stone-500">
+                <span class="text-[12px] font-book leading-none text-stone-500">
                   Selected
                 </span>
               {/if}
@@ -81,7 +81,7 @@
       {#if selectedMemberKey}
         <button
           type="button"
-          class="h-[36px] justify-self-start rounded-[8px] border border-stone-200 bg-white px-[13px] font-body text-[13px] font-book leading-none tracking-normal text-stone-600 transition-colors duration-150 hover:border-stone-300 hover:text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20"
+          class="h-[36px] justify-self-start rounded-[8px] border border-stone-200 bg-white px-[13px] font-body text-[13px] font-book leading-none text-stone-600 transition-colors duration-150 hover:border-stone-300 hover:text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20"
           onclick={() => selectMember(null)}
         >
           Clear assignment

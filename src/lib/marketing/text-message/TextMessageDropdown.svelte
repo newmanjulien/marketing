@@ -1,28 +1,25 @@
-<script lang="ts">
+<script lang="ts" generics="Id extends string">
   import { CaretDownIcon } from 'phosphor-svelte';
 
+  type Option = { id: Id; label: string };
+
   let {
-    scenarios,
-    selectedScenario,
+    options,
+    selected,
     onSelect,
     placement = 'up'
   }: {
-    scenarios: readonly { id: string; label: string }[];
-    selectedScenario: { id: string; label: string };
-    onSelect: (id: string) => void;
+    options: readonly Option[];
+    selected: Option;
+    onSelect: (id: Id) => void;
     placement?: 'up' | 'down';
   } = $props();
 
   let open = $state(false);
   let root = $state<HTMLDivElement>();
 
-  function select(id: string) {
-    onSelect(id);
-    open = false;
-  }
-
   function handlePointerDown(event: PointerEvent) {
-    if (open && root && !root.contains(event.target as Node)) {
+    if (open && !root?.contains(event.target as Node)) {
       open = false;
     }
   }
@@ -45,12 +42,12 @@
 <div bind:this={root} class="relative">
   <button
     type="button"
-    class="inline-flex h-[40px] w-full items-center justify-between gap-[10px] rounded-[9px] border border-stone-200 bg-white px-[12px] text-[17px] font-medium leading-none tracking-normal text-stone-750 shadow-[0_2px_8px_rgba(48,47,45,0.06)] transition-colors hover:bg-stone-50"
+    class="inline-flex h-[40px] w-full items-center justify-between gap-[10px] rounded-[9px] border border-stone-200 bg-white px-[12px] text-[17px] font-medium leading-none text-stone-750 shadow-[0_2px_8px_rgba(48,47,45,0.06)] transition-colors hover:bg-stone-50"
     aria-haspopup="listbox"
     aria-expanded={open}
     onclick={() => (open = !open)}
   >
-    {@render truncatedLabel(selectedScenario.label)}
+    {@render truncatedLabel(selected.label)}
     <CaretDownIcon
       size={13}
       weight="bold"
@@ -62,23 +59,26 @@
     <div
       role="listbox"
       class={[
-        'absolute left-0 z-10 w-full overflow-hidden rounded-[9px] border border-stone-200 bg-white p-[4px] shadow-[0_8px_24px_rgba(48,47,45,0.12)]',
+        'absolute left-0 z-20 w-full overflow-hidden rounded-[9px] border border-stone-200 bg-white p-[4px] shadow-[0_8px_24px_rgba(48,47,45,0.12)]',
         placement === 'up' ? 'bottom-full mb-[8px]' : 'top-full mt-[8px]'
       ]}
     >
-      {#each scenarios as scenario (scenario.id)}
-        {@const isSelected = scenario.id === selectedScenario.id}
+      {#each options as option (option.id)}
+        {@const isSelected = option.id === selected.id}
         <button
           type="button"
           role="option"
           aria-selected={isSelected}
           class={[
-            'flex h-[36px] w-full items-center rounded-[6px] px-[12px] text-[16px] font-book leading-none tracking-normal transition-colors sm:text-[17px]',
+            'flex h-[36px] w-full items-center rounded-[6px] px-[12px] text-[16px] font-book leading-none transition-colors sm:text-[17px]',
             isSelected ? 'bg-stone-100/80 text-stone-750' : 'text-stone-600 hover:bg-stone-50'
           ]}
-          onclick={() => select(scenario.id)}
+          onclick={() => {
+            onSelect(option.id);
+            open = false;
+          }}
         >
-          {@render truncatedLabel(scenario.label)}
+          {@render truncatedLabel(option.label)}
         </button>
       {/each}
     </div>

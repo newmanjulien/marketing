@@ -12,15 +12,8 @@
 
   const uid = $props.id();
 
-  type Logo = {
-    mark: Snippet;
-    name: string;
-    industryId: IndustryId;
-    brand: string;
-  };
-
   // The marks (hk, gt, ...) are the snippets declared in the markup below.
-  const logos: Logo[] = [
+  const logos: { mark: Snippet; name: string; industryId: IndustryId; brand: string }[] = [
     { mark: hk, name: 'Holland & Knight', industryId: 'government-relations', brand: '#2c3c7c' },
     { mark: gt, name: 'Greenberg Traurig', industryId: 'law', brand: '#171717' },
     { mark: marsh, name: 'Marsh', industryId: 'insurance', brand: '#002c77' },
@@ -56,15 +49,14 @@
   // fired but :hover already ran the bounce — and .is-auto, declaring the same
   // animation, wouldn't restart it, so its end event never comes. Skip straight
   // to 'done' and let :hover carry the visuals until the mouse leaves.
-  function handleAnimationEnd(index: number, event: AnimationEvent) {
-    if (index !== lastIndex) return;
+  function handleAnimationEnd(event: AnimationEvent & { currentTarget: HTMLElement }) {
     if (pop === 'pending' && event.animationName.includes('logo-enter')) {
       // A prior selection retires the pop — see the lifecycle comment on `pop`.
       if (industrySelected) {
         pop = 'done';
         return;
       }
-      pop = (event.currentTarget as HTMLElement).matches(':hover') ? 'done' : 'active';
+      pop = event.currentTarget.matches(':hover') ? 'done' : 'active';
       onIndustryHover(logos[lastIndex].industryId);
     } else if (pop === 'active' && event.animationName.includes('logo-bounce')) {
       pop = 'done';
@@ -169,7 +161,7 @@
       style:--brand={logo.brand}
       style:--logo-index={index}
       onmouseenter={() => handleLogoHover(logo.industryId)}
-      onanimationend={(event) => handleAnimationEnd(index, event)}
+      onanimationend={index === lastIndex ? handleAnimationEnd : undefined}
     >
       <span class="logo flex h-[25px] w-[25px]" aria-hidden="true">{@render logo.mark()}</span>
       <span class="logo-label">{logo.name}<span class="logo-label-industry">{industriesById[logo.industryId].label}</span></span>
@@ -244,7 +236,10 @@
   }
 
   @keyframes logo-bounce {
-    0% {
+    0%,
+    40%,
+    80%,
+    100% {
       transform: translateY(0);
     }
 
@@ -252,24 +247,12 @@
       transform: translateY(-7px);
     }
 
-    40% {
-      transform: translateY(0);
-    }
-
     60% {
       transform: translateY(-4px);
     }
 
-    80% {
-      transform: translateY(0);
-    }
-
     90% {
       transform: translateY(1px);
-    }
-
-    100% {
-      transform: translateY(0);
     }
   }
 

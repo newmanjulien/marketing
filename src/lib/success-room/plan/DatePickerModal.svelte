@@ -78,7 +78,7 @@
         <CaretLeftIcon size={15} weight="bold" aria-hidden="true" />
       </button>
 
-      <div class="min-w-0 text-center text-[14px] font-normal leading-none tracking-normal text-stone-950" aria-live="polite">
+      <div class="min-w-0 text-center text-[14px] font-normal leading-none text-stone-950" aria-live="polite">
         {monthLabelFormatter.format(visibleMonth)}
       </div>
 
@@ -94,7 +94,7 @@
 
     <div class="grid grid-cols-7 gap-[4px]" aria-hidden="true">
       {#each weekdayLabels as weekday}
-        <div class="flex h-[24px] items-center justify-center text-[11px] font-book leading-none tracking-normal text-stone-400">{weekday}</div>
+        <div class="flex h-[24px] items-center justify-center text-[11px] font-book leading-none text-stone-400">{weekday}</div>
       {/each}
     </div>
 
@@ -103,7 +103,7 @@
         <button
           type="button"
           class={[
-            'flex aspect-square min-h-[34px] items-center justify-center rounded-[6px] border-0 p-0 font-body text-[13px] font-book leading-none tracking-normal transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20',
+            'flex aspect-square min-h-[34px] items-center justify-center rounded-[6px] border-0 p-0 font-body text-[13px] font-book leading-none transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900/20',
             calendarDay.isSelected
               ? 'bg-stone-900 text-white hover:bg-stone-800'
               : calendarDay.isCurrentMonth

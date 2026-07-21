@@ -18,7 +18,7 @@ Then spin up subagent(s) to look over your code and the code in the files you to
 
 Then spin up subagent(s) to apply the changes (if any)
 
-# Delete components
+# Delete components - not always worth doing
 
 Spin up 5 subagents who pick random sections of the code. Get each one to find up to 3 places where there's a component, but it actually should be flattened (there shouldn't be a component)
 

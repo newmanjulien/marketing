@@ -44,13 +44,13 @@
 
         <h2
           id="document-request-confirmation-title"
-          class="mt-[20px] text-[18px] font-normal leading-[1.2] tracking-normal text-stone-750 sm:text-[20px]"
+          class="mt-[20px] text-[18px] font-normal leading-[1.2] text-stone-750 sm:text-[20px]"
         >
           Your request is with us
         </h2>
 
         <p
-          class="mx-auto mt-[12px] max-w-[30rem] text-[14px] font-book leading-[1.55] tracking-normal text-stone-600 sm:text-[15px]"
+          class="mx-auto mt-[12px] max-w-[30rem] text-[14px] font-book leading-[1.55] text-stone-600 sm:text-[15px]"
         >
           We’ll review the details and reach out if anything needs clarification. Once the document is
           ready, we’ll add it to this success room.

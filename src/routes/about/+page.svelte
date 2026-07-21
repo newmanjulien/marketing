@@ -9,25 +9,25 @@
 
 <PageFrame>
   <ContentMeasure as="article" width="copy">
-    <h1 class="font-heading text-[42px] font-medium leading-[1.05] tracking-normal text-stone-750">
+    <h1 class="font-heading text-[42px] font-medium leading-[1.05] text-stone-750">
       About Overbase
     </h1>
 
     <div class="mt-[32px] flex flex-col gap-[22px]">
-      <p class="text-[16px] font-book leading-[1.6] tracking-normal text-stone-700">
+      <p class="text-[16px] font-book leading-[1.6] text-stone-700">
         We're a team of machine learning engineers who have been working together for over a decade
       </p>
 
-      <p class="text-[16px] font-book leading-[1.6] tracking-normal text-stone-700">
+      <p class="text-[16px] font-book leading-[1.6] text-stone-700">
         We have a unique culture that's all about making you successful
       </p>
 
-      <p class="text-[16px] font-book leading-[1.6] tracking-normal text-stone-700">
+      <p class="text-[16px] font-book leading-[1.6] text-stone-700">
         We measure our success by yours. Our pricing is pegged to revenue you get from using our
         tech. And our entire team's compensation is also pegged to your success
       </p>
 
-      <p class="text-[16px] font-book leading-[1.6] tracking-normal text-stone-700">
+      <p class="text-[16px] font-book leading-[1.6] text-stone-700">
         Overbase is a forward deployed company. We're HQed in San Francisco but our team spends most
         of the year in the city where our users need us most
       </p>
@@ -47,11 +47,11 @@
       </div>
 
       <div>
-        <h2 class="font-heading text-[20px] font-medium leading-[1.1] tracking-normal text-stone-900">
+        <h2 class="font-heading text-[20px] font-medium leading-[1.1] text-stone-900">
           Our CEO
         </h2>
 
-        <p class="mt-[16px] text-[16px] font-book leading-[1.6] tracking-normal text-stone-700">
+        <p class="mt-[16px] text-[16px] font-book leading-[1.6] text-stone-700">
           Julien Newman is a machine learning engineer who has built startups at the intersection of
           AI and sales for +10 years. Check out:
           <a

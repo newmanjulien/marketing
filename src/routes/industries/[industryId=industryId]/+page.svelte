@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-  <title>{data.industry.heading}</title>
+  <title>Overbase › {data.industry.label}</title>
 </svelte:head>
 
 {#key data.industry.id}
