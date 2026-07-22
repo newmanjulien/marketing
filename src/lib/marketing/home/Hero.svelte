@@ -19,7 +19,7 @@
 >
   <ContentMeasure class="flex flex-col items-center text-center">
     <h1
-      class="max-w-[540px] font-heading text-[45px] font-semibold leading-[1.04] text-stone-750 sm:max-w-none sm:text-[51px]"
+      class="max-w-[540px] font-heading text-[45px] font-semibold leading-[1.04] text-stone-750 sm:max-w-none sm:text-[46px]"
     >
       <span class="hero-title-lead inline-block">Grow</span>
       <span class="hero-title-rest inline-block">your practice</span>
@@ -65,20 +65,21 @@
     --hero-content-delay: 990ms;
   }
 
-  /* The 280ms delay keeps "Grow" hidden through the typical font-loading window
-     (the fetch starts at parse time via the preload in app.html), so a
-     fallback→Newsreader swap rarely paints — and when one does, the
-     metric-matched 'Newsreader Fallback' face keeps it shift-free. */
+  /* The 180ms delay keeps "Grow" hidden through the typical font-loading window
+     (the fetch starts at parse time via the preload in app.html), and any swap
+     that still paints is shift-free thanks to the metric-matched 'Newsreader
+     Fallback' face. In dev, hooks.server.ts inlines the font, so the swap path
+     only exists in prod. */
   .hero-title-lead {
     opacity: 0;
     transform: translateY(4px);
-    animation: hero-content-enter 420ms var(--hero-ease) 280ms both;
+    animation: hero-content-enter 420ms var(--hero-ease) 180ms both;
   }
 
   .hero-title-rest {
     opacity: 0;
     transform: translateX(-10px);
-    animation: hero-content-enter 420ms var(--hero-ease) 450ms both;
+    animation: hero-content-enter 420ms var(--hero-ease) 350ms both;
   }
 
   .hero-support,
