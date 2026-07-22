@@ -20,7 +20,7 @@
   {#if onNext}
     <button
       type="button"
-      class="absolute right-[12px] top-[12px] z-10 flex h-[30px] w-[30px] items-center justify-center rounded-full border border-stone-200 bg-white text-stone-400 transition-colors hover:bg-stone-50 hover:text-stone-600"
+      class="absolute right-[12px] top-[12px] z-10 flex h-[30px] w-[30px] items-center justify-center rounded-full border border-stone-200 bg-white text-stone-400 shadow-[0_1px_2px_rgba(48,47,45,0.08)] transition-colors hover:bg-stone-50 hover:text-stone-600"
       aria-label="Show next data source"
       title="Show next data source"
       onclick={onNext}
