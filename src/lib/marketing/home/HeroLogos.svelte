@@ -3,11 +3,9 @@
   import type { Snippet } from 'svelte';
 
   let {
-    onIndustryHover,
-    industrySelected
+    onIndustryHover
   }: {
     onIndustryHover: (id: IndustryId) => void;
-    industrySelected: boolean;
   } = $props();
 
   const uid = $props.id();
@@ -21,47 +19,6 @@
     { mark: lw, name: 'Latham & Watkins', industryId: 'law', brand: '#a6192e' },
     { mark: ey, name: 'Ernst & Young', industryId: 'accounting', brand: '#2e2e38' }
   ];
-
-  const lastIndex = logos.length - 1;
-
-  // Once the entrance finishes, the far-right logo highlights itself — a single
-  // pop with brand color that drives the graphic to its industry, then relaxes
-  // back to grey. The whole lifecycle is driven by the CSS animations: the
-  // entrance settling starts the pop ('pending' → 'active'), the bounce
-  // finishing ends it ('active' → 'done') — and any prior selection (a logo
-  // hover, or a tab click reported via industrySelected) retires it for good,
-  // so the auto-select never overwrites a choice the user already made. (The
-  // pop's own selectIndustry call flips industrySelected too, but by then pop
-  // is past 'pending', so it changes nothing.)
-  let pop = $state<'pending' | 'active' | 'done'>('pending');
-
-  function handleLogoHover(id: IndustryId) {
-    pop = 'done';
-    onIndustryHover(id);
-  }
-
-  // Both animations are CSS-timed, so their end events are the cues — no
-  // duplicated durations in JS. The bounce runs on the inner .logo span and
-  // bubbles up to the item. (Keyframe names are hash-scoped by Svelte, hence
-  // includes rather than ===.)
-  //
-  // If the pointer has been resting on the logo since load, no mouseenter ever
-  // fired but :hover already ran the bounce — and .is-auto, declaring the same
-  // animation, wouldn't restart it, so its end event never comes. Skip straight
-  // to 'done' and let :hover carry the visuals until the mouse leaves.
-  function handleAnimationEnd(event: AnimationEvent & { currentTarget: HTMLElement }) {
-    if (pop === 'pending' && event.animationName.includes('logo-enter')) {
-      // A prior selection retires the pop — see the lifecycle comment on `pop`.
-      if (industrySelected) {
-        pop = 'done';
-        return;
-      }
-      pop = event.currentTarget.matches(':hover') ? 'done' : 'active';
-      onIndustryHover(logos[lastIndex].industryId);
-    } else if (pop === 'active' && event.animationName.includes('logo-bounce')) {
-      pop = 'done';
-    }
-  }
 </script>
 
 {#snippet hk()}
@@ -157,11 +114,9 @@
     <!-- svelte-ignore a11y_no_static_element_interactions -- hover is a mouse-only flourish; the graphic's tabs remain the accessible control -->
     <div
       class="logo-item relative flex"
-      class:is-auto={pop === 'active' && index === lastIndex}
       style:--brand={logo.brand}
       style:--logo-index={index}
-      onmouseenter={() => handleLogoHover(logo.industryId)}
-      onanimationend={index === lastIndex ? handleAnimationEnd : undefined}
+      onmouseenter={() => onIndustryHover(logo.industryId)}
     >
       <span class="logo flex h-[25px] w-[25px]" aria-hidden="true">{@render logo.mark()}</span>
       <span class="logo-label">{logo.name}<span class="logo-label-industry">{industriesById[logo.industryId].label}</span></span>
@@ -195,7 +150,7 @@
     width: 100%;
   }
 
-  .logo-item:is(:hover, .is-auto) .logo {
+  .logo-item:hover .logo {
     color: var(--brand);
     animation: logo-bounce 900ms cubic-bezier(0.28, 0.84, 0.42, 1);
   }
@@ -230,7 +185,7 @@
     margin: 0 4px;
   }
 
-  .logo-item:is(:hover, .is-auto) .logo-label {
+  .logo-item:hover .logo-label {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
@@ -261,7 +216,7 @@
     transition: fill 180ms ease;
   }
 
-  .logo-item:is(:hover, .is-auto) .ey-beam {
+  .logo-item:hover .ey-beam {
     fill: #ffe600;
   }
 
@@ -272,7 +227,7 @@
       transform: none;
     }
 
-    .logo-item:is(:hover, .is-auto) .logo {
+    .logo-item:hover .logo {
       animation: none;
     }
   }

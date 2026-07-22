@@ -5,7 +5,7 @@
 :root {
   --site-bg: #ffffff;
   --font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-heading: 'Newsreader', Georgia, serif;
+  --font-heading: 'Newsreader', 'Newsreader Fallback', serif;
   --site-mobile-header-height: 50px;
   --page-frame-top-space: 43px;
   --layer-chrome: 30;

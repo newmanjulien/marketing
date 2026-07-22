@@ -8,11 +8,9 @@
 
   // Hovering a logo and clicking a tab in the graphic both drive the same selection.
   let industryId = $state<IndustryId>(industries[0].id);
-  let industrySelected = $state(false);
 
   function selectIndustry(id: IndustryId) {
     industryId = id;
-    industrySelected = true;
   }
 </script>
 
@@ -34,7 +32,7 @@
     </p>
 
     <div class="hero-logos mt-[39px]">
-      <HeroLogos onIndustryHover={selectIndustry} {industrySelected} />
+      <HeroLogos onIndustryHover={selectIndustry} />
     </div>
 
     <div class="hero-actions mt-[44px] flex justify-center">
@@ -67,18 +65,20 @@
     --hero-content-delay: 990ms;
   }
 
-  /* The 180ms delay keeps "Grow" hidden through the font-loading window, so a
-     fallback→Newsreader swap almost never paints. */
+  /* The 280ms delay keeps "Grow" hidden through the typical font-loading window
+     (the fetch starts at parse time via the preload in app.html), so a
+     fallback→Newsreader swap rarely paints — and when one does, the
+     metric-matched 'Newsreader Fallback' face keeps it shift-free. */
   .hero-title-lead {
     opacity: 0;
     transform: translateY(4px);
-    animation: hero-content-enter 420ms var(--hero-ease) 180ms both;
+    animation: hero-content-enter 420ms var(--hero-ease) 280ms both;
   }
 
   .hero-title-rest {
     opacity: 0;
     transform: translateX(-10px);
-    animation: hero-content-enter 420ms var(--hero-ease) 350ms both;
+    animation: hero-content-enter 420ms var(--hero-ease) 450ms both;
   }
 
   .hero-support,

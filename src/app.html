@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preconnect" href="https://portal.overbase.app" />
     <link rel="preload" href="/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
-    <!-- Declared here (not app.css) so the face is registered before any stylesheet loads —
+    <!-- Declared here (not app.css) so the faces are registered before any stylesheet loads —
          in dev, Vite injects app.css too late. The preload above starts the fetch at parse time. -->
     <style>
       @font-face {
@@ -14,6 +14,21 @@
         font-weight: 200 800;
         font-display: swap;
         src: url('/fonts/newsreader.woff2') format('woff2');
+      }
+
+      /* Georgia adjusted to Newsreader's metrics, so the swap repaints glyph shapes
+         without moving layout. Values from @capsizecss/metrics@4.2.0, anchored on the
+         w500 widths (the biggest headings that are visible while the font loads):
+         size-adjust = (877/2000) / (913/2048), overrides = (metric/2000) / size-adjust.
+         No font-weight descriptor: synthetic bolding approximates the heavier heading
+         weights better than regular-weight Georgia would. */
+      @font-face {
+        font-family: 'Newsreader Fallback';
+        src: local('Georgia');
+        size-adjust: 98.36%;
+        ascent-override: 74.72%;
+        descent-override: 26.94%;
+        line-gap-override: 0%;
       }
     </style>
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="48x48" />
