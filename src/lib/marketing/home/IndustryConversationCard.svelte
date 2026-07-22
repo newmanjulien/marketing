@@ -5,7 +5,7 @@
     type IndustryId,
     type Scenario
   } from '$lib/marketing/industries/industries';
-  import { ArrowUpIcon, ArrowsClockwiseIcon } from 'phosphor-svelte';
+  import { ArrowUpIcon } from 'phosphor-svelte';
   import TextMessageConversation from '$lib/marketing/text-message/TextMessageConversation.svelte';
   import TextMessageDropdown from '$lib/marketing/text-message/TextMessageDropdown.svelte';
   import { tabIndicator } from '$lib/ui/tabIndicator';
@@ -39,11 +39,6 @@
 
   function selectScenario(id: string) {
     scenarioChoice = { industryId, scenarioId: id };
-  }
-
-  function selectNextScenario() {
-    const index = scenarios.indexOf(scenario);
-    selectScenario(scenarios[(index + 1) % scenarios.length].id);
   }
 </script>
 
@@ -120,16 +115,6 @@
        unbreakable word (like a long URL) wraps instead of widening the pane
        past the card edge. -->
   <div class="relative flex min-h-0 min-w-0 flex-1 flex-col">
-    <button
-      type="button"
-      class="absolute right-[12px] top-[12px] z-10 flex h-[30px] w-[30px] items-center justify-center rounded-full border border-stone-200 bg-white text-stone-400 transition-colors hover:bg-stone-50 hover:text-stone-600"
-      aria-label="Show next example"
-      title="Show next example"
-      onclick={selectNextScenario}
-    >
-      <ArrowsClockwiseIcon size={15} weight="bold" />
-    </button>
-
     <TextMessageConversation message={scenario.message} />
 
     <div class="flex items-center gap-[8px] border-t border-stone-200 px-[14px] py-[11px]">
