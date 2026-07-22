@@ -47,9 +47,7 @@ export const entries: EntryGenerator = () =>
 export const load: PageLoad = async ({ params }) => {
   const { category, slug } = params;
 
-  const pageEntry = pages.find(
-    (entry) => entry.category === category && entry.slug === slug
-  );
+  const pageEntry = pages.find((entry) => entry.category === category && entry.slug === slug);
 
   if (!pageEntry) {
     error(404, 'Docs page not found');

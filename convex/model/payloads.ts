@@ -43,8 +43,7 @@ const assetResourceDefinitionIfPresent = async (
   room: SuccessRoom,
   resourceSlug: SuccessRoomAssetResourceSlug,
 ) => {
-  const hasFile = (await fileByRoomKind(ctx, room._id, resourceSlug)) !== null;
-  if (!hasFile) return null;
+  if (!(await fileByRoomKind(ctx, room._id, resourceSlug))) return null;
   return resourceSlug === deckResourceSlug ? deckResourceDefinition : audioResourceDefinition;
 };
 

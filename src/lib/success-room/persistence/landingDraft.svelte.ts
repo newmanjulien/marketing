@@ -47,13 +47,11 @@ export const createSuccessRoomLandingDraft = (
     roomSlug: getRoom().slug,
     members: []
   });
-  const locallyAddedTeamMembers = $derived(
-    locallyAddedTeam.roomSlug === getRoom().slug ? locallyAddedTeam.members : []
-  );
   const team = $derived.by(() => {
     const baseTeam = getRoom().team;
+    const added = locallyAddedTeam.roomSlug === getRoom().slug ? locallyAddedTeam.members : [];
     const baseKeys = new Set(baseTeam.map((member) => member.key));
-    return [...baseTeam, ...locallyAddedTeamMembers.filter((member) => !baseKeys.has(member.key))];
+    return [...baseTeam, ...added.filter((member) => !baseKeys.has(member.key))];
   });
 
   const saveBenefits = (key: string, benefits: SuccessRoomBenefitsPatch) => {

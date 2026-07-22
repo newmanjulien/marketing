@@ -16,9 +16,7 @@ export const deleteExpiredSessions = internalMutation({
       .withIndex("by_expires_at", (q) => q.lt("expiresAt", cutoff))
       .take(cleanupPageSize);
 
-    for (const session of expiredSessions) {
-      await ctx.db.delete(session._id);
-    }
+    await Promise.all(expiredSessions.map((session) => ctx.db.delete(session._id)));
 
     if (expiredSessions.length === cleanupPageSize) {
       await ctx.scheduler.runAfter(0, internal.cleanup.deleteExpiredSessions, { cutoff });
