@@ -37,6 +37,13 @@
     }
   ] as const;
 
+  const quote = {
+    quote: 'Sharing sales data with our network increased revenue by 10% for us and for the businesses in our network',
+    name: "Karthik Rao",
+    role: 'CEO',
+    company: 'Nielsen'
+  };
+
   const faqItems = [
     {
       question: 'Can I join on my own?',
@@ -128,7 +135,20 @@
   </ContentMeasure>
 
   <ContentMeasure as="section" width="narrow" class="mt-[128px]">
-    <h2 class="font-heading text-[35px] font-book leading-[1.18] text-stone-750">
+    <figure class="text-center">
+      <blockquote
+        class="mx-auto max-w-[540px] font-heading text-[30px] font-book leading-[1.35] text-stone-800 sm:text-[32px]"
+      >
+        "{quote.quote}"
+      </blockquote>
+      <figcaption class="mt-[20px] text-[14px] font-book leading-none text-stone-400 sm:text-[15px]">
+        {quote.name}, {quote.role}, <span class="text-stone-500">{quote.company}</span>
+      </figcaption>
+    </figure>
+  </ContentMeasure>
+
+  <ContentMeasure as="section" width="narrow" class="mt-[131px]">
+    <h2 class="font-heading text-[40px] font-book leading-[1.18] text-stone-750">
       Frequently Asked Questions
     </h2>
 
