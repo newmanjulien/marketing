@@ -8,7 +8,7 @@
 
   const pricingPlans = [
     {
-      price: '$90',
+      price: '$190',
       priceLabel: 'per month',
       name: 'Single user',
       description: 'Simple fee for professionals who want to quickly grow their practice',
@@ -16,7 +16,7 @@
       ctaHref: createPortalAuthUrl('join', page.url.pathname),
       benefits: [
         'One user',
-        'Use existing formats',
+        'Use our best-performing formats, ready to go',
         'Your network joins for free',
         'Zero retention data processing'
       ]
@@ -30,7 +30,7 @@
       ctaHref: 'https://cal.com/juliennewman',
       benefits: [
         'Unlimited users',
-        'Use custom formats',
+        'Create advanced formats tailored to your firm',
         'Your network joins for free',
         'Zero retention data processing'
       ]
@@ -41,17 +41,17 @@
     {
       question: 'Can I join on my own?',
       answer:
-        'Yes, easily. Quickly sign up for a simple $90 per month'
+        'Yes, easily. Sign up for a simple $190 per month and get instant access to our best-performing formats, proven across the network and ready to use on day one'
     },
     {
       question: 'Can my whole firm join?',
       answer:
-        'Yes, and on favorable terms. If your whole firm joins, we use success based pricing where we charge 5% of the revenue we help you generate and we get paid after you get paid'
+        'Yes, and on favorable terms. Your whole firm gets advanced formats tailored to exactly how you work, and we use success based pricing where we charge 5% of the revenue we help you generate and we get paid after you get paid'
     },
     {
       question: "What's different about custom formats?",
       answer:
-        'Overbase packages up the most popular formats so single users can easily access them. When we partner with a whole firm, we create custom formats together that perfectly match how that firm works'
+        'Single users get instant access to our best-performing formats, proven across the network and ready to use on day one. When we partner with a whole firm, we go further and build advanced formats together that are tailored to exactly how that firm works'
     },
     {
       question: 'Does my network pay anything?',
@@ -77,7 +77,7 @@
     </h1>
 
     <p class="mt-[24px] text-[17px] font-book leading-[1.55] text-stone-700">
-      How much does Overbase cost? You can easily join on your own for a simple $90 per month. If your whole firm joins, we charge 5% of the revenue we help generate
+      How much does Overbase cost? You can easily join on your own for a simple $190 per month. If your whole firm joins, we charge 5% of the revenue we help generate
     </p>
 
     <div class="mt-[43px] grid gap-[20px] sm:grid-cols-2">
