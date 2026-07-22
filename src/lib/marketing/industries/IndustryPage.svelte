@@ -84,7 +84,7 @@
               </div>
             </div>
 
-            <TextMessageConversation message={scenario.message} />
+            <TextMessageConversation message={scenario.message} bubbleMaxWidth="80%" />
           </div>
 
           <p class="mt-[18px] px-[2px] text-[16px] font-book leading-[1.55] text-stone-500/70 sm:text-[17px]">

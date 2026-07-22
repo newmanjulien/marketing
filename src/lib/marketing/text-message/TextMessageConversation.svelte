@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { Attachment } from 'svelte/attachments';
 
-  let { message }: { message: string } = $props();
+  let { message, bubbleMaxWidth = '88%' }: { message: string; bubbleMaxWidth?: string } =
+    $props();
 
   // Each blank-line-separated paragraph becomes its own chat bubble.
   const messages = $derived(
@@ -51,7 +52,8 @@
   <div class="flex flex-col items-start gap-[3px]">
     {#each messages as text}
       <div
-        class="bubble max-w-[88%] whitespace-pre-wrap text-pretty break-words px-[14px] py-[8px] text-left font-body text-[14.5px] font-book leading-[1.35] text-white sm:text-[15.5px]"
+        class="bubble whitespace-pre-wrap text-pretty break-words px-[14px] py-[8px] text-left font-body text-[14.5px] font-book leading-[1.35] text-white sm:text-[15.5px]"
+        style="max-width: {bubbleMaxWidth}"
         {@attach hugWidestLine(text)}
       >{text}</div>
     {/each}
