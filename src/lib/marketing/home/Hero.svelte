@@ -65,15 +65,14 @@
     --hero-content-delay: 990ms;
   }
 
-  /* The 180ms delay keeps "Grow" hidden through the typical font-loading window
+  /* The 220ms delay keeps "Grow" hidden through the typical font-loading window
      (the fetch starts at parse time via the preload in app.html), and any swap
      that still paints is shift-free thanks to the metric-matched 'Newsreader
-     Fallback' face. In dev, hooks.server.ts inlines the font, so the swap path
-     only exists in prod. */
+     Fallback' face. */
   .hero-title-lead {
     opacity: 0;
     transform: translateY(4px);
-    animation: hero-content-enter 420ms var(--hero-ease) 180ms both;
+    animation: hero-content-enter 420ms var(--hero-ease) 220ms both;
   }
 
   .hero-title-rest {

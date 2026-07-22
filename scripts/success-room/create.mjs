@@ -1,5 +1,5 @@
 // Run from the project root:
-//   npm run create:success-room -- <room-slug> "<title>" <deck.pdf> <audio.mp3>
+//   npm run create:success-room -- <room-slug> "<title>" <deck.pdf> <audio.mp3|.m4a>
 //
 // Uses the Convex CLI's deploy credentials (SCRIPT_TARGET=prod for production).
 // This creates the room with deck, audio, and benefits from create-benefits.csv.
@@ -16,9 +16,15 @@ import { runConvex, uploadSeedFile } from "./helpers/convex.mjs";
 
 const [roomSlug, title, deckPath, audioPath] = process.argv.slice(2);
 
-if (!roomSlug || !title || !deckPath?.endsWith(".pdf") || !audioPath?.endsWith(".mp3")) {
+const audioContentType = audioPath?.endsWith(".mp3")
+  ? "audio/mpeg"
+  : audioPath?.endsWith(".m4a")
+    ? "audio/mp4"
+    : null;
+
+if (!roomSlug || !title || !deckPath?.endsWith(".pdf") || !audioContentType) {
   console.error(
-    'Usage: npm run create:success-room -- <room-slug> "<title>" <deck.pdf> <audio.mp3>',
+    'Usage: npm run create:success-room -- <room-slug> "<title>" <deck.pdf> <audio.mp3|.m4a>',
   );
   process.exit(1);
 }
@@ -33,7 +39,7 @@ const deck = await uploadSeedFile({
 });
 const audio = await uploadSeedFile({
   path: audioPath,
-  contentType: "audio/mpeg",
+  contentType: audioContentType,
 });
 
 await runConvex("admin:createSuccessRoom", {
