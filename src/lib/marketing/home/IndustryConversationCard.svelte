@@ -114,7 +114,7 @@
   <!-- min-w-0 lets the pane shrink below its content's intrinsic width, so an
        unbreakable word (like a long URL) wraps instead of widening the pane
        past the card edge. -->
-  <div class="relative flex min-h-0 min-w-0 flex-1 flex-col">
+  <div class="flex min-h-0 min-w-0 flex-1 flex-col">
     <TextMessageConversation message={scenario.message} />
 
     <div class="flex items-center gap-[8px] border-t border-stone-200 px-[14px] py-[11px]">
