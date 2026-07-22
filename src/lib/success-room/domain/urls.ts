@@ -1,4 +1,5 @@
 import { resolve } from '$app/paths';
+import { getKickoffMeetingSlug, type KickoffCell } from '$shared/successRoomKickoffSchedule';
 
 export const getSuccessRoomPath = (roomSlug: string, section?: string) => {
   const path = resolve('/(success-room)/[roomSlug=successRoomSlug]', { roomSlug });
@@ -12,6 +13,15 @@ export const getSuccessRoomResourcePath = (roomSlug: string, resourceSlug: strin
 
 export const getSuccessRoomDocumentRequestPath = (roomSlug: string) =>
   resolve('/(success-room)/[roomSlug=successRoomSlug]/request-document', { roomSlug });
+
+export const getSuccessRoomKickoffMeetingPath = (roomSlug: string, cell: KickoffCell) =>
+  resolve(
+    '/(success-room)/[roomSlug=successRoomSlug]/kickoff-schedule/[meetingSlug=kickoffMeetingSlug]',
+    {
+      roomSlug,
+      meetingSlug: getKickoffMeetingSlug(cell)
+    }
+  );
 
 // Not resolve(): operation spans three static api routes plus [operation=successRoomAutosaveOperation].
 export const getSuccessRoomApiPath = (roomSlug: string, operation: string) =>

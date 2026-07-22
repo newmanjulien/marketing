@@ -50,7 +50,7 @@ export const scheduleJsonSave = <Operation extends SuccessRoomAutosaveApiOperati
   body: SuccessRoomPostApiBody<Operation>;
   errorMessage: string;
   debounceMs?: number;
-}) => {
+}): Promise<boolean> =>
   saveQueue.schedule(
     key,
     async () => {
@@ -62,4 +62,3 @@ export const scheduleJsonSave = <Operation extends SuccessRoomAutosaveApiOperati
     },
     debounceMs
   );
-};

@@ -12,7 +12,10 @@ import {
 } from "../shared/successRoomResources";
 import { successRoomBenefitsStateValidator } from "../shared/successRoomBenefits";
 import { successRoomEditableTextContentValidator } from "../shared/successRoomEditableText";
-import { successRoomKickoffScheduleStateValidator } from "../shared/successRoomKickoffSchedule";
+import {
+  applySuccessRoomKickoffScheduleAction,
+  successRoomKickoffScheduleActionValidator,
+} from "../shared/successRoomKickoffSchedule";
 import { successRoomPlanActionValidator, applySuccessRoomPlanAction } from "../shared/successRoomPlan";
 import { maxSuccessRoomDocumentRequestDescriptionLength } from "../shared/successRoomDocumentRequests";
 import {
@@ -128,9 +131,9 @@ export const patchEditableText = roomMutation({
   },
 });
 
-export const replaceKickoffSchedule = roomMutation({
+export const applyKickoffScheduleAction = roomMutation({
   args: {
-    kickoffSchedule: successRoomKickoffScheduleStateValidator,
+    action: successRoomKickoffScheduleActionValidator,
   },
   handler: async (ctx, args) => {
     assertResourceEnabled(ctx.room, kickoffScheduleResourceSlug);
@@ -138,7 +141,10 @@ export const replaceKickoffSchedule = roomMutation({
     await ctx.db.patch(ctx.room._id, {
       state: {
         ...ctx.room.state,
-        kickoffSchedule: sanitizeKickoffScheduleState(args.kickoffSchedule),
+        kickoffSchedule: sanitizeKickoffScheduleState(
+          ctx.room,
+          applySuccessRoomKickoffScheduleAction(ctx.room.state.kickoffSchedule, args.action),
+        ),
       },
     });
   },

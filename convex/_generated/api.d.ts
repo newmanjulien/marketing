@@ -16,11 +16,9 @@ import type * as email from "../email.js";
 import type * as functions from "../functions.js";
 import type * as model_auth from "../model/auth.js";
 import type * as model_files from "../model/files.js";
-import type * as model_passwords from "../model/passwords.js";
 import type * as model_payloads from "../model/payloads.js";
 import type * as model_rooms from "../model/rooms.js";
 import type * as rooms from "../rooms.js";
-import type * as sessions from "../sessions.js";
 
 import type {
   ApiFromModules,
@@ -37,11 +35,9 @@ declare const fullApi: ApiFromModules<{
   functions: typeof functions;
   "model/auth": typeof model_auth;
   "model/files": typeof model_files;
-  "model/passwords": typeof model_passwords;
   "model/payloads": typeof model_payloads;
   "model/rooms": typeof model_rooms;
   rooms: typeof rooms;
-  sessions: typeof sessions;
 }>;
 
 /**

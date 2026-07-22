@@ -15,6 +15,7 @@ import { createDefaultKickoffScheduleState } from "../shared/successRoomKickoffS
 import {
   assertValidSeedBenefitCards,
   assertValidSeedPlanAccordions,
+  createKey,
   normalizeSlug,
   requireRoomBySlug,
   roomBySlug,
@@ -47,7 +48,6 @@ export const createSuccessRoom = internalMutation({
   args: {
     slug: v.string(),
     prospectName: v.string(),
-    passwordHash: v.string(),
     deck: storedFileValidator,
     audio: storedFileValidator,
     benefitCards: v.array(benefitCardValidator),
@@ -64,11 +64,14 @@ export const createSuccessRoom = internalMutation({
     const roomId = await ctx.db.insert("successRooms", {
       slug,
       prospectName: args.prospectName,
-      passwordHash: args.passwordHash,
       enabledResourceSlugs: [deckResourceSlug, audioResourceSlug],
       benefitCards: args.benefitCards,
       planAccordions: [],
-      teamMembers: [],
+      teamMembers: [
+        // Members can only be added from inside the room, so every room starts
+        // with a host whose last name is the day-one password (convex/auth.ts).
+        { key: createKey("team-member"), name: "Julien Newman", role: "Founder" },
+      ],
       state: {
         benefits: createDefaultBenefitsState(),
         plan: createDefaultPlanState(),
@@ -140,9 +143,7 @@ export const nukeSuccessRoomData = internalMutation({
   handler: async (ctx) => {
     const storageFiles = await ctx.db.system.query("_storage").collect();
 
-    for (const file of storageFiles) {
-      await ctx.storage.delete(file._id);
-    }
+    await Promise.all(storageFiles.map((file) => ctx.storage.delete(file._id)));
 
     const deletedRows: Record<string, number> = {};
 
@@ -154,9 +155,7 @@ export const nukeSuccessRoomData = internalMutation({
     ] as const) {
       const rows = await ctx.db.query(table).collect();
 
-      for (const row of rows) {
-        await ctx.db.delete(row._id);
-      }
+      await Promise.all(rows.map((row) => ctx.db.delete(row._id)));
 
       deletedRows[table] = rows.length;
     }

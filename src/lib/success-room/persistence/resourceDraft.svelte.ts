@@ -4,7 +4,11 @@ import {
   type SuccessRoomPlanAction,
   type SuccessRoomPlanState
 } from '$shared/successRoomPlan';
-import type { SuccessRoomKickoffScheduleState } from '$shared/successRoomKickoffSchedule';
+import {
+  applySuccessRoomKickoffScheduleAction,
+  type SuccessRoomKickoffScheduleAction,
+  type SuccessRoomKickoffScheduleState
+} from '$shared/successRoomKickoffSchedule';
 import { createSyncedSnapshot, scheduleJsonSave } from './autosave.svelte';
 import {
   cloneKickoffScheduleState,
@@ -89,6 +93,11 @@ const getPlanActionSaveKey = (action: SuccessRoomPlanAction) =>
   action.type === 'set-open-accordion'
     ? 'plan:open-accordion'
     : `plan:${action.taskKey}:${action.type}`;
+
+// One key per cell is safe across action types only because place/clear (the
+// schedule panel) and patch (the meeting page) never share a save queue.
+const getKickoffScheduleActionSaveKey = (action: SuccessRoomKickoffScheduleAction) =>
+  `kickoff-schedule:${action.rowKey}:${action.columnKey}`;
 
 export const createSuccessRoomResourceDraft = (
   getRoom: () => SuccessRoomResourceRoom,
@@ -235,25 +244,45 @@ export const createSuccessRoomResourceDraft = (
       applyPersistedAttachment(target, null);
     });
 
-  const setKickoffScheduleState = (schedule: SuccessRoomKickoffScheduleState) => {
+  // Actions are surgical, so a draft that went stale behind a raced load can
+  // only ever touch the cell or meeting the user actually edited. Meeting
+  // patches ride typing, so they debounce; placing and clearing are discrete
+  // clicks and save immediately — the returned promise reports whether the
+  // action persisted, which lets creation navigate to the meeting page only
+  // when its server load will find the meeting.
+  const dispatchKickoffScheduleAction = async (
+    action: SuccessRoomKickoffScheduleAction
+  ): Promise<boolean> => {
     const current = draft.current;
 
     if (current.kind !== 'kickoff-schedule') {
       throw new Error('Current success-room resource is not a kickoff schedule.');
     }
 
-    const kickoffSchedule = cloneKickoffScheduleState(schedule);
+    const isDiscrete = action.type !== 'patch-meeting';
 
-    draft.replace({ ...current, kickoffSchedule });
-    scheduleJsonSave({
+    draft.replace({
+      ...current,
+      kickoffSchedule: applySuccessRoomKickoffScheduleAction(current.kickoffSchedule, action)
+    });
+
+    const saved = await scheduleJsonSave({
       saveQueue,
-      key: `kickoff-schedule:${current.resource.slug}`,
+      key: getKickoffScheduleActionSaveKey(action),
       roomSlug: current.roomSlug,
       operation: 'kickoff-schedule',
-      body: { kickoffSchedule },
+      body: { action },
       errorMessage: 'Success room kickoff schedule could not be saved.',
-      debounceMs: 500
+      debounceMs: isDiscrete ? 0 : 500
     });
+
+    // A discrete placement/clear the server rejected must not linger in the local
+    // snapshot as a phantom cell, so restore the pre-action state on failure.
+    if (!saved && isDiscrete) {
+      draft.replace(current);
+    }
+
+    return saved;
   };
 
   return {
@@ -267,9 +296,9 @@ export const createSuccessRoomResourceDraft = (
       return currentAttachmentUi()?.error ?? '';
     },
     dispatchPlanAction,
+    dispatchKickoffScheduleAction,
     setEditableTextState,
     uploadAttachment,
-    removeAttachment,
-    setKickoffScheduleState
+    removeAttachment
   };
 };

@@ -50,14 +50,6 @@ export default defineSchema({
   successRooms: defineTable({
     slug: v.string(),
     prospectName: v.string(),
-    // scrypt output, "saltHex:hashHex"; hashed and verified in convex/auth.ts.
-    passwordHash: v.string(),
-    loginThrottle: v.optional(
-      v.object({
-        failedCount: v.number(),
-        lastFailedAt: v.number(),
-      }),
-    ),
     enabledResourceSlugs: v.array(successRoomResourceSlugValidator),
     benefitCards: v.array(benefitCardValidator),
     planAccordions: v.array(planAccordionValidator),

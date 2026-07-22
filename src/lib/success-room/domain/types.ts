@@ -35,10 +35,14 @@ export type SuccessRoomEditableTextResource =
     editorPlaceholder: string;
   };
 
-export type SuccessRoomKickoffScheduleResource =
+export type SuccessRoomKickoffScheduleResourceSummary =
   SuccessRoomResourceBase<'kickoff-schedule', SuccessRoomKickoffScheduleResourceSlug> & {
     description: string;
   };
+
+export type SuccessRoomKickoffScheduleResource = SuccessRoomKickoffScheduleResourceSummary & {
+  team: SuccessRoomTeamMember[];
+};
 
 export type SuccessRoomRoutedResource =
   | SuccessRoomMutualSuccessPlanResource
@@ -48,7 +52,7 @@ export type SuccessRoomRoutedResource =
 export type SuccessRoomRoutedResourceSummary =
   | SuccessRoomMutualSuccessPlanResourceSummary
   | SuccessRoomEditableTextResource
-  | SuccessRoomKickoffScheduleResource;
+  | SuccessRoomKickoffScheduleResourceSummary;
 
 export type SuccessRoomResourceSummary =
   | SuccessRoomPdfResource

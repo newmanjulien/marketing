@@ -53,14 +53,14 @@
       </div>
     </div>
 
-    {#each productNavItems as item (item.label)}
-      {@const isActive = activePath === item.href}
+    {#each productNavItems as link (link.href)}
+      {@const isActive = activePath === link.href}
       <a
-        href={item.href}
+        href={link.href}
         class={['w-fit hover:text-stone-900', isActive && 'text-stone-900']}
         aria-current={isActive ? 'page' : undefined}
       >
-        {item.label}
+        {link.label}
       </a>
     {/each}
   </nav>

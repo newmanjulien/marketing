@@ -38,17 +38,13 @@ const routedResourceDefinitions = {
   [kickoffScheduleResourceSlug]: kickoffScheduleResourceDefinition,
 } as const;
 
-const assetResourceSummary = async (
+const assetResourceDefinitionIfPresent = async (
   ctx: QueryCtx,
   room: SuccessRoom,
   resourceSlug: SuccessRoomAssetResourceSlug,
 ) => {
-  const file = await fileByRoomKind(ctx, room._id, resourceSlug);
-
-  if (!file) {
-    return null;
-  }
-
+  const hasFile = (await fileByRoomKind(ctx, room._id, resourceSlug)) !== null;
+  if (!hasFile) return null;
   return resourceSlug === deckResourceSlug ? deckResourceDefinition : audioResourceDefinition;
 };
 
@@ -62,7 +58,7 @@ const landingResource = async (
   }
 
   if (isSuccessRoomAssetResourceSlug(resourceSlug)) {
-    return assetResourceSummary(ctx, room, resourceSlug);
+    return assetResourceDefinitionIfPresent(ctx, room, resourceSlug);
   }
 
   return routedResourceDefinitions[resourceSlug];
@@ -151,10 +147,13 @@ export const publicResourcePayload = async (
   if (resourceSlug === kickoffScheduleResourceSlug) {
     return {
       ...basePayload,
-      resource: kickoffScheduleResourceDefinition,
+      resource: {
+        ...kickoffScheduleResourceDefinition,
+        team: await teamSummaries(ctx, room),
+      },
       state: {
         kind: "kickoff-schedule" as const,
-        kickoffSchedule: sanitizeKickoffScheduleState(room.state.kickoffSchedule),
+        kickoffSchedule: sanitizeKickoffScheduleState(room, room.state.kickoffSchedule),
       },
     };
   }

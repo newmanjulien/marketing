@@ -10,6 +10,10 @@ type SaveQueueEntry = {
   // up to its first await, during which `promise` is still unassigned.
   running: boolean;
   promise: Promise<void> | null;
+  // Whether the most recently run task persisted. A newer task under the same
+  // key supersedes an older one, so once the queue drains this is the fate of
+  // the newest state — the thing an awaiter of schedule() cares about.
+  lastRunSucceeded: boolean;
 };
 
 export type SuccessRoomSaveQueue = ReturnType<typeof createSuccessRoomSaveQueue>;
@@ -19,11 +23,13 @@ export type SuccessRoomSaveQueue = ReturnType<typeof createSuccessRoomSaveQueue>
 export const createSuccessRoomSaveQueue = () => {
   const entries = new Map<string, SaveQueueEntry>();
 
-  const getEntry = (key: string) => {
-    const entry: SaveQueueEntry =
-      entries.get(key) ?? { task: null, timeout: null, running: false, promise: null };
+  const getOrCreateEntry = (key: string): SaveQueueEntry => {
+    let entry = entries.get(key);
 
-    entries.set(key, entry);
+    if (!entry) {
+      entry = { task: null, timeout: null, running: false, promise: null, lastRunSucceeded: false };
+      entries.set(key, entry);
+    }
 
     return entry;
   };
@@ -38,8 +44,12 @@ export const createSuccessRoomSaveQueue = () => {
   const runTask = async (key: string, task: SaveTask) => {
     try {
       await task();
+
+      return true;
     } catch (error) {
       console.error(`Success room save failed for ${key}`, error);
+
+      return false;
     }
   };
 
@@ -60,7 +70,7 @@ export const createSuccessRoomSaveQueue = () => {
           const task = entry.task;
 
           entry.task = null;
-          await runTask(key, task);
+          entry.lastRunSucceeded = await runTask(key, task);
         }
       } finally {
         entry.running = false;
@@ -75,8 +85,9 @@ export const createSuccessRoomSaveQueue = () => {
     await entry.promise;
   };
 
-  const schedule = (key: string, task: SaveTask, debounceMs = 0) => {
-    const entry = getEntry(key);
+  // Resolves with whether the newest state for this key is known persisted.
+  const schedule = (key: string, task: SaveTask, debounceMs = 0): Promise<boolean> => {
+    const entry = getOrCreateEntry(key);
 
     entry.task = task;
     clearEntryTimeout(entry);
@@ -85,10 +96,26 @@ export const createSuccessRoomSaveQueue = () => {
       entry.timeout = setTimeout(() => {
         void runEntry(key, entry);
       }, debounceMs);
-      return;
+
+      // A debounced task has no single completion to hand back: the timer, a
+      // flush, or a newer task under the same key decides when (or whether)
+      // it runs. Only immediate saves can report their fate.
+      return Promise.resolve(false);
     }
 
-    void runEntry(key, entry);
+    // Resolves once this key's queue is actually empty, so a caller can gate
+    // navigation on persistence when the destination's server load reads the
+    // new state. A single runEntry can return early while a task sits parked
+    // behind an in-flight save (re-debounced mid-drain), so loop until
+    // nothing is left; runEntry force-runs a parked task by clearing its
+    // timer, which matches flush semantics.
+    return (async () => {
+      while (entry.task || entry.running) {
+        await runEntry(key, entry);
+      }
+
+      return entry.lastRunSucceeded;
+    })();
   };
 
   // Document stays alive: start an ordered drain of every entry. A task

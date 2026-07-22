@@ -85,12 +85,12 @@ export type SuccessRoomRoutedResourceSlug = (typeof successRoomRoutedResourceSlu
 export const isSuccessRoomResourceSlug = (
   slug: string,
 ): slug is SuccessRoomResourceSlug =>
-  successRoomResourceSlugs.some((resourceSlug) => resourceSlug === slug);
+  (successRoomResourceSlugs as readonly string[]).includes(slug);
 
 export const isSuccessRoomAssetResourceSlug = (
   slug: string,
 ): slug is SuccessRoomAssetResourceSlug =>
-  successRoomAssetResourceSlugs.some((assetSlug) => assetSlug === slug);
+  (successRoomAssetResourceSlugs as readonly string[]).includes(slug);
 
 export const successRoomResourceDefinitions = [
   deckResourceDefinition,
@@ -111,18 +111,3 @@ export type SuccessRoomKickoffScheduleResourceSlug = Extract<
   SuccessRoomResourceDefinition,
   { kind: 'kickoff-schedule' }
 >['slug'];
-
-export const kickoffScheduleColumns = [
-  { key: 'monday', label: 'Monday' },
-  { key: 'tuesday', label: 'Tuesday' },
-  { key: 'wednesday', label: 'Wednesday' },
-  { key: 'thursday', label: 'Thursday' },
-] as const;
-
-export const kickoffScheduleRowKeys = [
-  'row-1',
-  'row-2',
-  'row-3',
-  'row-4',
-  'row-5',
-] as const;

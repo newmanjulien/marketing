@@ -1,5 +1,8 @@
 import type { SuccessRoomBenefitsState } from '$shared/successRoomBenefits';
-import type { SuccessRoomKickoffScheduleState } from '$shared/successRoomKickoffSchedule';
+import type {
+  SuccessRoomKickoffMeeting,
+  SuccessRoomKickoffScheduleState
+} from '$shared/successRoomKickoffSchedule';
 import type { SuccessRoomPlanState } from '$shared/successRoomPlan';
 import type { SuccessRoomEditableTextState } from './types';
 
@@ -31,6 +34,15 @@ export const cloneKickoffScheduleState = (
 ): SuccessRoomKickoffScheduleState => ({
   rows: schedule.rows.map((row) => ({
     key: row.key,
-    cells: { ...row.cells }
+    cells: Object.fromEntries(
+      Object.entries(row.cells).map(([columnKey, meeting]): [string, SuccessRoomKickoffMeeting] => [
+        columnKey,
+        {
+          ...meeting,
+          attendeeKeys: [...meeting.attendeeKeys],
+          agenda: [...meeting.agenda]
+        }
+      ])
+    )
   }))
 });

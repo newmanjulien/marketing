@@ -13,7 +13,11 @@ export const GET: RequestHandler = () => {
   const paths = [...staticPaths, ...industries.map((industry) => industry.href)];
 
   const urls = paths
-    .map((path) => `  <url>\n    <loc>${SITE_ORIGIN}${path}</loc>\n  </url>`)
+    .map(
+      (path) => `  <url>
+    <loc>${SITE_ORIGIN}${path}</loc>
+  </url>`
+    )
     .join('\n');
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>

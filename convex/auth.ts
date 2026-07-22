@@ -1,48 +1,33 @@
-"use node";
-
 import { v } from "convex/values";
-import { action, internalAction } from "./_generated/server";
-import { internal } from "./_generated/api";
-import { hashPassword, verifyPassword } from "./model/passwords";
+import { mutation } from "./_generated/server";
+import { createRoomSession } from "./model/auth";
+import { roomBySlug } from "./model/rooms";
 
-export type LoginResult =
-  | { sessionToken: string }
-  | { failure: "invalid-password" | "locked" };
+const normalizeName = (value: string) => value.normalize().trim().toLowerCase();
 
-export const login = action({
+const lastNameOf = (name: string) => normalizeName(name).split(/\s+/).at(-1) ?? "";
+
+// A room is unlocked by the last name of any current team member. Returns the
+// session token, or null when the name matches nobody (the caller can't tell a
+// missing room from a wrong name).
+export const login = mutation({
   args: {
     slug: v.string(),
-    password: v.string(),
+    lastName: v.string(),
   },
-  handler: async (ctx, args): Promise<LoginResult> => {
-    const roomLogin = await ctx.runQuery(internal.sessions.getRoomLogin, { slug: args.slug });
+  handler: async (ctx, args): Promise<string | null> => {
+    const candidate = normalizeName(args.lastName);
 
-    if (!roomLogin) {
-      return { failure: "invalid-password" };
+    if (!candidate) {
+      return null;
     }
 
-    // The throttle only shapes the failure message: the correct password must
-    // always work, otherwise anyone who knows the room URL could lock the
-    // legitimate prospect out by hammering wrong passwords.
-    if (!(await verifyPassword(args.password, roomLogin.passwordHash))) {
-      const { locked } = await ctx.runMutation(internal.sessions.recordFailedLogin, {
-        roomId: roomLogin.roomId,
-      });
+    const room = await roomBySlug(ctx, args.slug);
 
-      return { failure: locked ? "locked" : "invalid-password" };
+    if (!room || !room.teamMembers.some((member) => lastNameOf(member.name) === candidate)) {
+      return null;
     }
 
-    const sessionToken = await ctx.runMutation(internal.sessions.createSession, {
-      roomId: roomLogin.roomId,
-    });
-
-    return { sessionToken };
+    return createRoomSession(ctx, room._id);
   },
-});
-
-// Used by the seed scripts (npx convex run auth:hashPassword) so scrypt has a
-// single implementation.
-export const hashRoomPassword = internalAction({
-  args: { password: v.string() },
-  handler: (_ctx, args) => hashPassword(args.password),
 });

@@ -90,23 +90,17 @@ export const unlockSuccessRoom = async ({
     });
   }
 
-  const login = await convex.action(api.auth.login, {
+  const sessionToken = await convex.mutation(api.auth.login, {
     slug: roomSlug,
-    password
+    lastName: password
   });
 
-  if ('failure' in login) {
-    if (login.failure === 'locked') {
-      return fail(429, {
-        message: 'Too many attempts. Wait a few minutes and try again.'
-      });
-    }
-
+  if (!sessionToken) {
     return fail(401, {
       message: "That password doesn't match."
     });
   }
 
-  setSuccessRoomSessionToken(cookies, roomSlug, login.sessionToken);
+  setSuccessRoomSessionToken(cookies, roomSlug, sessionToken);
   redirect(303, getFormActionRedirectPath(url));
 };

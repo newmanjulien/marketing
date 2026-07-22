@@ -8,9 +8,14 @@ import {
   type SuccessRoomBenefitsState,
 } from "../../shared/successRoomBenefits";
 import { parseSuccessRoomSlug } from "../../shared/successRoomSlugs";
-import { kickoffScheduleColumns, kickoffScheduleRowKeys } from "../../shared/successRoomResources";
 import type { SuccessRoomResourceSlug } from "../../shared/successRoomResources";
-import type { SuccessRoomKickoffScheduleState } from "../../shared/successRoomKickoffSchedule";
+import {
+  kickoffMeetingAgendaSlotCount,
+  kickoffScheduleColumns,
+  kickoffScheduleRowKeys,
+  type SuccessRoomKickoffMeeting,
+  type SuccessRoomKickoffScheduleState,
+} from "../../shared/successRoomKickoffSchedule";
 import { isValidPlanTaskDate } from "../../shared/successRoomPlan";
 import type { SuccessRoomPlanState } from "../../shared/successRoomPlan";
 
@@ -20,10 +25,6 @@ export type TeamMember = SuccessRoom["teamMembers"][number];
 export const maxBenefitCards = 10;
 export const maxPlanAccordions = 10;
 export const maxPlanTasksPerAccordion = 10;
-
-const kickoffScheduleColumnKeys = new Set<string>(
-  kickoffScheduleColumns.map((column) => column.key),
-);
 
 export const createKey = (prefix: string) => `${prefix}:${crypto.randomUUID()}`;
 
@@ -169,11 +170,12 @@ export const sanitizePlanState = (
     room.planAccordions.flatMap((accordion) => accordion.tasks.map((task) => task.key)),
   );
   const validMemberKeys = new Set(room.teamMembers.map((member) => member.key));
-  const openAccordionKey = state.openAccordionKey;
 
   return {
     openAccordionKey:
-      openAccordionKey && validAccordionKeys.has(openAccordionKey) ? openAccordionKey : null,
+      state.openAccordionKey && validAccordionKeys.has(state.openAccordionKey)
+        ? state.openAccordionKey
+        : null,
     checkedTaskKeys: [...new Set(state.checkedTaskKeys)].filter((key) => validTaskKeys.has(key)),
     dateOverridesByTaskKey: Object.fromEntries(
       Object.entries(state.dateOverridesByTaskKey).filter(
@@ -188,20 +190,37 @@ export const sanitizePlanState = (
   };
 };
 
+// Rows are rebuilt from the canonical row keys (order fixed, unknown rows
+// dropped, missing rows restored empty); cells are whitelisted against the
+// canonical columns; attendees against the room's current team. Applied on
+// both read and write, like the plan.
 export const sanitizeKickoffScheduleState = (
+  room: SuccessRoom,
   state: SuccessRoomKickoffScheduleState,
-): SuccessRoomKickoffScheduleState => ({
-  rows: kickoffScheduleRowKeys.map((key) => {
-    const row = state.rows.find((candidate) => candidate.key === key);
+): SuccessRoomKickoffScheduleState => {
+  const validColumnKeys = new Set<string>(kickoffScheduleColumns.map((column) => column.key));
+  const validMemberKeys = new Set(room.teamMembers.map((member) => member.key));
 
-    return {
-      key,
-      cells: Object.fromEntries(
-        Object.entries(row?.cells ?? {})
-          .filter(([columnKey]) => kickoffScheduleColumnKeys.has(columnKey))
-          .map(([columnKey, text]) => [columnKey, text.trim()])
-          .filter(([, text]) => text.length > 0),
-      ),
-    };
-  }),
-});
+  const sanitizeMeeting = (meeting: SuccessRoomKickoffMeeting) => ({
+    title: meeting.title.trim(),
+    attendeeKeys: [...new Set(meeting.attendeeKeys)].filter((key) => validMemberKeys.has(key)),
+    agenda: Array.from({ length: kickoffMeetingAgendaSlotCount }, (_, index) =>
+      (meeting.agenda[index] ?? "").trim(),
+    ),
+  });
+
+  return {
+    rows: kickoffScheduleRowKeys.map((rowKey) => {
+      const cells = state.rows.find((row) => row.key === rowKey)?.cells ?? {};
+
+      return {
+        key: rowKey,
+        cells: Object.fromEntries(
+          Object.entries(cells)
+            .filter(([columnKey]) => validColumnKeys.has(columnKey))
+            .map(([columnKey, meeting]) => [columnKey, sanitizeMeeting(meeting)] as const),
+        ),
+      };
+    }),
+  };
+};

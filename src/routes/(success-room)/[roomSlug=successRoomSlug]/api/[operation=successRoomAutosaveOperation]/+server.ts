@@ -13,7 +13,7 @@ const mutationsByOperation: SuccessRoomAutosaveApiMutationByOperation = {
   benefits: api.rooms.patchBenefits,
   plan: api.rooms.applyPlanAction,
   'editable-text': api.rooms.patchEditableText,
-  'kickoff-schedule': api.rooms.replaceKickoffSchedule
+  'kickoff-schedule': api.rooms.applyKickoffScheduleAction
 };
 
 export const POST: RequestHandler = (event) =>

@@ -12,7 +12,7 @@ export type SuccessRoomAutosaveApiMutationByOperation = {
   benefits: typeof api.rooms.patchBenefits;
   plan: typeof api.rooms.applyPlanAction;
   'editable-text': typeof api.rooms.patchEditableText;
-  'kickoff-schedule': typeof api.rooms.replaceKickoffSchedule;
+  'kickoff-schedule': typeof api.rooms.applyKickoffScheduleAction;
 };
 
 export type SuccessRoomAutosaveApiBodyByOperation = {

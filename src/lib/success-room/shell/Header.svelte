@@ -36,7 +36,7 @@
 
   {#if description}
     <p
-      class="mt-[20px] text-[16px] font-book leading-[1.55] text-stone-700 sm:text-[17px]"
+      class="mt-[20px] text-[14px] font-book leading-[1.45] text-stone-700 sm:text-[15px]"
     >
       {description}
     </p>

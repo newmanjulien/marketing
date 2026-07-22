@@ -57,7 +57,10 @@
       />
     {:else if snapshot.kind === 'kickoff-schedule'}
       <KickoffSchedulePanel
-        bind:schedule={() => snapshot.kickoffSchedule, draft.setKickoffScheduleState}
+        roomSlug={room.slug}
+        team={snapshot.resource.team}
+        schedule={snapshot.kickoffSchedule}
+        onScheduleAction={draft.dispatchKickoffScheduleAction}
       />
     {/if}
   </ContentMeasure>

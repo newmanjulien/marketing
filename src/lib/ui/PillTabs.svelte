@@ -73,11 +73,11 @@
     switch (event.key) {
       case 'ArrowLeft':
         event.preventDefault();
-        selectTabAt(currentIndex <= 0 ? tabs.length - 1 : currentIndex - 1);
+        selectTabAt((currentIndex - 1 + tabs.length) % tabs.length);
         break;
       case 'ArrowRight':
         event.preventDefault();
-        selectTabAt(currentIndex === tabs.length - 1 ? 0 : currentIndex + 1);
+        selectTabAt((currentIndex + 1) % tabs.length);
         break;
       case 'Home':
         event.preventDefault();

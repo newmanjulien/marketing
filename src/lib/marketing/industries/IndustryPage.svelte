@@ -32,7 +32,7 @@
           {industry.intro}
         </p>
         <p class="text-[16px] font-book leading-[1.6] text-stone-700 sm:text-[17px]">
-          These partnerships drive growth, but many opportunities never surface. Because everyone's
+          These partnerships drive growth, but many opportunities never surface because everyone's
           data is trapped in separate systems
         </p>
       </div>
