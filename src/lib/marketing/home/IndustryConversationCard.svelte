@@ -93,7 +93,7 @@
           type="button"
           data-indicator-key={industry.id}
           class={[
-            'relative flex items-center gap-[14px] rounded-[8px] border border-transparent px-[10px] py-[9px] text-[17px] leading-none transition-colors',
+            'relative flex items-center gap-[14px] rounded-[8px] border border-transparent px-[10px] py-[9px] text-[18px] leading-none transition-colors',
             isEmphasized ? 'font-medium text-stone-750' : 'font-book text-stone-500'
           ]}
           aria-pressed={industryId === industry.id}

@@ -97,7 +97,7 @@
             <p class="font-heading text-[46px] font-medium leading-none tabular-nums text-stone-900">
               {dollars(revenue)}
             </p>
-            <p class="mt-[12px] text-[16px] font-book leading-none text-stone-400">
+            <p class="mt-[9px] text-[15px] font-normal leading-none text-stone-500">
               New revenue you generate
             </p>
           </div>
@@ -105,7 +105,7 @@
             <p class="font-heading text-[46px] font-medium leading-none tabular-nums text-stone-900">
               5%
             </p>
-            <p class="mt-[12px] text-[16px] font-book leading-none text-stone-400">Our fee</p>
+            <p class="mt-[9px] text-[15px] font-normal leading-none text-stone-500">Our fee</p>
           </div>
         </div>
 
